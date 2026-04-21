@@ -13,7 +13,7 @@ interface CreatorHeaderProps {
  */
 export function CreatorHeader({ creator }: CreatorHeaderProps) {
   return (
-    <section className="relative h-[85vh] min-h-[640px] w-full overflow-hidden bg-charcoal">
+    <section className="relative h-[85vh] min-h-[560px] w-full overflow-hidden bg-charcoal">
       <img
         src={creator.headerImage}
         alt={`Inside ${creator.firstName}'s workshop in ${creator.region}`}
@@ -26,7 +26,7 @@ export function CreatorHeader({ creator }: CreatorHeaderProps) {
       {/* Bottom vignette for headline legibility */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-charcoal/85 via-charcoal/35 to-transparent" />
 
-      <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-6 pb-20 md:px-10 md:pb-28">
+      <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-20 md:px-10 md:pb-28">
         <motion.span
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -44,7 +44,7 @@ export function CreatorHeader({ creator }: CreatorHeaderProps) {
             delay: 0.15,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="mt-6 font-display text-[88px] leading-[0.9] tracking-tight text-warm-white md:text-[140px] lg:text-[176px]"
+          className="mt-6 font-display text-[64px] leading-[0.92] tracking-tight text-warm-white md:text-[140px] lg:text-[176px]"
         >
           {creator.firstName}
         </motion.h1>

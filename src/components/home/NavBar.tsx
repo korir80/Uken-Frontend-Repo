@@ -5,10 +5,11 @@ import { Menu, X } from "lucide-react";
 import { BagIndicator } from "@/components/product/BagIndicator";
 
 const navLinks = [
-  { label: "Explore Creators", to: "/explore" },
-  { label: "Our Story", to: "/story" },
-  { label: "Join as Artisan", to: "/join" },
-] as const;
+  { label: "Shop", to: "/shop" as const },
+  { label: "Explore Creators", to: "/explore" as const },
+  { label: "Our Story", to: "/story" as const },
+  { label: "Join as Artisan", to: "/join" as const },
+];
 
 export function NavBar() {
   const [scrolled, setScrolled] = useState(false);
@@ -30,22 +31,22 @@ export function NavBar() {
           : "bg-transparent border-b border-transparent",
       )}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10 md:py-5">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-10 md:py-5">
         <Link
           to="/"
           className={cn(
-            "font-display text-3xl tracking-tight transition-colors",
+            "font-display text-2xl tracking-tight transition-colors md:text-3xl",
             scrolled ? "text-charcoal" : "text-warm-white",
           )}
         >
           Ukena
         </Link>
 
-        <nav className="hidden items-center gap-10 md:flex">
+        <nav className="hidden items-center gap-8 md:flex lg:gap-10">
           {navLinks.map((l) => (
-            <a
+            <Link
               key={l.label}
-              href={l.to}
+              to={l.to}
               className={cn(
                 "text-[13px] font-medium tracking-wide transition-colors",
                 scrolled
@@ -54,11 +55,11 @@ export function NavBar() {
               )}
             >
               {l.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-2">
           <BagIndicator tone={scrolled ? "light" : "dark"} />
 
           <button
@@ -78,14 +79,14 @@ export function NavBar() {
       {open && (
         <div className="md:hidden border-t border-border/60 bg-warm-white px-6 py-6 space-y-5">
           {navLinks.map((l) => (
-            <a
+            <Link
               key={l.label}
-              href={l.to}
+              to={l.to}
               onClick={() => setOpen(false)}
               className="block text-base text-charcoal hover:text-clay"
             >
               {l.label}
-            </a>
+            </Link>
           ))}
         </div>
       )}

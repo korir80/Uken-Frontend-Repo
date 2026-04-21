@@ -2,6 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { Creator } from "./creators-data";
 import { cn } from "@/lib/utils";
+import { LazyImage } from "@/components/ui/lazy-image";
 
 interface CreatorCardProps {
   creator: Creator;
@@ -25,13 +26,11 @@ export function CreatorCard({ creator, index }: CreatorCardProps) {
             isTall ? "aspect-[3/4.4]" : "aspect-[4/5]",
           )}
         >
-          <img
+          <LazyImage
             src={creator.image}
             alt={`Portrait of ${creator.fullName}, ${creator.craft.toLowerCase()} from ${creator.region}`}
-            width={1024}
-            height={1280}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
+            wrapperClassName="absolute inset-0"
+            className="transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal/55 via-charcoal/5 to-transparent" />
 

@@ -1,5 +1,6 @@
 import { SectionLabel } from "@/components/ukena";
 import { ArrowRight } from "lucide-react";
+import { LazyImage } from "@/components/ui/lazy-image";
 import wanjiru from "@/assets/creator-wanjiru.jpg";
 import mumo from "@/assets/creator-mumo.jpg";
 import naserian from "@/assets/creator-naserian.jpg";
@@ -89,13 +90,11 @@ function CreatorCard({ creator, index }: { creator: Creator; index: number }) {
     <article className="group h-full">
       <div className="relative overflow-hidden rounded-2xl bg-cream">
         <div className="aspect-[4/5] w-full">
-          <img
+          <LazyImage
             src={creator.image}
             alt={`Portrait of ${creator.name}, ${creator.craft}`}
-            width={1024}
-            height={1280}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
+            wrapperClassName="h-full w-full"
+            className="transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
           />
         </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal/40 via-transparent to-transparent" />

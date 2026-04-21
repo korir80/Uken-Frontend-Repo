@@ -1,13 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ukena";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
   { label: "Explore Creators", to: "/creators" },
   { label: "Our Story", to: "/story" },
-  { label: "For Artisans", to: "/artisans" },
+  { label: "Join as Artisan", to: "/artisans" },
 ] as const;
 
 export function NavBar() {
@@ -58,16 +57,6 @@ export function NavBar() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
-          <Button
-            variant="primary"
-            size="sm"
-            className="bg-terracotta hover:bg-[oklch(0.52_0.13_38)]"
-          >
-            Start Exploring
-          </Button>
-        </div>
-
         <button
           type="button"
           aria-label="Toggle menu"
@@ -93,13 +82,6 @@ export function NavBar() {
               {l.label}
             </a>
           ))}
-          <Button
-            variant="primary"
-            size="md"
-            className="w-full bg-terracotta hover:bg-[oklch(0.52_0.13_38)]"
-          >
-            Start Exploring
-          </Button>
         </div>
       )}
     </header>

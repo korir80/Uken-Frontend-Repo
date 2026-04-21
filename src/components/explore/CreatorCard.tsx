@@ -75,6 +75,6 @@ export function CreatorCard({ creator, index }: CreatorCardProps) {
           />
         </span>
       </div>
-    </a>
+    </Link>
   );
 }

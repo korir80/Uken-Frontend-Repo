@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
+import { BagIndicator } from "@/components/product/BagIndicator";
 
 const navLinks = [
   { label: "Explore Creators", to: "/explore" },
@@ -57,17 +58,21 @@ export function NavBar() {
           ))}
         </nav>
 
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          onClick={() => setOpen((o) => !o)}
-          className={cn(
-            "md:hidden grid h-10 w-10 place-items-center rounded-md transition-colors",
-            scrolled ? "text-charcoal" : "text-warm-white",
-          )}
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <BagIndicator tone={scrolled ? "light" : "dark"} />
+
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            onClick={() => setOpen((o) => !o)}
+            className={cn(
+              "md:hidden grid h-10 w-10 place-items-center rounded-md transition-colors",
+              scrolled ? "text-charcoal" : "text-warm-white",
+            )}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {open && (

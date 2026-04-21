@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { CreatorProfile } from "./creator-profile-data";
 import { Reveal } from "./Reveal";
 import { SectionLabel } from "@/components/ukena";
+import { LazyImage } from "@/components/ui/lazy-image";
 
 interface RelatedCreatorsProps {
   creator: CreatorProfile;
@@ -36,13 +37,11 @@ export function RelatedCreators({ creator }: RelatedCreatorsProps) {
               >
                 <article className="overflow-hidden rounded-2xl bg-cream transition-all duration-500 ease-out group-hover:-translate-y-1 group-hover:shadow-[var(--shadow-lift)]">
                   <div className="relative aspect-[16/10] overflow-hidden bg-sand-soft">
-                    <img
+                    <LazyImage
                       src={rel.image}
                       alt={`Portrait of ${rel.firstName}, ${rel.craft.toLowerCase()}`}
-                      width={1280}
-                      height={800}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
+                      wrapperClassName="absolute inset-0"
+                      className="transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
                     />
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal/45 via-charcoal/5 to-transparent" />
                     <div className="absolute inset-x-6 bottom-6">

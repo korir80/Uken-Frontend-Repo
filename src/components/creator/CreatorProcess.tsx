@@ -1,6 +1,7 @@
 import type { CreatorProfile } from "./creator-profile-data";
 import { Reveal } from "./Reveal";
 import { SectionLabel } from "@/components/ukena";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { cn } from "@/lib/utils";
 
 interface CreatorProcessProps {
@@ -39,13 +40,11 @@ export function CreatorProcess({ creator }: CreatorProcessProps) {
                     <figure className="grid gap-6 md:grid-cols-12 md:gap-10">
                       <div className="md:col-span-12">
                         <div className="overflow-hidden rounded-2xl bg-sand-soft">
-                          <img
+                          <LazyImage
                             src={step.image}
                             alt=""
-                            width={1280}
-                            height={960}
-                            loading="lazy"
-                            className="aspect-[16/9] w-full object-cover"
+                            ratio="16 / 9"
+                            wrapperClassName="w-full"
                           />
                         </div>
                       </div>
@@ -71,13 +70,11 @@ export function CreatorProcess({ creator }: CreatorProcessProps) {
                         )}
                       >
                         <div className="overflow-hidden rounded-2xl bg-sand-soft">
-                          <img
+                          <LazyImage
                             src={step.image}
                             alt=""
-                            width={1280}
-                            height={960}
-                            loading="lazy"
-                            className="aspect-[4/3] w-full object-cover"
+                            ratio="4 / 3"
+                            wrapperClassName="w-full"
                           />
                         </div>
                       </div>

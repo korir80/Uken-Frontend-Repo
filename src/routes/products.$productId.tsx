@@ -6,6 +6,7 @@ import { Footer } from "@/components/home/Footer";
 import { CreatorAttribution } from "@/components/product/CreatorAttribution";
 import { Button } from "@/components/ukena/Button";
 import { SectionLabel } from "@/components/ukena";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { getProduct } from "@/components/product/product-data";
 import { useCart, formatGBP } from "@/lib/cart";
 import { cn } from "@/lib/utils";
@@ -110,12 +111,12 @@ function ProductPage() {
             {/* Gallery */}
             <div className="md:col-span-7">
               <div className="overflow-hidden rounded-2xl bg-cream">
-                <img
+                <LazyImage
                   src={active.src}
                   alt={active.alt}
-                  width={1280}
-                  height={1280}
-                  className="aspect-square w-full object-cover transition-opacity duration-500"
+                  ratio="1 / 1"
+                  eager
+                  wrapperClassName="w-full"
                 />
               </div>
               <div className="mt-4 grid grid-cols-4 gap-3">

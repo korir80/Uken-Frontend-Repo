@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Button, SectionLabel } from "@/components/ukena";
 import { ArrowRight } from "lucide-react";
 
@@ -39,14 +40,17 @@ export function ArtisanCTA() {
 
           <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
             <Button
+              asChild
               variant="primary"
               size="lg"
               className="bg-terracotta hover:bg-[oklch(0.52_0.13_38)]"
             >
-              Join Ukena <ArrowRight className="h-4 w-4" />
+              <Link to="/join">
+                Join Ukena <ArrowRight className="h-4 w-4" />
+              </Link>
             </Button>
             <a
-              href="/artisans"
+              href="/join"
               className="group inline-flex items-center gap-2 text-[13px] font-medium uppercase tracking-[0.2em] text-clay"
             >
               How the partnership works

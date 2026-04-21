@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Button, SectionLabel } from "@/components/ukena";
 import { ArrowRight } from "lucide-react";
 import heroImage from "@/assets/hero-artisan.jpg";
@@ -40,11 +41,14 @@ export function Hero() {
 
           <div className="mt-10">
             <Button
+              asChild
               variant="primary"
               size="lg"
               className="bg-terracotta hover:bg-[oklch(0.52_0.13_38)]"
             >
-              Meet the creators <ArrowRight className="h-4 w-4" />
+              <Link to="/explore">
+                Meet the creators <ArrowRight className="h-4 w-4" />
+              </Link>
             </Button>
           </div>
         </div>

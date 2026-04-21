@@ -4,7 +4,7 @@ import heroImage from "@/assets/hero-artisan.jpg";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[90vh] w-full overflow-hidden bg-charcoal">
+    <section className="relative h-[100svh] min-h-[680px] w-full overflow-hidden bg-charcoal">
       {/* Background image */}
       <img
         src={heroImage}
@@ -16,10 +16,10 @@ export function Hero() {
 
       {/* Vignettes — preserve image warmth, anchor text bottom-left */}
       <div className="absolute inset-0 bg-gradient-to-r from-charcoal/75 via-charcoal/40 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/15 to-charcoal/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/15 to-charcoal/45" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex min-h-[90vh] max-w-7xl flex-col justify-end px-6 pt-32 pb-20 md:px-10 md:pb-28">
+      <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-6 pt-32 pb-24 md:px-10 md:pb-32">
         <div className="max-w-3xl">
           <SectionLabel
             tone="terracotta"
@@ -33,8 +33,9 @@ export function Hero() {
             <em className="italic text-[oklch(0.88_0.06_55)]">a story.</em>
           </h1>
 
-          <p className="mt-7 max-w-lg text-base leading-relaxed text-warm-white/80 md:text-lg">
-            Handcrafted by Kenyan artisans. Made to last a lifetime.
+          <p className="mt-8 max-w-xl text-base leading-relaxed text-warm-white/80 md:text-lg">
+            Handcrafted by Kenyan artisans. For those who want to know where
+            things come from.
           </p>
 
           <div className="mt-10">
@@ -43,17 +44,31 @@ export function Hero() {
               size="lg"
               className="bg-terracotta hover:bg-[oklch(0.52_0.13_38)]"
             >
-              Meet the Creators <ArrowRight className="h-4 w-4" />
+              Meet the creators <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
-
-        {/* Editorial caption */}
-        <div className="mt-16 flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-warm-white/55">
-          <span className="h-px w-10 bg-warm-white/40" />
-          <span>Photographed in Kajiado · Issue No. 01</span>
-        </div>
       </div>
+
+      {/* Scroll indicator */}
+      <a
+        href="#creators"
+        aria-label="Scroll to discover creators"
+        className="group absolute bottom-8 left-1/2 z-10 -translate-x-1/2 flex flex-col items-center gap-3 text-warm-white/70 transition-colors hover:text-warm-white"
+      >
+        <span className="text-[10px] uppercase tracking-[0.32em]">Scroll</span>
+        <span className="relative block h-10 w-px overflow-hidden bg-warm-white/25">
+          <span className="absolute left-0 top-0 h-4 w-px animate-[scroll-cue_2.2s_ease-in-out_infinite] bg-warm-white" />
+        </span>
+      </a>
+
+      <style>{`
+        @keyframes scroll-cue {
+          0% { transform: translateY(-100%); }
+          60% { transform: translateY(200%); }
+          100% { transform: translateY(200%); }
+        }
+      `}</style>
     </section>
   );
 }

@@ -4,6 +4,7 @@ import { Hero } from "@/components/home/Hero";
 import { FeaturedCreators } from "@/components/home/FeaturedCreators";
 import { ProcessStrip } from "@/components/home/ProcessStrip";
 import { QuotePullout } from "@/components/home/QuotePullout";
+import { ArtisanCTA } from "@/components/home/ArtisanCTA";
 import { Footer } from "@/components/home/Footer";
 
 export const Route = createFileRoute("/")({
@@ -38,6 +39,7 @@ function HomePage() {
         <FeaturedCreators />
         <ProcessStrip />
         <QuotePullout />
+        <ArtisanCTA />
       </main>
       <Footer />
     </div>

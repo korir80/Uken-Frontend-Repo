@@ -14,6 +14,7 @@ import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as JoinIndexRouteImport } from './routes/join.index'
 import { Route as JoinApplyRouteImport } from './routes/join.apply'
+import { Route as CreatorsCreatorIdRouteImport } from './routes/creators.$creatorId'
 
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
@@ -40,11 +41,17 @@ const JoinApplyRoute = JoinApplyRouteImport.update({
   path: '/join/apply',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CreatorsCreatorIdRoute = CreatorsCreatorIdRouteImport.update({
+  id: '/creators/$creatorId',
+  path: '/creators/$creatorId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
   '/styleguide': typeof StyleguideRoute
+  '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
   '/join/': typeof JoinIndexRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
   '/styleguide': typeof StyleguideRoute
+  '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
   '/join': typeof JoinIndexRoute
 }
@@ -60,21 +68,42 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/explore': typeof ExploreRoute
   '/styleguide': typeof StyleguideRoute
+  '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
   '/join/': typeof JoinIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/explore' | '/styleguide' | '/join/apply' | '/join/'
+  fullPaths:
+    | '/'
+    | '/explore'
+    | '/styleguide'
+    | '/creators/$creatorId'
+    | '/join/apply'
+    | '/join/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/explore' | '/styleguide' | '/join/apply' | '/join'
-  id: '__root__' | '/' | '/explore' | '/styleguide' | '/join/apply' | '/join/'
+  to:
+    | '/'
+    | '/explore'
+    | '/styleguide'
+    | '/creators/$creatorId'
+    | '/join/apply'
+    | '/join'
+  id:
+    | '__root__'
+    | '/'
+    | '/explore'
+    | '/styleguide'
+    | '/creators/$creatorId'
+    | '/join/apply'
+    | '/join/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ExploreRoute: typeof ExploreRoute
   StyleguideRoute: typeof StyleguideRoute
+  CreatorsCreatorIdRoute: typeof CreatorsCreatorIdRoute
   JoinApplyRoute: typeof JoinApplyRoute
   JoinIndexRoute: typeof JoinIndexRoute
 }
@@ -116,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JoinApplyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/creators/$creatorId': {
+      id: '/creators/$creatorId'
+      path: '/creators/$creatorId'
+      fullPath: '/creators/$creatorId'
+      preLoaderRoute: typeof CreatorsCreatorIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -123,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExploreRoute: ExploreRoute,
   StyleguideRoute: StyleguideRoute,
+  CreatorsCreatorIdRoute: CreatorsCreatorIdRoute,
   JoinApplyRoute: JoinApplyRoute,
   JoinIndexRoute: JoinIndexRoute,
 }

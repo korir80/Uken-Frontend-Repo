@@ -119,7 +119,7 @@ function ProductPage() {
                 />
               </div>
               <div className="mt-4 grid grid-cols-4 gap-3">
-                {product.gallery.map((g, i) => (
+                {product.gallery.map((g: { src: string; alt: string }, i: number) => (
                   <button
                     key={i}
                     type="button"

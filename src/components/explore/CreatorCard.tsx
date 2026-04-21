@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import type { Creator } from "./creators-data";
 import { cn } from "@/lib/utils";
 
@@ -12,8 +13,9 @@ export function CreatorCard({ creator, index }: CreatorCardProps) {
   const isTall = creator.emphasis === "tall";
 
   return (
-    <a
-      href={`/creators/${creator.id}`}
+    <Link
+      to="/creators/$creatorId"
+      params={{ creatorId: creator.id }}
       className="group block break-inside-avoid"
     >
       <article className="relative overflow-hidden rounded-2xl bg-cream transition-all duration-500 ease-out group-hover:-translate-y-1 group-hover:shadow-[var(--shadow-lift)]">

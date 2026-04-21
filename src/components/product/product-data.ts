@@ -19,6 +19,16 @@ import processDye from "@/assets/process-dye.jpg";
 import processWeave from "@/assets/process-weave.jpg";
 import processFinish from "@/assets/process-finish.jpg";
 
+// Authentic on-the-ground photography
+import authKiondo from "@/assets/authentic-kiondo.jpg";
+import authBasketsPile from "@/assets/authentic-baskets-pile.jpg";
+import authBeadSorter from "@/assets/authentic-bead-sorter.jpg";
+import authBeadMarket from "@/assets/authentic-bead-market.jpg";
+import authSandals from "@/assets/authentic-sandals.jpg";
+import authLeatherMarket from "@/assets/authentic-leather-market.jpg";
+import authCraftMarket from "@/assets/authentic-craft-market.jpg";
+import authBeekeeper from "@/assets/authentic-beekeeper.jpg";
+
 import portraitWanjiru from "@/assets/portrait-wanjiru.jpg";
 import naserianImg from "@/assets/creator-naserian.jpg";
 import mumoImg from "@/assets/creator-mumo.jpg";
@@ -120,6 +130,16 @@ const saitoti: ProductCreatorRef = {
   portrait: saitotiImg,
 };
 
+// NEW MAKER — beekeeper. Portrait reused from beekeeper field shot for now.
+const kibet: ProductCreatorRef = {
+  id: "kibet",
+  firstName: "Kibet",
+  fullName: "Kibet Cheruiyot",
+  region: "Mwingi, Kitui",
+  craft: "Beekeeping",
+  portrait: authBeekeeper,
+};
+
 export const products: Record<string, Product> = {
   "p-mara-01": {
     id: "p-mara-01",
@@ -128,6 +148,7 @@ export const products: Record<string, Product> = {
     heroImage: productMara,
     gallery: [
       { src: productMara, alt: "Mara Storage Basket — full view", kind: "product" },
+      { src: authKiondo, alt: "Wanjiru's baskets hanging at the Maragua co-op", kind: "process" },
       { src: processFibre, alt: "Sisal fibres being prepared by hand", kind: "process" },
       { src: processDye, alt: "Natural dye bath simmering in clay pots", kind: "process" },
       { src: workshop, alt: "Wanjiru's workshop in Maragua", kind: "process" },
@@ -197,6 +218,26 @@ export const products: Record<string, Product> = {
     creator: wanjiru,
   },
 
+  // NEW — Wanjiru market tote, photographed at the co-op
+  "p-mara-05": {
+    id: "p-mara-05",
+    name: "Striped Market Tote",
+    pricePence: 6800,
+    heroImage: authBasketsPile,
+    gallery: [
+      { src: authBasketsPile, alt: "Striped market totes ready for collection", kind: "product" },
+      { src: authKiondo, alt: "Wanjiru's stall at the weekly Maragua market", kind: "process" },
+      { src: processWeave, alt: "Coiling in progress", kind: "process" },
+    ],
+    pieceStory:
+      "Wanjiru's everyday carry — wide enough for a market run, soft enough to fold into your bag. The leather handles are stitched on by her brother Mwangi, who runs a small saddlery two doors down.",
+    materials: ["Hand-stripped sisal", "Vegetable-tanned leather handles"],
+    dimensions: "H 32cm · W 38cm · D 14cm",
+    care: "Wipe with a damp cloth. Air dry.",
+    leadTimeDays: { min: 4, max: 6 },
+    creator: wanjiru,
+  },
+
   // ── Naserian — Beadwork ─────────────────────────────────────────────
   "p-kaj-01": {
     id: "p-kaj-01",
@@ -205,7 +246,8 @@ export const products: Record<string, Product> = {
     heroImage: productBeads,
     gallery: [
       { src: productBeads, alt: "Enkipaata beaded collar", kind: "product" },
-      { src: processFinish, alt: "Beads laid out by colour", kind: "process" },
+      { src: authBeadSorter, alt: "Naserian sorting beads at her workbench", kind: "process" },
+      { src: authBeadMarket, alt: "The Kajiado bead market where she sources her glass", kind: "process" },
     ],
     pieceStory:
       "Naserian threaded this collar over four evenings under lamplight. The red speaks of bravery, the white of peace — the colour order is the one her mother taught her for a young woman's first ceremony.",
@@ -222,6 +264,7 @@ export const products: Record<string, Product> = {
     heroImage: productBeads,
     gallery: [
       { src: productBeads, alt: "Kajiado beaded cuff pair", kind: "product" },
+      { src: authBeadSorter, alt: "Hand-sorting beads by colour", kind: "process" },
       { src: processFinish, alt: "Bead work in progress", kind: "process" },
     ],
     pieceStory:
@@ -230,6 +273,25 @@ export const products: Record<string, Product> = {
     dimensions: "Adjustable · Width 3cm",
     care: "Wipe with a dry cloth.",
     leadTimeDays: { min: 4, max: 6 },
+    creator: naserian,
+  },
+
+  // NEW — beaded sandals, Naserian
+  "p-kaj-03": {
+    id: "p-kaj-03",
+    name: "Beaded Leather Sandals",
+    pricePence: 9200,
+    heroImage: authSandals,
+    gallery: [
+      { src: authSandals, alt: "Beaded leather sandals at the Maasai market", kind: "product" },
+      { src: authBeadSorter, alt: "Beading the strap by hand", kind: "process" },
+    ],
+    pieceStory:
+      "Naserian beads the toe strap; her cousin Sironka cuts and stitches the leather. Each pair carries a different geometric motif — she never repeats a pattern within a season.",
+    materials: ["Hand-cut cowhide", "Glass seed beads", "Stitched suede footbed"],
+    dimensions: "UK 4–8 · Made to size",
+    care: "Keep dry. Treat leather with mink oil twice a year.",
+    leadTimeDays: { min: 7, max: 10 },
     creator: naserian,
   },
 
@@ -279,6 +341,7 @@ export const products: Record<string, Product> = {
     heroImage: productVessel,
     gallery: [
       { src: productVessel, alt: "Day satchel — front", kind: "product" },
+      { src: authLeatherMarket, alt: "Aluoch outside her Nairobi workshop", kind: "process" },
       { src: processFinish, alt: "Saddle stitching by hand", kind: "process" },
     ],
     pieceStory:
@@ -290,6 +353,25 @@ export const products: Record<string, Product> = {
     creator: aluoch,
   },
 
+  // NEW — Aluoch, crossbody
+  "p-nrb-02": {
+    id: "p-nrb-02",
+    name: "Saddle-Stitched Crossbody",
+    pricePence: 14600,
+    heroImage: authLeatherMarket,
+    gallery: [
+      { src: authLeatherMarket, alt: "Aluoch's leather workshop, Nairobi", kind: "product" },
+      { src: processFinish, alt: "Hand-stitching the gusset", kind: "process" },
+    ],
+    pieceStory:
+      "A daily companion — small enough to forget you're wearing it, structured enough to hold a passport, a notebook, a phone. Aluoch's signature edge-paint in oxblood runs all the way around.",
+    materials: ["Full-grain leather", "Solid brass clasp", "Oxblood edge paint"],
+    dimensions: "H 18cm · W 22cm · D 6cm",
+    care: "Wipe with a soft cloth. Avoid prolonged sun.",
+    leadTimeDays: { min: 8, max: 12 },
+    creator: aluoch,
+  },
+
   // ── Otieno — Woodcarving ────────────────────────────────────────────
   "p-lam-01": {
     id: "p-lam-01",
@@ -298,6 +380,7 @@ export const products: Record<string, Product> = {
     heroImage: productVessel,
     gallery: [
       { src: productVessel, alt: "Olive-wood reading stand", kind: "product" },
+      { src: authCraftMarket, alt: "Otieno's stall at the Lamu craft market", kind: "process" },
       { src: processFinish, alt: "Carving the curve against the grain", kind: "process" },
     ],
     pieceStory:
@@ -306,6 +389,25 @@ export const products: Record<string, Product> = {
     dimensions: "H 18cm · W 28cm",
     care: "Re-wax once a year with beeswax.",
     leadTimeDays: { min: 8, max: 12 },
+    creator: otieno,
+  },
+
+  // NEW — Otieno, carved spoon set
+  "p-lam-02": {
+    id: "p-lam-02",
+    name: "Olive Spoon — Set of Three",
+    pricePence: 5400,
+    heroImage: productVessel,
+    gallery: [
+      { src: productVessel, alt: "Three olive-wood serving spoons", kind: "product" },
+      { src: authCraftMarket, alt: "Otieno's bench, Lamu Old Town", kind: "process" },
+    ],
+    pieceStory:
+      "Three spoons, one tree. Otieno cuts the blanks from a single fallen olive branch so the grain runs continuously across the set. He finishes each handle to fit comfortably in a closed hand.",
+    materials: ["Olive wood", "Beeswax + linseed finish"],
+    dimensions: "L 24, 28, 32cm",
+    care: "Hand wash. Re-oil monthly.",
+    leadTimeDays: { min: 5, max: 8 },
     creator: otieno,
   },
 
@@ -326,6 +428,41 @@ export const products: Record<string, Product> = {
     care: "Indoor use. Brush gently to clean.",
     leadTimeDays: { min: 7, max: 10 },
     creator: saitoti,
+  },
+
+  // ── Kibet — Beekeeping (NEW MAKER) ──────────────────────────────────
+  "p-mwi-01": {
+    id: "p-mwi-01",
+    name: "Wildflower Honey — 340g Jar",
+    pricePence: 1800,
+    heroImage: authBeekeeper,
+    gallery: [
+      { src: authBeekeeper, alt: "Kibet at his apiary in Mwingi", kind: "process" },
+      { src: authBeekeeper, alt: "Top-bar hives under the acacia", kind: "process" },
+    ],
+    pieceStory:
+      "Kibet keeps fourteen top-bar hives in the acacia scrub outside Mwingi. This jar is from the long rains — pale, floral, with a faint sweetness from the desert dates that bloom in March.",
+    materials: ["Raw unfiltered honey", "Reusable glass jar"],
+    dimensions: "340g net · H 9cm",
+    care: "Store at room temperature. Crystallisation is natural.",
+    leadTimeDays: { min: 3, max: 5 },
+    creator: kibet,
+  },
+  "p-mwi-02": {
+    id: "p-mwi-02",
+    name: "Pure Beeswax Pillar Candle",
+    pricePence: 2400,
+    heroImage: authBeekeeper,
+    gallery: [
+      { src: authBeekeeper, alt: "Wax cappings rendered down by Kibet", kind: "process" },
+    ],
+    pieceStory:
+      "Hand-poured from the wax cappings of Kibet's harvest. Pure beeswax burns slow, drip-free, and carries the faintest honey note as it warms. Twelve hours of light per pillar.",
+    materials: ["100% Mwingi beeswax", "Cotton wick"],
+    dimensions: "H 12cm · Ø 6cm",
+    care: "Trim wick to 5mm. Burn on a heat-safe surface.",
+    leadTimeDays: { min: 4, max: 7 },
+    creator: kibet,
   },
 };
 

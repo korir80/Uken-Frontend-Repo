@@ -3,6 +3,7 @@ import { NavBar } from "@/components/home/NavBar";
 import { Hero } from "@/components/home/Hero";
 import { FeaturedCreators } from "@/components/home/FeaturedCreators";
 import { ProcessStrip } from "@/components/home/ProcessStrip";
+import { ParallaxBand } from "@/components/home/ParallaxBand";
 import { QuotePullout } from "@/components/home/QuotePullout";
 import { ArtisanCTA } from "@/components/home/ArtisanCTA";
 import { Footer } from "@/components/home/Footer";
@@ -37,6 +38,7 @@ function HomePage() {
       <main>
         <Hero />
         <FeaturedCreators />
+        <ParallaxBand />
         <ProcessStrip />
         <QuotePullout />
         <ArtisanCTA />

@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
+import { BagIndicator } from "@/components/product/BagIndicator";
 
 const navLinks = [
   { label: "Explore Creators", to: "/explore" },
@@ -51,14 +52,18 @@ export function ExploreNav() {
           ))}
         </nav>
 
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          onClick={() => setOpen((o) => !o)}
-          className="grid h-10 w-10 place-items-center rounded-md text-charcoal md:hidden"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <BagIndicator tone="light" />
+
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            onClick={() => setOpen((o) => !o)}
+            className="grid h-10 w-10 place-items-center rounded-md text-charcoal md:hidden"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {open && (

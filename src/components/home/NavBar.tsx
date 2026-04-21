@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
-  { label: "Explore Creators", to: "/creators" },
+  { label: "Explore Creators", to: "/explore" },
   { label: "Our Story", to: "/story" },
-  { label: "Join as Artisan", to: "/artisans" },
+  { label: "Join as Artisan", to: "/join" },
 ] as const;
 
 export function NavBar() {

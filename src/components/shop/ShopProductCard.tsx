@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { Product } from "./product-data";
+import type { Product } from "@/components/product/product-data";
 import { formatGBP } from "@/lib/cart";
 
 interface ShopProductCardProps {

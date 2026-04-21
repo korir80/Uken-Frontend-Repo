@@ -90,9 +90,7 @@ function CreatorProfilePage() {
 
   return (
     <div className="min-h-screen bg-warm-white text-charcoal">
-      <div className="absolute inset-x-0 top-0 z-50">
-        <ExploreNav />
-      </div>
+      <ExploreNav />
 
       <main>
         <CreatorHeader creator={creator} />

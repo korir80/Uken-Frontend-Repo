@@ -5,14 +5,18 @@ import heroImage from "@/assets/hero-artisan.jpg";
 
 export function Hero() {
   return (
-    <section className="relative h-[100svh] min-h-[680px] w-full overflow-hidden bg-charcoal">
-      {/* Background image */}
+    <section className="relative h-[82vh] min-h-[560px] w-full overflow-hidden bg-charcoal">
+      {/* Fixed/parallax background — stays put as next section scrolls over */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-cover bg-center md:bg-fixed"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      />
+      {/* SR-only descriptive image for accessibility */}
       <img
         src={heroImage}
         alt="A Kenyan artisan shaping a clay vessel at golden hour"
-        width={1920}
-        height={1280}
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="sr-only"
       />
 
       {/* Vignettes — preserve image warmth, anchor text bottom-left */}

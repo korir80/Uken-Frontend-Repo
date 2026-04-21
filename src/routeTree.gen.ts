@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StyleguideRouteImport } from './routes/styleguide'
+import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BagRouteImport } from './routes/bag'
@@ -25,6 +26,11 @@ import { Route as CheckoutConfirmationRouteImport } from './routes/checkout.conf
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
   path: '/styleguide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/signin': typeof SigninRoute
   '/styleguide': typeof StyleguideRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/signin': typeof SigninRoute
   '/styleguide': typeof StyleguideRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/signin': typeof SigninRoute
   '/styleguide': typeof StyleguideRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/bag'
     | '/checkout'
     | '/explore'
+    | '/signin'
     | '/styleguide'
     | '/checkout/confirmation'
     | '/checkout/delivery'
@@ -147,6 +157,7 @@ export interface FileRouteTypes {
     | '/bag'
     | '/checkout'
     | '/explore'
+    | '/signin'
     | '/styleguide'
     | '/checkout/confirmation'
     | '/checkout/delivery'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/bag'
     | '/checkout'
     | '/explore'
+    | '/signin'
     | '/styleguide'
     | '/checkout/confirmation'
     | '/checkout/delivery'
@@ -176,6 +188,7 @@ export interface RootRouteChildren {
   BagRoute: typeof BagRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
   ExploreRoute: typeof ExploreRoute
+  SigninRoute: typeof SigninRoute
   StyleguideRoute: typeof StyleguideRoute
   CreatorsCreatorIdRoute: typeof CreatorsCreatorIdRoute
   JoinApplyRoute: typeof JoinApplyRoute
@@ -190,6 +203,13 @@ declare module '@tanstack/react-router' {
       path: '/styleguide'
       fullPath: '/styleguide'
       preLoaderRoute: typeof StyleguideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore': {
@@ -293,6 +313,7 @@ const rootRouteChildren: RootRouteChildren = {
   BagRoute: BagRoute,
   CheckoutRoute: CheckoutRouteWithChildren,
   ExploreRoute: ExploreRoute,
+  SigninRoute: SigninRoute,
   StyleguideRoute: StyleguideRoute,
   CreatorsCreatorIdRoute: CreatorsCreatorIdRoute,
   JoinApplyRoute: JoinApplyRoute,
@@ -302,3 +323,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

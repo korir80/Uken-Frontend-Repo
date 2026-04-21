@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { CreatorProfile } from "./creator-profile-data";
 import { Reveal } from "./Reveal";
 import { SectionLabel } from "@/components/ukena";
+import { LazyImage } from "@/components/ui/lazy-image";
 
 interface RelatedCreatorsProps {
   creator: CreatorProfile;

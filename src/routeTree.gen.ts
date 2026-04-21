@@ -11,10 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StyleguideRouteImport } from './routes/styleguide'
 import { Route as ExploreRouteImport } from './routes/explore'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as BagRouteImport } from './routes/bag'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as JoinIndexRouteImport } from './routes/join.index'
+import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as JoinApplyRouteImport } from './routes/join.apply'
 import { Route as CreatorsCreatorIdRouteImport } from './routes/creators.$creatorId'
+import { Route as CheckoutPaymentRouteImport } from './routes/checkout.payment'
+import { Route as CheckoutDeliveryRouteImport } from './routes/checkout.delivery'
+import { Route as CheckoutConfirmationRouteImport } from './routes/checkout.confirmation'
 
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
@@ -24,6 +30,16 @@ const StyleguideRoute = StyleguideRouteImport.update({
 const ExploreRoute = ExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BagRoute = BagRouteImport.update({
+  id: '/bag',
+  path: '/bag',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -36,6 +52,11 @@ const JoinIndexRoute = JoinIndexRouteImport.update({
   path: '/join/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
+  id: '/products/$productId',
+  path: '/products/$productId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JoinApplyRoute = JoinApplyRouteImport.update({
   id: '/join/apply',
   path: '/join/apply',
@@ -46,65 +67,119 @@ const CreatorsCreatorIdRoute = CreatorsCreatorIdRouteImport.update({
   path: '/creators/$creatorId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutPaymentRoute = CheckoutPaymentRouteImport.update({
+  id: '/payment',
+  path: '/payment',
+  getParentRoute: () => CheckoutRoute,
+} as any)
+const CheckoutDeliveryRoute = CheckoutDeliveryRouteImport.update({
+  id: '/delivery',
+  path: '/delivery',
+  getParentRoute: () => CheckoutRoute,
+} as any)
+const CheckoutConfirmationRoute = CheckoutConfirmationRouteImport.update({
+  id: '/confirmation',
+  path: '/confirmation',
+  getParentRoute: () => CheckoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bag': typeof BagRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
   '/styleguide': typeof StyleguideRoute
+  '/checkout/confirmation': typeof CheckoutConfirmationRoute
+  '/checkout/delivery': typeof CheckoutDeliveryRoute
+  '/checkout/payment': typeof CheckoutPaymentRoute
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
+  '/products/$productId': typeof ProductsProductIdRoute
   '/join/': typeof JoinIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bag': typeof BagRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
   '/styleguide': typeof StyleguideRoute
+  '/checkout/confirmation': typeof CheckoutConfirmationRoute
+  '/checkout/delivery': typeof CheckoutDeliveryRoute
+  '/checkout/payment': typeof CheckoutPaymentRoute
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
+  '/products/$productId': typeof ProductsProductIdRoute
   '/join': typeof JoinIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bag': typeof BagRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
   '/styleguide': typeof StyleguideRoute
+  '/checkout/confirmation': typeof CheckoutConfirmationRoute
+  '/checkout/delivery': typeof CheckoutDeliveryRoute
+  '/checkout/payment': typeof CheckoutPaymentRoute
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
+  '/products/$productId': typeof ProductsProductIdRoute
   '/join/': typeof JoinIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/bag'
+    | '/checkout'
     | '/explore'
     | '/styleguide'
+    | '/checkout/confirmation'
+    | '/checkout/delivery'
+    | '/checkout/payment'
     | '/creators/$creatorId'
     | '/join/apply'
+    | '/products/$productId'
     | '/join/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/bag'
+    | '/checkout'
     | '/explore'
     | '/styleguide'
+    | '/checkout/confirmation'
+    | '/checkout/delivery'
+    | '/checkout/payment'
     | '/creators/$creatorId'
     | '/join/apply'
+    | '/products/$productId'
     | '/join'
   id:
     | '__root__'
     | '/'
+    | '/bag'
+    | '/checkout'
     | '/explore'
     | '/styleguide'
+    | '/checkout/confirmation'
+    | '/checkout/delivery'
+    | '/checkout/payment'
     | '/creators/$creatorId'
     | '/join/apply'
+    | '/products/$productId'
     | '/join/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BagRoute: typeof BagRoute
+  CheckoutRoute: typeof CheckoutRouteWithChildren
   ExploreRoute: typeof ExploreRoute
   StyleguideRoute: typeof StyleguideRoute
   CreatorsCreatorIdRoute: typeof CreatorsCreatorIdRoute
   JoinApplyRoute: typeof JoinApplyRoute
+  ProductsProductIdRoute: typeof ProductsProductIdRoute
   JoinIndexRoute: typeof JoinIndexRoute
 }
 
@@ -124,6 +199,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bag': {
+      id: '/bag'
+      path: '/bag'
+      fullPath: '/bag'
+      preLoaderRoute: typeof BagRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -136,6 +225,13 @@ declare module '@tanstack/react-router' {
       path: '/join'
       fullPath: '/join/'
       preLoaderRoute: typeof JoinIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/$productId': {
+      id: '/products/$productId'
+      path: '/products/$productId'
+      fullPath: '/products/$productId'
+      preLoaderRoute: typeof ProductsProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/join/apply': {
@@ -152,17 +248,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreatorsCreatorIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/payment': {
+      id: '/checkout/payment'
+      path: '/payment'
+      fullPath: '/checkout/payment'
+      preLoaderRoute: typeof CheckoutPaymentRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
+    '/checkout/delivery': {
+      id: '/checkout/delivery'
+      path: '/delivery'
+      fullPath: '/checkout/delivery'
+      preLoaderRoute: typeof CheckoutDeliveryRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
+    '/checkout/confirmation': {
+      id: '/checkout/confirmation'
+      path: '/confirmation'
+      fullPath: '/checkout/confirmation'
+      preLoaderRoute: typeof CheckoutConfirmationRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
   }
 }
 
+interface CheckoutRouteChildren {
+  CheckoutConfirmationRoute: typeof CheckoutConfirmationRoute
+  CheckoutDeliveryRoute: typeof CheckoutDeliveryRoute
+  CheckoutPaymentRoute: typeof CheckoutPaymentRoute
+}
+
+const CheckoutRouteChildren: CheckoutRouteChildren = {
+  CheckoutConfirmationRoute: CheckoutConfirmationRoute,
+  CheckoutDeliveryRoute: CheckoutDeliveryRoute,
+  CheckoutPaymentRoute: CheckoutPaymentRoute,
+}
+
+const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
+  CheckoutRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BagRoute: BagRoute,
+  CheckoutRoute: CheckoutRouteWithChildren,
   ExploreRoute: ExploreRoute,
   StyleguideRoute: StyleguideRoute,
   CreatorsCreatorIdRoute: CreatorsCreatorIdRoute,
   JoinApplyRoute: JoinApplyRoute,
+  ProductsProductIdRoute: ProductsProductIdRoute,
   JoinIndexRoute: JoinIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

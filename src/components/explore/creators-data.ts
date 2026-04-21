@@ -5,6 +5,7 @@ import otieno from "@/assets/creator-otieno.jpg";
 import aluoch from "@/assets/creator-aluoch.jpg";
 import akinyi from "@/assets/creator-akinyi.jpg";
 import saitoti from "@/assets/creator-saitoti.jpg";
+import kibet from "@/assets/authentic-beekeeper.jpg";
 
 /**
  * Mock creator dataset.
@@ -17,7 +18,8 @@ export type Craft =
   | "Beadwork"
   | "Pottery"
   | "Leatherwork"
-  | "Woodcarving";
+  | "Woodcarving"
+  | "Beekeeping";
 
 export interface Creator {
   id: string;
@@ -37,6 +39,7 @@ export const CRAFTS: readonly Craft[] = [
   "Pottery",
   "Leatherwork",
   "Woodcarving",
+  "Beekeeping",
 ] as const;
 
 export const creators: Creator[] = [
@@ -105,5 +108,14 @@ export const creators: Creator[] = [
     hook: "Saitoti weaves under the same acacia his grandfather once sat beneath, turning sisal into vessels that hold a season's grain.",
     image: saitoti,
     emphasis: "tall",
+  },
+  {
+    id: "kibet",
+    firstName: "Kibet",
+    fullName: "Kibet Cheruiyot",
+    craft: "Beekeeping",
+    region: "Mwingi, Kitui",
+    hook: "Kibet keeps fourteen top-bar hives in the acacia scrub — slow honey, the way his grandfather harvested it.",
+    image: kibet,
   },
 ];

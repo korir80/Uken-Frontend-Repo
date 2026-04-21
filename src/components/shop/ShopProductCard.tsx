@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { Product } from "@/components/product/product-data";
 import { formatGBP } from "@/lib/cart";
+import { LazyImage } from "@/components/ui/lazy-image";
 
 interface ShopProductCardProps {
   product: Product;
@@ -22,13 +23,11 @@ export function ShopProductCard({ product, index }: ShopProductCardProps) {
     >
       <article className="flex h-full flex-col">
         <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-cream">
-          <img
+          <LazyImage
             src={product.heroImage}
             alt={`${product.name} by ${product.creator.fullName}`}
-            width={1024}
-            height={1280}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
+            wrapperClassName="absolute inset-0"
+            className="transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
           />
 
           {/* Editorial numeral */}

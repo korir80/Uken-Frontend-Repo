@@ -1,0 +1,343 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { JoinShell } from "@/components/join/JoinShell";
+import { JoinProgress } from "@/components/join/JoinProgress";
+import {
+  JoinInput,
+  JoinTextarea,
+  JoinPillSelect,
+} from "@/components/join/JoinField";
+import { PhotoUploader } from "@/components/join/PhotoUploader";
+import { Button, SectionLabel } from "@/components/ukena";
+import { CRAFTS } from "@/components/explore/creators-data";
+
+export const Route = createFileRoute("/join/apply")({
+  head: () => ({
+    meta: [
+      { title: "Tell us about you — Ukena" },
+      {
+        name: "description",
+        content:
+          "Begin your Ukena application. Four short chapters, no accounts required.",
+      },
+    ],
+  }),
+  component: ApplyPage,
+});
+
+/* -------------------- Form state -------------------- */
+
+interface ApplicationData {
+  fullName: string;
+  region: string;
+  craft: string;
+  intro: string;
+  yearsPracticing: string;
+  whoTaught: string;
+  meaning: string;
+  photos: string[];
+}
+
+const STEP_LABELS = [
+  "Tell us about you",
+  "Tell us about your craft",
+  "Show us your work",
+  "Thank you",
+] as const;
+
+const initial: ApplicationData = {
+  fullName: "",
+  region: "",
+  craft: "",
+  intro: "",
+  yearsPracticing: "",
+  whoTaught: "",
+  meaning: "",
+  photos: [],
+};
+
+function ApplyPage() {
+  const [step, setStep] = useState(1);
+  const [data, setData] = useState<ApplicationData>(initial);
+
+  const update = <K extends keyof ApplicationData>(
+    key: K,
+    val: ApplicationData[K],
+  ) => setData((d) => ({ ...d, [key]: val }));
+
+  const goNext = () => {
+    if (step < 4) setStep((s) => s + 1);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const goBack = () => {
+    if (step > 1) setStep((s) => s - 1);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const canAdvanceStep1 =
+    data.fullName.trim() && data.region.trim() && data.craft && data.intro.trim().length > 10;
+  const canAdvanceStep2 =
+    data.yearsPracticing.trim() && data.whoTaught.trim() && data.meaning.trim();
+  const canAdvanceStep3 = data.photos.length >= 1;
+
+  return (
+    <JoinShell>
+      <section className="bg-warm-white">
+        <div className="mx-auto max-w-3xl px-6 py-16 md:px-8 md:py-24">
+          {step < 4 && (
+            <>
+              <JoinProgress step={step} total={4} labels={STEP_LABELS} />
+              <div className="mt-14 md:mt-20">
+                {step === 1 && (
+                  <Step1
+                    data={data}
+                    update={update}
+                  />
+                )}
+                {step === 2 && <Step2 data={data} update={update} />}
+                {step === 3 && <Step3 data={data} update={update} />}
+              </div>
+
+              <div className="mt-16 flex items-center justify-between border-t border-border/70 pt-8">
+                {step > 1 ? (
+                  <button
+                    type="button"
+                    onClick={goBack}
+                    className="inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.22em] text-ink-muted transition-colors hover:text-charcoal"
+                  >
+                    <ArrowLeft className="h-3.5 w-3.5" />
+                    Back
+                  </button>
+                ) : (
+                  <Link
+                    to="/join"
+                    className="inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.22em] text-ink-muted transition-colors hover:text-charcoal"
+                  >
+                    <ArrowLeft className="h-3.5 w-3.5" />
+                    Leave application
+                  </Link>
+                )}
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="lg"
+                  onClick={goNext}
+                  disabled={
+                    (step === 1 && !canAdvanceStep1) ||
+                    (step === 2 && !canAdvanceStep2) ||
+                    (step === 3 && !canAdvanceStep3)
+                  }
+                  className="bg-terracotta hover:bg-[oklch(0.52_0.13_38)]"
+                >
+                  {step === 3 ? "Send application" : "Continue"}
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </>
+          )}
+
+          {step === 4 && <Step4 name={data.fullName} />}
+        </div>
+      </section>
+    </JoinShell>
+  );
+}
+
+/* -------------------- Step 1 -------------------- */
+
+function Step1({
+  data,
+  update,
+}: {
+  data: ApplicationData;
+  update: <K extends keyof ApplicationData>(k: K, v: ApplicationData[K]) => void;
+}) {
+  return (
+    <div className="space-y-14">
+      <header>
+        <SectionLabel>Chapter one</SectionLabel>
+        <h1 className="mt-6 font-display text-[40px] leading-[1.05] text-charcoal md:text-[56px]">
+          Tell us about <em className="italic text-terracotta">you</em>.
+        </h1>
+        <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-ink-muted md:text-[16px]">
+          Start with the simple things. We don't need a CV — just enough to
+          know who's writing to us.
+        </p>
+      </header>
+
+      <div className="space-y-12">
+        <JoinInput
+          id="fullName"
+          label="What's your full name?"
+          placeholder="e.g. Wanjiru Kamau"
+          value={data.fullName}
+          onChange={(e) => update("fullName", e.target.value)}
+          autoComplete="name"
+        />
+        <JoinInput
+          id="region"
+          label="Where in Kenya are you based?"
+          helper="Town, county, or however you'd describe home."
+          placeholder="e.g. Maragua, Murang'a"
+          value={data.region}
+          onChange={(e) => update("region", e.target.value)}
+        />
+        <JoinPillSelect
+          label="What is your craft?"
+          helper="Pick the one that feels closest. We'll talk about the rest later."
+          options={CRAFTS}
+          value={data.craft}
+          onChange={(v) => update("craft", v)}
+        />
+        <JoinTextarea
+          id="intro"
+          label="Tell us your story in a few sentences."
+          helper="Write the way you'd speak to a friend. There's no right answer."
+          placeholder="My grandmother taught me to weave when I was seven…"
+          rows={5}
+          value={data.intro}
+          onChange={(e) => update("intro", e.target.value)}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* -------------------- Step 2 -------------------- */
+
+function Step2({
+  data,
+  update,
+}: {
+  data: ApplicationData;
+  update: <K extends keyof ApplicationData>(k: K, v: ApplicationData[K]) => void;
+}) {
+  return (
+    <div className="space-y-14">
+      <header>
+        <SectionLabel>Chapter two</SectionLabel>
+        <h1 className="mt-6 font-display text-[40px] leading-[1.05] text-charcoal md:text-[56px]">
+          Tell us about your <em className="italic text-terracotta">craft</em>.
+        </h1>
+        <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-ink-muted md:text-[16px]">
+          Three open questions. Take as long as you need with each — these
+          become the words on your maker page.
+        </p>
+      </header>
+
+      <div className="space-y-12">
+        <JoinTextarea
+          id="years"
+          label="How long have you been doing this?"
+          helper="Years, decades, since childhood — however you measure it."
+          placeholder="I've been weaving for thirty-two years…"
+          rows={3}
+          value={data.yearsPracticing}
+          onChange={(e) => update("yearsPracticing", e.target.value)}
+        />
+        <JoinTextarea
+          id="taught"
+          label="Who taught you, or how did you learn?"
+          helper="A name, a relationship, a memory. Whatever feels true."
+          placeholder="My grandmother sat me down beside her every afternoon…"
+          rows={4}
+          value={data.whoTaught}
+          onChange={(e) => update("whoTaught", e.target.value)}
+        />
+        <JoinTextarea
+          id="meaning"
+          label="What does this craft mean to your community?"
+          helper="The harder question. Take your time."
+          placeholder="In our village, a basket is never just a basket…"
+          rows={5}
+          value={data.meaning}
+          onChange={(e) => update("meaning", e.target.value)}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* -------------------- Step 3 -------------------- */
+
+function Step3({
+  data,
+  update,
+}: {
+  data: ApplicationData;
+  update: <K extends keyof ApplicationData>(k: K, v: ApplicationData[K]) => void;
+}) {
+  return (
+    <div className="space-y-14">
+      <header>
+        <SectionLabel>Chapter three</SectionLabel>
+        <h1 className="mt-6 font-display text-[40px] leading-[1.05] text-charcoal md:text-[56px]">
+          Show us your <em className="italic text-terracotta">work</em>.
+        </h1>
+        <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-ink-muted md:text-[16px]">
+          A photo of you working, and a few of finished pieces. Phone photos
+          are perfectly fine — we'll come and shoot proper ones together once
+          you're in.
+        </p>
+      </header>
+
+      <PhotoUploader
+        label="Up to five photographs."
+        helper="At least one of you at work. The rest, your favourite finished pieces."
+        value={data.photos}
+        onChange={(next) => update("photos", next)}
+      />
+    </div>
+  );
+}
+
+/* -------------------- Step 4: confirmation -------------------- */
+
+function Step4({ name }: { name: string }) {
+  const firstName = name.trim().split(" ")[0] || "friend";
+  return (
+    <div className="text-center">
+      <span className="inline-grid h-16 w-16 place-items-center rounded-full bg-terracotta-soft/40 text-terracotta">
+        <Check className="h-7 w-7" />
+      </span>
+      <SectionLabel className="mt-10">Application received</SectionLabel>
+      <h1 className="mx-auto mt-6 max-w-2xl font-display text-[40px] leading-[1.05] text-charcoal md:text-[60px]">
+        Thank you,{" "}
+        <em className="italic text-terracotta">{firstName}</em>.
+      </h1>
+      <p className="mx-auto mt-8 max-w-xl text-[16px] leading-relaxed text-ink-muted md:text-[17px]">
+        We'll read what you've written carefully and be in touch within{" "}
+        <span className="text-charcoal">48 hours</span> — by phone or WhatsApp,
+        whichever you prefer. If we sense a fit, we'll arrange to come and meet
+        you in your workshop.
+      </p>
+
+      <div className="mx-auto mt-14 max-w-md border-t border-border/70 pt-10">
+        <p className="font-display text-[22px] italic leading-snug text-charcoal/85">
+          "We don't believe in form-letter rejections. Whatever we decide,
+          you'll hear from a real person."
+        </p>
+        <p className="mt-5 text-[11px] uppercase tracking-[0.22em] text-ink-muted">
+          Lillian — Maker relations, Nairobi
+        </p>
+      </div>
+
+      <div className="mt-14 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-8">
+        <Link
+          to="/explore"
+          className="inline-flex items-center gap-2 text-[13px] font-medium uppercase tracking-[0.2em] text-clay transition-colors hover:text-clay-deep"
+        >
+          Meet the makers already in
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+        <Link
+          to="/"
+          className="text-[13px] font-medium uppercase tracking-[0.2em] text-ink-muted transition-colors hover:text-charcoal"
+        >
+          Back to Ukena
+        </Link>
+      </div>
+    </div>
+  );
+}

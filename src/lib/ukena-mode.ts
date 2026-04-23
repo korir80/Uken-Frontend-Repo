@@ -123,3 +123,75 @@ export function toggleSavedCreator(id: string): string[] {
 export function isCreatorSaved(id: string): boolean {
   return readSavedCreators().includes(id);
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Saved products (wishlist) — feeds /saved and the heart icon on every
+ * product card / PDP. Stored as an ordered list (most recent first).
+ *
+ * A small in-memory event bus keeps every mounted heart icon and the
+ * /saved page in sync within the same tab — and a "storage" listener
+ * picks up changes from other tabs for free.
+ * ────────────────────────────────────────────────────────────────────── */
+
+const SAVED_PRODUCTS_KEY = "ukena.saved_products";
+const SAVED_PRODUCTS_EVENT = "ukena:saved_products";
+
+export function readSavedProducts(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(SAVED_PRODUCTS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed)
+      ? parsed.filter((x): x is string => typeof x === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+export function writeSavedProducts(ids: string[]) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(SAVED_PRODUCTS_KEY, JSON.stringify(ids));
+    window.dispatchEvent(
+      new CustomEvent(SAVED_PRODUCTS_EVENT, { detail: ids }),
+    );
+  } catch {
+    /* ignore */
+  }
+}
+
+export function toggleSavedProduct(id: string): string[] {
+  const current = readSavedProducts();
+  const next = current.includes(id)
+    ? current.filter((x) => x !== id)
+    : [id, ...current];
+  writeSavedProducts(next);
+  return next;
+}
+
+export function isProductSaved(id: string): boolean {
+  return readSavedProducts().includes(id);
+}
+
+/**
+ * Subscribe to saved-product changes — fires on toggles in this tab and
+ * on `storage` events from other tabs. Returns an unsubscribe function.
+ */
+export function subscribeSavedProducts(cb: (ids: string[]) => void): () => void {
+  if (typeof window === "undefined") return () => {};
+  const onCustom = (e: Event) => {
+    const detail = (e as CustomEvent<string[]>).detail;
+    cb(Array.isArray(detail) ? detail : readSavedProducts());
+  };
+  const onStorage = (e: StorageEvent) => {
+    if (e.key === SAVED_PRODUCTS_KEY) cb(readSavedProducts());
+  };
+  window.addEventListener(SAVED_PRODUCTS_EVENT, onCustom);
+  window.addEventListener("storage", onStorage);
+  return () => {
+    window.removeEventListener(SAVED_PRODUCTS_EVENT, onCustom);
+    window.removeEventListener("storage", onStorage);
+  };
+}

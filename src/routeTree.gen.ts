@@ -26,6 +26,7 @@ import { Route as CreatorsCreatorIdRouteImport } from './routes/creators.$creato
 import { Route as CheckoutPaymentRouteImport } from './routes/checkout.payment'
 import { Route as CheckoutDeliveryRouteImport } from './routes/checkout.delivery'
 import { Route as CheckoutConfirmationRouteImport } from './routes/checkout.confirmation'
+import { Route as AccountSavedRouteImport } from './routes/account.saved'
 
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
@@ -112,10 +113,15 @@ const CheckoutConfirmationRoute = CheckoutConfirmationRouteImport.update({
   path: '/confirmation',
   getParentRoute: () => CheckoutRoute,
 } as any)
+const AccountSavedRoute = AccountSavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => AccountRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
+  '/account': typeof AccountRouteWithChildren
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/account/saved': typeof AccountSavedRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
@@ -134,7 +141,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
+  '/account': typeof AccountRouteWithChildren
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/account/saved': typeof AccountSavedRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
@@ -154,7 +162,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
+  '/account': typeof AccountRouteWithChildren
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/account/saved': typeof AccountSavedRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/story'
     | '/styleguide'
+    | '/account/saved'
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/story'
     | '/styleguide'
+    | '/account/saved'
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
@@ -222,6 +233,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/story'
     | '/styleguide'
+    | '/account/saved'
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
@@ -233,7 +245,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AccountRoute: typeof AccountRoute
+  AccountRoute: typeof AccountRouteWithChildren
   BagRoute: typeof BagRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
   ExploreRoute: typeof ExploreRoute
@@ -369,8 +381,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutConfirmationRouteImport
       parentRoute: typeof CheckoutRoute
     }
+    '/account/saved': {
+      id: '/account/saved'
+      path: '/saved'
+      fullPath: '/account/saved'
+      preLoaderRoute: typeof AccountSavedRouteImport
+      parentRoute: typeof AccountRoute
+    }
   }
 }
+
+interface AccountRouteChildren {
+  AccountSavedRoute: typeof AccountSavedRoute
+}
+
+const AccountRouteChildren: AccountRouteChildren = {
+  AccountSavedRoute: AccountSavedRoute,
+}
+
+const AccountRouteWithChildren =
+  AccountRoute._addFileChildren(AccountRouteChildren)
 
 interface CheckoutRouteChildren {
   CheckoutConfirmationRoute: typeof CheckoutConfirmationRoute
@@ -390,7 +420,7 @@ const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AccountRoute: AccountRoute,
+  AccountRoute: AccountRouteWithChildren,
   BagRoute: BagRoute,
   CheckoutRoute: CheckoutRouteWithChildren,
   ExploreRoute: ExploreRoute,

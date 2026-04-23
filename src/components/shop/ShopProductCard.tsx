@@ -3,6 +3,7 @@ import { Eye } from "lucide-react";
 import type { Product } from "@/components/product/product-data";
 import { formatGBP } from "@/lib/cart";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { SaveHeart } from "@/components/product/SaveHeart";
 import { cn } from "@/lib/utils";
 
 interface ShopProductCardProps {
@@ -80,6 +81,18 @@ export function ShopProductCard({
         <span className="pointer-events-none absolute right-3 top-3 hidden rounded-full bg-warm-white/95 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-clay backdrop-blur md:right-4 md:top-4 md:inline-block">
           {product.creator.craft}
         </span>
+
+        {/* Wishlist heart — top-left on mobile, alongside numeral on desktop */}
+        <SaveHeart
+          productId={product.id}
+          productName={product.name}
+          className="absolute right-2 top-2 md:hidden"
+        />
+        <SaveHeart
+          productId={product.id}
+          productName={product.name}
+          className="absolute bottom-3 right-3 hidden md:inline-flex"
+        />
 
         {/* Quick view — desktop hover only, with focus fallback for keyboard users */}
         {onQuickView && (

@@ -47,8 +47,8 @@ export const JoinInput = forwardRef<HTMLInputElement, JoinInputProps>(
           ref={ref}
           id={id}
           className={cn(
-            "w-full border-0 border-b border-border bg-transparent px-0 py-3",
-            "font-sans text-[18px] text-charcoal placeholder:text-ink-muted/55",
+            "block w-full min-h-[48px] border-0 border-b border-border bg-transparent px-0 py-3",
+            "font-sans text-[16px] text-charcoal placeholder:text-ink-muted/55 md:text-[18px]",
             "transition-colors duration-300 ease-out",
             "focus:border-terracotta focus:outline-none focus:ring-0",
             className,

@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
 import { BagIndicator } from "@/components/product/BagIndicator";
 
 const navLinks = [
@@ -14,9 +13,12 @@ const navLinks = [
 /**
  * A solid-background variant of the marketing NavBar — used on interior
  * pages that don't open with a full-bleed dark hero (Explore, Shop, Join).
+ *
+ * Mobile navigation is handled by the floating MobileNavFab (mounted in
+ * __root). The header keeps the wordmark + bag visible on mobile and
+ * shows the full link set ≥md.
  */
 export function ExploreNav() {
-  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export function ExploreNav() {
         scrolled ? "border-b border-border/70" : "border-b border-transparent",
       )}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-10 md:py-5">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 md:px-10 md:py-5">
         <Link
           to="/"
           className="font-display text-2xl tracking-tight text-charcoal md:text-3xl"
@@ -47,7 +49,7 @@ export function ExploreNav() {
               key={l.label}
               to={l.to}
               activeProps={{ className: "text-clay" }}
-              className="text-[13px] font-medium tracking-wide text-charcoal/80 transition-colors hover:text-clay"
+              className="text-[14px] font-medium tracking-wide text-charcoal/80 transition-colors hover:text-clay"
             >
               {l.label}
             </Link>
@@ -56,32 +58,8 @@ export function ExploreNav() {
 
         <div className="flex items-center gap-1 md:gap-2">
           <BagIndicator tone="light" />
-
-          <button
-            type="button"
-            aria-label="Toggle menu"
-            onClick={() => setOpen((o) => !o)}
-            className="grid h-10 w-10 place-items-center rounded-md text-charcoal md:hidden"
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
         </div>
       </div>
-
-      {open && (
-        <div className="space-y-5 border-t border-border/60 bg-warm-white px-6 py-6 md:hidden">
-          {navLinks.map((l) => (
-            <Link
-              key={l.label}
-              to={l.to}
-              onClick={() => setOpen(false)}
-              className="block text-base text-charcoal hover:text-clay"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </div>
-      )}
     </header>
   );
 }

@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
 import { BagIndicator } from "@/components/product/BagIndicator";
 
 const navLinks = [
@@ -11,9 +10,13 @@ const navLinks = [
   { label: "Join as Artisan", to: "/join" as const },
 ];
 
+/**
+ * Marketing NavBar for the homepage hero. Mobile nav is handled by the
+ * global MobileNavFab — this header just keeps the wordmark + bag visible
+ * on small screens and shows the full link set ≥md.
+ */
 export function NavBar() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -31,7 +34,7 @@ export function NavBar() {
           : "bg-transparent border-b border-transparent",
       )}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-10 md:py-5">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 md:px-10 md:py-5">
         <Link
           to="/"
           className={cn(
@@ -48,7 +51,7 @@ export function NavBar() {
               key={l.label}
               to={l.to}
               className={cn(
-                "text-[13px] font-medium tracking-wide transition-colors",
+                "text-[14px] font-medium tracking-wide transition-colors",
                 scrolled
                   ? "text-charcoal/80 hover:text-clay"
                   : "text-warm-white/85 hover:text-warm-white",
@@ -61,35 +64,8 @@ export function NavBar() {
 
         <div className="flex items-center gap-1 md:gap-2">
           <BagIndicator tone={scrolled ? "light" : "dark"} />
-
-          <button
-            type="button"
-            aria-label="Toggle menu"
-            onClick={() => setOpen((o) => !o)}
-            className={cn(
-              "md:hidden grid h-10 w-10 place-items-center rounded-md transition-colors",
-              scrolled ? "text-charcoal" : "text-warm-white",
-            )}
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
         </div>
       </div>
-
-      {open && (
-        <div className="md:hidden border-t border-border/60 bg-warm-white px-6 py-6 space-y-5">
-          {navLinks.map((l) => (
-            <Link
-              key={l.label}
-              to={l.to}
-              onClick={() => setOpen(false)}
-              className="block text-base text-charcoal hover:text-clay"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </div>
-      )}
     </header>
   );
 }

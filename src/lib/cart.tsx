@@ -8,9 +8,19 @@ import {
   type ReactNode,
 } from "react";
 
+// ────────────────────────────────────────────────────────────────────────────
+// SPRING BOOT INTEGRATION POINTS:
+//   - POST /api/cart/sync  → call on every cart change (future)
+//   - GET  /api/cart       → hydrate on login (future)
+//   - POST /api/orders     → call on checkout/payment submit (future)
+// Until these are wired, cart lives in memory only (with a localStorage
+// mirror so a refresh does not drop the bag — the mirror will be removed
+// once /api/cart/sync exists).
+// ────────────────────────────────────────────────────────────────────────────
+
 /**
- * Cart state — kept lean and serializable so the Phase 6 Spring Boot
- * integration can lift it onto a real /api/bag endpoint with no schema
+ * Cart state — kept lean and serializable so the Spring Boot
+ * integration can lift it onto a real /api/cart endpoint with no schema
  * gymnastics. Each line carries enough creator metadata to render the
  * "made by [name]" attribution everywhere without re-fetching.
  */
@@ -135,13 +145,34 @@ function reducer(state: CartState, action: CartAction): CartState {
   }
 }
 
+/**
+ * Aggregated, derived view of the cart. Components must use this rather
+ * than recomputing totals locally — that keeps the Spring Boot swap
+ * (server-authoritative totals) a single-file change.
+ */
+export interface CartSummary {
+  itemCount: number;
+  subtotalPence: number;
+  shippingPence: number;
+  totalPence: number;
+  uniqueCreators: CartItemCreator[];
+  uniqueCreatorIds: string[];
+  uniqueCreatorNames: string[];
+}
+
 interface CartContextValue extends CartState {
   addItem: (item: Omit<CartItem, "quantity">) => void;
   removeItem: (productId: string) => void;
   setQuantity: (productId: string, quantity: number) => void;
+  /** Empty the bag without affecting delivery details or last order. */
+  clearCart: () => void;
+  /** @deprecated use clearCart() — kept for back-compat with older call sites. */
   clearBag: () => void;
   setDelivery: (delivery: DeliveryDetails) => void;
   placeOrder: () => PlacedOrder | null;
+  /** Aggregated read-only view. Prefer this over per-component calculations. */
+  cartSummary: CartSummary;
+  // Convenience pass-throughs (also live on cartSummary)
   itemCount: number;
   subtotalPence: number;
   shippingPence: number;
@@ -194,7 +225,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "setQty", productId, quantity }),
     [],
   );
-  const clearBag = useCallback(() => dispatch({ type: "clear" }), []);
+  const clearCart = useCallback(() => dispatch({ type: "clear" }), []);
+  // Back-compat alias — same action.
+  const clearBag = clearCart;
   const setDelivery = useCallback(
     (delivery: DeliveryDetails) => dispatch({ type: "setDelivery", delivery }),
     [],
@@ -243,14 +276,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return order;
   }, [state.items, state.delivery, subtotalPence, shippingPence, totalPence]);
 
+  const cartSummary: CartSummary = useMemo(
+    () => ({
+      itemCount,
+      subtotalPence,
+      shippingPence,
+      totalPence,
+      uniqueCreators,
+      uniqueCreatorIds: uniqueCreators.map((c) => c.id),
+      uniqueCreatorNames: uniqueCreators.map((c) => c.fullName),
+    }),
+    [itemCount, subtotalPence, shippingPence, totalPence, uniqueCreators],
+  );
+
   const value: CartContextValue = {
     ...state,
     addItem,
     removeItem,
     setQuantity,
+    clearCart,
     clearBag,
     setDelivery,
     placeOrder,
+    cartSummary,
     itemCount,
     subtotalPence,
     shippingPence,

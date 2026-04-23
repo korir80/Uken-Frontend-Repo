@@ -382,7 +382,7 @@ function ProductPage() {
                     <li>
                       <Link
                         to="/shop"
-                        search={{ craft: product.creator.craft }}
+                        search={{ craft: product.creator.craft as never }}
                         className="group inline-flex items-center gap-2 text-[12px] text-charcoal/50 transition-colors hover:text-charcoal"
                       >
                         See similar pieces

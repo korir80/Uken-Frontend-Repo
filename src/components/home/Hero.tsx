@@ -188,10 +188,10 @@ function PathCard({
         </span>
       </div>
 
-      <h2 className="font-display text-2xl leading-tight text-warm-white md:text-3xl">
+      <h2 className="font-display text-[22px] leading-tight text-warm-white md:text-3xl">
         {title}
       </h2>
-      <p className="text-[13.5px] leading-relaxed text-warm-white/70 md:text-sm">
+      <p className="text-[15px] leading-relaxed text-warm-white/75 md:text-sm">
         {sub}
       </p>
 

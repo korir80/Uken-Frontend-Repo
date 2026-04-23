@@ -131,7 +131,10 @@ function ShopPage() {
 
   function patchSearch(patch: Partial<typeof search>) {
     setVisible(PAGE_SIZE);
-    navigate({ search: (prev) => ({ ...prev, ...patch }), replace: false });
+    navigate({
+      search: (prev: typeof search) => ({ ...prev, ...patch }),
+      replace: false,
+    });
   }
 
   function resetFilters() {

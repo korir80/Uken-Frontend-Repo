@@ -324,7 +324,7 @@ function ShopPage() {
         </BottomSheet>
 
         {/* Grid — masonry on desktop via CSS columns, 2-col on mobile */}
-        <section className="bg-warm-white py-10 md:py-20">
+        <section className="bg-warm-white pb-10 pt-6 md:pb-20 md:pt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10">
             {shown.length === 0 ? (
               <div className="py-20 text-center">

@@ -13,9 +13,11 @@ import { Route as StyleguideRouteImport } from './routes/styleguide'
 import { Route as StoryRouteImport } from './routes/story'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SavedRouteImport } from './routes/saved'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BagRouteImport } from './routes/bag'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as JoinIndexRouteImport } from './routes/join.index'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
@@ -45,6 +47,11 @@ const ShopRoute = ShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SavedRoute = SavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreRoute = ExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
@@ -58,6 +65,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
 const BagRoute = BagRouteImport.update({
   id: '/bag',
   path: '/bag',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -103,9 +115,11 @@ const CheckoutConfirmationRoute = CheckoutConfirmationRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/saved': typeof SavedRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
@@ -120,9 +134,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/saved': typeof SavedRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
@@ -138,9 +154,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/saved': typeof SavedRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
@@ -157,9 +175,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/bag'
     | '/checkout'
     | '/explore'
+    | '/saved'
     | '/shop'
     | '/signin'
     | '/story'
@@ -174,9 +194,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
     | '/bag'
     | '/checkout'
     | '/explore'
+    | '/saved'
     | '/shop'
     | '/signin'
     | '/story'
@@ -191,9 +213,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/account'
     | '/bag'
     | '/checkout'
     | '/explore'
+    | '/saved'
     | '/shop'
     | '/signin'
     | '/story'
@@ -209,9 +233,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
   BagRoute: typeof BagRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
   ExploreRoute: typeof ExploreRoute
+  SavedRoute: typeof SavedRoute
   ShopRoute: typeof ShopRoute
   SigninRoute: typeof SigninRoute
   StoryRoute: typeof StoryRoute
@@ -252,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/saved': {
+      id: '/saved'
+      path: '/saved'
+      fullPath: '/saved'
+      preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore': {
       id: '/explore'
       path: '/explore'
@@ -271,6 +304,13 @@ declare module '@tanstack/react-router' {
       path: '/bag'
       fullPath: '/bag'
       preLoaderRoute: typeof BagRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -350,9 +390,11 @@ const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
   BagRoute: BagRoute,
   CheckoutRoute: CheckoutRouteWithChildren,
   ExploreRoute: ExploreRoute,
+  SavedRoute: SavedRoute,
   ShopRoute: ShopRoute,
   SigninRoute: SigninRoute,
   StoryRoute: StoryRoute,

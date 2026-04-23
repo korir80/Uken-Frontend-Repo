@@ -101,3 +101,25 @@ export function readSavedCreators(): string[] {
     return [];
   }
 }
+
+export function writeSavedCreators(ids: string[]) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(SAVED_KEY, JSON.stringify(ids));
+  } catch {
+    /* ignore */
+  }
+}
+
+export function toggleSavedCreator(id: string): string[] {
+  const current = readSavedCreators();
+  const next = current.includes(id)
+    ? current.filter((x) => x !== id)
+    : [id, ...current];
+  writeSavedCreators(next);
+  return next;
+}
+
+export function isCreatorSaved(id: string): boolean {
+  return readSavedCreators().includes(id);
+}

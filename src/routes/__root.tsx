@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CartProvider } from "@/lib/cart";
 import { AuthProvider } from "@/lib/auth";
 import { RouteProgress } from "@/components/ui/route-progress";
+import { MobileNavFab } from "@/components/nav/MobileNavFab";
 
 import appCss from "../styles.css?url";
 
@@ -87,6 +88,7 @@ function RootComponent() {
         <CartProvider>
           <RouteProgress />
           <Outlet />
+          <MobileNavFab />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

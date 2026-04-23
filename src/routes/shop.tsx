@@ -155,40 +155,40 @@ function ShopPage() {
       <ExploreNav />
 
       <main className="pb-24 md:pb-0">
-        {/* Editorial header */}
-        <section className="border-b border-border/60 bg-warm-white">
-          <div className="mx-auto max-w-7xl px-5 pb-10 pt-10 md:px-10 md:pb-20 md:pt-24">
-            <SectionLabel>The full catalogue</SectionLabel>
-            <h1 className="mt-5 font-display text-[36px] leading-[1.05] tracking-tight text-charcoal sm:text-5xl md:mt-6 md:text-[80px] lg:text-[96px]">
-              Every piece,{" "}
-              <em className="italic text-terracotta">in one place</em>.
-            </h1>
-            <div className="mt-7 grid gap-6 md:mt-10 md:grid-cols-12 md:gap-10">
-              <p className="md:col-span-7 md:col-start-1 max-w-2xl text-base leading-relaxed text-ink-muted md:text-[17px]">
-                For when you already know what you're looking for. Every piece
-                here is still made by hand in Kenya — the maker's name travels
-                with it from the shelf to your door.{" "}
-                <Link
-                  to="/explore"
-                  className="font-medium text-clay underline-offset-4 transition-colors hover:text-clay-deep hover:underline"
-                >
-                  Or meet the makers first →
-                </Link>
-              </p>
-              <div className="md:col-span-4 md:col-start-9 flex flex-row items-end justify-between gap-6 md:flex-col md:items-end md:gap-2 md:text-right">
+        {/* Compact editorial header — tight, leaves products visible above the fold */}
+        <section className="bg-warm-white">
+          <div className="mx-auto max-w-7xl px-5 pb-5 pt-6 md:px-10 md:pb-7 md:pt-10">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
+              <div className="max-w-2xl">
+                <SectionLabel>The full catalogue</SectionLabel>
+                <h1 className="mt-3 font-display text-[30px] leading-[1.05] tracking-tight text-charcoal sm:text-[34px] md:mt-3 md:text-[42px]">
+                  Every piece,{" "}
+                  <em className="italic text-terracotta">in one place</em>.
+                </h1>
+                <p className="mt-2.5 text-[13px] leading-relaxed text-ink-muted md:text-sm">
+                  Handmade in Kenya, attributed to the maker.{" "}
+                  <Link
+                    to="/explore"
+                    className="font-medium text-clay underline-offset-4 transition-colors hover:text-clay-deep hover:underline"
+                  >
+                    Meet the makers first →
+                  </Link>
+                </p>
+              </div>
+              <div className="flex shrink-0 items-end gap-8 md:gap-10">
                 <div>
-                  <span className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-ink-muted">
                     Pieces
                   </span>
-                  <p className="font-display text-4xl tabular-nums text-charcoal md:text-6xl">
+                  <p className="font-display text-3xl tabular-nums leading-none text-charcoal md:text-4xl">
                     {String(all.length).padStart(2, "0")}
                   </p>
                 </div>
-                <div className="md:mt-4">
-                  <span className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
+                <div>
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-ink-muted">
                     Makers
                   </span>
-                  <p className="font-display text-4xl tabular-nums text-charcoal md:text-6xl">
+                  <p className="font-display text-3xl tabular-nums leading-none text-charcoal md:text-4xl">
                     {String(uniqueMakers).padStart(2, "0")}
                   </p>
                 </div>
@@ -197,55 +197,88 @@ function ShopPage() {
           </div>
         </section>
 
-        {/* Filter strip */}
-        <section className="sticky top-[60px] z-40 border-b border-border/60 bg-warm-white/95 backdrop-blur-md md:top-[76px]">
-          <div className="mx-auto flex max-w-7xl items-center gap-4 px-5 py-3 md:px-10 md:py-4">
+        {/* Slim filter bar — single row, products visible immediately below */}
+        <section className="sticky top-[60px] z-40 border-y border-border/60 bg-warm-white/95 backdrop-blur-md md:top-[76px]">
+          <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-2.5 md:px-10 md:py-3">
             {/* Mobile: single trigger that opens the sheet */}
             <button
               type="button"
               onClick={() => setSheetOpen(true)}
-              className="inline-flex min-h-[44px] flex-1 items-center justify-between gap-2 rounded-full border border-charcoal/25 bg-warm-white px-5 py-2.5 text-[14px] font-medium text-charcoal md:hidden"
+              className="inline-flex min-h-[40px] flex-1 items-center justify-between gap-2 rounded-full border border-charcoal/25 bg-warm-white px-4 py-2 text-[13px] font-medium text-charcoal md:hidden"
             >
               <span className="flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4" />
+                <SlidersHorizontal className="h-3.5 w-3.5" />
                 Filter & Sort
               </span>
               {activeCount > 0 && (
-                <span className="rounded-full bg-charcoal px-2 py-0.5 text-[11px] font-medium tabular-nums text-warm-white">
+                <span className="rounded-full bg-charcoal px-2 py-0.5 text-[10px] font-medium tabular-nums text-warm-white">
                   {activeCount}
                 </span>
               )}
             </button>
 
-            {/* Desktop: full inline filter panel */}
-            <div className="hidden flex-1 md:block">
-              <ShopFilterPanel
-                craft={search.craft}
-                onCraftChange={(craft) => patchSearch({ craft })}
-                craftCounts={craftCounts}
-                region={search.region}
-                onRegionChange={(region) => patchSearch({ region })}
-                regions={regions}
-                sort={search.sort}
-                onSortChange={(sort) => patchSearch({ sort })}
-                minPrice={search.minPrice}
-                maxPrice={search.maxPrice}
-                onPriceChange={(minPrice, maxPrice) =>
-                  patchSearch({ minPrice, maxPrice })
-                }
-              />
-            </div>
+            {/* Desktop: compact toolbar — craft chips inline + a "More filters" trigger */}
+            <div className="hidden flex-1 items-center gap-2 md:flex">
+              {/* Craft chips inline (the most-used facet) */}
+              <div className="flex flex-1 flex-wrap items-center gap-1.5">
+                {(["All", ...CRAFTS] as CraftFilterValue[]).map((opt) => {
+                  const active = opt === search.craft;
+                  const count = craftCounts[opt];
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => patchSearch({ craft: opt })}
+                      aria-pressed={active}
+                      className={
+                        "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-colors " +
+                        (active
+                          ? "border-charcoal bg-charcoal text-warm-white"
+                          : "border-border/70 bg-warm-white text-charcoal/70 hover:border-clay/60 hover:text-clay")
+                      }
+                    >
+                      <span>{opt}</span>
+                      {typeof count === "number" && (
+                        <span
+                          className={
+                            "text-[10px] tabular-nums " +
+                            (active ? "text-warm-white/60" : "text-ink-muted/70")
+                          }
+                        >
+                          {count}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
 
-            {activeCount > 0 && (
+              {/* More filters trigger (region/price/sort live in the sheet on desktop too) */}
               <button
                 type="button"
-                onClick={resetFilters}
-                className="hidden min-h-[44px] shrink-0 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium uppercase tracking-[0.18em] text-ink-muted hover:text-clay md:inline-flex"
+                onClick={() => setSheetOpen(true)}
+                className="inline-flex min-h-[36px] shrink-0 items-center gap-2 rounded-full border border-charcoal/25 bg-warm-white px-4 py-1.5 text-[12px] font-medium text-charcoal transition-colors hover:border-clay hover:text-clay"
               >
-                <X className="h-3.5 w-3.5" />
-                Reset
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                More filters
+                {activeCount > 0 && (
+                  <span className="ml-1 rounded-full bg-charcoal px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-warm-white">
+                    {activeCount}
+                  </span>
+                )}
               </button>
-            )}
+
+              {activeCount > 0 && (
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="inline-flex min-h-[36px] shrink-0 items-center gap-1 rounded-full px-2.5 text-[11px] font-medium uppercase tracking-[0.16em] text-ink-muted hover:text-clay"
+                >
+                  <X className="h-3 w-3" />
+                  Reset
+                </button>
+              )}
+            </div>
           </div>
         </section>
 
@@ -291,7 +324,7 @@ function ShopPage() {
         </BottomSheet>
 
         {/* Grid — masonry on desktop via CSS columns, 2-col on mobile */}
-        <section className="bg-warm-white py-10 md:py-20">
+        <section className="bg-warm-white pb-10 pt-6 md:pb-20 md:pt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10">
             {shown.length === 0 ? (
               <div className="py-20 text-center">

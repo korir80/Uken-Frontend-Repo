@@ -390,7 +390,7 @@ function FloatingProductCard() {
           </Link>
           <Link
             to="/shop"
-            search={{ craft: "beadwork" }}
+            search={{ craft: "Beadwork", region: "All", sort: "newest", minPrice: undefined, maxPrice: undefined }}
             className="group/similar inline-flex items-center justify-between font-sans transition-colors"
             style={{
               fontSize: 11,

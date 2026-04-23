@@ -8,6 +8,7 @@ import { Button } from "@/components/ukena/Button";
 import { SectionLabel } from "@/components/ukena";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { getProduct } from "@/components/product/product-data";
+import { SaveHeart } from "@/components/product/SaveHeart";
 import { useCart, formatGBP } from "@/lib/cart";
 import { pushRecentProduct } from "@/lib/ukena-mode";
 import { cn } from "@/lib/utils";
@@ -176,20 +177,27 @@ function ProductPage() {
 
                 {/* Add to bag */}
                 <div className="mt-10 space-y-4">
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    onClick={handleAdd}
-                    className="!h-13 w-full !bg-terracotta hover:!bg-[oklch(0.52_0.13_38)]"
-                  >
-                    {added ? (
-                      <span className="inline-flex items-center gap-2">
-                        <Check className="h-4 w-4" /> Added to your bag
-                      </span>
-                    ) : (
-                      "Add to bag"
-                    )}
-                  </Button>
+                  <div className="flex items-stretch gap-3">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      onClick={handleAdd}
+                      className="!h-13 flex-1 !bg-terracotta hover:!bg-[oklch(0.52_0.13_38)]"
+                    >
+                      {added ? (
+                        <span className="inline-flex items-center gap-2">
+                          <Check className="h-4 w-4" /> Added to your bag
+                        </span>
+                      ) : (
+                        "Add to bag"
+                      )}
+                    </Button>
+                    <SaveHeart
+                      productId={product.id}
+                      productName={product.name}
+                      className="!h-13 !w-13 shrink-0 border border-border/70"
+                    />
+                  </div>
 
                   <ul className="space-y-2.5 pt-2 text-[13px] leading-relaxed text-ink-muted">
                     <li className="flex items-start gap-2.5">

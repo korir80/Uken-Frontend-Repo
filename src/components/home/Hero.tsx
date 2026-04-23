@@ -29,7 +29,7 @@ export function Hero() {
   useEffect(() => setHydrated(true), []);
 
   return (
-    <section className="relative h-[82vh] min-h-[560px] w-full overflow-hidden bg-charcoal">
+    <section className="relative min-h-[100svh] w-full overflow-hidden bg-charcoal md:h-[82vh] md:min-h-[560px]">
       {/* Fixed/parallax background — stays put as next section scrolls over */}
       <div
         aria-hidden
@@ -47,7 +47,7 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/15 to-charcoal/55" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-6 pb-20 pt-32 md:px-10 md:pb-24">
+      <div className="relative z-10 mx-auto flex h-full min-h-[100svh] max-w-7xl flex-col justify-end px-5 pb-28 pt-24 md:min-h-0 md:px-10 md:pb-24 md:pt-32">
         <div className="max-w-3xl">
           <SectionLabel
             tone="terracotta"
@@ -56,12 +56,12 @@ export function Hero() {
             Stories from Kenyan workshops
           </SectionLabel>
 
-          <h1 className="mt-7 font-display text-[40px] leading-[1.04] tracking-tight text-warm-white sm:text-5xl md:text-6xl lg:text-[76px]">
+          <h1 className="mt-6 font-display text-[36px] leading-[1.06] tracking-tight text-warm-white sm:text-5xl md:mt-7 md:text-6xl lg:text-[76px]">
             Every piece carries{" "}
             <em className="italic text-[oklch(0.88_0.06_55)]">a story.</em>
           </h1>
 
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-warm-white/80 md:text-lg">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-warm-white/80 md:mt-6 md:text-lg">
             Two ways in — meet the maker, or browse the collection. Either
             path leads to the same hands.
           </p>
@@ -157,7 +157,7 @@ function PathCard({
       onBlur={onLeave}
       onClick={onChoose}
       className={cn(
-        "group relative flex flex-col gap-3 rounded-2xl border p-5 backdrop-blur-md transition-all duration-300 md:p-6",
+        "group relative flex min-h-[44px] flex-col gap-3 rounded-2xl border p-5 backdrop-blur-md transition-all duration-300 md:p-6",
         "bg-charcoal/35 hover:bg-charcoal/45",
         active
           ? "border-[oklch(0.85_0.08_38)]/70 shadow-[0_0_0_1px_oklch(0.85_0.08_38/0.35),0_20px_40px_-20px_oklch(0.62_0.16_38/0.5)]"

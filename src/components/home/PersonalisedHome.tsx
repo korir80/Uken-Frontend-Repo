@@ -37,7 +37,7 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
     [recentIds],
   );
 
-  const firstName = (user.name ?? "").split(" ")[0] || "friend";
+  const firstName = (user.fullName ?? "").split(" ")[0] || "friend";
   const empty = savedCreators.length === 0 && recentProducts.length === 0;
 
   return (

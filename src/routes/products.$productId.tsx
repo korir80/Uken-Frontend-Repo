@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, ChevronRight } from "lucide-react";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
@@ -9,6 +9,7 @@ import { SectionLabel } from "@/components/ukena";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { getProduct } from "@/components/product/product-data";
 import { useCart, formatGBP } from "@/lib/cart";
+import { pushRecentProduct } from "@/lib/ukena-mode";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/products/$productId")({
@@ -65,6 +66,11 @@ function ProductPage() {
   const { addItem } = useCart();
   const [selected, setSelected] = useState(0);
   const [added, setAdded] = useState(false);
+
+  // Track product view for the personalised home (returning authed users).
+  useEffect(() => {
+    pushRecentProduct(product.id);
+  }, [product.id]);
 
   const handleAdd = () => {
     addItem({

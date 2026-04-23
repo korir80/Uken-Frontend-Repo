@@ -7,8 +7,8 @@ import { SectionLabel } from "@/components/ukena";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { creators } from "@/components/explore/creators-data";
 import {
+  getAllProducts,
   getProduct,
-  getProductsByCreator,
   type Product,
 } from "@/components/product/product-data";
 import {
@@ -378,11 +378,16 @@ interface FoundAHomeCardProps {
 function FoundAHomeCard({ productId, onRemove }: FoundAHomeCardProps) {
   // Try to recover the creator from the productId prefix (mock convention),
   // and offer 1-2 alternatives by the same hand. Falls back to /shop.
-  const creatorIdGuess = productId.split("-")[0] ?? "";
-  const alternatives = useMemo(
-    () => getProductsByCreator(creatorIdGuess).slice(0, 2),
-    [creatorIdGuess],
-  );
+  // Mock-data convention: ids look like "p-{slug}-NN". When the API is
+  // wired up this card will receive the creator id directly from the
+  // wishlist payload.
+  const slug = productId.split("-")[1] ?? "";
+  const alternatives = useMemo(() => {
+    if (!slug) return [];
+    return getAllProducts()
+      .filter((p: Product) => p.id.startsWith(`p-${slug}-`))
+      .slice(0, 2);
+  }, [slug]);
   const creatorName = alternatives[0]?.creator.fullName;
 
   return (

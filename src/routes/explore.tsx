@@ -61,38 +61,37 @@ function ExplorePage() {
       <ExploreNav />
 
       <main className="pb-24 md:pb-0">
-        {/* Editorial header */}
-        <section className="border-b border-border/60 bg-warm-white">
-          <div className="mx-auto max-w-7xl px-5 pb-12 pt-12 md:px-10 md:pb-20 md:pt-24">
-            <SectionLabel>An ongoing index</SectionLabel>
-            <h1 className="mt-5 font-display text-[40px] leading-[1.04] tracking-tight text-charcoal sm:text-6xl md:mt-6 md:text-[80px] lg:text-[96px]">
-              The makers{" "}
-              <em className="italic text-terracotta">of Kenya</em>.
-            </h1>
-            <div className="mt-8 grid gap-8 md:mt-10 md:grid-cols-12 md:gap-10">
-              <p className="md:col-span-7 md:col-start-1 max-w-2xl text-base leading-relaxed text-ink-muted md:text-[17px]">
-                Seven regions. Five crafts. Every name here belongs to a person
-                who learned their work from someone who came before them. Begin
-                with whoever holds your eye — the pieces will follow.
-              </p>
-              <div className="md:col-span-4 md:col-start-9 flex flex-col items-start gap-2 md:items-end md:text-right">
-                <span className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
-                  In the index today
-                </span>
-                <span className="font-display text-5xl tabular-nums text-charcoal md:text-6xl">
-                  {String(creators.length).padStart(2, "0")}
-                </span>
-                <span className="text-[12px] uppercase tracking-[0.18em] text-ink-muted">
-                  Makers
-                </span>
+        {/* Compact editorial header — tight, leaves cards visible above the fold */}
+        <section className="bg-warm-white">
+          <div className="mx-auto max-w-7xl px-5 pb-5 pt-6 md:px-10 md:pb-7 md:pt-10">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
+              <div className="max-w-2xl">
+                <SectionLabel>An ongoing index</SectionLabel>
+                <h1 className="mt-3 font-display text-[30px] leading-[1.05] tracking-tight text-charcoal sm:text-[34px] md:mt-3 md:text-[42px]">
+                  The makers{" "}
+                  <em className="italic text-terracotta">of Kenya</em>.
+                </h1>
+                <p className="mt-2.5 text-[13px] leading-relaxed text-ink-muted md:text-sm">
+                  Seven regions. Five crafts. Begin with whoever holds your eye — the pieces will follow.
+                </p>
+              </div>
+              <div className="flex shrink-0 items-end gap-8 md:gap-10">
+                <div>
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-ink-muted">
+                    In the index
+                  </span>
+                  <p className="font-display text-3xl tabular-nums leading-none text-charcoal md:text-4xl">
+                    {String(creators.length).padStart(2, "0")}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Filter strip */}
-        <section className="sticky top-[60px] z-40 border-b border-border/60 bg-warm-white/95 backdrop-blur-md md:top-[76px]">
-          <div className="mx-auto flex max-w-7xl items-center gap-6 px-5 py-3 md:px-10 md:py-5">
+        {/* Slim filter strip — single row, cards visible immediately below */}
+        <section className="sticky top-[60px] z-40 border-y border-border/60 bg-warm-white/95 backdrop-blur-md md:top-[76px]">
+          <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-2.5 md:px-10 md:py-3">
             <button
               type="button"
               onClick={() => {
@@ -170,7 +169,7 @@ function ExplorePage() {
         </BottomSheet>
 
         {/* Grid — single column on mobile, masonry from md */}
-        <section className="bg-warm-white py-10 md:py-24">
+        <section className="bg-warm-white pb-10 pt-6 md:pb-20 md:pt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10">
             {shown.length === 0 ? (
               <div className="py-20 text-center">

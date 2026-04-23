@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
 import { CRAFTS, type Craft } from "@/components/explore/creators-data";
-import type { ShopSortValue } from "@/routes/shop";
 
 export type CraftFilterValue = Craft | "All";
+export type ShopSortValue = "newest" | "price-asc" | "price-desc";
 
 const CRAFT_OPTIONS: readonly CraftFilterValue[] = ["All", ...CRAFTS] as const;
 

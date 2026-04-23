@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Lock } from "lucide-react";
-import { useCart } from "@/lib/cart";
+import { useCart, formatGBP } from "@/lib/cart";
 
 export const Route = createFileRoute("/checkout/payment")({
   component: PaymentStep,
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/checkout/payment")({
 
 function PaymentStep() {
   const navigate = useNavigate();
-  const { delivery, items, placeOrder, uniqueCreators } = useCart();
+  const { delivery, items, placeOrder, totalPence } = useCart();
 
   const [card, setCard] = useState({
     holder: "",
@@ -26,12 +26,12 @@ function PaymentStep() {
         <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">
           Almost there
         </p>
-        <h1 className="mt-4 font-display text-[36px] leading-[1.05] tracking-tight text-charcoal md:text-[44px]">
+        <h1 className="mt-3 font-display text-[28px] leading-[1.1] tracking-tight text-charcoal md:text-[34px]">
           We need your delivery details first
         </h1>
         <Link
           to="/checkout/delivery"
-          className="mt-8 inline-block text-[12px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
+          className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
         >
           ← Back to delivery
         </Link>
@@ -42,7 +42,14 @@ function PaymentStep() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    // UI-only — no payment processing. Phase 6 will wire Stripe / Spring.
+
+    // TODO: wire Place Order button to:
+    //   1. orderService.createOrder(cartItems, deliveryDetails)
+    //      → POST /api/orders (Spring Boot)
+    //   2. Stripe PaymentIntent confirmation (stripe.confirmCardPayment)
+    //   3. On success → clearCart() → navigate to /checkout/confirmation
+    // Until then we simulate the round-trip and let the local placeOrder
+    // reducer record the "lastOrder" so confirmation has something to show.
     window.setTimeout(() => {
       const order = placeOrder();
       if (order) {
@@ -54,22 +61,19 @@ function PaymentStep() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-10">
+    <form onSubmit={handleSubmit} className="space-y-8">
       <header>
         <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">
           Step two
         </p>
-        <h1 className="mt-4 font-display text-[36px] leading-[1.05] tracking-tight text-charcoal md:text-[44px]">
+        <h1 className="mt-3 font-display text-[28px] leading-[1.1] tracking-tight text-charcoal md:text-[34px]">
           Payment
         </h1>
-        <p className="mt-4 inline-flex items-center gap-2 text-[13px] text-ink-muted">
-          <Lock className="h-3.5 w-3.5" /> Card details are not stored.
-        </p>
       </header>
 
       {/* Delivery recap */}
       {delivery && (
-        <section className="rounded-2xl border border-border/70 bg-cream p-6">
+        <section className="rounded-xl border border-border/70 bg-cream p-5">
           <div className="flex items-baseline justify-between gap-4">
             <p className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
               Delivering to
@@ -81,8 +85,10 @@ function PaymentStep() {
               Edit
             </Link>
           </div>
-          <p className="mt-3 text-[15px] leading-relaxed text-charcoal/85">
-            <span className="font-medium text-charcoal">{delivery.fullName}</span>
+          <p className="mt-3 text-[13px] leading-relaxed text-charcoal/85">
+            <span className="font-medium text-charcoal">
+              {delivery.fullName}
+            </span>
             <br />
             {delivery.addressLine1}
             {delivery.addressLine2 ? `, ${delivery.addressLine2}` : ""}
@@ -95,18 +101,10 @@ function PaymentStep() {
       )}
 
       {/* Card fields */}
-      <fieldset className="space-y-6">
+      <fieldset className="space-y-5">
         <legend className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
           Card details
         </legend>
-        <Field
-          label="Name on card"
-          name="holder"
-          value={card.holder}
-          onChange={(v) => setCard((c) => ({ ...c, holder: v }))}
-          required
-          autoComplete="cc-name"
-        />
         <Field
           label="Card number"
           name="number"
@@ -122,7 +120,7 @@ function PaymentStep() {
           inputMode="numeric"
           autoComplete="cc-number"
         />
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-5">
           <Field
             label="Expiry (MM/YY)"
             name="expiry"
@@ -133,7 +131,7 @@ function PaymentStep() {
                 expiry: v.replace(/[^\d/]/g, "").slice(0, 5),
               }))
             }
-            placeholder="08/27"
+            placeholder="MM/YY"
             required
             inputMode="numeric"
             autoComplete="cc-exp"
@@ -154,37 +152,42 @@ function PaymentStep() {
             autoComplete="cc-csc"
           />
         </div>
+        <Field
+          label="Name on card"
+          name="holder"
+          value={card.holder}
+          onChange={(v) => setCard((c) => ({ ...c, holder: v }))}
+          required
+          autoComplete="cc-name"
+        />
       </fieldset>
 
-      <div className="space-y-5 pt-2">
+      <p className="inline-flex items-start gap-2 text-[11px] leading-relaxed text-charcoal/40">
+        <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+        <span>
+          Payment powered by Stripe — your card details are never stored on our
+          servers.
+        </span>
+      </p>
+
+      <div className="space-y-3 pt-2">
         <button
           type="submit"
           disabled={submitting}
-          className="inline-flex h-13 w-full items-center justify-center rounded-md bg-terracotta px-8 text-[15px] font-medium tracking-wide text-warm-white transition-all hover:bg-[oklch(0.52_0.13_38)] disabled:opacity-70"
+          className="inline-flex h-12 w-full items-center justify-center rounded-md bg-terracotta px-8 text-[14px] font-medium tracking-wide text-warm-white transition-all hover:bg-[oklch(0.52_0.13_38)] disabled:opacity-70"
         >
-          {submitting ? "Placing your order…" : "Place order"}
+          {submitting
+            ? "Placing your order…"
+            : `Place order · ${formatGBP(totalPence)}`}
         </button>
-
-        {uniqueCreators.length > 0 && (
-          <p className="text-center text-[13px] leading-relaxed text-ink-muted">
-            Your purchase directly supports{" "}
-            {uniqueCreators.map((c, i) => (
-              <span key={c.id} className="text-charcoal">
-                {c.fullName}
-                {i < uniqueCreators.length - 2
-                  ? ", "
-                  : i === uniqueCreators.length - 2
-                    ? " and "
-                    : ""}
-              </span>
-            ))}
-            .
-          </p>
-        )}
       </div>
     </form>
   );
 }
+
+// ───────────────────────────────────────────────────────────────────────────
+// Field primitive (matches delivery step styling for consistency)
+// ───────────────────────────────────────────────────────────────────────────
 
 interface FieldProps {
   label: string;
@@ -209,8 +212,9 @@ function Field({
 }: FieldProps) {
   return (
     <label className="block">
-      <span className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
+      <span className="text-[13px] font-medium text-charcoal">
         {label}
+        {required && <span className="ml-0.5 text-terracotta">*</span>}
       </span>
       <input
         name={name}
@@ -220,7 +224,7 @@ function Field({
         placeholder={placeholder}
         autoComplete={autoComplete}
         inputMode={inputMode}
-        className="mt-2 h-12 w-full rounded-md border border-border bg-warm-white px-4 text-[15px] text-charcoal placeholder:text-ink-muted/60 focus:border-clay focus:outline-none focus:ring-2 focus:ring-clay/20"
+        className="mt-1.5 h-11 w-full rounded-md border border-border bg-warm-white px-4 text-[14px] text-charcoal placeholder:text-ink-muted/60 focus:border-clay focus:outline-none focus:ring-2 focus:ring-clay/20"
       />
     </label>
   );

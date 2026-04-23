@@ -32,19 +32,19 @@ function StoryPage() {
     <div className="min-h-screen bg-warm-white text-charcoal">
       <ExploreNav />
       <main>
-        <section className="mx-auto max-w-4xl px-6 pt-20 pb-16 md:px-10 md:pt-28">
-          <SectionLabel tone="terracotta">Our Story</SectionLabel>
-          <h1 className="mt-6 font-display text-4xl leading-[1.05] tracking-tight md:text-6xl">
-            We came for the makers — <em className="italic text-clay">and stayed for the hours.</em>
-          </h1>
-          <p className="mt-8 max-w-2xl text-base leading-relaxed text-charcoal/75 md:text-lg">
-            Ukena is a marketplace built around the people who shape the work.
-            Not a catalogue of objects, but a record of the hands and the
-            hours behind them — Kenyan artisans, told plainly, sold honestly.
-          </p>
+        <section className="mx-auto max-w-7xl px-5 pb-6 pt-6 md:px-10 md:pb-8 md:pt-10">
+          <div className="max-w-3xl">
+            <SectionLabel tone="terracotta">Our Story</SectionLabel>
+            <h1 className="mt-3 font-display text-[30px] leading-[1.05] tracking-tight text-charcoal sm:text-[34px] md:mt-3 md:text-[42px]">
+              We came for the makers — <em className="italic text-clay">and stayed for the hours.</em>
+            </h1>
+            <p className="mt-2.5 max-w-2xl text-[13px] leading-relaxed text-ink-muted md:text-sm">
+              A marketplace built around the people who shape the work. Kenyan artisans, told plainly, sold honestly.
+            </p>
+          </div>
         </section>
 
-        <section className="mx-auto grid max-w-6xl gap-6 px-6 pb-20 md:grid-cols-2 md:px-10">
+        <section className="mx-auto grid max-w-7xl gap-5 px-5 pb-12 md:grid-cols-2 md:gap-6 md:px-10 md:pb-16">
           <LazyImage
             src={workshopImage}
             alt="A weaver at her workshop in the Kenyan highlands"

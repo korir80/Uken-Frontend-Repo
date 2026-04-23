@@ -47,39 +47,39 @@ const promises = [
 function JoinLanding() {
   return (
     <JoinShell>
-      {/* Hero */}
+      {/* Hero — compact, content visible above the fold */}
       <section className="relative overflow-hidden">
         <div className="grid md:grid-cols-12">
-          <div className="bg-warm-white px-6 pb-16 pt-16 md:col-span-7 md:px-12 md:pb-28 md:pt-28 lg:px-20">
+          <div className="bg-warm-white px-5 pb-8 pt-6 md:col-span-7 md:px-10 md:pb-10 md:pt-10 lg:px-12">
             <SectionLabel tone="gold">A note for Kenyan artisans</SectionLabel>
-            <h1 className="mt-8 font-display text-[44px] leading-[1.02] tracking-tight text-charcoal md:text-[80px] lg:text-[92px]">
+            <h1 className="mt-3 font-display text-[30px] leading-[1.05] tracking-tight text-charcoal sm:text-[34px] md:mt-3 md:text-[42px]">
               Your craft deserves{" "}
               <em className="italic text-terracotta">a global stage.</em>
             </h1>
-            <p className="mt-8 max-w-xl text-[16px] leading-relaxed text-ink-muted md:text-[18px]">
+            <p className="mt-2.5 max-w-xl text-[13px] leading-relaxed text-ink-muted md:text-sm">
               Ukena was built for the makers first. We don't run a marketplace
               of products — we keep an index of people. If you make something
               with your hands in Kenya, we'd like to hear from you.
             </p>
 
-            <div className="mt-12 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+            <div className="mt-5 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-5">
               <Button
                 asChild
                 variant="primary"
-                size="lg"
+                size="md"
                 className="bg-terracotta hover:bg-[oklch(0.52_0.13_38)]"
               >
                 <Link to="/join/apply">
                   Begin your application <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
-              <p className="max-w-[260px] text-[12px] uppercase tracking-[0.2em] text-ink-muted">
+              <p className="max-w-[260px] text-[11px] uppercase tracking-[0.2em] text-ink-muted">
                 Takes about 6 minutes. No accounts, no fees.
               </p>
             </div>
           </div>
 
-          <div className="relative h-[320px] md:col-span-5 md:h-auto">
+          <div className="relative h-[200px] md:col-span-5 md:h-auto md:min-h-[260px]">
             <img
               src={joinHero}
               alt="An artisan's hands at work in a sunlit Kenyan workshop"

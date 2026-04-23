@@ -7,6 +7,8 @@ import { ParallaxBand } from "@/components/home/ParallaxBand";
 import { QuotePullout } from "@/components/home/QuotePullout";
 import { ArtisanCTA } from "@/components/home/ArtisanCTA";
 import { Footer } from "@/components/home/Footer";
+import { PersonalisedHome } from "@/components/home/PersonalisedHome";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,11 +34,18 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const { isAuthenticated, user, isLoading } = useAuth();
+
+  // Authed buyers bypass the marketing hero entirely and land on a
+  // personalised surface (saved makers + recently viewed pieces). The
+  // marketing sections beneath are kept so the brand still leads the page.
+  const showPersonalised = !isLoading && isAuthenticated && user;
+
   return (
     <div className="min-h-screen bg-warm-white text-charcoal">
       <NavBar />
       <main>
-        <Hero />
+        {showPersonalised ? <PersonalisedHome user={user} /> : <Hero />}
         <FeaturedCreators />
         <ParallaxBand />
         <ProcessStrip />

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StyleguideRouteImport } from './routes/styleguide'
+import { Route as StoryRouteImport } from './routes/story'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ExploreRouteImport } from './routes/explore'
@@ -27,6 +28,11 @@ import { Route as CheckoutConfirmationRouteImport } from './routes/checkout.conf
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
   path: '/styleguide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoryRoute = StoryRouteImport.update({
+  id: '/story',
+  path: '/story',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SigninRoute = SigninRouteImport.update({
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/explore': typeof ExploreRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
+  '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/explore': typeof ExploreRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
+  '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/explore': typeof ExploreRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
+  '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/shop'
     | '/signin'
+    | '/story'
     | '/styleguide'
     | '/checkout/confirmation'
     | '/checkout/delivery'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/shop'
     | '/signin'
+    | '/story'
     | '/styleguide'
     | '/checkout/confirmation'
     | '/checkout/delivery'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/shop'
     | '/signin'
+    | '/story'
     | '/styleguide'
     | '/checkout/confirmation'
     | '/checkout/delivery'
@@ -202,6 +214,7 @@ export interface RootRouteChildren {
   ExploreRoute: typeof ExploreRoute
   ShopRoute: typeof ShopRoute
   SigninRoute: typeof SigninRoute
+  StoryRoute: typeof StoryRoute
   StyleguideRoute: typeof StyleguideRoute
   CreatorsCreatorIdRoute: typeof CreatorsCreatorIdRoute
   JoinApplyRoute: typeof JoinApplyRoute
@@ -216,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/styleguide'
       fullPath: '/styleguide'
       preLoaderRoute: typeof StyleguideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/story': {
+      id: '/story'
+      path: '/story'
+      fullPath: '/story'
+      preLoaderRoute: typeof StoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signin': {
@@ -335,6 +355,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRoute: ExploreRoute,
   ShopRoute: ShopRoute,
   SigninRoute: SigninRoute,
+  StoryRoute: StoryRoute,
   StyleguideRoute: StyleguideRoute,
   CreatorsCreatorIdRoute: CreatorsCreatorIdRoute,
   JoinApplyRoute: JoinApplyRoute,

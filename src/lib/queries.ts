@@ -6,6 +6,7 @@
  * refetching all flow through one place.
  */
 import {
+  queryOptions,
   useMutation,
   useQuery,
   useQueryClient,
@@ -45,30 +46,35 @@ export const queryKeys = {
 
 /* ---------------- Query options factories (for use in route loaders) ---------------- */
 
-export const creatorsQueryOptions = (filters: CreatorFilters = {}) => ({
-  queryKey: queryKeys.creators(filters),
-  queryFn: () => creatorService.getCreators(filters),
-});
+export const creatorsQueryOptions = (filters: CreatorFilters = {}) =>
+  queryOptions({
+    queryKey: queryKeys.creators(filters),
+    queryFn: () => creatorService.getCreators(filters),
+  });
 
-export const creatorQueryOptions = (id: string) => ({
-  queryKey: queryKeys.creator(id),
-  queryFn: () => creatorService.getCreatorById(id),
-});
+export const creatorQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: queryKeys.creator(id),
+    queryFn: () => creatorService.getCreatorById(id),
+  });
 
-export const productsQueryOptions = () => ({
-  queryKey: queryKeys.products(),
-  queryFn: () => productService.getAllProducts(),
-});
+export const productsQueryOptions = () =>
+  queryOptions({
+    queryKey: queryKeys.products(),
+    queryFn: () => productService.getAllProducts(),
+  });
 
-export const productQueryOptions = (id: string) => ({
-  queryKey: queryKeys.product(id),
-  queryFn: () => productService.getProductById(id),
-});
+export const productQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: queryKeys.product(id),
+    queryFn: () => productService.getProductById(id),
+  });
 
-export const orderQueryOptions = (id: string) => ({
-  queryKey: queryKeys.order(id),
-  queryFn: () => orderService.getOrderById(id),
-});
+export const orderQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: queryKeys.order(id),
+    queryFn: () => orderService.getOrderById(id),
+  });
 
 /* ---------------- Creators ---------------- */
 

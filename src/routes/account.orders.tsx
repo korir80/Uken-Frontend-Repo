@@ -46,14 +46,15 @@ function BuyerOrders() {
 
   function reorder(o: OrderDto) {
     o.items.forEach((it) => {
-      addItem({
-        productId: it.productId,
-        name: it.name,
-        pricePence: it.pricePence,
-        image: it.image,
-        creator: it.creator,
-        quantity: it.quantity,
-      });
+      for (let i = 0; i < it.quantity; i++) {
+        addItem({
+          productId: it.productId,
+          name: it.name,
+          pricePence: it.pricePence,
+          image: it.image,
+          creator: it.creator,
+        });
+      }
     });
   }
 

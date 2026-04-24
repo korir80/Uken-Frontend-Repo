@@ -649,9 +649,60 @@ When status transitions to `APPROVED`:
 }
 ```
 
-### 6.18 `UploadedMediaDto`
+### 6.18 `CartLineDto`
 ```json
-{ "url": "https://cdn.../abc123.jpg", "id": "abc123" }
+{
+  "productId": "p-mara-01",
+  "quantity": 2,
+  "name": "Mara Storage Basket",
+  "pricePence": 12500,
+  "image": "https://cdn.../hero.jpg",
+  "creator": { "id": "wanjiru", "fullName": "Wanjiru Kamau", "region": "Maragua" }
+}
+```
+The cart is a **flat list of `CartLineDto`** keyed by `productId`. Snapshots
+of name/price/image/creator are stored so the bag renders without a refetch
+even if the underlying product is later edited or removed.
+
+### 6.19 `SavedCollections`
+```json
+{
+  "products": ["p-mara-01", "p-mara-04"],
+  "creators": ["wanjiru", "kibet"]
+}
+```
+Saved lists are returned as plain ID arrays (the frontend joins them against
+the products / creators caches itself). Add / remove endpoints return the
+**updated array**, not the toggled item.
+
+### 6.20 `BuyerAddress`
+```json
+{
+  "id": "addr-7f3c…",
+  "label": "Home",
+  "fullName": "Eleanor Reid",
+  "line1": "12 Linden Mews",
+  "line2": null,
+  "city": "London",
+  "postcode": "E2 8DY",
+  "country": "United Kingdom",
+  "isDefault": true
+}
+```
+`POST` / `PUT` bodies omit `id`. At most one address per buyer may have
+`isDefault: true` — the server enforces this when a new default is set.
+
+### 6.21 `ProductModerationRow`
+```json
+{ "productId": "p-mara-01", "status": "LIVE | DRAFT | TAKEN_DOWN" }
+```
+
+### 6.22 Cloudinary upload result (frontend-only — for reference)
+The browser receives this directly from Cloudinary; the backend never sees it.
+The frontend persists `url` (and optionally `publicId`) into product / profile /
+application payloads as plain strings.
+```json
+{ "url": "https://res.cloudinary.com/.../abc123.jpg", "publicId": "ukena/abc123" }
 ```
 
 ---

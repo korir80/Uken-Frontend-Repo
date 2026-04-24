@@ -34,6 +34,21 @@ export function RouteProgress() {
     return () => clearTimeout(t);
   }, []);
 
+  // Safety net: never let the splash block the UI indefinitely if a preview
+  // resize or route transition reports loading longer than expected.
+  useEffect(() => {
+    if (!visible) return;
+    const MAX_VISIBLE_MS = 2400;
+    const t = setTimeout(() => {
+      setClosing(true);
+      setTimeout(() => {
+        setVisible(false);
+        setClosing(false);
+      }, 380);
+    }, MAX_VISIBLE_MS);
+    return () => clearTimeout(t);
+  }, [visible]);
+
   // React to router transitions after the first paint has settled.
   useEffect(() => {
     if (!firstPaintDone) return;

@@ -14,10 +14,10 @@ import { cn } from "@/lib/utils";
 /**
  * MobileNavFab — primary navigation on <768px.
  *
- * A floating circular trigger anchored bottom-right. On tap the five primary
- * destinations (Home / Shop / Explore / Saved / Account) emanate as a
- * staggered arc above the trigger. Hidden ≥md, where the top horizontal
- * navigation handles wayfinding instead.
+  * A floating circular trigger anchored bottom-right. On tap the five primary
+  * destinations (Home / Shop / Explore / Saved / Account) emanate vertically
+  * above the trigger. Hidden ≥md, where the top horizontal navigation handles
+  * wayfinding instead.
  *
  * No hamburger drawer, no bottom tab bar — just the trigger + radial menu.
  */
@@ -73,17 +73,11 @@ export function MobileNavFab() {
         )}
       />
 
-      {/* Radial items — emanate from the FAB along an upper-left arc */}
+      {/* Vertical items — emanate upward from the FAB */}
       <ul className="absolute bottom-0 right-0">
         {items.map((item, i) => {
-          // Distribute items along a quarter-arc from top (-90°) to left (-180°)
           const total = items.length;
-          // Spread between -180° (left) and -90° (up). Inner items closer to -135°.
-          const angleDeg = -180 + (i * 90) / (total - 1);
-          const angle = (angleDeg * Math.PI) / 180;
-          const radius = 110; // px
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
+          const y = -72 * (i + 1);
           const isActive =
             item.to === "/"
               ? location.pathname === "/"
@@ -97,7 +91,7 @@ export function MobileNavFab() {
               className="absolute bottom-0 right-0"
               style={{
                 transform: open
-                  ? `translate(${x}px, ${y}px)`
+                  ? `translate(0px, ${y}px)`
                   : "translate(0px, 0px)",
                 opacity: open ? 1 : 0,
                 pointerEvents: open ? "auto" : "none",

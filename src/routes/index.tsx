@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { NavBar } from "@/components/home/NavBar";
 import { Hero } from "@/components/home/Hero";
+import { StoryTrustStrip } from "@/components/home/StoryTrustStrip";
 import { FeaturedShop } from "@/components/home/FeaturedShop";
 import { FeaturedCreators } from "@/components/home/FeaturedCreators";
 import { ProcessStrip } from "@/components/home/ProcessStrip";
@@ -43,6 +44,7 @@ function HomePage() {
       <NavBar />
       <main>
         {showPersonalised && user ? <PersonalisedHome user={user} /> : <Hero />}
+        <StoryTrustStrip />
         <FeaturedShop />
         <FeaturedCreators />
         <ParallaxBand />

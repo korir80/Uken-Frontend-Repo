@@ -15,12 +15,11 @@ export function Hero() {
   return (
     <section className="relative w-full overflow-hidden bg-charcoal">
       {/* 1 — Safari landscape foundation */}
-      <img
-        src={savanna}
-        alt="Kenyan savanna at dawn with open grassland and distant trees"
-        width={1920}
-        height={1280}
-        className="absolute inset-0 h-full w-full object-cover opacity-70"
+      <div
+        aria-label="Kenyan savanna at dawn with open grassland and distant trees"
+        role="img"
+        className="absolute inset-0 bg-cover bg-center opacity-70 md:bg-fixed"
+        style={{ backgroundImage: `url(${savanna})` }}
       />
 
       {/* 2 — Theme blend + directional vignette */}
@@ -54,8 +53,8 @@ export function Hero() {
 
       {/* Content shell — snug, vertically centred */}
       <div
-        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-14 md:flex-row md:items-center md:justify-between md:px-10 md:py-16"
-        style={{ minHeight: "440px" }}
+        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-10 md:flex-row md:items-center md:justify-between md:px-10 md:py-12"
+        style={{ minHeight: "400px" }}
       >
         {/* LEFT — copy block, tight grouping */}
         <div className="max-w-[560px] md:pl-[44px]">
@@ -74,13 +73,13 @@ export function Hero() {
             className="m-0 font-display font-light text-warm-white"
           >
             <span
-              className="block text-[38px] md:text-[66px]"
+              className="block text-[34px] md:text-[58px]"
               style={{ lineHeight: 1.02 }}
             >
               From the wild
             </span>
             <span
-              className="-mt-1.5 block text-[46px] italic text-gold-soft md:text-[78px]"
+              className="-mt-1.5 block text-[40px] italic text-gold-soft md:text-[68px]"
               style={{
                 lineHeight: 1,
               }}
@@ -88,7 +87,7 @@ export function Hero() {
               beauty of Kenya.
             </span>
             <span
-              className="-mt-1 block text-[38px] md:text-[66px]"
+              className="-mt-1 block text-[34px] md:text-[58px]"
               style={{
                 lineHeight: 1.02,
               }}
@@ -99,7 +98,7 @@ export function Hero() {
 
           {/* Sub-copy */}
           <p
-            className="mb-8 mt-6 max-w-[460px] font-sans text-sm font-light leading-relaxed text-warm-white/62"
+            className="mb-6 mt-5 max-w-[440px] font-sans text-sm font-light leading-relaxed text-warm-white/62"
           >
             A curated marketplace where safari warmth, ancient earth and maker
             knowledge meet in objects shaped for modern UK homes.
@@ -137,7 +136,7 @@ export function Hero() {
       {/* Scroll indicator — desktop only */}
       <div
         aria-hidden
-        className="absolute bottom-10 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
+        className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
       >
         <span
           className="font-sans uppercase"

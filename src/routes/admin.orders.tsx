@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { orderService, type OrderDto, type OrderStatus } from "@/services";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import type { OrderStatus } from "@/services";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
+import { useAdminOrders, useRefundOrder } from "@/lib/queries";
 
 const TONE: Record<OrderStatus, "neutral" | "good" | "warn" | "bad" | "info"> = {
   PENDING: "warn",
@@ -26,17 +28,23 @@ export const Route = createFileRoute("/admin/orders")({
 });
 
 function AdminOrders() {
-  const [orders, setOrders] = useState<OrderDto[]>([]);
+  const { data: orders = [], isLoading } = useAdminOrders();
+  const refund = useRefundOrder();
   const [filter, setFilter] = useState<OrderStatus | "ALL">("ALL");
 
-  useEffect(() => {
-    orderService.getAllOrders().then(setOrders);
-  }, []);
-
   const filtered = useMemo(
-    () => (filter === "ALL" ? orders : orders.filter((o) => o.status === filter)),
+    () =>
+      filter === "ALL" ? orders : orders.filter((o) => o.status === filter),
     [orders, filter],
   );
+
+  function handleRefund(id: string) {
+    if (!window.confirm(`Refund order ${id}? This cannot be undone.`)) return;
+    refund.mutate(id, {
+      onSuccess: () => toast.success(`${id} refunded and cancelled.`),
+      onError: (e) => toast.error(e.message),
+    });
+  }
 
   return (
     <div className="space-y-8">
@@ -63,59 +71,100 @@ function AdminOrders() {
         ))}
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-border/60">
-        <table className="min-w-[760px] divide-y divide-border/60 sm:min-w-full">
-          <thead className="bg-cream/60 text-left">
-            <tr>
-              <Th>Order</Th>
-              <Th>Buyer</Th>
-              <Th>Creators</Th>
-              <Th>Date</Th>
-              <Th>Status</Th>
-              <Th className="text-right">Total</Th>
-              <Th className="text-right">Actions</Th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border/40 bg-warm-white">
-            {filtered.map((o) => {
-              const creators = Array.from(new Set(o.items.map((i) => i.creator.fullName)));
-              return (
-                <tr key={o.id}>
-                  <td className="px-4 py-3 font-mono text-[12px] text-charcoal/80">{o.id}</td>
-                  <td className="px-4 py-3 font-sans text-[13px]">
-                    <p className="text-charcoal">{o.buyer.fullName}</p>
-                    <p className="text-[11px] text-charcoal/55">{o.delivery.city}</p>
-                  </td>
-                  <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">
-                    {creators.join(", ")}
-                  </td>
-                  <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">
-                    {new Date(o.createdAt).toLocaleDateString("en-GB")}
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusPill label={o.status.toLowerCase()} tone={TONE[o.status]} />
-                  </td>
-                  <td className="px-4 py-3 text-right font-sans text-[13px] text-charcoal">
-                    {formatGBP(o.totalPence)}
-                  </td>
-                  <td className="px-4 py-3 text-right font-sans text-[12px]">
-                    <button className="text-clay hover:underline">View</button>
-                    <span className="mx-2 text-charcoal/30">·</span>
-                    <button className="text-destructive hover:underline">Refund</button>
+      {isLoading ? (
+        <p className="font-sans text-sm text-charcoal/60">Loading orders…</p>
+      ) : (
+        <div className="overflow-x-auto rounded-2xl border border-border/60">
+          <table className="min-w-[760px] divide-y divide-border/60 sm:min-w-full">
+            <thead className="bg-cream/60 text-left">
+              <tr>
+                <Th>Order</Th>
+                <Th>Buyer</Th>
+                <Th>Creators</Th>
+                <Th>Date</Th>
+                <Th>Status</Th>
+                <Th className="text-right">Total</Th>
+                <Th className="text-right">Actions</Th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/40 bg-warm-white">
+              {filtered.map((o) => {
+                const creators = Array.from(
+                  new Set(o.items.map((i) => i.creator.fullName)),
+                );
+                return (
+                  <tr key={o.id}>
+                    <td className="px-4 py-3 font-mono text-[12px] text-charcoal/80">
+                      {o.id}
+                    </td>
+                    <td className="px-4 py-3 font-sans text-[13px]">
+                      <p className="text-charcoal">{o.buyer.fullName}</p>
+                      <p className="text-[11px] text-charcoal/55">
+                        {o.delivery.city}
+                      </p>
+                    </td>
+                    <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">
+                      {creators.join(", ")}
+                    </td>
+                    <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">
+                      {new Date(o.createdAt).toLocaleDateString("en-GB")}
+                    </td>
+                    <td className="px-4 py-3">
+                      <StatusPill
+                        label={o.status.toLowerCase()}
+                        tone={TONE[o.status]}
+                      />
+                    </td>
+                    <td className="px-4 py-3 text-right font-sans text-[13px] text-charcoal">
+                      {formatGBP(o.totalPence)}
+                    </td>
+                    <td className="px-4 py-3 text-right font-sans text-[12px]">
+                      {o.status !== "CANCELLED" ? (
+                        <button
+                          disabled={refund.isPending}
+                          onClick={() => handleRefund(o.id)}
+                          className="text-destructive hover:underline disabled:opacity-50"
+                        >
+                          {refund.isPending && refund.variables === o.id
+                            ? "Refunding…"
+                            : "Refund"}
+                        </button>
+                      ) : (
+                        <span className="text-charcoal/40">—</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+              {filtered.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="px-4 py-10 text-center font-sans text-[13px] text-charcoal/60"
+                  >
+                    No orders in this state.
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
 
-function Th({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function Th({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <th className={`px-4 py-3 font-sans text-[11px] uppercase tracking-[0.18em] text-charcoal/60 ${className}`}>
+    <th
+      className={`px-4 py-3 font-sans text-[11px] uppercase tracking-[0.18em] text-charcoal/60 ${className}`}
+    >
       {children}
     </th>
   );

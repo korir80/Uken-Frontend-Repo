@@ -1,10 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { useCreators } from "@/lib/queries";
-import { getAllProducts } from "@/components/product/product-data";
-import { featuredSlots, type FeaturedSlot } from "@/components/admin/admin-data";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import type { FeaturedSlot } from "@/services";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
+import {
+  useAdminFeatured,
+  useAllProducts,
+  useCreators,
+  useSetFeatured,
+} from "@/lib/queries";
 
 export const Route = createFileRoute("/admin/featured")({
   component: AdminFeatured,
@@ -12,12 +17,29 @@ export const Route = createFileRoute("/admin/featured")({
 
 function AdminFeatured() {
   const { data: creators = [] } = useCreators();
-  const products = getAllProducts();
-  const [slots, setSlots] = useState<FeaturedSlot[]>(featuredSlots);
+  const { data: products = [] } = useAllProducts();
+  const { data: serverSlots = [] } = useAdminFeatured();
+  const save = useSetFeatured();
+
+  const [slots, setSlots] = useState<FeaturedSlot[]>([]);
+
+  // Hydrate the local editing buffer once the server payload arrives.
+  useEffect(() => {
+    if (serverSlots.length > 0) setSlots(serverSlots);
+  }, [serverSlots]);
 
   const updateSlot = (position: number, patch: Partial<FeaturedSlot>) => {
-    setSlots((prev) => prev.map((s) => (s.position === position ? { ...s, ...patch } : s)));
+    setSlots((prev) =>
+      prev.map((s) => (s.position === position ? { ...s, ...patch } : s)),
+    );
   };
+
+  function handleSave() {
+    save.mutate(slots, {
+      onSuccess: () => toast.success("Curation saved — live on the home page."),
+      onError: (e) => toast.error(e.message),
+    });
+  }
 
   return (
     <div className="space-y-8">
@@ -45,7 +67,9 @@ function AdminFeatured() {
                 <select
                   value={slot.creatorId ?? ""}
                   onChange={(e) =>
-                    updateSlot(slot.position, { creatorId: e.target.value || null })
+                    updateSlot(slot.position, {
+                      creatorId: e.target.value || null,
+                    })
                   }
                   className="mt-1 w-full rounded-lg border border-border bg-warm-white px-3 py-2 font-sans text-[13px] text-charcoal focus:border-clay focus:outline-none focus:ring-2 focus:ring-clay/15"
                 >
@@ -65,7 +89,9 @@ function AdminFeatured() {
                 <select
                   value={slot.productId ?? ""}
                   onChange={(e) =>
-                    updateSlot(slot.position, { productId: e.target.value || null })
+                    updateSlot(slot.position, {
+                      productId: e.target.value || null,
+                    })
                   }
                   className="mt-1 w-full rounded-lg border border-border bg-warm-white px-3 py-2 font-sans text-[13px] text-charcoal focus:border-clay focus:outline-none focus:ring-2 focus:ring-clay/15"
                 >
@@ -110,8 +136,12 @@ function AdminFeatured() {
       </div>
 
       <div>
-        <button className="rounded-full bg-clay px-6 py-2.5 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep">
-          Save curation
+        <button
+          onClick={handleSave}
+          disabled={save.isPending || slots.length === 0}
+          className="rounded-full bg-clay px-6 py-2.5 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
+        >
+          {save.isPending ? "Saving…" : "Save curation"}
         </button>
       </div>
     </div>

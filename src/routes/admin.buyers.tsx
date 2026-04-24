@@ -1,46 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { orderService, type OrderDto } from "@/services";
+import { toast } from "sonner";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
-
-interface BuyerRow {
-  fullName: string;
-  email: string;
-  city: string;
-  orderCount: number;
-  totalPence: number;
-  lastOrderAt: string;
-}
+import { formatGBP } from "@/lib/cart";
+import { useAdminBuyers, useSuspendBuyer } from "@/lib/queries";
 
 export const Route = createFileRoute("/admin/buyers")({
   component: AdminBuyers,
 });
 
 function AdminBuyers() {
-  const [buyers, setBuyers] = useState<BuyerRow[]>([]);
+  const { data: buyers = [], isLoading } = useAdminBuyers();
+  const suspend = useSuspendBuyer();
 
-  useEffect(() => {
-    orderService.getAllOrders().then((orders: OrderDto[]) => {
-      const byEmail = new Map<string, BuyerRow>();
-      for (const o of orders) {
-        const key = o.buyer.email.toLowerCase();
-        const prev = byEmail.get(key);
-        const row: BuyerRow = prev ?? {
-          fullName: o.buyer.fullName,
-          email: o.buyer.email,
-          city: o.delivery.city,
-          orderCount: 0,
-          totalPence: 0,
-          lastOrderAt: o.createdAt,
-        };
-        row.orderCount += 1;
-        row.totalPence += o.totalPence;
-        if (new Date(o.createdAt) > new Date(row.lastOrderAt)) row.lastOrderAt = o.createdAt;
-        byEmail.set(key, row);
-      }
-      setBuyers([...byEmail.values()].sort((a, b) => b.totalPence - a.totalPence));
+  function handleSuspend(id: string, name: string) {
+    if (!window.confirm(`Suspend ${name}?`)) return;
+    suspend.mutate(id, {
+      onSuccess: () => toast.success(`${name} suspended.`),
+      onError: (e) => toast.error(e.message),
     });
-  }, []);
+  }
 
   return (
     <div className="space-y-8">
@@ -64,32 +42,63 @@ function AdminBuyers() {
           </thead>
           <tbody className="divide-y divide-border/40 bg-warm-white">
             {buyers.map((b) => (
-              <tr key={b.email}>
+              <tr key={b.id}>
                 <td className="px-4 py-3">
-                  <p className="font-display text-base text-charcoal">{b.fullName}</p>
-                  <p className="font-sans text-[12px] text-charcoal/55">{b.email}</p>
+                  <p className="font-display text-base text-charcoal">
+                    {b.fullName}
+                  </p>
+                  <p className="font-sans text-[12px] text-charcoal/55">
+                    {b.email}
+                  </p>
                 </td>
-                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">{b.city}</td>
-                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">{b.orderCount}</td>
+                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">
+                  {b.city}
+                </td>
+                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">
+                  {b.orderCount}
+                </td>
                 <td className="px-4 py-3 font-sans text-[13px] text-charcoal">
-                  £{(b.totalPence / 100).toFixed(2)}
+                  {formatGBP(b.totalPence)}
                 </td>
                 <td className="px-4 py-3">
-                  <StatusPill label="active" tone="good" />
+                  {b.suspended ? (
+                    <StatusPill label="suspended" tone="bad" />
+                  ) : (
+                    <StatusPill label="active" tone="good" />
+                  )}
                 </td>
                 <td className="px-4 py-3 text-right font-sans text-[12px]">
                   <button className="text-charcoal/60 hover:text-charcoal hover:underline">
                     Reset password
                   </button>
                   <span className="mx-2 text-charcoal/30">·</span>
-                  <button className="text-destructive hover:underline">Suspend</button>
+                  <button
+                    disabled={suspend.isPending || b.suspended}
+                    onClick={() => handleSuspend(b.id, b.fullName)}
+                    className="text-destructive hover:underline disabled:opacity-50"
+                  >
+                    {b.suspended ? "Suspended" : "Suspend"}
+                  </button>
                 </td>
               </tr>
             ))}
-            {buyers.length === 0 && (
+            {!isLoading && buyers.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center font-sans text-[13px] text-charcoal/60">
+                <td
+                  colSpan={6}
+                  className="px-4 py-10 text-center font-sans text-[13px] text-charcoal/60"
+                >
                   No buyers yet.
+                </td>
+              </tr>
+            )}
+            {isLoading && (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-4 py-10 text-center font-sans text-[13px] text-charcoal/60"
+                >
+                  Loading buyers…
                 </td>
               </tr>
             )}
@@ -100,9 +109,17 @@ function AdminBuyers() {
   );
 }
 
-function Th({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function Th({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <th className={`px-4 py-3 font-sans text-[11px] uppercase tracking-[0.18em] text-charcoal/60 ${className}`}>
+    <th
+      className={`px-4 py-3 font-sans text-[11px] uppercase tracking-[0.18em] text-charcoal/60 ${className}`}
+    >
       {children}
     </th>
   );

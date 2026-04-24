@@ -1,9 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { reviews as seedReviews, type ProductReview } from "@/components/admin/admin-data";
+import { toast } from "sonner";
+import type { ProductReview } from "@/services";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
+import { useAdminReviews, useUpdateReviewStatus } from "@/lib/queries";
 
-const TONE: Record<ProductReview["status"], "neutral" | "good" | "warn" | "bad" | "info"> = {
+const TONE: Record<
+  ProductReview["status"],
+  "neutral" | "good" | "warn" | "bad" | "info"
+> = {
   PUBLISHED: "good",
   PENDING: "warn",
   FLAGGED: "bad",
@@ -23,13 +28,22 @@ export const Route = createFileRoute("/admin/content")({
 });
 
 function AdminContent() {
-  const [reviews, setReviews] = useState(seedReviews);
+  const { data: reviews = [], isLoading } = useAdminReviews();
+  const updateStatus = useUpdateReviewStatus();
   const [filter, setFilter] = useState<ProductReview["status"] | "ALL">("ALL");
 
-  const filtered = filter === "ALL" ? reviews : reviews.filter((r) => r.status === filter);
+  const filtered =
+    filter === "ALL" ? reviews : reviews.filter((r) => r.status === filter);
 
-  const setStatus = (id: string, status: ProductReview["status"]) =>
-    setReviews((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
+  function setStatus(id: string, status: ProductReview["status"]) {
+    updateStatus.mutate(
+      { id, status },
+      {
+        onSuccess: () => toast.success(`Marked ${status.toLowerCase()}.`),
+        onError: (e) => toast.error(e.message),
+      },
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -56,53 +70,69 @@ function AdminContent() {
         ))}
       </div>
 
-      <div className="space-y-4">
-        {filtered.map((r) => (
-          <article
-            key={r.id}
-            className="rounded-2xl border border-border/60 bg-warm-white p-5 shadow-soft"
-          >
-            <div className="flex flex-wrap items-baseline justify-between gap-3">
-              <div>
-                <p className="font-mono text-[12px] text-charcoal/55">{r.id}</p>
-                <p className="mt-1 font-display text-lg text-charcoal">{r.productName}</p>
-                <p className="font-sans text-[12px] text-charcoal/55">
-                  {r.buyerName} · {"★".repeat(r.rating)}
-                  {"☆".repeat(5 - r.rating)}
-                </p>
+      {isLoading ? (
+        <p className="font-sans text-sm text-charcoal/60">Loading reviews…</p>
+      ) : (
+        <div className="space-y-4">
+          {filtered.map((r) => (
+            <article
+              key={r.id}
+              className="rounded-2xl border border-border/60 bg-warm-white p-5 shadow-soft"
+            >
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <div>
+                  <p className="font-mono text-[12px] text-charcoal/55">
+                    {r.id}
+                  </p>
+                  <p className="mt-1 font-display text-lg text-charcoal">
+                    {r.productName}
+                  </p>
+                  <p className="font-sans text-[12px] text-charcoal/55">
+                    {r.buyerName} · {"★".repeat(r.rating)}
+                    {"☆".repeat(5 - r.rating)}
+                  </p>
+                </div>
+                <StatusPill label={r.status.toLowerCase()} tone={TONE[r.status]} />
               </div>
-              <StatusPill label={r.status.toLowerCase()} tone={TONE[r.status]} />
-            </div>
 
-            <p className="mt-4 font-sans text-[14px] leading-relaxed text-charcoal/85">
-              "{r.body}"
-            </p>
+              <p className="mt-4 font-sans text-[14px] leading-relaxed text-charcoal/85">
+                "{r.body}"
+              </p>
 
-            <div className="mt-4 flex flex-wrap gap-2 border-t border-border/40 pt-4">
-              <button
-                onClick={() => setStatus(r.id, "PUBLISHED")}
-                className="rounded-full bg-clay px-4 py-1.5 font-sans text-[12px] font-medium text-warm-white hover:bg-clay-deep"
-              >
-                Publish
-              </button>
-              <button
-                onClick={() => setStatus(r.id, "REMOVED")}
-                className="rounded-full px-4 py-1.5 font-sans text-[12px] text-destructive hover:underline"
-              >
-                Remove
-              </button>
-              {r.status !== "FLAGGED" && (
+              <div className="mt-4 flex flex-wrap gap-2 border-t border-border/40 pt-4">
                 <button
-                  onClick={() => setStatus(r.id, "FLAGGED")}
-                  className="rounded-full px-4 py-1.5 font-sans text-[12px] text-charcoal/60 hover:text-charcoal hover:underline"
+                  disabled={updateStatus.isPending}
+                  onClick={() => setStatus(r.id, "PUBLISHED")}
+                  className="rounded-full bg-clay px-4 py-1.5 font-sans text-[12px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
                 >
-                  Flag for second review
+                  Publish
                 </button>
-              )}
-            </div>
-          </article>
-        ))}
-      </div>
+                <button
+                  disabled={updateStatus.isPending}
+                  onClick={() => setStatus(r.id, "REMOVED")}
+                  className="rounded-full px-4 py-1.5 font-sans text-[12px] text-destructive hover:underline disabled:opacity-60"
+                >
+                  Remove
+                </button>
+                {r.status !== "FLAGGED" && (
+                  <button
+                    disabled={updateStatus.isPending}
+                    onClick={() => setStatus(r.id, "FLAGGED")}
+                    className="rounded-full px-4 py-1.5 font-sans text-[12px] text-charcoal/60 hover:text-charcoal hover:underline disabled:opacity-60"
+                  >
+                    Flag for second review
+                  </button>
+                )}
+              </div>
+            </article>
+          ))}
+          {filtered.length === 0 && (
+            <p className="rounded-2xl border border-border/60 bg-cream/40 px-5 py-8 text-center font-sans text-[13px] text-charcoal/60">
+              No reviews in this state.
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

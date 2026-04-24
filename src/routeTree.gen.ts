@@ -24,6 +24,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as JoinIndexRouteImport } from './routes/join.index'
 import { Route as CreatorIndexRouteImport } from './routes/creator.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as JoinApplyRouteImport } from './routes/join.apply'
 import { Route as CreatorsCreatorIdRouteImport } from './routes/creators.$creatorId'
@@ -44,6 +45,10 @@ import { Route as AdminContentRouteImport } from './routes/admin.content'
 import { Route as AdminBuyersRouteImport } from './routes/admin.buyers'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as AccountSavedRouteImport } from './routes/account.saved'
+import { Route as AccountProfileRouteImport } from './routes/account.profile'
+import { Route as AccountOrdersRouteImport } from './routes/account.orders'
+import { Route as AccountAddressesRouteImport } from './routes/account.addresses'
+import { Route as AccountActivityRouteImport } from './routes/account.activity'
 
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
@@ -119,6 +124,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AccountRoute,
 } as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
@@ -220,6 +230,26 @@ const AccountSavedRoute = AccountSavedRouteImport.update({
   path: '/saved',
   getParentRoute: () => AccountRoute,
 } as any)
+const AccountProfileRoute = AccountProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountOrdersRoute = AccountOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountAddressesRoute = AccountAddressesRouteImport.update({
+  id: '/addresses',
+  path: '/addresses',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountActivityRoute = AccountActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AccountRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -234,6 +264,10 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/account/activity': typeof AccountActivityRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/account/orders': typeof AccountOrdersRoute
+  '/account/profile': typeof AccountProfileRoute
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
@@ -254,13 +288,13 @@ export interface FileRoutesByFullPath {
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/creator/': typeof CreatorIndexRoute
   '/join/': typeof JoinIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/account': typeof AccountRouteWithChildren
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
@@ -269,6 +303,10 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/account/activity': typeof AccountActivityRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/account/orders': typeof AccountOrdersRoute
+  '/account/profile': typeof AccountProfileRoute
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
@@ -289,6 +327,7 @@ export interface FileRoutesByTo {
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
   '/creator': typeof CreatorIndexRoute
   '/join': typeof JoinIndexRoute
@@ -307,6 +346,10 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/account/activity': typeof AccountActivityRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/account/orders': typeof AccountOrdersRoute
+  '/account/profile': typeof AccountProfileRoute
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
@@ -327,6 +370,7 @@ export interface FileRoutesById {
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/creator/': typeof CreatorIndexRoute
   '/join/': typeof JoinIndexRoute
@@ -346,6 +390,10 @@ export interface FileRouteTypes {
     | '/signin'
     | '/story'
     | '/styleguide'
+    | '/account/activity'
+    | '/account/addresses'
+    | '/account/orders'
+    | '/account/profile'
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
@@ -366,13 +414,13 @@ export interface FileRouteTypes {
     | '/creators/$creatorId'
     | '/join/apply'
     | '/products/$productId'
+    | '/account/'
     | '/admin/'
     | '/creator/'
     | '/join/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/account'
     | '/bag'
     | '/checkout'
     | '/explore'
@@ -381,6 +429,10 @@ export interface FileRouteTypes {
     | '/signin'
     | '/story'
     | '/styleguide'
+    | '/account/activity'
+    | '/account/addresses'
+    | '/account/orders'
+    | '/account/profile'
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
@@ -401,6 +453,7 @@ export interface FileRouteTypes {
     | '/creators/$creatorId'
     | '/join/apply'
     | '/products/$productId'
+    | '/account'
     | '/admin'
     | '/creator'
     | '/join'
@@ -418,6 +471,10 @@ export interface FileRouteTypes {
     | '/signin'
     | '/story'
     | '/styleguide'
+    | '/account/activity'
+    | '/account/addresses'
+    | '/account/orders'
+    | '/account/profile'
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
@@ -438,6 +495,7 @@ export interface FileRouteTypes {
     | '/creators/$creatorId'
     | '/join/apply'
     | '/products/$productId'
+    | '/account/'
     | '/admin/'
     | '/creator/'
     | '/join/'
@@ -568,6 +626,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/account/': {
+      id: '/account/'
+      path: '/'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof AccountRoute
     }
     '/products/$productId': {
       id: '/products/$productId'
@@ -709,15 +774,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountSavedRouteImport
       parentRoute: typeof AccountRoute
     }
+    '/account/profile': {
+      id: '/account/profile'
+      path: '/profile'
+      fullPath: '/account/profile'
+      preLoaderRoute: typeof AccountProfileRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/orders': {
+      id: '/account/orders'
+      path: '/orders'
+      fullPath: '/account/orders'
+      preLoaderRoute: typeof AccountOrdersRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/addresses': {
+      id: '/account/addresses'
+      path: '/addresses'
+      fullPath: '/account/addresses'
+      preLoaderRoute: typeof AccountAddressesRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/activity': {
+      id: '/account/activity'
+      path: '/activity'
+      fullPath: '/account/activity'
+      preLoaderRoute: typeof AccountActivityRouteImport
+      parentRoute: typeof AccountRoute
+    }
   }
 }
 
 interface AccountRouteChildren {
+  AccountActivityRoute: typeof AccountActivityRoute
+  AccountAddressesRoute: typeof AccountAddressesRoute
+  AccountOrdersRoute: typeof AccountOrdersRoute
+  AccountProfileRoute: typeof AccountProfileRoute
   AccountSavedRoute: typeof AccountSavedRoute
+  AccountIndexRoute: typeof AccountIndexRoute
 }
 
 const AccountRouteChildren: AccountRouteChildren = {
+  AccountActivityRoute: AccountActivityRoute,
+  AccountAddressesRoute: AccountAddressesRoute,
+  AccountOrdersRoute: AccountOrdersRoute,
+  AccountProfileRoute: AccountProfileRoute,
   AccountSavedRoute: AccountSavedRoute,
+  AccountIndexRoute: AccountIndexRoute,
 }
 
 const AccountRouteWithChildren =

@@ -74,8 +74,14 @@ export function NavBar() {
 
 function DashboardLink({ scrolled }: { scrolled: boolean }) {
   const { isAuthenticated, role } = useAuth();
-  if (!isAuthenticated || !role || role === "ROLE_BUYER") return null;
+  if (!isAuthenticated || !role) return null;
   const to = defaultPathForRole(role);
+  const label =
+    role === "ROLE_ADMIN"
+      ? "Admin Studio"
+      : role === "ROLE_CREATOR"
+        ? "Maker Studio"
+        : "Your Account";
   return (
     <Link
       to={to}
@@ -86,7 +92,7 @@ function DashboardLink({ scrolled }: { scrolled: boolean }) {
           : "bg-warm-white/15 text-warm-white ring-1 ring-warm-white/30 hover:bg-warm-white/25",
       )}
     >
-      {role === "ROLE_ADMIN" ? "Admin Studio" : "Maker Studio"}
+      {label}
     </Link>
   );
 }

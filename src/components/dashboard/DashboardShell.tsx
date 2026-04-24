@@ -4,8 +4,8 @@ import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 interface DashboardShellProps {
-  /** "creator" or "admin" — chooses sidebar links + accent. */
-  variant: "creator" | "admin";
+  /** "creator", "admin", or "buyer" — chooses sidebar links + eyebrow. */
+  variant: "creator" | "admin" | "buyer";
   /** Sidebar nav links. */
   links: { to: string; label: string; description?: string }[];
   children: ReactNode;
@@ -24,7 +24,12 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
   const { user, logout } = useAuth();
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const eyebrow = variant === "admin" ? "Admin Studio" : "Maker Studio";
+  const eyebrow =
+    variant === "admin"
+      ? "Admin Studio"
+      : variant === "creator"
+        ? "Maker Studio"
+        : "Your Account";
 
   // Close drawer on route change.
   useEffect(() => {

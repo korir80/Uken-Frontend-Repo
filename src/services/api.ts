@@ -1,21 +1,21 @@
 /**
- * Shared Axios instance for the Ukena Spring Boot backend.
+ * Frontend-only stub of the API layer.
  *
- * Wires up:
- *  - baseURL from VITE_API_BASE_URL
- *  - Bearer token from the auth token store (kept framework-agnostic
- *    so the AuthProvider can register/clear it without circular imports)
- *  - 401 interceptor that clears auth and triggers a /signin redirect
+ * The real backend is a separate Java Spring Boot project that will live
+ * on Railway. Until that backend is reachable, this module fakes the
+ * shape of the future API so call-sites don't have to change when we wire
+ * the real HTTP client back in.
  *
- * The Spring Boot team should respond with the standard envelope:
+ * Future swap path:
+ *   1. Re-introduce axios (or fetch) inside `request()` below.
+ *   2. Point `baseURL` at the Railway-hosted Spring Boot service.
+ *   3. Delete the seed-resolver branches.
+ *
+ * The Spring Boot envelope that will replace the stubbed responses:
  *   { success: boolean, data: any, message: string, errors: [] }
- * — `unwrap()` below normalises that to just `data`.
+ * `unwrap()` already handles either the bare body or the envelope so
+ * existing services continue to compile.
  */
-import axios, {
-  type AxiosInstance,
-  type AxiosResponse,
-  type InternalAxiosRequestConfig,
-} from "axios";
 
 export interface ApiEnvelope<T> {
   success: boolean;
@@ -24,18 +24,13 @@ export interface ApiEnvelope<T> {
   errors?: string[];
 }
 
-const baseURL =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
-  "http://localhost:8080/api";
-
-export const api: AxiosInstance = axios.create({
-  baseURL,
-  withCredentials: true, // allow httpOnly cookie-based sessions when backend opts in
-  headers: { "Content-Type": "application/json" },
-});
+export interface ApiResponse<T> {
+  data: T;
+  status: number;
+}
 
 /* ------------------------------------------------------------------ */
-/* Token store — populated by AuthProvider, read by request interceptor */
+/* Token store — kept so AuthProvider can compile without changes      */
 /* ------------------------------------------------------------------ */
 
 let currentToken: string | null = null;
@@ -45,41 +40,68 @@ export function setAuthToken(token: string | null) {
   currentToken = token;
 }
 
+export function getAuthToken() {
+  return currentToken;
+}
+
 export function registerUnauthorizedHandler(handler: () => void) {
   onUnauthorized = handler;
 }
 
-/* ------------------------------------------------------------------ */
-/* Interceptors                                                        */
-/* ------------------------------------------------------------------ */
+/** Test hook so a service stub can simulate a 401 if it ever needs to. */
+export function triggerUnauthorized() {
+  currentToken = null;
+  onUnauthorized?.();
+}
 
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  if (currentToken && config.headers) {
-    config.headers.Authorization = `Bearer ${currentToken}`;
-  }
-  return config;
-});
-
-api.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error) => {
-    const status = error?.response?.status;
-    if (status === 401) {
-      currentToken = null;
-      onUnauthorized?.();
-    }
-    return Promise.reject(error);
-  },
-);
+/* ------------------------------------------------------------------ */
+/* Stubbed transport                                                   */
+/* ------------------------------------------------------------------ */
 
 /**
- * Unwrap the standard Spring Boot envelope. Falls back to the raw body
- * if the backend returns a bare payload (useful during early dev).
+ * `api` keeps a tiny axios-like surface so service files can keep their
+ * existing shape. None of these methods touch the network — services in
+ * this folder build their own fake responses from local seed data.
  */
-export function unwrap<T>(response: AxiosResponse<ApiEnvelope<T> | T>): T {
+export const api = {
+  async get<T = unknown>(_path: string, _config?: unknown): Promise<ApiResponse<T>> {
+    throw new Error(
+      "api.get is a stub. Service modules should resolve from seed data " +
+        "rather than calling api.get directly while the Spring Boot backend " +
+        "is not yet wired.",
+    );
+  },
+  async post<T = unknown>(_path: string, _body?: unknown, _config?: unknown): Promise<ApiResponse<T>> {
+    throw new Error(
+      "api.post is a stub. Service modules should resolve from seed data.",
+    );
+  },
+  async put<T = unknown>(_path: string, _body?: unknown, _config?: unknown): Promise<ApiResponse<T>> {
+    throw new Error(
+      "api.put is a stub. Service modules should resolve from seed data.",
+    );
+  },
+  async delete<T = unknown>(_path: string, _config?: unknown): Promise<ApiResponse<T>> {
+    throw new Error(
+      "api.delete is a stub. Service modules should resolve from seed data.",
+    );
+  },
+};
+
+/**
+ * Same signature as before so call sites in the service files keep working.
+ * Accepts the future Spring Boot envelope or a bare payload.
+ */
+export function unwrap<T>(response: { data: ApiEnvelope<T> | T }): T {
   const body = response.data as ApiEnvelope<T> | T;
   if (body && typeof body === "object" && "success" in (body as object)) {
     return (body as ApiEnvelope<T>).data;
   }
   return body as T;
+}
+
+/** Helper for stub services to mimic network latency without forcing it. */
+export function fakeResolve<T>(value: T, delayMs = 0): Promise<T> {
+  if (delayMs <= 0) return Promise.resolve(value);
+  return new Promise((res) => setTimeout(() => res(value), delayMs));
 }

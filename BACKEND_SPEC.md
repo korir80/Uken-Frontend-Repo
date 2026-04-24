@@ -1185,7 +1185,12 @@ When you flip `VITE_USE_MOCK_API=false`, walk this list:
 - [ ] `/creators/me`, `/creators/me/products`, `/creators/me/orders` infer `creatorId` from the JWT, not from a path/body param.
 - [ ] `/orders` POST recomputes `totalPence` from products — never trusts the client total.
 - [ ] 401 responses use the envelope so the frontend's `triggerUnauthorized()` fires cleanly.
-- [ ] `/media/upload` accepts `multipart/form-data` with field name **`file`** (the frontend sends exactly that).
+- [ ] **No `/media/upload` endpoint exists.** Image URLs arrive as plain strings inside DTOs (uploaded browser-side to Cloudinary). Validate they are `https://` URLs.
+- [ ] `/cart` and `/cart/sync` are wired — guest carts merge in on login (max-quantity rule per `productId`).
+- [ ] `/users/me/saved/{products,creators}` add/remove endpoints return the **full updated array**, not the toggled item.
+- [ ] `/users/me/addresses` enforces "at most one default per buyer".
+- [ ] `/applications` (POST) is **public** — buyers apply before they have an account.
+- [ ] On `/admin/applications/{id}/status` → `APPROVED`, the server creates a `User(ROLE_CREATOR)` + `Creator` row and links them (see §6.13).
 - [ ] `OPTIONS` preflight returns 204 with the same CORS headers.
 
 ---

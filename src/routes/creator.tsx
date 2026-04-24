@@ -4,6 +4,7 @@ import { DashboardShell } from "@/components/dashboard/DashboardShell";
 
 const CREATOR_LINKS = [
   { to: "/creator", label: "Overview", description: "Today at a glance" },
+  { to: "/creator/analytics", label: "Analytics", description: "Revenue, top buyers, funnel" },
   { to: "/creator/products", label: "Pieces", description: "Your catalogue" },
   { to: "/creator/orders", label: "Orders", description: "Awaiting your hands" },
   { to: "/creator/profile", label: "Your story", description: "Profile & images" },

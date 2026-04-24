@@ -1,5 +1,9 @@
-import { api, unwrap } from "./api";
-import type { CreatorDetail } from "./creatorService";
+/**
+ * Profile service — stubbed in-memory creator profile editor.
+ * Will be replaced by /api/creators/me on Spring Boot.
+ */
+import { fakeResolve } from "./api";
+import { creatorService, type CreatorDetail } from "./creatorService";
 
 export interface CreatorProfileUpdate {
   firstName?: string;
@@ -12,29 +16,37 @@ export interface CreatorProfileUpdate {
 
 export interface UploadedMedia {
   url: string;
-  /** Backend-assigned id, useful for ordering / deletion */
   id: string;
 }
 
+const overrides: Record<string, CreatorProfileUpdate> = {};
+
 export const profileService = {
-  async getCreatorProfile(): Promise<CreatorDetail> {
-    const res = await api.get("/creators/me");
-    return unwrap<CreatorDetail>(res);
+  async getCreatorProfile(creatorId: string): Promise<CreatorDetail> {
+    const base = await creatorService.getCreatorById(creatorId);
+    const o = overrides[creatorId] ?? {};
+    return {
+      ...base,
+      firstName: o.firstName ?? base.firstName,
+      fullName: o.fullName ?? base.fullName,
+      region: o.region ?? base.region,
+      craft: o.craft ?? base.craft,
+      storyParagraphs: o.storyParagraphs ?? base.storyParagraphs,
+      pullQuote: o.pullQuote ?? base.pullQuote,
+    };
   },
 
   async updateCreatorProfile(
+    creatorId: string,
     payload: CreatorProfileUpdate,
   ): Promise<CreatorDetail> {
-    const res = await api.put("/creators/me", payload);
-    return unwrap<CreatorDetail>(res);
+    overrides[creatorId] = { ...(overrides[creatorId] ?? {}), ...payload };
+    return profileService.getCreatorProfile(creatorId);
   },
 
   async uploadImage(file: File): Promise<UploadedMedia> {
-    const form = new FormData();
-    form.append("file", file);
-    const res = await api.post("/media/upload", form, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return unwrap<UploadedMedia>(res);
+    // Generate a temporary local URL — sufficient for the dashboard preview.
+    const url = URL.createObjectURL(file);
+    return fakeResolve({ url, id: `mock-${Date.now()}` });
   },
 };

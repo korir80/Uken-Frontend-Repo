@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { BagIndicator } from "@/components/product/BagIndicator";
+import { useAuth, defaultPathForRole } from "@/lib/auth";
 
 const navLinks = [
   { label: "Shop", to: "/shop" as const },
@@ -62,10 +63,30 @@ export function NavBar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-1 md:gap-2">
+        <div className="flex items-center gap-3 md:gap-4">
+          <DashboardLink scrolled={scrolled} />
           <BagIndicator tone={scrolled ? "light" : "dark"} />
         </div>
       </div>
     </header>
+  );
+}
+
+function DashboardLink({ scrolled }: { scrolled: boolean }) {
+  const { isAuthenticated, role } = useAuth();
+  if (!isAuthenticated || !role || role === "ROLE_BUYER") return null;
+  const to = defaultPathForRole(role);
+  return (
+    <Link
+      to={to}
+      className={cn(
+        "hidden rounded-full px-3.5 py-1.5 font-sans text-[12px] font-medium transition-colors md:inline-flex",
+        scrolled
+          ? "bg-clay text-warm-white hover:bg-clay-deep"
+          : "bg-warm-white/15 text-warm-white ring-1 ring-warm-white/30 hover:bg-warm-white/25",
+      )}
+    >
+      {role === "ROLE_ADMIN" ? "Admin Studio" : "Maker Studio"}
+    </Link>
   );
 }

@@ -151,11 +151,16 @@ export function useAuth(): AuthContextValue {
 }
 
 /**
- * Default landing path per role — used by ProtectedRoute and the
- * post-login redirect logic.
+ * Default landing path per role — used by the post-login redirect logic.
+ *
+ * Mock email convention (while Spring Boot is offline):
+ *   *@admin.ukena    → /admin
+ *   *@creator.ukena  → /creator
+ *   *@buyer.ukena    → /account
  */
 export function defaultPathForRole(role: UserRole | null): string {
-  if (role === "ROLE_CREATOR") return "/dashboard";
+  if (role === "ROLE_ADMIN") return "/admin";
+  if (role === "ROLE_CREATOR") return "/creator";
   if (role === "ROLE_BUYER") return "/account";
   return "/";
 }

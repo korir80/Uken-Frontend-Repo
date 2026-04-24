@@ -988,6 +988,62 @@ CREATE TABLE featured_slots (
 );
 
 INSERT INTO featured_slots(position) VALUES (1),(2),(3),(4);
+
+-- ── Cart (one row per buyer × productId) ──
+CREATE TABLE cart_lines (
+  buyer_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  product_id    VARCHAR(80) NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  quantity      INTEGER NOT NULL CHECK (quantity > 0 AND quantity <= 99),
+  -- Snapshots so the bag renders without a product re-fetch:
+  product_name      VARCHAR(200) NOT NULL,
+  price_pence       INTEGER NOT NULL,
+  image             TEXT NOT NULL,
+  creator_id        VARCHAR(80) NOT NULL REFERENCES creators(id),
+  creator_full_name VARCHAR(120) NOT NULL,
+  creator_region    VARCHAR(120) NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (buyer_user_id, product_id)
+);
+
+-- ── Saved (wishlist) — one row per buyer × kind × refId ──
+CREATE TYPE saved_kind AS ENUM ('PRODUCT','CREATOR');
+
+CREATE TABLE saved_items (
+  buyer_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  kind          saved_kind NOT NULL,
+  ref_id        VARCHAR(80) NOT NULL,                      -- product slug or creator slug
+  saved_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (buyer_user_id, kind, ref_id)
+);
+CREATE INDEX saved_items_kind_idx ON saved_items(buyer_user_id, kind);
+
+-- ── Buyer addresses ──
+CREATE TABLE buyer_addresses (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  buyer_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  label         VARCHAR(80)  NOT NULL,
+  full_name     VARCHAR(120) NOT NULL,
+  line1         VARCHAR(200) NOT NULL,
+  line2         VARCHAR(200),
+  city          VARCHAR(120) NOT NULL,
+  postcode      VARCHAR(20)  NOT NULL,
+  country       VARCHAR(120) NOT NULL,
+  is_default    BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX buyer_addresses_buyer_idx ON buyer_addresses(buyer_user_id);
+-- At most one default per buyer:
+CREATE UNIQUE INDEX buyer_addresses_one_default
+  ON buyer_addresses(buyer_user_id) WHERE is_default;
+
+-- ── Product moderation status (admin override) ──
+CREATE TYPE product_moderation_status AS ENUM ('LIVE','DRAFT','TAKEN_DOWN');
+
+CREATE TABLE product_moderation (
+  product_id VARCHAR(80) PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
+  status     product_moderation_status NOT NULL DEFAULT 'LIVE',
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 ```
 
 ---

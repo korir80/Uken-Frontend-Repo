@@ -88,9 +88,9 @@ const STATUS_INDEX: Record<OrderStatus, number> = {
 
 function OrderDetailPage() {
   const { orderId } = Route.useParams();
-  const initial = Route.useLoaderData().order;
+  const initial = Route.useLoaderData().order as OrderDto;
   // Subscribe to the cache so any background refetch updates the UI.
-  const { data: order = initial } = useBuyerOrder(orderId);
+  const { data: order = initial } = useBuyerOrder(orderId) as { data: OrderDto | undefined };
   const { addItem } = useCart();
   const qc = useQueryClient();
   const [cancelling, setCancelling] = useState(false);

@@ -248,9 +248,7 @@ logging.level.root: INFO
 | `PORT` | HTTP port | injected |
 | `JWT_SECRET` | 256-bit random string, base64 | `openssl rand -base64 64` |
 | `CORS_ORIGINS` | Comma-separated origins | `https://ukena.co.uk,https://www.ukena.co.uk` |
-| `MEDIA_PROVIDER` | `cloudinary` or `s3` | `cloudinary` |
-| `CLOUDINARY_URL` | If using Cloudinary | `cloudinary://key:secret@cloud` |
-| `S3_BUCKET` / `S3_REGION` / `S3_ACCESS_KEY` / `S3_SECRET_KEY` | If using S3 | — |
+| _(no media vars)_ | Image binaries never reach the backend. The browser uploads to Cloudinary directly. | — |
 | `SPRING_PROFILES_ACTIVE` | `prod` | `prod` |
 
 ---

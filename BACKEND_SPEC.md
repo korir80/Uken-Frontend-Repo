@@ -6,6 +6,18 @@
 >
 > **Rule of thumb.** Match the JSON shapes in §6 exactly. If you change a field name, you must update the frontend at the same time — there is no translation layer.
 
+> **Last updated: 2026-04-24.** Material changes since the previous revision:
+> 1. **Image uploads moved off the backend entirely.** The browser uploads
+>    directly to Cloudinary via an unsigned preset; the backend only stores
+>    URL strings (see §10). Drop any `/api/media/upload` work-in-progress.
+> 2. **New buyer-scoped resources:** `/cart` (+`/cart/sync`),
+>    `/users/me/saved/{products,creators}` (+`/sync`), `/users/me/addresses`.
+> 3. **New admin endpoints:** product moderation status (`/admin/products/...`),
+>    creator suspension, payout cycle (`/admin/payouts/run`).
+> 4. **Application submission (`POST /applications`) is public** — buyers apply
+>    before having an account; the approval flow creates the User + Creator.
+
+
 ---
 
 ## Table of contents

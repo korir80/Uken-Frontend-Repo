@@ -198,99 +198,67 @@ export function Hero() {
 function FloatingProductCard() {
   return (
     <div
-      className="group/card mx-auto block w-[calc(100%-32px)] transition-all duration-300 md:mx-0 md:w-[230px]"
-      style={{
-        backgroundColor: "rgba(18,10,5,0.78)",
-        border: "1px solid rgba(212,169,106,0.2)",
-        borderRadius: 14,
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-      }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.borderColor = "rgba(212,169,106,0.38)")
-      }
-      onMouseLeave={(e) =>
-        (e.currentTarget.style.borderColor = "rgba(212,169,106,0.2)")
-      }
+      className="group/card mx-auto block w-[calc(100%-32px)] overflow-hidden rounded-lg border border-gold/25 bg-charcoal/75 shadow-hero backdrop-blur-xl transition-all duration-300 hover:border-gold/45 md:mx-0 md:w-[278px]"
     >
-      {/* Image / placeholder gradient */}
+      {/* Image collage: craft foreground against the safari mood */}
       <Link
         to="/shop"
         aria-label="Shop the collection"
-        className="block"
-        style={{
-          height: 148,
-          borderTopLeftRadius: 14,
-          borderTopRightRadius: 14,
-          background:
-            "linear-gradient(155deg, #C4904A 0%, #8B5020 55%, #4A2408 100%)",
-        }}
-      />
+        className="relative block h-[178px] overflow-hidden"
+      >
+        <img
+          src={beadMarket}
+          alt="Kenyan beadwork and craft materials arranged by artisans"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,oklch(from_var(--charcoal)_l_c_h_/_0.24)_48%,oklch(from_var(--charcoal)_l_c_h_/_0.86)_100%)]" />
+        <img
+          src={baskets}
+          alt="Handwoven Kenyan baskets"
+          className="absolute bottom-3 right-3 h-20 w-20 rounded-md border border-warm-white/20 object-cover shadow-lift"
+        />
+        <img
+          src={craftMarket}
+          alt="Kenyan craft market textiles and handmade pieces"
+          className="absolute bottom-8 left-3 h-14 w-14 rounded-md border border-gold/30 object-cover shadow-card"
+        />
+        <span className="absolute left-4 top-4 rounded-sm border border-gold/35 bg-charcoal/55 px-2.5 py-1 font-sans text-[9px] uppercase tracking-[0.16em] text-gold-soft backdrop-blur-md">
+          Field notes
+        </span>
+      </Link>
 
       {/* Body */}
       <div style={{ padding: "16px 18px 18px" }}>
         <p
-          className="font-sans"
-          style={{
-            fontSize: 10,
-            color: "rgba(212,169,106,0.65)",
-            letterSpacing: "0.05em",
-            margin: 0,
-          }}
+          className="m-0 font-sans text-[10px] tracking-[0.05em] text-gold-soft/75"
         >
-          by Wanjiru Kamau · Nairobi
+          Mara light · beadwork · woven fibre
         </p>
         <h3
-          className="font-display"
-          style={{
-            fontSize: 17,
-            fontWeight: 400,
-            lineHeight: 1.25,
-            color: "#FAF7F2",
-            margin: "6px 0 16px 0",
-          }}
+          className="my-2 mb-4 font-display text-[19px] font-normal leading-tight text-warm-white"
         >
-          Maasai beaded collar necklace
+          Safari-born pieces with a maker's hand
         </h3>
 
         <div className="flex items-center justify-between">
           <span
             className="font-display"
-            style={{ fontSize: 20, fontWeight: 400, color: "#FAF7F2" }}
+            style={{ fontSize: 20, fontWeight: 400, color: "var(--warm-white)" }}
           >
-            £48
+            From £34
           </span>
           <Link
             to="/shop"
-            className="font-sans uppercase transition-colors"
-            style={{
-              backgroundColor: "#D4A96A",
-              color: "#0D0805",
-              padding: "7px 14px",
-              borderRadius: 4,
-              fontSize: 11,
-              fontWeight: 500,
-              letterSpacing: "0.04em",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "#C4904A")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "#D4A96A")
-            }
+            className="rounded-sm bg-gold-soft px-3.5 py-2 font-sans text-[11px] font-medium uppercase tracking-[0.04em] text-charcoal transition-colors hover:bg-gold"
           >
-            Add to bag
+            Explore
           </Link>
         </div>
 
         {/* Divider + secondary card CTAs */}
         <div
           aria-hidden
-          className="mt-4"
-          style={{
-            height: 1,
-            backgroundColor: "rgba(212,169,106,0.15)",
-          }}
+          className="mt-4 h-px bg-gold/20"
         />
         <div className="flex flex-col gap-2 pt-3">
           <Link

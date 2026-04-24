@@ -15,11 +15,15 @@ import {
 } from "@tanstack/react-query";
 
 import {
+  adminService,
   applicationService,
   creatorService,
   orderService,
   productService,
   profileService,
+  savedService,
+  type AdminBuyerRow,
+  type ApplicationStatus,
   type ApplicationSubmitPayload,
   type ArtisanApplication,
   type BuyerAddress,
@@ -27,13 +31,18 @@ import {
   type CreateOrderPayload,
   type CreatorDetail,
   type CreatorFilters,
+  type CreatorPayout,
   type CreatorProfileUpdate,
   type CreatorSummary,
+  type FeaturedSlot,
   type OrderDto,
   type OrderStatus,
   type ProductCreatePayload,
   type ProductDto,
+  type ProductModerationRow,
+  type ProductModerationStatus,
   type ProductUpdatePayload,
+  type ProductReview,
   type UploadedMedia,
 } from "@/services";
 
@@ -48,9 +57,18 @@ export const queryKeys = {
     ["products", "creator", creatorId] as const,
   ordersBuyer: () => ["orders", "buyer"] as const,
   ordersCreator: () => ["orders", "creator"] as const,
+  ordersAll: () => ["orders", "all"] as const,
   order: (id: string) => ["orders", "detail", id] as const,
   myProfile: () => ["profile", "me"] as const,
   addresses: () => ["addresses", "me"] as const,
+  savedProducts: () => ["saved", "products"] as const,
+  savedCreators: () => ["saved", "creators"] as const,
+  applications: () => ["admin", "applications"] as const,
+  adminPayouts: () => ["admin", "payouts"] as const,
+  adminReviews: () => ["admin", "reviews"] as const,
+  adminFeatured: () => ["admin", "featured"] as const,
+  adminBuyers: () => ["admin", "buyers"] as const,
+  adminProductStatuses: () => ["admin", "products", "statuses"] as const,
 };
 
 /* ---------------- Query options factories (for use in route loaders) ---------------- */

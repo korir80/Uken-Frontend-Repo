@@ -1,19 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { ChevronRight } from "lucide-react";
 import {
   PageHeader,
   StatusPill,
   EmptyState,
 } from "@/components/dashboard/DashboardShell";
-import { orderService, type OrderDto, type OrderStatus } from "@/services";
-import { formatGBP, useCart } from "@/lib/cart";
+import { useBuyerOrders } from "@/lib/queries";
+import { type OrderStatus } from "@/services";
+import { formatGBP } from "@/lib/cart";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/account/orders")({
   component: BuyerOrders,
 });
 
-const STATUS_TONE: Record<OrderStatus, "neutral" | "good" | "warn" | "bad" | "info"> = {
+const STATUS_TONE: Record<
+  OrderStatus,
+  "neutral" | "good" | "warn" | "bad" | "info"
+> = {
   PENDING: "warn",
   PREPARING: "info",
   SHIPPED: "info",
@@ -30,33 +36,14 @@ const FILTERS: { label: string; value: "all" | OrderStatus }[] = [
 ];
 
 function BuyerOrders() {
-  const [orders, setOrders] = useState<OrderDto[]>([]);
+  const { data: orders = [], isLoading } = useBuyerOrders();
   const [filter, setFilter] = useState<"all" | OrderStatus>("all");
-  const [openId, setOpenId] = useState<string | null>(null);
-  const { addItem } = useCart();
-
-  useEffect(() => {
-    orderService.getOrdersByBuyer().then(setOrders);
-  }, []);
 
   const filtered = useMemo(
-    () => (filter === "all" ? orders : orders.filter((o) => o.status === filter)),
+    () =>
+      filter === "all" ? orders : orders.filter((o) => o.status === filter),
     [filter, orders],
   );
-
-  function reorder(o: OrderDto) {
-    o.items.forEach((it) => {
-      for (let i = 0; i < it.quantity; i++) {
-        addItem({
-          productId: it.productId,
-          name: it.name,
-          pricePence: it.pricePence,
-          image: it.image,
-          creator: it.creator,
-        });
-      }
-    });
-  }
 
   return (
     <div className="space-y-8">
@@ -84,7 +71,25 @@ function BuyerOrders() {
         ))}
       </div>
 
-      {filtered.length === 0 ? (
+      {isLoading ? (
+        <ul className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <li
+              key={i}
+              className="rounded-2xl border border-border/60 bg-warm-white p-4 sm:p-5"
+            >
+              <div className="flex items-center gap-4">
+                <Skeleton className="h-14 w-14 rounded-lg" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-3 w-40" />
+                </div>
+                <Skeleton className="h-6 w-16 rounded-full" />
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : filtered.length === 0 ? (
         <EmptyState
           title="No orders here."
           body={
@@ -103,117 +108,47 @@ function BuyerOrders() {
         />
       ) : (
         <ul className="space-y-3">
-          {filtered.map((o) => {
-            const open = openId === o.id;
-            return (
-              <li
-                key={o.id}
-                className="overflow-hidden rounded-2xl border border-border/60 bg-warm-white"
+          {filtered.map((o) => (
+            <li key={o.id}>
+              <Link
+                to="/account/orders/$orderId"
+                params={{ orderId: o.id }}
+                className="group flex flex-col gap-3 rounded-2xl border border-border/60 bg-warm-white p-4 transition-all hover:border-clay/50 hover:shadow-soft sm:flex-row sm:items-center sm:justify-between sm:p-5"
               >
-                <button
-                  type="button"
-                  onClick={() => setOpenId(open ? null : o.id)}
-                  className="flex w-full flex-col gap-3 p-4 text-left transition-colors hover:bg-cream/40 sm:flex-row sm:items-center sm:justify-between sm:p-5"
-                >
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={o.items[0]?.image}
-                      alt=""
-                      className="h-14 w-14 flex-shrink-0 rounded-lg object-cover"
-                    />
-                    <div className="min-w-0">
-                      <p className="font-display text-base text-charcoal">{o.id}</p>
-                      <p className="truncate font-sans text-[12px] text-charcoal/60">
-                        {new Date(o.createdAt).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}{" "}
-                        · {o.items.length} {o.items.length === 1 ? "piece" : "pieces"}
-                      </p>
-                    </div>
+                <div className="flex items-center gap-4">
+                  <img
+                    src={o.items[0]?.image}
+                    alt=""
+                    className="h-14 w-14 flex-shrink-0 rounded-lg object-cover"
+                  />
+                  <div className="min-w-0">
+                    <p className="font-display text-base text-charcoal">
+                      {o.id}
+                    </p>
+                    <p className="truncate font-sans text-[12px] text-charcoal/60">
+                      {new Date(o.createdAt).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}{" "}
+                      · {o.items.length}{" "}
+                      {o.items.length === 1 ? "piece" : "pieces"}
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between gap-4 sm:gap-6">
-                    <StatusPill label={o.status.toLowerCase()} tone={STATUS_TONE[o.status]} />
-                    <span className="font-display text-base text-charcoal">
-                      {formatGBP(o.totalPence)}
-                    </span>
-                    <span
-                      aria-hidden
-                      className={cn(
-                        "font-sans text-[14px] text-charcoal/40 transition-transform",
-                        open && "rotate-180",
-                      )}
-                    >
-                      ▾
-                    </span>
-                  </div>
-                </button>
-
-                {open && (
-                  <div className="border-t border-border/60 bg-cream/30 p-4 sm:p-6">
-                    <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
-                      {/* Items */}
-                      <ul className="space-y-3">
-                        {o.items.map((it) => (
-                          <li
-                            key={it.productId}
-                            className="flex items-center gap-3 rounded-xl bg-warm-white p-3"
-                          >
-                            <img
-                              src={it.image}
-                              alt=""
-                              className="h-16 w-16 flex-shrink-0 rounded-lg object-cover"
-                            />
-                            <div className="min-w-0 flex-1">
-                              <Link
-                                to="/products/$productId"
-                                params={{ productId: it.productId }}
-                                className="block truncate font-display text-base text-charcoal hover:text-clay"
-                              >
-                                {it.name}
-                              </Link>
-                              <p className="font-sans text-[11px] text-charcoal/55">
-                                {it.creator.fullName} · {it.creator.region}
-                              </p>
-                              <p className="mt-1 font-sans text-[12px] text-charcoal/70">
-                                Qty {it.quantity} · {formatGBP(it.pricePence)}
-                              </p>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-
-                      {/* Delivery + actions */}
-                      <div className="space-y-4">
-                        <div>
-                          <p className="font-sans text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-                            Delivery
-                          </p>
-                          <div className="mt-2 font-sans text-[13px] leading-relaxed text-charcoal/80">
-                            <p>{o.delivery.fullName}</p>
-                            <p>{o.delivery.addressLine1}</p>
-                            {o.delivery.addressLine2 && <p>{o.delivery.addressLine2}</p>}
-                            <p>
-                              {o.delivery.city}, {o.delivery.postcode}
-                            </p>
-                            <p>{o.delivery.country}</p>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => reorder(o)}
-                          className="w-full rounded-full bg-clay px-5 py-2.5 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-warm-white hover:bg-clay-deep"
-                        >
-                          Reorder pieces
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </li>
-            );
-          })}
+                </div>
+                <div className="flex items-center justify-between gap-4 sm:gap-6">
+                  <StatusPill
+                    label={o.status.toLowerCase()}
+                    tone={STATUS_TONE[o.status]}
+                  />
+                  <span className="font-display text-base text-charcoal">
+                    {formatGBP(o.totalPence)}
+                  </span>
+                  <ChevronRight className="h-4 w-4 text-charcoal/30 transition-transform group-hover:translate-x-0.5 group-hover:text-clay" />
+                </div>
+              </Link>
+            </li>
+          ))}
         </ul>
       )}
     </div>

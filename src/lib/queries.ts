@@ -193,6 +193,26 @@ export function useUpdateOrderStatus() {
     mutationFn: ({ id, status }) => orderService.updateStatus(id, status),
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: queryKeys.ordersCreator() });
+      qc.invalidateQueries({ queryKey: queryKeys.ordersAll() });
+      qc.setQueryData(queryKeys.order(data.id), data);
+    },
+  });
+}
+
+export function useAdminOrders() {
+  return useQuery<OrderDto[]>({
+    queryKey: queryKeys.ordersAll(),
+    queryFn: () => orderService.getAllOrders(),
+  });
+}
+
+export function useRefundOrder() {
+  const qc = useQueryClient();
+  return useMutation<OrderDto, Error, string>({
+    mutationFn: (id) => orderService.refund(id),
+    onSuccess: (data) => {
+      qc.invalidateQueries({ queryKey: queryKeys.ordersAll() });
+      qc.invalidateQueries({ queryKey: queryKeys.ordersBuyer() });
       qc.setQueryData(queryKeys.order(data.id), data);
     },
   });

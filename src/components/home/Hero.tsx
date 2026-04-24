@@ -1,12 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import savanna from "@/assets/authentic-savanna.jpg";
-import beadMarket from "@/assets/authentic-bead-market.jpg";
 
 /**
  * Hero — dark cinematic, editorial.
- * Balanced height, wavy bottom divider,
- * safari background, brief editorial copy.
+ * Tall first-screen hero with a safari background,
+ * brief editorial copy and a wavy bottom divider.
  */
 export function Hero() {
   return (
@@ -25,8 +24,8 @@ export function Hero() {
 
       {/* Content shell — snug, vertically centred */}
       <div
-        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-16 md:flex-row md:items-center md:justify-between md:px-10 md:py-20"
-        style={{ minHeight: "520px" }}
+        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-16 md:px-10 md:py-20"
+        style={{ minHeight: "max(600px, calc(100svh - 112px))" }}
       >
         {/* LEFT — copy block, tight grouping */}
         <div className="max-w-[600px] md:pl-[44px]">
@@ -64,11 +63,6 @@ export function Hero() {
             </Link>
           </div>
         </div>
-
-        {/* RIGHT — floating product card */}
-        <div className="mt-8 md:mt-0 md:pr-[52px]">
-          <FloatingProductCard />
-        </div>
       </div>
 
       {/* Wavy bottom border — sits above bg, below text/card */}
@@ -85,60 +79,5 @@ export function Hero() {
       </svg>
 
     </section>
-  );
-}
-
-/* ──────────────────────────────────────────────────────────────────────
- * FloatingProductCard
- * ────────────────────────────────────────────────────────────────────── */
-function FloatingProductCard() {
-  return (
-    <div
-      className="group/card mx-auto block w-[calc(100%-32px)] overflow-hidden rounded-lg border border-gold/25 bg-charcoal/75 shadow-hero backdrop-blur-xl transition-all duration-300 hover:border-gold/45 md:mx-0 md:w-[278px]"
-    >
-      {/* Image collage: craft foreground against the safari mood */}
-      <Link
-        to="/shop"
-        aria-label="Shop the collection"
-        className="relative block h-[178px] overflow-hidden"
-      >
-        <img
-          src={beadMarket}
-          alt="Kenyan beadwork and craft materials arranged by artisans"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-105"
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,oklch(from_var(--charcoal)_l_c_h_/_0.18)_52%,oklch(from_var(--charcoal)_l_c_h_/_0.78)_100%)]" />
-      </Link>
-
-      {/* Body */}
-      <div style={{ padding: "16px 18px 18px" }}>
-        <p
-          className="m-0 font-sans text-[10px] tracking-[0.05em] text-gold-soft/75"
-        >
-          Kenyan beadwork
-        </p>
-        <h3
-          className="my-2 mb-4 font-display text-[19px] font-normal leading-tight text-warm-white"
-        >
-          Handcrafted pieces
-        </h3>
-
-        <div className="flex items-center justify-between">
-          <span
-            className="font-display"
-            style={{ fontSize: 20, fontWeight: 400, color: "var(--warm-white)" }}
-          >
-            From £34
-          </span>
-          <Link
-            to="/shop"
-            className="rounded-sm bg-gold-soft px-3.5 py-2 font-sans text-[11px] font-medium uppercase tracking-[0.04em] text-charcoal transition-colors hover:bg-gold"
-          >
-            Explore
-          </Link>
-        </div>
-
-      </div>
-    </div>
   );
 }

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { Printer } from "lucide-react";
 import { Footer } from "@/components/home/Footer";
 import { useCart, formatGBP } from "@/lib/cart";
 

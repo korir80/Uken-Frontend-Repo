@@ -40,7 +40,7 @@
 | Migrations | **Flyway** | `src/main/resources/db/migration/V1__init.sql` etc. |
 | Auth | **Spring Security + JWT (jjwt 0.12.x)** | Stateless, `HS256`, 24h expiry. |
 | Mapping | **MapStruct 1.5+** | Compile-time entity ↔ DTO. |
-| Object storage | **Cloudinary** OR S3-compatible (Backblaze B2, Cloudflare R2) | See §10. |
+| Object storage | **None server-side.** The browser uploads images directly to Cloudinary via an unsigned preset (see §10). The backend only stores the resulting URL strings. |
 | Validation | **Jakarta Bean Validation** (`@Valid`, `@NotBlank`, etc.) | |
 | Testing | JUnit 5 + Spring Boot Test + **Testcontainers** (Postgres) | Integration tests run a real DB. |
 | Logging | SLF4J + Logback JSON encoder | Railway captures stdout. |

@@ -30,6 +30,45 @@ function CreatorProfile() {
   const [storyText, setStoryText] = useState("");
   const [saved, setSaved] = useState(false);
 
+  const upload = useUploadImage();
+  const portraitInputRef = useRef<HTMLInputElement>(null);
+  const headerInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingKind, setUploadingKind] = useState<
+    "portrait" | "header" | null
+  >(null);
+
+  async function handleImageReplace(
+    kind: "portrait" | "header",
+    file: File | undefined,
+  ) {
+    if (!file) return;
+    try {
+      validateImageFile(file);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Invalid image.");
+      return;
+    }
+    setUploadingKind(kind);
+    try {
+      const { url } = await upload.mutateAsync({
+        file,
+        folder: `ukena/creators/${creatorId}`,
+      });
+      await update.mutateAsync(
+        kind === "portrait" ? { portraitImage: url } : { headerImage: url },
+      );
+      toast.success(
+        kind === "portrait" ? "Portrait updated." : "Workshop image updated.",
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Upload failed.");
+    } finally {
+      setUploadingKind(null);
+      if (portraitInputRef.current) portraitInputRef.current.value = "";
+      if (headerInputRef.current) headerInputRef.current.value = "";
+    }
+  }
+
   useEffect(() => {
     if (!profile) return;
     setFirstName(profile.firstName);

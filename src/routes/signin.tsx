@@ -1,11 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useState, type FormEvent } from "react";
+import { useAuth, defaultPathForRole } from "@/lib/auth";
 
-/**
- * Placeholder /signin route — exists primarily so the api 401 interceptor
- * has a real destination to send users to once the Spring Boot backend
- * starts rejecting tokens. The full sign-in form will be built in the
- * next phase; for now, this is an intentional human pause.
- */
 export const Route = createFileRoute("/signin")({
   head: () => ({
     meta: [
@@ -13,41 +9,163 @@ export const Route = createFileRoute("/signin")({
       {
         name: "description",
         content:
-          "Sign in to your Ukena account to continue your conversation with the makers.",
+          "Sign in to your Ukena account. While the backend is in development, mock emails route you to the right dashboard.",
       },
     ],
   }),
   component: SignInPage,
 });
 
+const ROLE_HINTS: { label: string; email: string; tagline: string }[] = [
+  {
+    label: "Buyer",
+    email: "anya@buyer.ukena",
+    tagline: "Saved makers, recently viewed pieces, your bag.",
+  },
+  {
+    label: "Creator",
+    email: "wanjiru@creator.ukena",
+    tagline: "Manage your pieces, see new orders, edit your story.",
+  },
+  {
+    label: "Admin",
+    email: "review@admin.ukena",
+    tagline: "Moderate applications, oversee orders, curate the home.",
+  },
+];
+
 function SignInPage() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!email.trim()) return setError("Email is required");
+    if (!password.trim()) return setError("Password is required");
+    setSubmitting(true);
+    try {
+      const user = await login(email.trim(), password);
+      navigate({ to: defaultPathForRole(user.role) });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Sign-in failed");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-warm-white px-6">
-      <div className="max-w-md text-center">
-        <p className="font-sans text-[11px] uppercase tracking-[0.28em] text-clay">
-          Sign in
-        </p>
-        <h1 className="mt-4 font-display text-4xl leading-tight text-charcoal md:text-5xl">
-          Welcome back to Ukena.
-        </h1>
-        <p className="mt-5 font-sans text-base leading-relaxed text-charcoal/70">
-          Sign-in opens shortly. In the meantime, keep exploring the makers —
-          your bag and your saved stories will be waiting.
-        </p>
-        <div className="mt-8 flex items-center justify-center gap-4">
-          <Link
-            to="/explore"
-            className="inline-flex items-center justify-center rounded-full bg-clay px-6 py-3 font-sans text-sm font-medium text-warm-white transition-colors hover:bg-clay-deep"
-          >
-            Meet the makers
-          </Link>
+    <main className="flex min-h-screen items-center justify-center bg-warm-white px-6 py-16">
+      <div className="grid w-full max-w-5xl gap-12 md:grid-cols-2 md:items-start">
+        {/* Form */}
+        <section className="rounded-3xl bg-cream/60 p-8 shadow-soft md:p-10">
           <Link
             to="/"
-            className="inline-flex items-center justify-center font-sans text-sm text-charcoal/70 underline-offset-4 hover:text-charcoal hover:underline"
+            className="font-display text-2xl tracking-tight text-charcoal"
           >
-            Back to home
+            Ukena
           </Link>
-        </div>
+          <p className="section-label mt-6">Sign in</p>
+          <h1 className="mt-3 font-display text-3xl leading-tight text-charcoal md:text-4xl">
+            Welcome back.
+          </h1>
+          <p className="mt-3 font-sans text-sm leading-relaxed text-charcoal/70">
+            Enter any email below — your role is inferred from the address while
+            our backend is in development.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            <label className="block">
+              <span className="block font-sans text-[13px] font-medium text-charcoal">
+                Email
+              </span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@buyer.ukena"
+                className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-sm text-charcoal outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/15"
+                autoComplete="email"
+                required
+              />
+            </label>
+            <label className="block">
+              <span className="block font-sans text-[13px] font-medium text-charcoal">
+                Password
+              </span>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="any non-empty value"
+                className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-sm text-charcoal outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/15"
+                autoComplete="current-password"
+                required
+              />
+            </label>
+
+            {error && (
+              <p className="font-sans text-[13px] text-destructive">{error}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full rounded-full bg-clay px-6 py-3 font-sans text-sm font-medium text-warm-white transition-colors hover:bg-clay-deep disabled:opacity-50"
+            >
+              {submitting ? "Signing in…" : "Sign in"}
+            </button>
+          </form>
+
+          <p className="mt-6 text-center font-sans text-[12px] text-charcoal/50">
+            Real accounts arrive when the Spring Boot backend is connected.
+          </p>
+        </section>
+
+        {/* Role hints */}
+        <section>
+          <p className="section-label">Demo accounts</p>
+          <h2 className="mt-3 font-display text-2xl text-charcoal">
+            Try each side of Ukena.
+          </h2>
+          <p className="mt-3 font-sans text-sm leading-relaxed text-charcoal/70">
+            Click any card below to fill the form. The email's domain determines
+            the role and the dashboard you land on.
+          </p>
+
+          <div className="mt-6 space-y-4">
+            {ROLE_HINTS.map((hint) => (
+              <button
+                key={hint.label}
+                type="button"
+                onClick={() => {
+                  setEmail(hint.email);
+                  setPassword("demo");
+                }}
+                className="block w-full rounded-2xl border border-border bg-warm-white p-5 text-left transition hover:border-clay hover:shadow-soft"
+              >
+                <div className="flex items-baseline justify-between">
+                  <span className="font-display text-lg text-charcoal">
+                    {hint.label}
+                  </span>
+                  <span className="font-sans text-[11px] uppercase tracking-[0.22em] text-clay">
+                    {hint.email.split("@")[1]}
+                  </span>
+                </div>
+                <p className="mt-1 font-sans text-[13px] text-charcoal/70">
+                  {hint.tagline}
+                </p>
+                <code className="mt-3 inline-block font-sans text-[12px] text-charcoal/60">
+                  {hint.email}
+                </code>
+              </button>
+            ))}
+          </div>
+        </section>
       </div>
     </main>
   );

@@ -126,17 +126,31 @@ ukena-backend/
 │   │   ├── ApplicationController.java     // POST /api/applications + /api/admin/applications/*
 │   │   ├── ApplicationService.java
 │   │   └── dto/{ApplicationDto,SubmitRequest,StatusUpdateRequest}.java
-│   ├── admin/
-│   │   ├── AdminController.java           // buyers, payouts, reviews, featured
-│   │   ├── AdminService.java
-│   │   ├── PayoutEntity.java
-│   │   ├── ReviewEntity.java
-│   │   ├── FeaturedSlotEntity.java
-│   │   └── dto/{AdminBuyerRow,CreatorPayoutDto,ProductReviewDto,FeaturedSlotDto}.java
-│   └── media/
-│       ├── MediaController.java           // POST /api/media/upload
-│       ├── MediaService.java              // Cloudinary or S3 client
-│       └── dto/UploadedMediaDto.java
+│   ├── cart/
+│   │   ├── CartLine.java                  // @Entity (one row per buyer × productId)
+│   │   ├── CartRepository.java
+│   │   ├── CartController.java            // /api/cart, /api/cart/sync
+│   │   ├── CartService.java
+│   │   └── dto/CartLineDto.java
+│   ├── saved/
+│   │   ├── SavedItem.java                 // @Entity (buyer × kind × refId)
+│   │   ├── SavedRepository.java
+│   │   ├── SavedController.java           // /api/users/me/saved/*
+│   │   └── SavedService.java
+│   ├── address/
+│   │   ├── BuyerAddress.java              // @Entity
+│   │   ├── BuyerAddressRepository.java
+│   │   ├── BuyerAddressController.java    // /api/users/me/addresses/*
+│   │   ├── BuyerAddressService.java
+│   │   └── dto/BuyerAddressDto.java
+│   └── admin/
+│       ├── AdminController.java           // buyers, payouts, reviews, featured, product moderation
+│       ├── AdminService.java
+│       ├── PayoutEntity.java
+│       ├── ReviewEntity.java
+│       ├── FeaturedSlotEntity.java
+│       ├── ProductModerationStatusEntity.java
+│       └── dto/{AdminBuyerRow,CreatorPayoutDto,ProductReviewDto,FeaturedSlotDto,ProductModerationRow}.java
 ├── src/main/resources/
 │   ├── application.yml
 │   ├── application-dev.yml

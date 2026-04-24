@@ -86,7 +86,7 @@ mobile, padding tightened so primary content sits above the fold.
 
 ## 4. Routes / Pages
 
-19 routes total. Flat dot-separated naming convention (TanStack).
+44 route files. Flat dot-separated naming convention (TanStack).
 
 ### 4.1 Marketing & Discovery
 
@@ -96,30 +96,53 @@ mobile, padding tightened so primary content sits above the fold.
 | `/shop`                      | Product-first gallery, craft chips + "More filters" sheet                            | ✅     |
 | `/explore`                   | Creator-first directory with craft / region filters                                  | ✅     |
 | `/story`                     | Brand narrative                                                                      | ✅     |
+| `/search`                    | Global search (creators + products), tokenised AND scoring + field weighting         | ✅     |
 | `/creators/$creatorId`       | Creator profile: header, story, process, cultural meaning, products, related makers  | ✅     |
 | `/products/$productId`       | Product detail — gallery + persistent creator attribution + related pieces           | ✅     |
 
-### 4.2 Commerce (Phase 4 complete — UI hardened, backend wiring pending)
+### 4.2 Commerce
 
-| Route                      | Purpose                                                  | Status                               |
-| -------------------------- | -------------------------------------------------------- | ------------------------------------ |
-| `/bag`                     | Cart with quantity stepper, impact statement, empty state| ✅ local state only                  |
-| `/checkout`                | Layout shell w/ `<Outlet />` and order summary sidebar   | ✅                                   |
-| `/checkout/delivery`       | Address capture w/ blur validation, country dropdown     | ✅ UI only                           |
-| `/checkout/payment`        | Stripe-ready card form, dynamic total in CTA             | ⚠️ UI only — **no real payments**    |
-| `/checkout/confirmation`   | Human-toned thank you, per-creator acknowledgement       | ✅ clears cart on mount              |
-| `/saved` & `/account/saved`| Saved creators / pieces                                  | ✅ UI                                |
+| Route                      | Purpose                                                                | Status                            |
+| -------------------------- | ---------------------------------------------------------------------- | --------------------------------- |
+| `/bag`                     | Cart with quantity stepper, impact statement, empty state              | ✅                                |
+| `/checkout`                | Layout shell w/ `<Outlet />` and order summary sidebar                 | ✅                                |
+| `/checkout/delivery`       | Address capture w/ blur validation, country dropdown                   | ✅                                |
+| `/checkout/payment`        | Mock card form, dynamic total in CTA, **Demo** label                   | ⚠️ Demo only — no real payments   |
+| `/checkout/confirmation`   | Per-creator thank-you + printable receipt (`@media print`)             | ✅                                |
+| `/saved` & `/account/saved`| Saved creators / pieces (server-backed via `useSaved*` hooks)          | ✅                                |
 
-### 4.3 Account & Onboarding
+### 4.3 Account & Onboarding (buyer)
 
-| Route             | Purpose                                                          | Status                |
-| ----------------- | ---------------------------------------------------------------- | --------------------- |
-| `/signin`         | Login form                                                       | ✅ wired to backend   |
-| `/account`        | Profile hub (greeting, logout, links)                            | ✅ basic              |
-| `/join`           | Artisan landing                                                  | ✅                    |
-| `/join/apply`     | Multi-step artisan application (`JoinShell`, `JoinField`, photo) | ✅ UI only            |
+| Route                          | Purpose                                                | Status |
+| ------------------------------ | ------------------------------------------------------ | ------ |
+| `/signin` / `/signup`          | Auth forms (wired to backend)                          | ✅     |
+| `/account`                     | Profile hub (greeting, logout, links)                  | ✅     |
+| `/account/profile`             | Buyer profile edit                                     | ✅     |
+| `/account/orders`              | Order history list                                     | ✅     |
+| `/account/orders/$orderId`     | Order detail                                           | ✅     |
+| `/account/addresses`           | Address book CRUD + default                            | ✅     |
+| `/account/activity`            | Recent activity timeline                               | ✅     |
+| `/join` / `/join/apply`        | Artisan landing + multi-step application (submits live)| ✅     |
 
-### 4.4 Utility
+### 4.4 Creator dashboard (`/creator/*`)
+
+| Route                  | Purpose                                              | Status |
+| ---------------------- | ---------------------------------------------------- | ------ |
+| `/creator`             | Dashboard index w/ KPIs                              | ✅     |
+| `/creator/products`    | Product CRUD (Cloudinary-backed images)              | ✅     |
+| `/creator/orders`      | Orders for this creator + status transitions         | ✅     |
+| `/creator/profile`     | Profile editor (story, portrait, header)             | ✅     |
+| `/creator/earnings`    | Payout summary                                       | ✅     |
+| `/creator/analytics`   | Recharts dashboard (revenue, products, funnel, etc.) | ✅     |
+| `/creator/application` | Application status (post-submit)                     | ✅     |
+
+### 4.5 Admin (`/admin/*`)
+
+`/admin`, `/admin/applications`, `/admin/buyers`, `/admin/content`,
+`/admin/creators`, `/admin/featured`, `/admin/orders`, `/admin/payouts`,
+`/admin/products` — all wired to `adminService` + React Query.
+
+### 4.6 Utility
 
 - `/styleguide` — design reference.
 

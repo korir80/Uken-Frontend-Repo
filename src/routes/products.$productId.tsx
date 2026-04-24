@@ -346,8 +346,9 @@ function ProductPage() {
 
                 {/* 7. Ethical sourcing line — centred under button */}
                 <p className="mt-4 text-center text-[11px] leading-relaxed text-charcoal/40">
-                  Handmade in Kenya · Ships within {product.leadTimeDays.min}–
-                  {product.leadTimeDays.max} days ·{" "}
+                  Handmade in Kenya · Ships within{" "}
+                  {(product as Product).leadTimeDays?.min ?? 7}–
+                  {(product as Product).leadTimeDays?.max ?? 21} days ·{" "}
                   <span className="text-charcoal/55">
                     {product.creator.firstName} earns fairly from every sale
                   </span>

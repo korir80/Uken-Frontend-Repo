@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BagIndicator } from "@/components/product/BagIndicator";
 import { useAuth, defaultPathForRole } from "@/lib/auth";
@@ -64,6 +65,18 @@ export function NavBar() {
         </nav>
 
         <div className="flex items-center gap-3 md:gap-4">
+          <Link
+            to="/search"
+            aria-label="Search"
+            className={cn(
+              "grid h-9 w-9 place-items-center rounded-full transition-colors",
+              scrolled
+                ? "text-charcoal/70 hover:bg-cream hover:text-clay"
+                : "text-warm-white/85 hover:bg-warm-white/15 hover:text-warm-white",
+            )}
+          >
+            <Search className="h-[18px] w-[18px]" strokeWidth={1.75} />
+          </Link>
           <DashboardLink scrolled={scrolled} />
           <BagIndicator tone={scrolled ? "light" : "dark"} />
         </div>

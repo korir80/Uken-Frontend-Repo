@@ -91,13 +91,23 @@ export function useCreator(
 
 /* ---------------- Products ---------------- */
 
+/* ---------------- Products ---------------- */
+
+export function useAllProducts(
+  options?: Omit<UseQueryOptions<ProductDto[]>, "queryKey" | "queryFn">,
+) {
+  return useQuery<ProductDto[]>({
+    ...productsQueryOptions(),
+    ...options,
+  });
+}
+
 export function useProduct(
   id: string,
   options?: Omit<UseQueryOptions<ProductDto>, "queryKey" | "queryFn">,
 ) {
   return useQuery<ProductDto>({
-    queryKey: queryKeys.product(id),
-    queryFn: () => productService.getProductById(id),
+    ...productQueryOptions(id),
     enabled: !!id,
     ...options,
   });

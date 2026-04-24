@@ -15,14 +15,21 @@ import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as ExploreRouteImport } from './routes/explore'
+import { Route as CreatorRouteImport } from './routes/creator'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BagRouteImport } from './routes/bag'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as JoinIndexRouteImport } from './routes/join.index'
+import { Route as CreatorIndexRouteImport } from './routes/creator.index'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as JoinApplyRouteImport } from './routes/join.apply'
 import { Route as CreatorsCreatorIdRouteImport } from './routes/creators.$creatorId'
+import { Route as CreatorProfileRouteImport } from './routes/creator.profile'
+import { Route as CreatorProductsRouteImport } from './routes/creator.products'
+import { Route as CreatorOrdersRouteImport } from './routes/creator.orders'
+import { Route as CreatorEarningsRouteImport } from './routes/creator.earnings'
+import { Route as CreatorApplicationRouteImport } from './routes/creator.application'
 import { Route as CheckoutPaymentRouteImport } from './routes/checkout.payment'
 import { Route as CheckoutDeliveryRouteImport } from './routes/checkout.delivery'
 import { Route as CheckoutConfirmationRouteImport } from './routes/checkout.confirmation'
@@ -58,6 +65,11 @@ const ExploreRoute = ExploreRouteImport.update({
   path: '/explore',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CreatorRoute = CreatorRouteImport.update({
+  id: '/creator',
+  path: '/creator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
@@ -83,6 +95,11 @@ const JoinIndexRoute = JoinIndexRouteImport.update({
   path: '/join/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CreatorIndexRoute = CreatorIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CreatorRoute,
+} as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
   path: '/products/$productId',
@@ -97,6 +114,31 @@ const CreatorsCreatorIdRoute = CreatorsCreatorIdRouteImport.update({
   id: '/creators/$creatorId',
   path: '/creators/$creatorId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const CreatorProfileRoute = CreatorProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => CreatorRoute,
+} as any)
+const CreatorProductsRoute = CreatorProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => CreatorRoute,
+} as any)
+const CreatorOrdersRoute = CreatorOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => CreatorRoute,
+} as any)
+const CreatorEarningsRoute = CreatorEarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => CreatorRoute,
+} as any)
+const CreatorApplicationRoute = CreatorApplicationRouteImport.update({
+  id: '/application',
+  path: '/application',
+  getParentRoute: () => CreatorRoute,
 } as any)
 const CheckoutPaymentRoute = CheckoutPaymentRouteImport.update({
   id: '/payment',
@@ -124,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRouteWithChildren
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
+  '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
   '/saved': typeof SavedRoute
   '/shop': typeof ShopRoute
@@ -134,9 +177,15 @@ export interface FileRoutesByFullPath {
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
+  '/creator/application': typeof CreatorApplicationRoute
+  '/creator/earnings': typeof CreatorEarningsRoute
+  '/creator/orders': typeof CreatorOrdersRoute
+  '/creator/products': typeof CreatorProductsRoute
+  '/creator/profile': typeof CreatorProfileRoute
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/creator/': typeof CreatorIndexRoute
   '/join/': typeof JoinIndexRoute
 }
 export interface FileRoutesByTo {
@@ -154,9 +203,15 @@ export interface FileRoutesByTo {
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
+  '/creator/application': typeof CreatorApplicationRoute
+  '/creator/earnings': typeof CreatorEarningsRoute
+  '/creator/orders': typeof CreatorOrdersRoute
+  '/creator/products': typeof CreatorProductsRoute
+  '/creator/profile': typeof CreatorProfileRoute
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/creator': typeof CreatorIndexRoute
   '/join': typeof JoinIndexRoute
 }
 export interface FileRoutesById {
@@ -165,6 +220,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRouteWithChildren
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
+  '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
   '/saved': typeof SavedRoute
   '/shop': typeof ShopRoute
@@ -175,9 +231,15 @@ export interface FileRoutesById {
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
+  '/creator/application': typeof CreatorApplicationRoute
+  '/creator/earnings': typeof CreatorEarningsRoute
+  '/creator/orders': typeof CreatorOrdersRoute
+  '/creator/products': typeof CreatorProductsRoute
+  '/creator/profile': typeof CreatorProfileRoute
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/creator/': typeof CreatorIndexRoute
   '/join/': typeof JoinIndexRoute
 }
 export interface FileRouteTypes {
@@ -187,6 +249,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/bag'
     | '/checkout'
+    | '/creator'
     | '/explore'
     | '/saved'
     | '/shop'
@@ -197,9 +260,15 @@ export interface FileRouteTypes {
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
+    | '/creator/application'
+    | '/creator/earnings'
+    | '/creator/orders'
+    | '/creator/products'
+    | '/creator/profile'
     | '/creators/$creatorId'
     | '/join/apply'
     | '/products/$productId'
+    | '/creator/'
     | '/join/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -217,9 +286,15 @@ export interface FileRouteTypes {
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
+    | '/creator/application'
+    | '/creator/earnings'
+    | '/creator/orders'
+    | '/creator/products'
+    | '/creator/profile'
     | '/creators/$creatorId'
     | '/join/apply'
     | '/products/$productId'
+    | '/creator'
     | '/join'
   id:
     | '__root__'
@@ -227,6 +302,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/bag'
     | '/checkout'
+    | '/creator'
     | '/explore'
     | '/saved'
     | '/shop'
@@ -237,9 +313,15 @@ export interface FileRouteTypes {
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
+    | '/creator/application'
+    | '/creator/earnings'
+    | '/creator/orders'
+    | '/creator/products'
+    | '/creator/profile'
     | '/creators/$creatorId'
     | '/join/apply'
     | '/products/$productId'
+    | '/creator/'
     | '/join/'
   fileRoutesById: FileRoutesById
 }
@@ -248,6 +330,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRouteWithChildren
   BagRoute: typeof BagRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
+  CreatorRoute: typeof CreatorRouteWithChildren
   ExploreRoute: typeof ExploreRoute
   SavedRoute: typeof SavedRoute
   ShopRoute: typeof ShopRoute
@@ -304,6 +387,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/creator': {
+      id: '/creator'
+      path: '/creator'
+      fullPath: '/creator'
+      preLoaderRoute: typeof CreatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout': {
       id: '/checkout'
       path: '/checkout'
@@ -339,6 +429,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JoinIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/creator/': {
+      id: '/creator/'
+      path: '/'
+      fullPath: '/creator/'
+      preLoaderRoute: typeof CreatorIndexRouteImport
+      parentRoute: typeof CreatorRoute
+    }
     '/products/$productId': {
       id: '/products/$productId'
       path: '/products/$productId'
@@ -359,6 +456,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/creators/$creatorId'
       preLoaderRoute: typeof CreatorsCreatorIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/creator/profile': {
+      id: '/creator/profile'
+      path: '/profile'
+      fullPath: '/creator/profile'
+      preLoaderRoute: typeof CreatorProfileRouteImport
+      parentRoute: typeof CreatorRoute
+    }
+    '/creator/products': {
+      id: '/creator/products'
+      path: '/products'
+      fullPath: '/creator/products'
+      preLoaderRoute: typeof CreatorProductsRouteImport
+      parentRoute: typeof CreatorRoute
+    }
+    '/creator/orders': {
+      id: '/creator/orders'
+      path: '/orders'
+      fullPath: '/creator/orders'
+      preLoaderRoute: typeof CreatorOrdersRouteImport
+      parentRoute: typeof CreatorRoute
+    }
+    '/creator/earnings': {
+      id: '/creator/earnings'
+      path: '/earnings'
+      fullPath: '/creator/earnings'
+      preLoaderRoute: typeof CreatorEarningsRouteImport
+      parentRoute: typeof CreatorRoute
+    }
+    '/creator/application': {
+      id: '/creator/application'
+      path: '/application'
+      fullPath: '/creator/application'
+      preLoaderRoute: typeof CreatorApplicationRouteImport
+      parentRoute: typeof CreatorRoute
     }
     '/checkout/payment': {
       id: '/checkout/payment'
@@ -418,11 +550,33 @@ const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
   CheckoutRouteChildren,
 )
 
+interface CreatorRouteChildren {
+  CreatorApplicationRoute: typeof CreatorApplicationRoute
+  CreatorEarningsRoute: typeof CreatorEarningsRoute
+  CreatorOrdersRoute: typeof CreatorOrdersRoute
+  CreatorProductsRoute: typeof CreatorProductsRoute
+  CreatorProfileRoute: typeof CreatorProfileRoute
+  CreatorIndexRoute: typeof CreatorIndexRoute
+}
+
+const CreatorRouteChildren: CreatorRouteChildren = {
+  CreatorApplicationRoute: CreatorApplicationRoute,
+  CreatorEarningsRoute: CreatorEarningsRoute,
+  CreatorOrdersRoute: CreatorOrdersRoute,
+  CreatorProductsRoute: CreatorProductsRoute,
+  CreatorProfileRoute: CreatorProfileRoute,
+  CreatorIndexRoute: CreatorIndexRoute,
+}
+
+const CreatorRouteWithChildren =
+  CreatorRoute._addFileChildren(CreatorRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRouteWithChildren,
   BagRoute: BagRoute,
   CheckoutRoute: CheckoutRouteWithChildren,
+  CreatorRoute: CreatorRouteWithChildren,
   ExploreRoute: ExploreRoute,
   SavedRoute: SavedRoute,
   ShopRoute: ShopRoute,

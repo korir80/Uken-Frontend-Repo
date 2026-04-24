@@ -35,6 +35,7 @@ import { Route as CreatorProductsRouteImport } from './routes/creator.products'
 import { Route as CreatorOrdersRouteImport } from './routes/creator.orders'
 import { Route as CreatorEarningsRouteImport } from './routes/creator.earnings'
 import { Route as CreatorApplicationRouteImport } from './routes/creator.application'
+import { Route as CreatorAnalyticsRouteImport } from './routes/creator.analytics'
 import { Route as CheckoutPaymentRouteImport } from './routes/checkout.payment'
 import { Route as CheckoutDeliveryRouteImport } from './routes/checkout.delivery'
 import { Route as CheckoutConfirmationRouteImport } from './routes/checkout.confirmation'
@@ -183,6 +184,11 @@ const CreatorApplicationRoute = CreatorApplicationRouteImport.update({
   path: '/application',
   getParentRoute: () => CreatorRoute,
 } as any)
+const CreatorAnalyticsRoute = CreatorAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => CreatorRoute,
+} as any)
 const CheckoutPaymentRoute = CheckoutPaymentRouteImport.update({
   id: '/payment',
   path: '/payment',
@@ -300,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
+  '/creator/analytics': typeof CreatorAnalyticsRoute
   '/creator/application': typeof CreatorApplicationRoute
   '/creator/earnings': typeof CreatorEarningsRoute
   '/creator/orders': typeof CreatorOrdersRoute
@@ -342,6 +349,7 @@ export interface FileRoutesByTo {
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
+  '/creator/analytics': typeof CreatorAnalyticsRoute
   '/creator/application': typeof CreatorApplicationRoute
   '/creator/earnings': typeof CreatorEarningsRoute
   '/creator/orders': typeof CreatorOrdersRoute
@@ -388,6 +396,7 @@ export interface FileRoutesById {
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
+  '/creator/analytics': typeof CreatorAnalyticsRoute
   '/creator/application': typeof CreatorApplicationRoute
   '/creator/earnings': typeof CreatorEarningsRoute
   '/creator/orders': typeof CreatorOrdersRoute
@@ -435,6 +444,7 @@ export interface FileRouteTypes {
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
+    | '/creator/analytics'
     | '/creator/application'
     | '/creator/earnings'
     | '/creator/orders'
@@ -477,6 +487,7 @@ export interface FileRouteTypes {
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
+    | '/creator/analytics'
     | '/creator/application'
     | '/creator/earnings'
     | '/creator/orders'
@@ -522,6 +533,7 @@ export interface FileRouteTypes {
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
+    | '/creator/analytics'
     | '/creator/application'
     | '/creator/earnings'
     | '/creator/orders'
@@ -742,6 +754,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreatorApplicationRouteImport
       parentRoute: typeof CreatorRoute
     }
+    '/creator/analytics': {
+      id: '/creator/analytics'
+      path: '/analytics'
+      fullPath: '/creator/analytics'
+      preLoaderRoute: typeof CreatorAnalyticsRouteImport
+      parentRoute: typeof CreatorRoute
+    }
     '/checkout/payment': {
       id: '/checkout/payment'
       path: '/payment'
@@ -940,6 +959,7 @@ const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
 )
 
 interface CreatorRouteChildren {
+  CreatorAnalyticsRoute: typeof CreatorAnalyticsRoute
   CreatorApplicationRoute: typeof CreatorApplicationRoute
   CreatorEarningsRoute: typeof CreatorEarningsRoute
   CreatorOrdersRoute: typeof CreatorOrdersRoute
@@ -949,6 +969,7 @@ interface CreatorRouteChildren {
 }
 
 const CreatorRouteChildren: CreatorRouteChildren = {
+  CreatorAnalyticsRoute: CreatorAnalyticsRoute,
   CreatorApplicationRoute: CreatorApplicationRoute,
   CreatorEarningsRoute: CreatorEarningsRoute,
   CreatorOrdersRoute: CreatorOrdersRoute,

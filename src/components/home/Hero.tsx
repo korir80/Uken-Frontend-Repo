@@ -1,5 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import savanna from "@/assets/authentic-savanna.jpg";
+import beadMarket from "@/assets/authentic-bead-market.jpg";
+import baskets from "@/assets/authentic-baskets-pile.jpg";
+import craftMarket from "@/assets/authentic-craft-market.jpg";
 
 /**
  * Hero — dark cinematic, editorial.
@@ -9,52 +13,44 @@ import { ArrowRight } from "lucide-react";
  */
 export function Hero() {
   return (
-    <section
-      className="relative w-full overflow-hidden"
-      style={{
-        backgroundColor: "#0D0805",
-      }}
-    >
-      {/* 1 — Base warm gradient */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(115deg, #2e1508 0%, #5a2e14 20%, #8a4820 45%, #6a3418 70%, #1e0e06 100%)",
-        }}
+    <section className="relative w-full overflow-hidden bg-charcoal">
+      {/* 1 — Safari landscape foundation */}
+      <img
+        src={savanna}
+        alt="Kenyan savanna at dawn with open grassland and distant trees"
+        width={1920}
+        height={1280}
+        className="absolute inset-0 h-full w-full object-cover opacity-70"
       />
 
-      {/* 2 — Woven crosshatch texture */}
+      {/* 2 — Theme blend + directional vignette */}
+      <div className="absolute inset-0 bg-[linear-gradient(105deg,var(--charcoal)_0%,oklch(from_var(--charcoal)_l_c_h_/_0.92)_34%,oklch(from_var(--clay-deep)_l_c_h_/_0.62)_62%,oklch(from_var(--gold)_l_c_h_/_0.28)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,oklch(from_var(--gold-soft)_l_c_h_/_0.22)_0%,transparent_45%)]" />
+
+      {/* 3 — Woven crosshatch texture */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
-          opacity: 0.06,
+          opacity: 0.12,
           backgroundImage:
-            "repeating-linear-gradient(45deg, rgba(255,210,140,0.6) 0 1px, transparent 1px 7px), repeating-linear-gradient(-45deg, rgba(255,210,140,0.6) 0 1px, transparent 1px 7px)",
+            "repeating-linear-gradient(45deg, oklch(from var(--gold-soft) l c h / 0.42) 0 1px, transparent 1px 9px), repeating-linear-gradient(-45deg, oklch(from var(--sand) l c h / 0.26) 0 1px, transparent 1px 11px)",
         }}
       />
 
-      {/* 3 — Warm light bloom (top-right) */}
-      <div
+      {/* 4 — Archaeological field-line motif, deliberately quiet */}
+      <svg
         aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(circle at 78% 18%, rgba(190,130,55,0.16) 0%, rgba(190,130,55,0) 55%)",
-        }}
-      />
-
-      {/* 4 — Directional vignette (anchors text to the left) */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(to right, rgba(13,8,5,0.97) 0%, rgba(13,8,5,0.72) 38%, rgba(13,8,5,0.22) 68%, rgba(13,8,5,0.5) 100%)",
-        }}
-      />
+        viewBox="0 0 900 620"
+        className="absolute right-[-180px] top-[-80px] h-[560px] w-[820px] text-gold opacity-[0.16] md:right-[-80px] md:opacity-[0.2]"
+      >
+        <path d="M60 410C160 300 245 390 340 272s202-92 316-176" fill="none" stroke="currentColor" strokeWidth="1" />
+        <path d="M120 480c92-122 210-70 292-184 93-130 188-135 318-188" fill="none" stroke="currentColor" strokeWidth="1" />
+        <path d="M276 136h110v92H276zM560 214h84v74h-84zM430 386h132v96H430z" fill="none" stroke="currentColor" strokeWidth="1" />
+        <circle cx="386" cy="228" r="5" fill="currentColor" />
+        <circle cx="644" cy="288" r="5" fill="currentColor" />
+        <circle cx="562" cy="482" r="5" fill="currentColor" />
+      </svg>
 
       {/* Content shell — snug, vertically centred */}
       <div
@@ -65,99 +61,55 @@ export function Hero() {
         <div className="max-w-[560px] md:pl-[44px]">
           {/* Provenance line */}
           <div className="mb-7 flex items-center gap-3">
+            <span aria-hidden className="block h-px w-7 bg-gold" />
             <span
-              aria-hidden
-              className="block h-px"
-              style={{ width: 28, backgroundColor: "#C4904A" }}
-            />
-            <span
-              className="font-sans uppercase"
-              style={{
-                fontSize: 10,
-                fontWeight: 500,
-                letterSpacing: "0.18em",
-                color: "#C4904A",
-              }}
+              className="font-sans text-[10px] font-medium uppercase tracking-[0.18em] text-gold"
             >
-              Kenyan craft · World-class quality
+              Safari light · Handworked in Kenya
             </span>
           </div>
 
           {/* Headline — three lines, italic accent */}
           <h1
-            className="font-display"
-            style={{
-              fontWeight: 300,
-              color: "#FAF7F2",
-              margin: 0,
-            }}
+            className="m-0 font-display font-light text-warm-white"
           >
             <span
               className="block text-[38px] md:text-[66px]"
-              style={{ lineHeight: 1.02, letterSpacing: "-0.01em" }}
+              style={{ lineHeight: 1.02 }}
             >
-              Crafted in
+              From the wild
             </span>
             <span
-              className="block italic text-[46px] md:text-[78px]"
+              className="-mt-1.5 block text-[46px] italic text-gold-soft md:text-[78px]"
               style={{
                 lineHeight: 1,
-                letterSpacing: "-0.02em",
-                color: "#D4A96A",
-                marginTop: -6,
               }}
             >
-              Kenya.
+              beauty of Kenya.
             </span>
             <span
-              className="block text-[38px] md:text-[66px]"
+              className="-mt-1 block text-[38px] md:text-[66px]"
               style={{
                 lineHeight: 1.02,
-                letterSpacing: "-0.01em",
-                marginTop: -4,
               }}
             >
-              Made to last.
+              Into crafted heirlooms.
             </span>
           </h1>
 
           {/* Sub-copy */}
           <p
-            className="mt-6 font-sans"
-            style={{
-              fontSize: 14,
-              fontWeight: 300,
-              lineHeight: 1.6,
-              color: "rgba(250,247,242,0.5)",
-              maxWidth: 460,
-              marginBottom: 32,
-            }}
+            className="mb-8 mt-6 max-w-[460px] font-sans text-sm font-light leading-relaxed text-warm-white/62"
           >
-            Handmade by Kenya's finest — each piece built to the standard
-            the world respects.
+            A curated marketplace where safari warmth, ancient earth and maker
+            knowledge meet in objects shaped for modern UK homes.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             <Link
               to="/shop"
-              className="group/cta inline-flex items-center justify-center font-sans uppercase transition-colors"
-              style={{
-                backgroundColor: "#D4A96A",
-                color: "#0D0805",
-                padding: "12px 28px",
-                borderRadius: 4,
-                fontSize: 12,
-                fontWeight: 500,
-                letterSpacing: "0.08em",
-                lineHeight: 1,
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "#C4904A")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "#D4A96A")
-              }
+              className="group/cta inline-flex items-center justify-center rounded-sm bg-gold-soft px-7 py-3 font-sans text-xs font-medium uppercase leading-none tracking-[0.08em] text-charcoal transition-colors hover:bg-gold"
             >
               Shop collection
               <ArrowRight className="ml-2 h-3.5 w-3.5" strokeWidth={2} />
@@ -165,39 +117,11 @@ export function Hero() {
 
             <Link
               to="/explore"
-              className="group/meet inline-flex items-center font-sans uppercase transition-colors"
-              style={{
-                fontSize: 12,
-                fontWeight: 400,
-                letterSpacing: "0.07em",
-                color: "rgba(250,247,242,0.45)",
-                lineHeight: 1,
-                paddingTop: 12,
-                paddingBottom: 12,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "rgba(250,247,242,0.8)";
-                const line = e.currentTarget.querySelector(
-                  "[data-line]",
-                ) as HTMLElement | null;
-                if (line) line.style.width = "34px";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "rgba(250,247,242,0.45)";
-                const line = e.currentTarget.querySelector(
-                  "[data-line]",
-                ) as HTMLElement | null;
-                if (line) line.style.width = "22px";
-              }}
+              className="group/meet inline-flex items-center py-3 font-sans text-xs font-normal uppercase leading-none tracking-[0.07em] text-warm-white/50 transition-colors hover:text-warm-white/85"
             >
               <span
-                data-line
                 aria-hidden
-                className="mr-3 block h-px transition-all duration-300"
-                style={{
-                  width: 22,
-                  backgroundColor: "rgba(250,247,242,0.25)",
-                }}
+                className="mr-3 block h-px w-[22px] bg-warm-white/30 transition-all duration-300 group-hover/meet:w-[34px]"
               />
               Meet the makers
             </Link>
@@ -220,7 +144,7 @@ export function Hero() {
           style={{
             fontSize: 9,
             letterSpacing: "0.2em",
-            color: "rgba(250,247,242,0.2)",
+            color: "oklch(from var(--warm-white) l c h / 0.24)",
           }}
         >
           Scroll
@@ -230,7 +154,7 @@ export function Hero() {
           style={{
             width: 1,
             height: 32,
-            backgroundColor: "rgba(250,247,242,0.1)",
+            backgroundColor: "oklch(from var(--warm-white) l c h / 0.12)",
           }}
         >
           <span
@@ -238,7 +162,7 @@ export function Hero() {
             style={{
               width: 1,
               height: 12,
-              backgroundColor: "rgba(196,144,74,0.7)",
+              backgroundColor: "oklch(from var(--gold) l c h / 0.72)",
             }}
           />
         </span>
@@ -253,7 +177,7 @@ export function Hero() {
       >
         <path
           d="M0,24 C360,48 1080,0 1440,24 L1440,48 L0,48 Z"
-          fill="#FAF7F2"
+          fill="var(--warm-white)"
         />
       </svg>
 
@@ -274,137 +198,83 @@ export function Hero() {
 function FloatingProductCard() {
   return (
     <div
-      className="group/card mx-auto block w-[calc(100%-32px)] transition-all duration-300 md:mx-0 md:w-[230px]"
-      style={{
-        backgroundColor: "rgba(18,10,5,0.78)",
-        border: "1px solid rgba(212,169,106,0.2)",
-        borderRadius: 14,
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-      }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.borderColor = "rgba(212,169,106,0.38)")
-      }
-      onMouseLeave={(e) =>
-        (e.currentTarget.style.borderColor = "rgba(212,169,106,0.2)")
-      }
+      className="group/card mx-auto block w-[calc(100%-32px)] overflow-hidden rounded-lg border border-gold/25 bg-charcoal/75 shadow-hero backdrop-blur-xl transition-all duration-300 hover:border-gold/45 md:mx-0 md:w-[278px]"
     >
-      {/* Image / placeholder gradient */}
+      {/* Image collage: craft foreground against the safari mood */}
       <Link
         to="/shop"
         aria-label="Shop the collection"
-        className="block"
-        style={{
-          height: 148,
-          borderTopLeftRadius: 14,
-          borderTopRightRadius: 14,
-          background:
-            "linear-gradient(155deg, #C4904A 0%, #8B5020 55%, #4A2408 100%)",
-        }}
-      />
+        className="relative block h-[178px] overflow-hidden"
+      >
+        <img
+          src={beadMarket}
+          alt="Kenyan beadwork and craft materials arranged by artisans"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,oklch(from_var(--charcoal)_l_c_h_/_0.24)_48%,oklch(from_var(--charcoal)_l_c_h_/_0.86)_100%)]" />
+        <img
+          src={baskets}
+          alt="Handwoven Kenyan baskets"
+          className="absolute bottom-3 right-3 h-20 w-20 rounded-md border border-warm-white/20 object-cover shadow-lift"
+        />
+        <img
+          src={craftMarket}
+          alt="Kenyan craft market textiles and handmade pieces"
+          className="absolute bottom-8 left-3 h-14 w-14 rounded-md border border-gold/30 object-cover shadow-card"
+        />
+        <span className="absolute left-4 top-4 rounded-sm border border-gold/35 bg-charcoal/55 px-2.5 py-1 font-sans text-[9px] uppercase tracking-[0.16em] text-gold-soft backdrop-blur-md">
+          Field notes
+        </span>
+      </Link>
 
       {/* Body */}
       <div style={{ padding: "16px 18px 18px" }}>
         <p
-          className="font-sans"
-          style={{
-            fontSize: 10,
-            color: "rgba(212,169,106,0.65)",
-            letterSpacing: "0.05em",
-            margin: 0,
-          }}
+          className="m-0 font-sans text-[10px] tracking-[0.05em] text-gold-soft/75"
         >
-          by Wanjiru Kamau · Nairobi
+          Mara light · beadwork · woven fibre
         </p>
         <h3
-          className="font-display"
-          style={{
-            fontSize: 17,
-            fontWeight: 400,
-            lineHeight: 1.25,
-            color: "#FAF7F2",
-            margin: "6px 0 16px 0",
-          }}
+          className="my-2 mb-4 font-display text-[19px] font-normal leading-tight text-warm-white"
         >
-          Maasai beaded collar necklace
+          Safari-born pieces with a maker's hand
         </h3>
 
         <div className="flex items-center justify-between">
           <span
             className="font-display"
-            style={{ fontSize: 20, fontWeight: 400, color: "#FAF7F2" }}
+            style={{ fontSize: 20, fontWeight: 400, color: "var(--warm-white)" }}
           >
-            £48
+            From £34
           </span>
           <Link
             to="/shop"
-            className="font-sans uppercase transition-colors"
-            style={{
-              backgroundColor: "#D4A96A",
-              color: "#0D0805",
-              padding: "7px 14px",
-              borderRadius: 4,
-              fontSize: 11,
-              fontWeight: 500,
-              letterSpacing: "0.04em",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "#C4904A")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "#D4A96A")
-            }
+            className="rounded-sm bg-gold-soft px-3.5 py-2 font-sans text-[11px] font-medium uppercase tracking-[0.04em] text-charcoal transition-colors hover:bg-gold"
           >
-            Add to bag
+            Explore
           </Link>
         </div>
 
         {/* Divider + secondary card CTAs */}
         <div
           aria-hidden
-          className="mt-4"
-          style={{
-            height: 1,
-            backgroundColor: "rgba(212,169,106,0.15)",
-          }}
+          className="mt-4 h-px bg-gold/20"
         />
         <div className="flex flex-col gap-2 pt-3">
           <Link
             to="/creators/$creatorId"
             params={{ creatorId: "wanjiru-kamau" }}
-            className="group/talent inline-flex items-center justify-between font-sans transition-colors"
-            style={{
-              fontSize: 11,
-              letterSpacing: "0.03em",
-              color: "rgba(212,169,106,0.75)",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = "#D4A96A")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "rgba(212,169,106,0.75)")
-            }
+            className="group/talent inline-flex items-center justify-between font-sans text-[11px] tracking-[0.03em] text-gold-soft/75 transition-colors hover:text-gold-soft"
           >
-            <span>Meet the talent behind this</span>
+            <span>Meet the makers behind it</span>
             <ArrowRight className="ml-2 h-3 w-3" strokeWidth={2} />
           </Link>
           <Link
             to="/shop"
             search={{ craft: "Beadwork", region: "All", sort: "newest", minPrice: undefined, maxPrice: undefined }}
-            className="group/similar inline-flex items-center justify-between font-sans transition-colors"
-            style={{
-              fontSize: 11,
-              letterSpacing: "0.03em",
-              color: "rgba(250,247,242,0.4)",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = "rgba(250,247,242,0.75)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "rgba(250,247,242,0.4)")
-            }
+            className="group/similar inline-flex items-center justify-between font-sans text-[11px] tracking-[0.03em] text-warm-white/45 transition-colors hover:text-warm-white/75"
           >
-            <span>See similar pieces</span>
+            <span>See safari-toned pieces</span>
             <ArrowRight className="ml-2 h-3 w-3" strokeWidth={2} />
           </Link>
         </div>

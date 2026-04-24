@@ -125,7 +125,16 @@ function SignInPage() {
             </button>
           </form>
 
-          <p className="mt-6 text-center font-sans text-[12px] text-charcoal/50">
+          <p className="mt-6 text-center font-sans text-[13px] text-charcoal/70">
+            New to Ukena?{" "}
+            <Link
+              to="/signup"
+              className="font-medium text-clay underline-offset-4 hover:underline"
+            >
+              Create an account
+            </Link>
+          </p>
+          <p className="mt-3 text-center font-sans text-[12px] text-charcoal/50">
             Real accounts arrive when the Spring Boot backend is connected.
           </p>
         </section>

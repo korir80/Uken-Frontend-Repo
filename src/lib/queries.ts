@@ -357,3 +357,170 @@ export function useSetDefaultAddress() {
     },
   });
 }
+
+/* ---------------- Saved (wishlist) ---------------- */
+
+export function useSavedProducts() {
+  return useQuery<string[]>({
+    queryKey: queryKeys.savedProducts(),
+    queryFn: () => savedService.listSavedProducts(),
+  });
+}
+
+export function useSavedCreators() {
+  return useQuery<string[]>({
+    queryKey: queryKeys.savedCreators(),
+    queryFn: () => savedService.listSavedCreators(),
+  });
+}
+
+export function useToggleSavedProduct() {
+  const qc = useQueryClient();
+  return useMutation<string[], Error, { productId: string; saved: boolean }>({
+    mutationFn: ({ productId, saved }) =>
+      saved
+        ? savedService.removeSavedProduct(productId)
+        : savedService.addSavedProduct(productId),
+    onSuccess: (data) => qc.setQueryData(queryKeys.savedProducts(), data),
+  });
+}
+
+export function useToggleSavedCreator() {
+  const qc = useQueryClient();
+  return useMutation<string[], Error, { creatorId: string; saved: boolean }>({
+    mutationFn: ({ creatorId, saved }) =>
+      saved
+        ? savedService.removeSavedCreator(creatorId)
+        : savedService.addSavedCreator(creatorId),
+    onSuccess: (data) => qc.setQueryData(queryKeys.savedCreators(), data),
+  });
+}
+
+/* ---------------- Admin ---------------- */
+
+export function useAdminApplications() {
+  return useQuery<ArtisanApplication[]>({
+    queryKey: queryKeys.applications(),
+    queryFn: () => applicationService.list(),
+  });
+}
+
+export function useUpdateApplicationStatus() {
+  const qc = useQueryClient();
+  return useMutation<
+    ArtisanApplication,
+    Error,
+    { id: string; status: ApplicationStatus; notes?: string }
+  >({
+    mutationFn: ({ id, status, notes }) =>
+      applicationService.updateStatus(id, { status, notes }),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: queryKeys.applications() }),
+  });
+}
+
+export function useAdminPayouts() {
+  return useQuery<CreatorPayout[]>({
+    queryKey: queryKeys.adminPayouts(),
+    queryFn: () => adminService.listPayouts(),
+  });
+}
+
+export function usePayCreator() {
+  const qc = useQueryClient();
+  return useMutation<CreatorPayout, Error, string>({
+    mutationFn: (creatorId) => adminService.payCreator(creatorId),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminPayouts() }),
+  });
+}
+
+export function useRunPayoutCycle() {
+  const qc = useQueryClient();
+  return useMutation<CreatorPayout[], Error, void>({
+    mutationFn: () => adminService.runPayoutCycle(),
+    onSuccess: (data) => qc.setQueryData(queryKeys.adminPayouts(), data),
+  });
+}
+
+export function useAdminReviews() {
+  return useQuery<ProductReview[]>({
+    queryKey: queryKeys.adminReviews(),
+    queryFn: () => adminService.listReviews(),
+  });
+}
+
+export function useUpdateReviewStatus() {
+  const qc = useQueryClient();
+  return useMutation<
+    ProductReview,
+    Error,
+    { id: string; status: ProductReview["status"] }
+  >({
+    mutationFn: ({ id, status }) =>
+      adminService.updateReviewStatus(id, { status }),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: queryKeys.adminReviews() }),
+  });
+}
+
+export function useAdminFeatured() {
+  return useQuery<FeaturedSlot[]>({
+    queryKey: queryKeys.adminFeatured(),
+    queryFn: () => adminService.getFeatured(),
+  });
+}
+
+export function useSetFeatured() {
+  const qc = useQueryClient();
+  return useMutation<FeaturedSlot[], Error, FeaturedSlot[]>({
+    mutationFn: (slots) => adminService.setFeatured(slots),
+    onSuccess: (data) => qc.setQueryData(queryKeys.adminFeatured(), data),
+  });
+}
+
+export function useAdminBuyers() {
+  return useQuery<AdminBuyerRow[]>({
+    queryKey: queryKeys.adminBuyers(),
+    queryFn: () => adminService.listBuyers(),
+  });
+}
+
+export function useSuspendBuyer() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (buyerId) => adminService.suspendBuyer(buyerId),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: queryKeys.adminBuyers() }),
+  });
+}
+
+export function useSuspendCreator() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (creatorId) => adminService.suspendCreator(creatorId),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: queryKeys.creators() }),
+  });
+}
+
+export function useAdminProductStatuses() {
+  return useQuery<ProductModerationRow[]>({
+    queryKey: queryKeys.adminProductStatuses(),
+    queryFn: () => adminService.listProductStatuses(),
+  });
+}
+
+export function useSetProductStatus() {
+  const qc = useQueryClient();
+  return useMutation<
+    ProductModerationRow,
+    Error,
+    { productId: string; status: ProductModerationStatus }
+  >({
+    mutationFn: ({ productId, status }) =>
+      adminService.setProductStatus(productId, status),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: queryKeys.adminProductStatuses() }),
+  });
+}
+

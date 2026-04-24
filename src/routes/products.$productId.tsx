@@ -210,7 +210,7 @@ function ProductPage() {
 
               {/* Thumbnails — 3-4 across, no carousel chrome */}
               <div className="mt-3 grid grid-cols-4 gap-2 md:mt-4 md:gap-3">
-                {thumbs.map((g, i) => (
+                {thumbs.map((g: { src: string; alt: string }, i: number) => (
                   <button
                     key={i}
                     type="button"

@@ -20,7 +20,9 @@ import {
 
 import {
   authService,
+  cartService,
   registerUnauthorizedHandler,
+  savedService,
   setAuthToken,
   type AuthUser,
   type RegisterPayload,
@@ -89,6 +91,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
     setAuthToken(null);
     writePersisted(null);
+    // Drop the local cart + saved snapshots on logout so the next visitor
+    // on this device doesn't inherit them.
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.removeItem("ukena.cart.v1");
+        window.localStorage.removeItem("ukena.saved_products");
+        window.localStorage.removeItem("ukena.saved_creators");
+      } catch {
+        /* ignore */
+      }
+    }
   }, []);
 
   // Wire the 401 → sign-out + redirect handler
@@ -108,6 +121,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(session.token);
     setAuthToken(session.token);
     writePersisted({ token: session.token, user: session.user });
+
+    // Best-effort post-login sync: merge guest cart + saved selections with
+    // whatever the server already has. Failures are non-fatal — the user
+    // is signed in regardless.
+    void (async () => {
+      try {
+        // Cart: read the local snapshot persisted by lib/cart.tsx.
+        if (typeof window !== "undefined") {
+          const raw = window.localStorage.getItem("ukena.cart.v1");
+          if (raw) {
+            const parsed = JSON.parse(raw) as { items?: unknown[] };
+            const items = Array.isArray(parsed.items) ? parsed.items : [];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            await cartService.syncOnLogin(items as any);
+          }
+        }
+        await savedService.syncOnLogin();
+      } catch {
+        /* swallow — sync is best-effort */
+      }
+    })();
+
     return session.user;
   }, []);
 

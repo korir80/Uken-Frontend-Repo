@@ -11,15 +11,13 @@ import {
   getProduct,
   type Product,
 } from "@/components/product/product-data";
+import { readRecentProducts } from "@/lib/ukena-mode";
 import {
-  readRecentProducts,
-  readSavedCreators,
-  readSavedProducts,
-  subscribeSavedProducts,
-  toggleSavedProduct,
-  writeSavedCreators,
-  writeSavedProducts,
-} from "@/lib/ukena-mode";
+  useSavedProducts,
+  useSavedCreators,
+  useToggleSavedProduct,
+  useToggleSavedCreator,
+} from "@/lib/queries";
 import { formatGBP, useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
@@ -46,16 +44,15 @@ type Tab = "pieces" | "creators" | "recent";
 
 function SavedPage() {
   const [tab, setTab] = useState<Tab>("pieces");
-  const [savedCreatorIds, setSavedCreatorIds] = useState<string[]>([]);
-  const [savedProductIds, setSavedProductIds] = useState<string[]>([]);
+  const { data: savedProductIds = [] } = useSavedProducts();
+  const { data: savedCreatorIds = [] } = useSavedCreators();
+  const toggleProduct = useToggleSavedProduct();
+  const toggleCreator = useToggleSavedCreator();
   const [recentIds, setRecentIds] = useState<string[]>([]);
 
   useEffect(() => {
-    setSavedCreatorIds(readSavedCreators());
-    setSavedProductIds(readSavedProducts());
+    // Recently-viewed is a local view-history surface, not server state.
     setRecentIds(readRecentProducts());
-    // Keep this surface live as hearts toggle elsewhere in the app.
-    return subscribeSavedProducts(setSavedProductIds);
   }, []);
 
   const savedCreators = useMemo(
@@ -90,15 +87,11 @@ function SavedPage() {
   );
 
   function unsaveCreator(id: string) {
-    const next = savedCreatorIds.filter((x) => x !== id);
-    setSavedCreatorIds(next);
-    writeSavedCreators(next);
+    toggleCreator.mutate({ creatorId: id, saved: true });
   }
 
   function unsaveProduct(id: string) {
-    const next = savedProductIds.filter((x) => x !== id);
-    setSavedProductIds(next);
-    writeSavedProducts(next);
+    toggleProduct.mutate({ productId: id, saved: true });
   }
 
   return (
@@ -297,10 +290,9 @@ function SavedPieceCard({ product, onRemove }: SavedPieceCardProps) {
     });
     setMoved(true);
     // Remove from saved after a beat — feels intentional, not jarring.
+    // onRemove already drives the saved-products mutation; no extra toggle needed.
     window.setTimeout(() => {
       onRemove();
-      // safe even if unmounted by then; toggle uses fresh state
-      toggleSavedProduct(product.id);
     }, 900);
   }
 

@@ -1,12 +1,20 @@
-import { useState } from "react";
-import { Camera, X } from "lucide-react";
+import { useRef, useState } from "react";
+import { Camera, X, Loader2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  uploadToCloudinary,
+  validateImageFile,
+  isCloudinaryConfigured,
+} from "@/lib/cloudinary";
 
 const MAX_PHOTOS = 5;
 
 /**
- * UI-only photo uploader. No upload logic — Phase 6 will wire this to
- * Lovable Cloud storage. We keep blob URLs purely for in-page preview.
+ * Photo uploader for the artisan application. Uploads each file directly to
+ * Cloudinary (browser → Cloudinary, never through the Spring backend) and
+ * surfaces the resulting public URLs to the parent. In dev without
+ * Cloudinary creds it falls back to local blob previews so the form is still
+ * testable end-to-end.
  */
 export function PhotoUploader({
   label,
@@ -19,26 +27,54 @@ export function PhotoUploader({
   value: string[];
   onChange: (next: string[]) => void;
 }) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
-
-  const addFiles = (files: FileList | null) => {
-    if (!files) return;
-    const remaining = MAX_PHOTOS - value.length;
-    if (remaining <= 0) return;
-    const next = Array.from(files)
-      .slice(0, remaining)
-      .map((f) => URL.createObjectURL(f));
-    onChange([...value, ...next]);
-  };
-
-  const removeAt = (i: number) => {
-    const next = [...value];
-    const [removed] = next.splice(i, 1);
-    if (removed) URL.revokeObjectURL(removed);
-    onChange(next);
-  };
+  const [busyCount, setBusyCount] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const slotsLeft = MAX_PHOTOS - value.length;
+
+  async function addFiles(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    setError(null);
+
+    const list = Array.from(files).slice(0, slotsLeft);
+    if (list.length === 0) return;
+
+    try {
+      list.forEach((f) => validateImageFile(f));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Invalid file.");
+      return;
+    }
+
+    if (!isCloudinaryConfigured()) {
+      // Dev fallback — keep the form usable without creds.
+      const next = list.map((f) => URL.createObjectURL(f));
+      onChange([...value, ...next]);
+      return;
+    }
+
+    setBusyCount((c) => c + list.length);
+    try {
+      const uploaded = await Promise.all(
+        list.map((f) => uploadToCloudinary(f, { folder: "ukena/applications" })),
+      );
+      onChange([...value, ...uploaded.map((u) => u.url)]);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload failed.");
+    } finally {
+      setBusyCount((c) => Math.max(0, c - list.length));
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  }
+
+  function removeAt(i: number) {
+    const next = [...value];
+    const [removed] = next.splice(i, 1);
+    if (removed?.startsWith("blob:")) URL.revokeObjectURL(removed);
+    onChange(next);
+  }
 
   return (
     <div className="space-y-4">
@@ -56,7 +92,7 @@ export function PhotoUploader({
       <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
         {value.map((src, i) => (
           <div
-            key={src}
+            key={`${src}-${i}`}
             className="group relative aspect-square overflow-hidden rounded-xl bg-cream"
           >
             <img
@@ -78,7 +114,16 @@ export function PhotoUploader({
           </div>
         ))}
 
-        {slotsLeft > 0 && (
+        {Array.from({ length: busyCount }).map((_, i) => (
+          <div
+            key={`busy-${i}`}
+            className="grid aspect-square place-items-center rounded-xl border border-dashed border-border bg-cream/50"
+          >
+            <Loader2 className="h-5 w-5 animate-spin text-clay" />
+          </div>
+        ))}
+
+        {slotsLeft - busyCount > 0 && (
           <label
             onDragOver={(e) => {
               e.preventDefault();
@@ -98,8 +143,9 @@ export function PhotoUploader({
             )}
           >
             <input
+              ref={inputRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/avif"
               multiple
               className="sr-only"
               onChange={(e) => addFiles(e.target.files)}
@@ -112,9 +158,26 @@ export function PhotoUploader({
         )}
       </div>
 
-      <p className="text-[12px] uppercase tracking-[0.2em] text-ink-muted">
-        {value.length} of {MAX_PHOTOS} added
-      </p>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[12px] uppercase tracking-[0.2em] text-ink-muted">
+          {value.length} of {MAX_PHOTOS} added
+        </p>
+        {!isCloudinaryConfigured() && (
+          <p className="text-[11px] text-ink-muted">
+            Dev mode — local preview only.
+          </p>
+        )}
+      </div>
+
+      {error && (
+        <p
+          role="alert"
+          className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-[12px] text-destructive"
+        >
+          <AlertCircle className="h-3.5 w-3.5" />
+          {error}
+        </p>
+      )}
     </div>
   );
 }

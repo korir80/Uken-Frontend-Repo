@@ -107,20 +107,7 @@ function FloatingProductCard() {
           alt="Kenyan beadwork and craft materials arranged by artisans"
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-105"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,oklch(from_var(--charcoal)_l_c_h_/_0.24)_48%,oklch(from_var(--charcoal)_l_c_h_/_0.86)_100%)]" />
-        <img
-          src={baskets}
-          alt="Handwoven Kenyan baskets"
-          className="absolute bottom-3 right-3 h-20 w-20 rounded-md border border-warm-white/20 object-cover shadow-lift"
-        />
-        <img
-          src={craftMarket}
-          alt="Kenyan craft market textiles and handmade pieces"
-          className="absolute bottom-8 left-3 h-14 w-14 rounded-md border border-gold/30 object-cover shadow-card"
-        />
-        <span className="absolute left-4 top-4 rounded-sm border border-gold/35 bg-charcoal/55 px-2.5 py-1 font-sans text-[9px] uppercase tracking-[0.16em] text-gold-soft backdrop-blur-md">
-          Field notes
-        </span>
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,oklch(from_var(--charcoal)_l_c_h_/_0.18)_52%,oklch(from_var(--charcoal)_l_c_h_/_0.78)_100%)]" />
       </Link>
 
       {/* Body */}
@@ -128,12 +115,12 @@ function FloatingProductCard() {
         <p
           className="m-0 font-sans text-[10px] tracking-[0.05em] text-gold-soft/75"
         >
-          Mara light · beadwork · woven fibre
+          Kenyan beadwork
         </p>
         <h3
           className="my-2 mb-4 font-display text-[19px] font-normal leading-tight text-warm-white"
         >
-          Safari-born pieces with a maker's hand
+          Handcrafted pieces
         </h3>
 
         <div className="flex items-center justify-between">
@@ -151,29 +138,6 @@ function FloatingProductCard() {
           </Link>
         </div>
 
-        {/* Divider + secondary card CTAs */}
-        <div
-          aria-hidden
-          className="mt-4 h-px bg-gold/20"
-        />
-        <div className="flex flex-col gap-2 pt-3">
-          <Link
-            to="/creators/$creatorId"
-            params={{ creatorId: "wanjiru-kamau" }}
-            className="group/talent inline-flex items-center justify-between font-sans text-[11px] tracking-[0.03em] text-gold-soft/75 transition-colors hover:text-gold-soft"
-          >
-            <span>Meet the makers behind it</span>
-            <ArrowRight className="ml-2 h-3 w-3" strokeWidth={2} />
-          </Link>
-          <Link
-            to="/shop"
-            search={{ craft: "Beadwork", region: "All", sort: "newest", minPrice: undefined, maxPrice: undefined }}
-            className="group/similar inline-flex items-center justify-between font-sans text-[11px] tracking-[0.03em] text-warm-white/45 transition-colors hover:text-warm-white/75"
-          >
-            <span>See safari-toned pieces</span>
-            <ArrowRight className="ml-2 h-3 w-3" strokeWidth={2} />
-          </Link>
-        </div>
       </div>
     </div>
   );

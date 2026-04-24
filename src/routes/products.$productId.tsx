@@ -111,7 +111,14 @@ export const Route = createFileRoute("/products/$productId")({
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData();
+  // Loader has already primed the cache. Subscribe so background refetches
+  // re-render us with fresh data.
+  const { product: initialProduct } = Route.useLoaderData();
+  const { productId } = Route.useParams();
+  const { data: live } = useProduct(productId, { initialData: initialProduct });
+  const product = live ?? initialProduct;
+
+  const { data: catalogue } = useAllProducts();
   const { addItem } = useCart();
   const [selected, setSelected] = useState(0);
   const [added, setAdded] = useState(false);
@@ -144,7 +151,7 @@ function ProductPage() {
 
   // ── Related products: same creator first, then same craft ──────────────
   const related = useMemo<Product[]>(() => {
-    const all = getAllProducts();
+    const all = (catalogue ?? []).map(asProduct);
     const sameCreator = all.filter(
       (p) => p.creator.id === product.creator.id && p.id !== product.id,
     );
@@ -155,7 +162,7 @@ function ProductPage() {
         p.creator.id !== product.creator.id,
     );
     return [...sameCreator, ...sameCraft].slice(0, 3);
-  }, [product.id, product.creator.id, product.creator.craft]);
+  }, [catalogue, product.id, product.creator.id, product.creator.craft]);
 
   // ── Related creators: 2 creators that aren't this product's maker ─────
   const relatedCreators = useMemo(() => {

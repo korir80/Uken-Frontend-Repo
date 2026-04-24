@@ -849,6 +849,10 @@ Use Bean Validation annotations on every request DTO.
 | `city`, `country` | `@NotBlank`, `@Size(max=120)` |
 | `rating` | `@Min(1)`, `@Max(5)` |
 | `position` (featured) | `@Min(1)`, `@Max(4)` |
+| `label` (address) | `@NotBlank`, `@Size(max=80)` |
+| `line1`, `line2` (address) | `@Size(max=200)` (`line1` `@NotBlank`) |
+| `productId`, `creatorId` (path/body refs) | `@Pattern("^[a-z0-9-]{1,80}$")` |
+| Image URL fields (`heroImage`, `gallery[].src`, `portraitImage`, `headerImage`, `portrait`, `workSample`, cart `image`, order item `image`) | `@Pattern("^https://.+")` — must be the Cloudinary URL returned by the browser-side upload. Reject `data:`, `blob:`, and non-HTTPS. |
 
 Status enums: validate via `@Pattern` or a custom `@ValidEnum` annotation against the allowed values listed in §6.
 

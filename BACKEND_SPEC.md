@@ -1048,23 +1048,60 @@ CREATE TABLE product_moderation (
 
 ---
 
-## 10. File / image uploads
+## 10. File / image uploads (direct browser → Cloudinary)
 
-### Endpoint
-`POST /api/media/upload` — `multipart/form-data` with field `file`. Authenticated.
+> **The Spring Boot backend never receives image binaries.** This is a deliberate
+> contract: the React app uploads files straight to Cloudinary using an unsigned
+> upload preset, then sends the resulting public URL (a plain string) to the
+> backend as part of normal JSON payloads (product create, profile update,
+> application submit).
 
-### Server validation
-- Allowed MIME: `image/jpeg`, `image/png`, `image/webp`.
-- Max size: 8 MB (Spring already enforces via `multipart.max-file-size`).
-- Reject anything else with 400.
-- Generate filename: `<uuid>.<ext>`. Never trust the client's filename.
+### Why this shape
+- Keeps the Spring service stateless and small — no multipart streams, no
+  proxying gigabytes through Railway.
+- Cloudinary handles CDN, format conversion (`f_auto`), quality (`q_auto`), and
+  on-the-fly resizing for free.
+- The backend only stores text columns; nothing changes at the DB layer.
 
-### Provider
-- **Cloudinary** is recommended for v1 (free tier, automatic CDN, transformations). Set `MEDIA_PROVIDER=cloudinary` and `CLOUDINARY_URL`.
-- Alternative: any S3-compatible bucket (Backblaze B2, Cloudflare R2). Build a tiny `MediaService` interface with two implementations and a Spring conditional.
+### Frontend setup (already wired — see `src/lib/cloudinary.ts`)
+1. In your Cloudinary dashboard → **Settings → Upload**, create an **unsigned
+   upload preset** (signing mode: **Unsigned**, folder: `ukena/`).
+2. Recommended preset settings: allowed formats `jpg,jpeg,png,webp,avif`,
+   max size **10 MB**, unique filename **on**, eager transformation
+   `w_1600,c_limit,q_auto,f_auto`.
+3. Set frontend env vars:
+   ```
+   VITE_CLOUDINARY_CLOUD_NAME=ukena-prod
+   VITE_CLOUDINARY_UPLOAD_PRESET=ukena_unsigned
+   ```
 
-### Returned URL
-Public, immutable CDN URL. The frontend stores this URL in product DTOs, profile fields, and application photos.
+### Upload flow
+```
+User picks file
+  → src/lib/cloudinary.ts → POST https://api.cloudinary.com/v1_1/<cloud>/auto/upload
+      (multipart/form-data: file, upload_preset, folder)
+  → Cloudinary returns { secure_url, public_id, width, height, ... }
+  → Frontend stores `secure_url` into the product / profile / application JSON
+  → Spring Boot receives that URL as a normal string field
+```
+
+### Backend responsibilities
+- **None for binaries.** Do NOT implement `/api/media/upload`.
+- **Validate URL strings** on incoming DTOs that carry images. A simple
+  `@Pattern(regexp = "^https://.+")` is sufficient for v1; tighten to
+  `^https://res\\.cloudinary\\.com/<cloud-name>/.+` if you want to lock the
+  source down.
+- **Store the URLs** in the existing text columns (`hero_image`, `gallery`,
+  `portrait_image`, `header_image`, `image`, `portrait`, `work_sample`).
+- **Do not download the images** server-side. If you ever need a smaller
+  variant (thumbnail, social card) build a Cloudinary URL with transformation
+  segments — e.g. `…/upload/w_400,c_fill,q_auto/…/abc123.jpg` — never re-host.
+
+### Optional (post-v1): asset deletion
+If a creator deletes a product, you may want to also delete its Cloudinary
+assets. That requires a **signed** call from the backend using the Cloudinary
+admin SDK and a service-side `CLOUDINARY_URL` env var. This is out of scope
+for v1 — orphaned assets are tolerable on the free tier.
 
 ---
 

@@ -39,6 +39,7 @@ export const queryKeys = {
     ["products", "creator", creatorId] as const,
   ordersBuyer: () => ["orders", "buyer"] as const,
   ordersCreator: () => ["orders", "creator"] as const,
+  order: (id: string) => ["orders", "detail", id] as const,
   myProfile: () => ["profile", "me"] as const,
 };
 
@@ -62,6 +63,11 @@ export const productsQueryOptions = () => ({
 export const productQueryOptions = (id: string) => ({
   queryKey: queryKeys.product(id),
   queryFn: () => productService.getProductById(id),
+});
+
+export const orderQueryOptions = (id: string) => ({
+  queryKey: queryKeys.order(id),
+  queryFn: () => orderService.getOrderById(id),
 });
 
 /* ---------------- Creators ---------------- */
@@ -125,6 +131,13 @@ export function useBuyerOrders() {
   return useQuery<OrderDto[]>({
     queryKey: queryKeys.ordersBuyer(),
     queryFn: () => orderService.getOrdersByBuyer(),
+  });
+}
+
+export function useBuyerOrder(id: string) {
+  return useQuery<OrderDto>({
+    ...orderQueryOptions(id),
+    enabled: !!id,
   });
 }
 

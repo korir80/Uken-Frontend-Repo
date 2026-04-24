@@ -2,14 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import savanna from "@/assets/authentic-savanna.jpg";
 import beadMarket from "@/assets/authentic-bead-market.jpg";
-import baskets from "@/assets/authentic-baskets-pile.jpg";
-import craftMarket from "@/assets/authentic-craft-market.jpg";
 
 /**
  * Hero — dark cinematic, editorial.
- * Reduced height (min 520px desktop), wavy bottom divider,
- * tighter element balance, expanded product card with
- * creator + similar-pieces CTAs.
+ * Balanced height, wavy bottom divider,
+ * safari background, brief editorial copy.
  */
 export function Hero() {
   return (
@@ -37,71 +34,23 @@ export function Hero() {
         }}
       />
 
-      {/* 4 — Archaeological field-line motif, deliberately quiet */}
-      <svg
-        aria-hidden
-        viewBox="0 0 900 620"
-        className="absolute right-[-180px] top-[-80px] h-[560px] w-[820px] text-gold opacity-[0.16] md:right-[-80px] md:opacity-[0.2]"
-      >
-        <path d="M60 410C160 300 245 390 340 272s202-92 316-176" fill="none" stroke="currentColor" strokeWidth="1" />
-        <path d="M120 480c92-122 210-70 292-184 93-130 188-135 318-188" fill="none" stroke="currentColor" strokeWidth="1" />
-        <path d="M276 136h110v92H276zM560 214h84v74h-84zM430 386h132v96H430z" fill="none" stroke="currentColor" strokeWidth="1" />
-        <circle cx="386" cy="228" r="5" fill="currentColor" />
-        <circle cx="644" cy="288" r="5" fill="currentColor" />
-        <circle cx="562" cy="482" r="5" fill="currentColor" />
-      </svg>
-
       {/* Content shell — snug, vertically centred */}
       <div
-        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-10 md:flex-row md:items-center md:justify-between md:px-10 md:py-12"
-        style={{ minHeight: "400px" }}
+        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-16 md:flex-row md:items-center md:justify-between md:px-10 md:py-20"
+        style={{ minHeight: "520px" }}
       >
         {/* LEFT — copy block, tight grouping */}
-        <div className="max-w-[560px] md:pl-[44px]">
-          {/* Provenance line */}
-          <div className="mb-7 flex items-center gap-3">
-            <span aria-hidden className="block h-px w-7 bg-gold" />
-            <span
-              className="font-sans text-[10px] font-medium uppercase tracking-[0.18em] text-gold"
-            >
-              Safari light · Handworked in Kenya
-            </span>
-          </div>
-
-          {/* Headline — three lines, italic accent */}
-          <h1
-            className="m-0 font-display font-light text-warm-white"
-          >
-            <span
-              className="block text-[34px] md:text-[58px]"
-              style={{ lineHeight: 1.02 }}
-            >
-              From the wild
-            </span>
-            <span
-              className="-mt-1.5 block text-[40px] italic text-gold-soft md:text-[68px]"
-              style={{
-                lineHeight: 1,
-              }}
-            >
-              beauty of Kenya.
-            </span>
-            <span
-              className="-mt-1 block text-[34px] md:text-[58px]"
-              style={{
-                lineHeight: 1.02,
-              }}
-            >
-              Into crafted heirlooms.
-            </span>
+        <div className="max-w-[600px] md:pl-[44px]">
+          <h1 className="m-0 max-w-[680px] font-display text-5xl font-light leading-tight text-warm-white md:text-6xl">
+            Kenyan craft,
+            <span className="block italic text-gold-soft">safari soul.</span>
           </h1>
 
           {/* Sub-copy */}
           <p
-            className="mb-6 mt-5 max-w-[440px] font-sans text-sm font-light leading-relaxed text-warm-white/62"
+            className="mb-7 mt-5 max-w-[420px] font-sans text-base font-light leading-relaxed text-warm-white/68"
           >
-            A curated marketplace where safari warmth, ancient earth and maker
-            knowledge meet in objects shaped for modern UK homes.
+            Handmade Kenyan pieces for thoughtful UK homes.
           </p>
 
           {/* CTAs */}

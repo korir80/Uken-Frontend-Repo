@@ -239,6 +239,16 @@ function Step1({
           autoComplete="name"
         />
         <JoinInput
+          id="email"
+          type="email"
+          label="What's the best email to reach you on?"
+          helper="We'll only use this to reply about your application."
+          placeholder="you@example.com"
+          value={data.email}
+          onChange={(e) => update("email", e.target.value)}
+          autoComplete="email"
+        />
+        <JoinInput
           id="region"
           label="Where in Kenya are you based?"
           helper="Town, county, or however you'd describe home."

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StyleguideRouteImport } from './routes/styleguide'
 import { Route as StoryRouteImport } from './routes/story'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SavedRouteImport } from './routes/saved'
@@ -58,6 +59,11 @@ const StyleguideRoute = StyleguideRouteImport.update({
 const StoryRoute = StoryRouteImport.update({
   id: '/story',
   path: '/story',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SigninRoute = SigninRouteImport.update({
@@ -262,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/saved': typeof SavedRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
   '/account/activity': typeof AccountActivityRoute
@@ -301,6 +308,7 @@ export interface FileRoutesByTo {
   '/saved': typeof SavedRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
   '/account/activity': typeof AccountActivityRoute
@@ -344,6 +352,7 @@ export interface FileRoutesById {
   '/saved': typeof SavedRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
   '/account/activity': typeof AccountActivityRoute
@@ -388,6 +397,7 @@ export interface FileRouteTypes {
     | '/saved'
     | '/shop'
     | '/signin'
+    | '/signup'
     | '/story'
     | '/styleguide'
     | '/account/activity'
@@ -427,6 +437,7 @@ export interface FileRouteTypes {
     | '/saved'
     | '/shop'
     | '/signin'
+    | '/signup'
     | '/story'
     | '/styleguide'
     | '/account/activity'
@@ -469,6 +480,7 @@ export interface FileRouteTypes {
     | '/saved'
     | '/shop'
     | '/signin'
+    | '/signup'
     | '/story'
     | '/styleguide'
     | '/account/activity'
@@ -512,6 +524,7 @@ export interface RootRouteChildren {
   SavedRoute: typeof SavedRoute
   ShopRoute: typeof ShopRoute
   SigninRoute: typeof SigninRoute
+  SignupRoute: typeof SignupRoute
   StoryRoute: typeof StoryRoute
   StyleguideRoute: typeof StyleguideRoute
   CreatorsCreatorIdRoute: typeof CreatorsCreatorIdRoute
@@ -534,6 +547,13 @@ declare module '@tanstack/react-router' {
       path: '/story'
       fullPath: '/story'
       preLoaderRoute: typeof StoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signin': {
@@ -900,6 +920,7 @@ const rootRouteChildren: RootRouteChildren = {
   SavedRoute: SavedRoute,
   ShopRoute: ShopRoute,
   SigninRoute: SigninRoute,
+  SignupRoute: SignupRoute,
   StoryRoute: StoryRoute,
   StyleguideRoute: StyleguideRoute,
   CreatorsCreatorIdRoute: CreatorsCreatorIdRoute,

@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Lock } from "lucide-react";
+import { toast } from "sonner";
 import { useCart, formatGBP } from "@/lib/cart";
+import { useCreateOrder } from "@/lib/queries";
 
 export const Route = createFileRoute("/checkout/payment")({
   component: PaymentStep,
@@ -10,6 +12,7 @@ export const Route = createFileRoute("/checkout/payment")({
 function PaymentStep() {
   const navigate = useNavigate();
   const { delivery, items, placeOrder, totalPence } = useCart();
+  const createOrder = useCreateOrder();
 
   const [card, setCard] = useState({
     holder: "",
@@ -39,25 +42,42 @@ function PaymentStep() {
     );
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!delivery || items.length === 0) return;
     setSubmitting(true);
 
-    // TODO: wire Place Order button to:
-    //   1. orderService.createOrder(cartItems, deliveryDetails)
-    //      → POST /api/orders (Spring Boot)
-    //   2. Stripe PaymentIntent confirmation (stripe.confirmCardPayment)
-    //   3. On success → clearCart() → navigate to /checkout/confirmation
-    // Until then we simulate the round-trip and let the local placeOrder
-    // reducer record the "lastOrder" so confirmation has something to show.
-    window.setTimeout(() => {
-      const order = placeOrder();
-      if (order) {
-        navigate({ to: "/checkout/confirmation" });
-      } else {
-        setSubmitting(false);
-      }
-    }, 600);
+    // 1. Persist the order on the server (Spring Boot once live; mock today).
+    //    The mutation invalidates ['orders','buyer'] on success so the buyer
+    //    dashboard picks up the new row immediately.
+    try {
+      await createOrder.mutateAsync({
+        items: items.map((i) => ({
+          productId: i.productId,
+          quantity: i.quantity,
+        })),
+        delivery,
+      });
+    } catch (err) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "We couldn't place your order. Please try again.";
+      toast.error(msg);
+      setSubmitting(false);
+      return;
+    }
+
+    // 2. Snapshot the order locally so /checkout/confirmation has a
+    //    server-independent payload to render. When Stripe lands this is
+    //    where confirmCardPayment() will go (between API + local snapshot).
+    const local = placeOrder();
+    if (!local) {
+      setSubmitting(false);
+      return;
+    }
+    toast.success("Order placed — your maker has been notified.");
+    navigate({ to: "/checkout/confirmation" });
   };
 
   return (

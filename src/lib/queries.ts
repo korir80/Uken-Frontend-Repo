@@ -48,6 +48,7 @@ export const queryKeys = {
   ordersCreator: () => ["orders", "creator"] as const,
   order: (id: string) => ["orders", "detail", id] as const,
   myProfile: () => ["profile", "me"] as const,
+  addresses: () => ["addresses", "me"] as const,
 };
 
 /* ---------------- Query options factories (for use in route loaders) ---------------- */

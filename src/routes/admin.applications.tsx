@@ -1,10 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { applications, type ApplicationStatus } from "@/components/admin/admin-data";
-import { PageHeader, StatusPill, EmptyState } from "@/components/dashboard/DashboardShell";
+import { toast } from "sonner";
+import type { ApplicationStatus } from "@/services";
+import {
+  PageHeader,
+  StatusPill,
+  EmptyState,
+} from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
+import {
+  useAdminApplications,
+  useUpdateApplicationStatus,
+} from "@/lib/queries";
 
-const STATUS_TONE: Record<ApplicationStatus, "neutral" | "good" | "warn" | "bad" | "info"> = {
+const STATUS_TONE: Record<
+  ApplicationStatus,
+  "neutral" | "good" | "warn" | "bad" | "info"
+> = {
   PENDING: "warn",
   UNDER_REVIEW: "info",
   APPROVED: "good",
@@ -27,15 +39,25 @@ export const Route = createFileRoute("/admin/applications")({
 
 function AdminApplications() {
   const [filter, setFilter] = useState<ApplicationStatus | "ALL">("ALL");
-  const [items, setItems] = useState(applications);
-  const [open, setOpen] = useState<string | null>(items[0]?.id ?? null);
+  const [open, setOpen] = useState<string | null>(null);
 
-  const filtered = filter === "ALL" ? items : items.filter((a) => a.status === filter);
-  const active = items.find((a) => a.id === open) ?? filtered[0] ?? null;
+  const { data: items = [], isLoading } = useAdminApplications();
+  const updateStatus = useUpdateApplicationStatus();
 
-  const setStatus = (id: string, status: ApplicationStatus) => {
-    setItems((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
-  };
+  const filtered =
+    filter === "ALL" ? items : items.filter((a) => a.status === filter);
+  const active =
+    items.find((a) => a.id === open) ?? filtered[0] ?? items[0] ?? null;
+
+  function setStatus(id: string, status: ApplicationStatus) {
+    updateStatus.mutate(
+      { id, status },
+      {
+        onSuccess: () => toast.success(`Marked ${status.replace(/_/g, " ").toLowerCase()}.`),
+        onError: (e) => toast.error(e.message),
+      },
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -62,11 +84,12 @@ function AdminApplications() {
         ))}
       </div>
 
-      {filtered.length === 0 ? (
+      {isLoading ? (
+        <p className="font-sans text-sm text-charcoal/60">Loading applications…</p>
+      ) : filtered.length === 0 ? (
         <EmptyState title="No applications in this state." />
       ) : (
         <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
-          {/* List */}
           <ul className="space-y-3">
             {filtered.map((a) => (
               <li key={a.id}>
@@ -74,35 +97,50 @@ function AdminApplications() {
                   type="button"
                   onClick={() => setOpen(a.id)}
                   className={`flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition ${
-                    open === a.id
+                    (open ?? active?.id) === a.id
                       ? "border-clay bg-cream"
                       : "border-border/60 bg-warm-white hover:border-clay/50"
                   }`}
                 >
-                  <LazyImage src={a.portrait} alt="" className="h-12 w-12 rounded-lg object-cover" />
+                  <LazyImage
+                    src={a.portrait}
+                    alt=""
+                    className="h-12 w-12 rounded-lg object-cover"
+                  />
                   <div className="flex-1">
-                    <p className="font-display text-base text-charcoal">{a.fullName}</p>
+                    <p className="font-display text-base text-charcoal">
+                      {a.fullName}
+                    </p>
                     <p className="font-sans text-[12px] text-charcoal/55">
                       {a.craft} · {a.region}
                     </p>
                   </div>
-                  <StatusPill label={a.status.replace(/_/g, " ").toLowerCase()} tone={STATUS_TONE[a.status]} />
+                  <StatusPill
+                    label={a.status.replace(/_/g, " ").toLowerCase()}
+                    tone={STATUS_TONE[a.status]}
+                  />
                 </button>
               </li>
             ))}
           </ul>
 
-          {/* Detail */}
           {active && (
             <article className="rounded-2xl border border-border/60 bg-warm-white p-6 shadow-soft">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="font-mono text-[12px] text-charcoal/60">{active.id}</p>
-                  <h2 className="mt-1 font-display text-2xl text-charcoal">{active.fullName}</h2>
-                  <p className="font-sans text-[13px] text-charcoal/65">
-                    {active.craft} · {active.region} · {active.yearsOfPractice} years practising
+                  <p className="font-mono text-[12px] text-charcoal/60">
+                    {active.id}
                   </p>
-                  <p className="mt-1 font-sans text-[12px] text-charcoal/50">{active.email}</p>
+                  <h2 className="mt-1 font-display text-2xl text-charcoal">
+                    {active.fullName}
+                  </h2>
+                  <p className="font-sans text-[13px] text-charcoal/65">
+                    {active.craft} · {active.region} ·{" "}
+                    {active.yearsOfPractice} years practising
+                  </p>
+                  <p className="mt-1 font-sans text-[12px] text-charcoal/50">
+                    {active.email}
+                  </p>
                 </div>
                 <StatusPill
                   label={active.status.replace(/_/g, " ").toLowerCase()}
@@ -111,8 +149,16 @@ function AdminApplications() {
               </div>
 
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                <LazyImage src={active.portrait} alt="" className="aspect-square w-full rounded-xl object-cover" />
-                <LazyImage src={active.workSample} alt="" className="aspect-square w-full rounded-xl object-cover" />
+                <LazyImage
+                  src={active.portrait}
+                  alt=""
+                  className="aspect-square w-full rounded-xl object-cover"
+                />
+                <LazyImage
+                  src={active.workSample}
+                  alt=""
+                  className="aspect-square w-full rounded-xl object-cover"
+                />
               </div>
 
               <div className="mt-5">
@@ -124,26 +170,30 @@ function AdminApplications() {
 
               <div className="mt-6 flex flex-wrap gap-2 border-t border-border/40 pt-5">
                 <button
+                  disabled={updateStatus.isPending}
                   onClick={() => setStatus(active.id, "APPROVED")}
-                  className="rounded-full bg-clay px-5 py-2 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep"
+                  className="rounded-full bg-clay px-5 py-2 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
                 >
                   Approve
                 </button>
                 <button
+                  disabled={updateStatus.isPending}
                   onClick={() => setStatus(active.id, "CHANGES_REQUESTED")}
-                  className="rounded-full border border-border bg-warm-white px-5 py-2 font-sans text-[13px] text-charcoal hover:bg-cream"
+                  className="rounded-full border border-border bg-warm-white px-5 py-2 font-sans text-[13px] text-charcoal hover:bg-cream disabled:opacity-60"
                 >
                   Request changes
                 </button>
                 <button
+                  disabled={updateStatus.isPending}
                   onClick={() => setStatus(active.id, "UNDER_REVIEW")}
-                  className="rounded-full border border-border bg-warm-white px-5 py-2 font-sans text-[13px] text-charcoal hover:bg-cream"
+                  className="rounded-full border border-border bg-warm-white px-5 py-2 font-sans text-[13px] text-charcoal hover:bg-cream disabled:opacity-60"
                 >
                   Mark under review
                 </button>
                 <button
+                  disabled={updateStatus.isPending}
                   onClick={() => setStatus(active.id, "REJECTED")}
-                  className="rounded-full px-5 py-2 font-sans text-[13px] text-destructive hover:underline"
+                  className="rounded-full px-5 py-2 font-sans text-[13px] text-destructive hover:underline disabled:opacity-60"
                 >
                   Reject
                 </button>

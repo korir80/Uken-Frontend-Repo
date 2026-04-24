@@ -78,7 +78,7 @@ function ExplorePage() {
       c[creator.craft] = (c[creator.craft] ?? 0) + 1;
     }
     return c;
-  }, []);
+  }, [creators]);
 
   const shown = filtered.slice(0, visible);
   const hasMore = visible < filtered.length;

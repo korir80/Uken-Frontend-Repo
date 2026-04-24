@@ -4,10 +4,15 @@
  * Real backend endpoints (see BACKEND_SPEC.md §Profile):
  *   GET  /api/creators/me              → CreatorDetail (current creator)
  *   PUT  /api/creators/me              → CreatorDetail
- *   POST /api/media/upload             → { url, id }     (multipart/form-data)
+ *
+ * Image uploads do NOT touch the backend — the browser uploads directly to
+ * Cloudinary via an unsigned preset and we hand the resulting public URL
+ * back as a plain string. The Spring Boot backend simply stores that string
+ * against products / portraits / applications.
  */
 import { api, fakeResolve, USE_MOCK_API } from "./api";
 import { creatorService, type CreatorDetail } from "./creatorService";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 export interface CreatorProfileUpdate {
   firstName?: string;
@@ -57,12 +62,24 @@ export const profileService = {
     return res.data;
   },
 
-  async uploadImage(file: File): Promise<UploadedMedia> {
-    if (USE_MOCK_API) {
+  /**
+   * Upload an image. In development with no Cloudinary creds, falls back to
+   * a local blob URL so the UI is testable. In production, every upload goes
+   * directly to Cloudinary from the browser — the backend never sees the
+   * file, only the URL.
+   */
+  async uploadImage(
+    file: File,
+    opts: { folder?: string; onProgress?: (pct: number) => void } = {},
+  ): Promise<UploadedMedia> {
+    if (USE_MOCK_API && !import.meta.env.VITE_CLOUDINARY_CLOUD_NAME) {
       const url = URL.createObjectURL(file);
-      return fakeResolve({ url, id: `mock-${Date.now()}` });
+      return fakeResolve({ url, id: `local-${Date.now()}` });
     }
-    const res = await api.upload<UploadedMedia>("/media/upload", file);
-    return res.data;
+    const result = await uploadToCloudinary(file, {
+      folder: opts.folder ?? "ukena",
+      onProgress: opts.onProgress,
+    });
+    return { url: result.url, id: result.publicId };
   },
 };

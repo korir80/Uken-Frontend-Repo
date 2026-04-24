@@ -1,7 +1,13 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
+import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+
+async function signOutWithToast(logout: () => Promise<void>) {
+  await logout();
+  toast.success("Signed out");
+}
 
 interface DashboardShellProps {
   /** "creator", "admin", or "buyer" — chooses sidebar links + eyebrow. */
@@ -64,7 +70,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
         type="button"
         onClick={() => {
           setDrawerOpen(false);
-          logout();
+          void signOutWithToast(logout);
         }}
         className="mt-4 inline-flex items-center gap-2 rounded-full border border-clay/40 px-4 py-2 font-sans text-[12px] font-medium text-clay transition-colors hover:bg-clay hover:text-warm-white"
       >
@@ -97,7 +103,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
         {user && (
           <button
             type="button"
-            onClick={() => logout()}
+            onClick={() => void signOutWithToast(logout)}
             aria-label="Sign out"
             className="inline-flex items-center gap-1.5 rounded-full border border-clay/40 px-3 py-1.5 font-sans text-[12px] font-medium text-clay hover:bg-clay hover:text-warm-white"
           >

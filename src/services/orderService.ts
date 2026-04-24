@@ -176,6 +176,16 @@ export const orderService = {
     return res.data;
   },
 
+  async getOrderById(id: string): Promise<OrderDto> {
+    if (USE_MOCK_API) {
+      const o = seedOrders.find((x) => x.id === id);
+      if (!o) throw new Error(`Order not found: ${id}`);
+      return fakeResolve(o);
+    }
+    const res = await api.get<OrderDto>(`/orders/${encodeURIComponent(id)}`);
+    return res.data;
+  },
+
   async getOrdersByBuyer(email?: string): Promise<OrderDto[]> {
     if (USE_MOCK_API) {
       if (!email) return fakeResolve(seedOrders.slice(0, 3));

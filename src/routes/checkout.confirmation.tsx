@@ -200,7 +200,8 @@ function ConfirmationPage() {
             Explore more makers
           </Link>
           <Link
-            to="/account"
+            to="/account/orders/$orderId"
+            params={{ orderId: lastOrder.id }}
             className="inline-flex h-11 items-center justify-center rounded-md px-6 text-[14px] font-medium text-charcoal transition-colors hover:bg-cream"
           >
             View your order

@@ -11,6 +11,7 @@ import { CartProvider } from "@/lib/cart";
 import { AuthProvider } from "@/lib/auth";
 import { RouteProgress } from "@/components/ui/route-progress";
 import { MobileNavFab } from "@/components/nav/MobileNavFab";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
@@ -89,6 +90,7 @@ function RootComponent() {
           <RouteProgress />
           <Outlet />
           <MobileNavFab />
+          <Toaster richColors position="top-center" />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

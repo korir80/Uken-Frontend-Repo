@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
+import { toast } from "sonner";
 import { useAuth, defaultPathForRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/signin")({
@@ -50,9 +51,12 @@ function SignInPage() {
     setSubmitting(true);
     try {
       const user = await login(email.trim(), password);
+      toast.success(`Welcome back, ${user.fullName.split(" ")[0]}`);
       navigate({ to: defaultPathForRole(user.role) });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign-in failed");
+      const msg = err instanceof Error ? err.message : "Sign-in failed";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }
@@ -121,7 +125,16 @@ function SignInPage() {
             </button>
           </form>
 
-          <p className="mt-6 text-center font-sans text-[12px] text-charcoal/50">
+          <p className="mt-6 text-center font-sans text-[13px] text-charcoal/70">
+            New to Ukena?{" "}
+            <Link
+              to="/signup"
+              className="font-medium text-clay underline-offset-4 hover:underline"
+            >
+              Create an account
+            </Link>
+          </p>
+          <p className="mt-3 text-center font-sans text-[12px] text-charcoal/50">
             Real accounts arrive when the Spring Boot backend is connected.
           </p>
         </section>

@@ -169,7 +169,7 @@ interface CartContextValue extends CartState {
   /** @deprecated use clearCart() — kept for back-compat with older call sites. */
   clearBag: () => void;
   setDelivery: (delivery: DeliveryDetails) => void;
-  placeOrder: () => PlacedOrder | null;
+  placeOrder: (override?: { id?: string }) => PlacedOrder | null;
   /** Aggregated read-only view. Prefer this over per-component calculations. */
   cartSummary: CartSummary;
   // Convenience pass-throughs (also live on cartSummary)
@@ -260,21 +260,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return [...seen.values()];
   }, [state.items]);
 
-  const placeOrder = useCallback((): PlacedOrder | null => {
-    if (state.items.length === 0 || !state.delivery) return null;
-    const order: PlacedOrder = {
-      // Human-readable, sortable, low-collision id. Real ids come from API later.
-      id: `UK-${Date.now().toString(36).toUpperCase()}`,
-      placedAt: new Date().toISOString(),
-      items: state.items,
-      delivery: state.delivery,
-      subtotalPence,
-      shippingPence,
-      totalPence,
-    };
-    dispatch({ type: "placeOrder", order });
-    return order;
-  }, [state.items, state.delivery, subtotalPence, shippingPence, totalPence]);
+  const placeOrder = useCallback(
+    (override?: { id?: string }): PlacedOrder | null => {
+      if (state.items.length === 0 || !state.delivery) return null;
+      const order: PlacedOrder = {
+        // Prefer the server's id when available so the confirmation page
+        // can deep-link to /account/orders/:id.
+        id:
+          override?.id ?? `UK-${Date.now().toString(36).toUpperCase()}`,
+        placedAt: new Date().toISOString(),
+        items: state.items,
+        delivery: state.delivery,
+        subtotalPence,
+        shippingPence,
+        totalPence,
+      };
+      dispatch({ type: "placeOrder", order });
+      return order;
+    },
+    [state.items, state.delivery, subtotalPence, shippingPence, totalPence],
+  );
 
   const cartSummary: CartSummary = useMemo(
     () => ({

@@ -198,7 +198,17 @@ function ExplorePage() {
         {/* Grid — single column on mobile, masonry from md */}
         <section className="bg-warm-white pb-10 pt-6 md:pb-20 md:pt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10">
-            {shown.length === 0 ? (
+            {isLoading && shown.length === 0 ? (
+              <div className="columns-1 gap-8 md:columns-2 md:gap-10 lg:columns-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="mb-8 md:mb-12">
+                    <div className="aspect-[4/5] w-full animate-pulse rounded-2xl bg-cream" />
+                    <div className="mt-5 h-4 w-3/4 animate-pulse rounded bg-cream" />
+                    <div className="mt-2 h-4 w-1/2 animate-pulse rounded bg-cream" />
+                  </div>
+                ))}
+              </div>
+            ) : shown.length === 0 ? (
               <div className="py-20 text-center">
                 <p className="font-display text-2xl italic text-charcoal md:text-3xl">
                   No makers in this craft yet.

@@ -82,15 +82,27 @@ function CreatorProducts() {
 
       {/* New piece sheet — mock only */}
       {showNew && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-charcoal/40 p-4 sm:items-center">
-          <div className="w-full max-w-lg rounded-2xl bg-warm-white p-6 shadow-hero">
-            <p className="section-label">New piece</p>
-            <h2 className="mt-3 font-display text-2xl text-charcoal">List something new.</h2>
-            <p className="mt-2 font-sans text-[13px] text-charcoal/65">
-              The full editor lands once the backend is wired. For now, this is the
-              shape it will take.
-            </p>
-            <div className="mt-5 space-y-3">
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-charcoal/40 p-4 sm:items-center"
+          onClick={() => setShowNew(false)}
+        >
+          <div
+            className="my-auto flex max-h-[calc(100vh-2rem)] w-full max-w-lg flex-col rounded-2xl bg-warm-white shadow-hero"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex-shrink-0 border-b border-border/40 p-6 pb-4">
+              <p className="section-label">New piece</p>
+              <h2 className="mt-3 font-display text-2xl text-charcoal">
+                List something new.
+              </h2>
+              <p className="mt-2 font-sans text-[13px] text-charcoal/65">
+                The full editor lands once the backend is wired. For now, this is the
+                shape it will take.
+              </p>
+            </div>
+            <div className="flex-1 space-y-3 overflow-y-auto px-6 py-5">
               <Field label="Name" placeholder="e.g. Spiral table mat" />
               <Field label="Price (£)" placeholder="48" />
               <Field label="Dimensions" placeholder="H 28cm · Ø 26cm" />
@@ -101,7 +113,7 @@ function CreatorProducts() {
                 textarea
               />
             </div>
-            <div className="mt-5 flex justify-end gap-3">
+            <div className="flex flex-shrink-0 justify-end gap-3 border-t border-border/40 p-5">
               <button
                 type="button"
                 onClick={() => setShowNew(false)}

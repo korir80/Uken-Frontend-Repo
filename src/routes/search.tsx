@@ -199,26 +199,26 @@ function SearchPage() {
     return () => window.clearTimeout(t);
   }, [draft, q, navigate]);
 
-  const query = q.trim().toLowerCase();
+  const tokens = useMemo(() => tokenize(q), [q]);
   const isLoading = loadingProducts || loadingCreators;
 
   const productHits = useMemo(() => {
-    if (!query) return [];
+    if (tokens.length === 0) return [];
     return rawProducts
-      .map((p) => ({ p, s: scoreProduct(p, query) }))
+      .map((p) => ({ p, s: scoreProduct(p, tokens) }))
       .filter((r) => r.s > 0)
       .sort((a, b) => b.s - a.s)
       .map((r) => r.p);
-  }, [rawProducts, query]);
+  }, [rawProducts, tokens]);
 
   const creatorHits = useMemo(() => {
-    if (!query) return [];
+    if (tokens.length === 0) return [];
     return rawCreators
-      .map((c) => ({ c, s: scoreCreator(c, query) }))
+      .map((c) => ({ c, s: scoreCreator(c, tokens) }))
       .filter((r) => r.s > 0)
       .sort((a, b) => b.s - a.s)
       .map((r) => r.c);
-  }, [rawCreators, query]);
+  }, [rawCreators, tokens]);
 
   const showProducts = type === "all" || type === "products";
   const showMakers = type === "all" || type === "makers";

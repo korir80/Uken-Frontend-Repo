@@ -66,36 +66,102 @@ function asCreator(c: CreatorSummary, idx: number): Creator {
   };
 }
 
-/* ───────── scoring ───────── */
+/* ───────── scoring ─────────
+ *
+ * Goals (in priority order):
+ *   1. Multi-token queries must AND across the document (every token has
+ *      to land somewhere) — otherwise "sisal lamu" surfaces every sisal
+ *      basket plus every Lamu maker, drowning the actual match.
+ *   2. Field weighting — name > craft/region > materials > story.
+ *   3. Position boost — token at the start of a field beats token in
+ *      the middle.
+ *   4. Token coverage tiebreaker — a doc that matched 3 tokens beats one
+ *      that matched 1, even if the 1-token hit is exact.
+ */
 
-function scoreText(haystack: string | undefined, q: string): number {
-  if (!haystack) return 0;
-  const h = haystack.toLowerCase();
-  if (h === q) return 100;
-  if (h.startsWith(q)) return 70;
-  if (h.includes(q)) return 40;
+interface FieldScore {
+  /** Per-token best position score in this field (0 if token missing). */
+  perToken: number[];
+  /** Field-level weight. */
+  weight: number;
+}
+
+function tokenScoreInField(field: string, token: string): number {
+  if (!field) return 0;
+  const f = field.toLowerCase();
+  // Word-boundary prefix is the strongest non-exact signal.
+  if (f === token) return 100;
+  if (f.startsWith(token)) return 75;
+  // Match at the start of any whitespace-separated word.
+  const wordStart = new RegExp(`(^|\\s)${escapeRegex(token)}`);
+  if (wordStart.test(f)) return 55;
+  if (f.includes(token)) return 30;
   return 0;
 }
 
-function scoreProduct(p: ProductDto, q: string): number {
-  return Math.max(
-    scoreText(p.name, q),
-    scoreText(p.creator.fullName, q),
-    scoreText(p.creator.region, q),
-    scoreText(p.creator.craft, q),
-    scoreText(p.pieceStory, q) * 0.6,
-    scoreText(p.materials.join(" "), q),
-  );
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function scoreCreator(c: CreatorSummary, q: string): number {
-  return Math.max(
-    scoreText(c.fullName, q),
-    scoreText(c.firstName, q),
-    scoreText(c.craft, q),
-    scoreText(c.region, q),
-    scoreText(c.hook, q) * 0.6,
-  );
+function tokenize(q: string): string[] {
+  return q
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((t) => t.length > 0);
+}
+
+function aggregate(scores: FieldScore[], tokens: string[]): number {
+  if (tokens.length === 0) return 0;
+  // For each token, take the best score across fields (weighted).
+  let total = 0;
+  let matchedTokens = 0;
+  for (let i = 0; i < tokens.length; i++) {
+    let bestForToken = 0;
+    for (const fs of scores) {
+      const raw = fs.perToken[i] ?? 0;
+      const weighted = raw * fs.weight;
+      if (weighted > bestForToken) bestForToken = weighted;
+    }
+    if (bestForToken > 0) matchedTokens++;
+    total += bestForToken;
+  }
+  // AND-across-tokens: every token must appear somewhere. If even one is
+  // missing, treat the whole document as no-match. This is the single
+  // biggest precision win for multi-word queries.
+  if (matchedTokens < tokens.length) return 0;
+  // Coverage bonus rewards documents that hit more tokens directly.
+  return total * (1 + 0.1 * matchedTokens);
+}
+
+function buildFieldScore(field: string | undefined, tokens: string[], weight: number): FieldScore {
+  return {
+    weight,
+    perToken: tokens.map((t) => tokenScoreInField(field ?? "", t)),
+  };
+}
+
+function scoreProduct(p: ProductDto, tokens: string[]): number {
+  const fields: FieldScore[] = [
+    buildFieldScore(p.name, tokens, 1.0),
+    buildFieldScore(p.creator.fullName, tokens, 0.9),
+    buildFieldScore(p.creator.craft, tokens, 0.85),
+    buildFieldScore(p.creator.region, tokens, 0.8),
+    buildFieldScore(p.materials.join(" "), tokens, 0.7),
+    buildFieldScore(p.pieceStory, tokens, 0.4),
+  ];
+  return aggregate(fields, tokens);
+}
+
+function scoreCreator(c: CreatorSummary, tokens: string[]): number {
+  const fields: FieldScore[] = [
+    buildFieldScore(c.fullName, tokens, 1.0),
+    buildFieldScore(c.firstName, tokens, 0.95),
+    buildFieldScore(c.craft, tokens, 0.85),
+    buildFieldScore(c.region, tokens, 0.8),
+    buildFieldScore(c.hook, tokens, 0.4),
+  ];
+  return aggregate(fields, tokens);
 }
 
 /* ───────── page ───────── */

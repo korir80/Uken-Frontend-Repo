@@ -264,39 +264,17 @@ function FloatingProductCard() {
           <Link
             to="/creators/$creatorId"
             params={{ creatorId: "wanjiru-kamau" }}
-            className="group/talent inline-flex items-center justify-between font-sans transition-colors"
-            style={{
-              fontSize: 11,
-              letterSpacing: "0.03em",
-              color: "rgba(212,169,106,0.75)",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = "#D4A96A")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "rgba(212,169,106,0.75)")
-            }
+            className="group/talent inline-flex items-center justify-between font-sans text-[11px] tracking-[0.03em] text-gold-soft/75 transition-colors hover:text-gold-soft"
           >
-            <span>Meet the talent behind this</span>
+            <span>Meet the makers behind it</span>
             <ArrowRight className="ml-2 h-3 w-3" strokeWidth={2} />
           </Link>
           <Link
             to="/shop"
             search={{ craft: "Beadwork", region: "All", sort: "newest", minPrice: undefined, maxPrice: undefined }}
-            className="group/similar inline-flex items-center justify-between font-sans transition-colors"
-            style={{
-              fontSize: 11,
-              letterSpacing: "0.03em",
-              color: "rgba(250,247,242,0.4)",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = "rgba(250,247,242,0.75)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "rgba(250,247,242,0.4)")
-            }
+            className="group/similar inline-flex items-center justify-between font-sans text-[11px] tracking-[0.03em] text-warm-white/45 transition-colors hover:text-warm-white/75"
           >
-            <span>See similar pieces</span>
+            <span>See safari-toned pieces</span>
             <ArrowRight className="ml-2 h-3 w-3" strokeWidth={2} />
           </Link>
         </div>

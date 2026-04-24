@@ -15,17 +15,23 @@ import {
 } from "@tanstack/react-query";
 
 import {
+  applicationService,
   creatorService,
   orderService,
   productService,
   profileService,
+  type ApplicationSubmitPayload,
+  type ArtisanApplication,
   type CreateOrderPayload,
   type CreatorDetail,
   type CreatorFilters,
   type CreatorProfileUpdate,
   type CreatorSummary,
   type OrderDto,
+  type OrderStatus,
+  type ProductCreatePayload,
   type ProductDto,
+  type ProductUpdatePayload,
   type UploadedMedia,
 } from "@/services";
 
@@ -160,6 +166,17 @@ export function useCreateOrder(
   });
 }
 
+export function useUpdateOrderStatus() {
+  const qc = useQueryClient();
+  return useMutation<OrderDto, Error, { id: string; status: OrderStatus }>({
+    mutationFn: ({ id, status }) => orderService.updateStatus(id, status),
+    onSuccess: (data) => {
+      qc.invalidateQueries({ queryKey: queryKeys.ordersCreator() });
+      qc.setQueryData(queryKeys.order(data.id), data);
+    },
+  });
+}
+
 /* ---------------- Profile ---------------- */
 
 export function useMyCreatorProfile(creatorId: string) {
@@ -182,7 +199,69 @@ export function useUpdateCreatorProfile(creatorId: string) {
 }
 
 export function useUploadImage() {
-  return useMutation<UploadedMedia, Error, File>({
-    mutationFn: (file) => profileService.uploadImage(file),
+  return useMutation<
+    UploadedMedia,
+    Error,
+    { file: File; folder?: string; onProgress?: (pct: number) => void }
+  >({
+    mutationFn: ({ file, folder, onProgress }) =>
+      profileService.uploadImage(file, { folder, onProgress }),
+  });
+}
+
+/* ---------------- Creator products (CRUD) ---------------- */
+
+export function useCreateMyProduct(creatorId?: string) {
+  const qc = useQueryClient();
+  return useMutation<ProductDto, Error, ProductCreatePayload>({
+    mutationFn: (payload) => productService.createMyProduct(payload),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.products() });
+      if (creatorId)
+        qc.invalidateQueries({
+          queryKey: queryKeys.productsByCreator(creatorId),
+        });
+    },
+  });
+}
+
+export function useUpdateMyProduct(creatorId?: string) {
+  const qc = useQueryClient();
+  return useMutation<
+    ProductDto,
+    Error,
+    { id: string; payload: ProductUpdatePayload }
+  >({
+    mutationFn: ({ id, payload }) => productService.updateMyProduct(id, payload),
+    onSuccess: (data) => {
+      qc.setQueryData(queryKeys.product(data.id), data);
+      qc.invalidateQueries({ queryKey: queryKeys.products() });
+      if (creatorId)
+        qc.invalidateQueries({
+          queryKey: queryKeys.productsByCreator(creatorId),
+        });
+    },
+  });
+}
+
+export function useDeleteMyProduct(creatorId?: string) {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => productService.deleteMyProduct(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.products() });
+      if (creatorId)
+        qc.invalidateQueries({
+          queryKey: queryKeys.productsByCreator(creatorId),
+        });
+    },
+  });
+}
+
+/* ---------------- Applications ---------------- */
+
+export function useSubmitApplication() {
+  return useMutation<ArtisanApplication, Error, ApplicationSubmitPayload>({
+    mutationFn: (payload) => applicationService.submit(payload),
   });
 }

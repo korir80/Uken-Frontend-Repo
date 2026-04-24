@@ -15,7 +15,7 @@ import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicke
 import type { ProductCreatePayload, ProductDto } from "@/services";
 
 export const Route = createFileRoute("/creator/products")({
-  component: CreatorProducts;
+  component: CreatorProducts,
 });
 
 interface DraftProduct {

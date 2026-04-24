@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { NavBar } from "@/components/home/NavBar";
 import { Hero } from "@/components/home/Hero";
+import { FeaturedShop } from "@/components/home/FeaturedShop";
 import { FeaturedCreators } from "@/components/home/FeaturedCreators";
 import { ProcessStrip } from "@/components/home/ProcessStrip";
 import { ParallaxBand } from "@/components/home/ParallaxBand";
@@ -35,17 +36,14 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const { isAuthenticated, user, isLoading } = useAuth();
-
-  // Authed buyers bypass the marketing hero entirely and land on a
-  // personalised surface (saved makers + recently viewed pieces). The
-  // marketing sections beneath are kept so the brand still leads the page.
-  const showPersonalised = !isLoading && isAuthenticated && user;
+  const showPersonalised = !isLoading && isAuthenticated && user?.role === "ROLE_BUYER";
 
   return (
     <div className="min-h-screen bg-warm-white text-charcoal">
       <NavBar />
       <main>
-        {showPersonalised ? <PersonalisedHome user={user} /> : <Hero />}
+        {showPersonalised && user ? <PersonalisedHome user={user} /> : <Hero />}
+        <FeaturedShop />
         <FeaturedCreators />
         <ParallaxBand />
         <ProcessStrip />

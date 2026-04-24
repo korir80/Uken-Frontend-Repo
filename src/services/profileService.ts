@@ -114,4 +114,85 @@ export const profileService = {
     });
     return { url: result.url, id: result.publicId };
   },
+
+  /* ─────────── Buyer addresses ─────────── *
+   * Backend (when live):
+   *   GET    /api/users/me/addresses                    → BuyerAddress[]
+   *   POST   /api/users/me/addresses                    → BuyerAddress
+   *   PUT    /api/users/me/addresses/{id}               → BuyerAddress
+   *   DELETE /api/users/me/addresses/{id}               → 204
+   *   POST   /api/users/me/addresses/{id}/default       → BuyerAddress[]
+   * The mock branch persists to localStorage so the UI is testable end-to-end.
+   */
+
+  async listAddresses(): Promise<BuyerAddress[]> {
+    if (USE_MOCK_API) return fakeResolve(readMockAddresses());
+    const res = await api.get<BuyerAddress[]>("/users/me/addresses");
+    return res.data;
+  },
+
+  async createAddress(payload: BuyerAddressInput): Promise<BuyerAddress> {
+    if (USE_MOCK_API) {
+      const list = readMockAddresses();
+      const created: BuyerAddress = {
+        ...payload,
+        id: `addr-${Date.now()}`,
+        isDefault: list.length === 0 ? true : payload.isDefault,
+      };
+      let next = [...list, created];
+      if (created.isDefault)
+        next = next.map((a) => ({ ...a, isDefault: a.id === created.id }));
+      writeMockAddresses(next);
+      return fakeResolve(created);
+    }
+    const res = await api.post<BuyerAddress>("/users/me/addresses", payload);
+    return res.data;
+  },
+
+  async updateAddress(
+    id: string,
+    payload: BuyerAddressInput,
+  ): Promise<BuyerAddress> {
+    if (USE_MOCK_API) {
+      const list = readMockAddresses();
+      let next = list.map((a) => (a.id === id ? { ...a, ...payload, id } : a));
+      if (payload.isDefault)
+        next = next.map((a) => ({ ...a, isDefault: a.id === id }));
+      writeMockAddresses(next);
+      const updated = next.find((a) => a.id === id);
+      if (!updated) throw new Error("Address not found");
+      return fakeResolve(updated);
+    }
+    const res = await api.put<BuyerAddress>(
+      `/users/me/addresses/${encodeURIComponent(id)}`,
+      payload,
+    );
+    return res.data;
+  },
+
+  async deleteAddress(id: string): Promise<void> {
+    if (USE_MOCK_API) {
+      const list = readMockAddresses();
+      const next = list.filter((a) => a.id !== id);
+      if (next.length > 0 && !next.some((a) => a.isDefault)) {
+        next[0] = { ...next[0], isDefault: true };
+      }
+      writeMockAddresses(next);
+      return fakeResolve(undefined);
+    }
+    await api.delete<void>(`/users/me/addresses/${encodeURIComponent(id)}`);
+  },
+
+  async setDefaultAddress(id: string): Promise<BuyerAddress[]> {
+    if (USE_MOCK_API) {
+      const list = readMockAddresses();
+      const next = list.map((a) => ({ ...a, isDefault: a.id === id }));
+      writeMockAddresses(next);
+      return fakeResolve(next);
+    }
+    const res = await api.post<BuyerAddress[]>(
+      `/users/me/addresses/${encodeURIComponent(id)}/default`,
+    );
+    return res.data;
+  },
 };

@@ -196,8 +196,8 @@ function PaymentStep() {
       <p className="inline-flex items-start gap-2 text-[11px] leading-relaxed text-charcoal/40">
         <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         <span>
-          Payment powered by Stripe — your card details are never stored on our
-          servers.
+          Demo checkout — no card is charged and no card details leave your
+          browser. Live payments will be handled by the backend.
         </span>
       </p>
 

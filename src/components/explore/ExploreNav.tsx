@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BagIndicator } from "@/components/product/BagIndicator";
 

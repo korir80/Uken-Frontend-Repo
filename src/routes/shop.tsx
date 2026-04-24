@@ -6,10 +6,7 @@ import { z } from "zod";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
 import { SectionLabel } from "@/components/ukena";
-import {
-  getAllProducts,
-  type Product,
-} from "@/components/product/product-data";
+import type { Product } from "@/components/product/product-data";
 import { ShopProductCard } from "@/components/shop/ShopProductCard";
 import {
   ShopFilterPanel,
@@ -19,6 +16,14 @@ import {
 import { CRAFTS } from "@/components/explore/creators-data";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { QuickViewDrawer } from "@/components/shop/QuickViewDrawer";
+import { useAllProducts, productsQueryOptions } from "@/lib/queries";
+import type { ProductDto } from "@/services";
+
+/** ProductDto ⊂ Product for the fields we render. Cast at the boundary so
+ *  the existing card components keep their seed-shaped types. */
+function asProduct(p: ProductDto): Product {
+  return p as unknown as Product;
+}
 
 /* ── URL search-param schema ─────────────────────────────────────────── */
 const shopSearchSchema = z.object({

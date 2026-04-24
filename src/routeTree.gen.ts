@@ -14,6 +14,7 @@ import { Route as StoryRouteImport } from './routes/story'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CreatorRouteImport } from './routes/creator'
@@ -75,6 +76,11 @@ const SigninRoute = SigninRouteImport.update({
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SavedRoute = SavedRouteImport.update({
@@ -272,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
   '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
@@ -313,6 +320,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
   '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
@@ -358,6 +366,7 @@ export interface FileRoutesById {
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
   '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
@@ -404,6 +413,7 @@ export interface FileRouteTypes {
     | '/creator'
     | '/explore'
     | '/saved'
+    | '/search'
     | '/shop'
     | '/signin'
     | '/signup'
@@ -445,6 +455,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/explore'
     | '/saved'
+    | '/search'
     | '/shop'
     | '/signin'
     | '/signup'
@@ -489,6 +500,7 @@ export interface FileRouteTypes {
     | '/creator'
     | '/explore'
     | '/saved'
+    | '/search'
     | '/shop'
     | '/signin'
     | '/signup'
@@ -534,6 +546,7 @@ export interface RootRouteChildren {
   CreatorRoute: typeof CreatorRouteWithChildren
   ExploreRoute: typeof ExploreRoute
   SavedRoute: typeof SavedRoute
+  SearchRoute: typeof SearchRoute
   ShopRoute: typeof ShopRoute
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
@@ -580,6 +593,13 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/saved': {
@@ -949,6 +969,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreatorRoute: CreatorRouteWithChildren,
   ExploreRoute: ExploreRoute,
   SavedRoute: SavedRoute,
+  SearchRoute: SearchRoute,
   ShopRoute: ShopRoute,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,

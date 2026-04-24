@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BagIndicator } from "@/components/product/BagIndicator";
 
@@ -57,6 +58,13 @@ export function ExploreNav() {
         </nav>
 
         <div className="flex items-center gap-1 md:gap-2">
+          <Link
+            to="/search"
+            aria-label="Search"
+            className="grid h-9 w-9 place-items-center rounded-full text-charcoal/70 transition-colors hover:bg-cream hover:text-clay"
+          >
+            <Search className="h-[18px] w-[18px]" strokeWidth={1.75} />
+          </Link>
           <BagIndicator tone="light" />
         </div>
       </div>

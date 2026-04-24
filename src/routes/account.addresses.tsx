@@ -1,75 +1,42 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
   PageHeader,
   EmptyState,
 } from "@/components/dashboard/DashboardShell";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import {
+  useBuyerAddresses,
+  useCreateAddress,
+  useUpdateAddress,
+  useDeleteAddress,
+  useSetDefaultAddress,
+} from "@/lib/queries";
+import type { BuyerAddress, BuyerAddressInput } from "@/services";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/account/addresses")({
   component: BuyerAddresses,
 });
 
-interface Address {
-  id: string;
-  label: string;
-  fullName: string;
-  line1: string;
-  line2?: string;
-  city: string;
-  postcode: string;
-  country: string;
-  isDefault: boolean;
-}
-
-const STORAGE_KEY = "ukena.buyer.addresses";
-
-function load(fallback: Address[]): Address[] {
-  if (typeof window === "undefined") return fallback;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return fallback;
-    return JSON.parse(raw) as Address[];
-  } catch {
-    return fallback;
-  }
-}
-function save(list: Address[]) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+interface DraftAddress extends BuyerAddressInput {
+  id?: string;
 }
 
 function BuyerAddresses() {
   const { user } = useAuth();
-  const [items, setItems] = useState<Address[]>([]);
-  const [editing, setEditing] = useState<Address | null>(null);
+  const { data: items = [], isLoading } = useBuyerAddresses();
+  const create = useCreateAddress();
+  const update = useUpdateAddress();
+  const remove = useDeleteAddress();
+  const setDefault = useSetDefaultAddress();
 
-  useEffect(() => {
-    setItems(
-      load([
-        {
-          id: "addr-1",
-          label: "Home",
-          fullName: user?.fullName ?? "",
-          line1: "12 Linden Mews",
-          city: "London",
-          postcode: "E2 8DY",
-          country: "United Kingdom",
-          isDefault: true,
-        },
-      ]),
-    );
-  }, [user]);
-
-  function persist(next: Address[]) {
-    setItems(next);
-    save(next);
-  }
+  const [editing, setEditing] = useState<DraftAddress | null>(null);
 
   function startNew() {
     setEditing({
-      id: `addr-${Date.now()}`,
       label: "",
       fullName: user?.fullName ?? "",
       line1: "",
@@ -80,24 +47,43 @@ function BuyerAddresses() {
     });
   }
 
-  function commit(addr: Address) {
-    const exists = items.some((a) => a.id === addr.id);
-    let next = exists ? items.map((a) => (a.id === addr.id ? addr : a)) : [...items, addr];
-    if (addr.isDefault) {
-      next = next.map((a) => ({ ...a, isDefault: a.id === addr.id }));
+  async function commit(addr: DraftAddress) {
+    try {
+      if (addr.id) {
+        const { id, ...payload } = addr;
+        await update.mutateAsync({ id, payload });
+        toast.success("Address updated.");
+      } else {
+        await create.mutateAsync(addr);
+        toast.success("Address saved.");
+      }
+      setEditing(null);
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Couldn't save that address.",
+      );
     }
-    persist(next);
-    setEditing(null);
   }
 
-  function remove(id: string) {
-    const next = items.filter((a) => a.id !== id);
-    if (next.length > 0 && !next.some((a) => a.isDefault)) next[0].isDefault = true;
-    persist(next);
+  async function handleDelete(id: string) {
+    try {
+      await remove.mutateAsync(id);
+      toast.success("Address removed.");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Couldn't remove that address.",
+      );
+    }
   }
 
-  function setDefault(id: string) {
-    persist(items.map((a) => ({ ...a, isDefault: a.id === id })));
+  async function handleSetDefault(id: string) {
+    try {
+      await setDefault.mutateAsync(id);
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Couldn't update default.",
+      );
+    }
   }
 
   return (
@@ -117,21 +103,51 @@ function BuyerAddresses() {
         }
       />
 
-      {items.length === 0 ? (
-        <EmptyState title="No addresses yet." body="Add an address so checkout is faster next time." />
+      {isLoading ? (
+        <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <li
+              key={i}
+              className="rounded-2xl border border-border/60 bg-warm-white p-5"
+            >
+              <Skeleton className="h-5 w-1/3" />
+              <Skeleton className="mt-3 h-3 w-3/4" />
+              <Skeleton className="mt-2 h-3 w-2/3" />
+              <Skeleton className="mt-2 h-3 w-1/2" />
+            </li>
+          ))}
+        </ul>
+      ) : items.length === 0 ? (
+        <EmptyState
+          title="No addresses yet."
+          body="Add an address so checkout is faster next time."
+          action={
+            <button
+              type="button"
+              onClick={startNew}
+              className="rounded-full bg-clay px-5 py-2.5 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-warm-white hover:bg-clay-deep"
+            >
+              Add address
+            </button>
+          }
+        />
       ) : (
         <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {items.map((a) => (
+          {items.map((a: BuyerAddress) => (
             <li
               key={a.id}
               className={cn(
                 "rounded-2xl border bg-warm-white p-5 transition-colors",
-                a.isDefault ? "border-clay/60 ring-1 ring-clay/20" : "border-border/60",
+                a.isDefault
+                  ? "border-clay/60 ring-1 ring-clay/20"
+                  : "border-border/60",
               )}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-display text-lg text-charcoal">{a.label || "Address"}</p>
+                  <p className="font-display text-lg text-charcoal">
+                    {a.label || "Address"}
+                  </p>
                   {a.isDefault && (
                     <span className="mt-1 inline-flex rounded-full bg-clay/15 px-2 py-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.18em] text-clay-deep">
                       Default
@@ -141,15 +157,16 @@ function BuyerAddresses() {
                 <div className="flex flex-col items-end gap-1 text-right">
                   <button
                     type="button"
-                    onClick={() => setEditing(a)}
+                    onClick={() => setEditing({ ...a })}
                     className="font-sans text-[12px] text-charcoal/70 hover:text-clay"
                   >
                     Edit
                   </button>
                   <button
                     type="button"
-                    onClick={() => remove(a.id)}
-                    className="font-sans text-[12px] text-destructive hover:underline"
+                    onClick={() => handleDelete(a.id)}
+                    disabled={remove.isPending}
+                    className="font-sans text-[12px] text-destructive hover:underline disabled:opacity-50"
                   >
                     Remove
                   </button>
@@ -167,8 +184,9 @@ function BuyerAddresses() {
               {!a.isDefault && (
                 <button
                   type="button"
-                  onClick={() => setDefault(a.id)}
-                  className="mt-4 font-sans text-[11px] uppercase tracking-[0.22em] text-clay hover:underline"
+                  onClick={() => handleSetDefault(a.id)}
+                  disabled={setDefault.isPending}
+                  className="mt-4 font-sans text-[11px] uppercase tracking-[0.22em] text-clay hover:underline disabled:opacity-50"
                 >
                   Set as default
                 </button>
@@ -181,6 +199,7 @@ function BuyerAddresses() {
       {editing && (
         <AddressEditor
           value={editing}
+          saving={create.isPending || update.isPending}
           onCancel={() => setEditing(null)}
           onSave={commit}
         />
@@ -191,15 +210,17 @@ function BuyerAddresses() {
 
 function AddressEditor({
   value,
+  saving,
   onCancel,
   onSave,
 }: {
-  value: Address;
+  value: DraftAddress;
+  saving: boolean;
   onCancel: () => void;
-  onSave: (a: Address) => void;
+  onSave: (a: DraftAddress) => void;
 }) {
   const [draft, setDraft] = useState(value);
-  function set<K extends keyof Address>(key: K, v: Address[K]) {
+  function set<K extends keyof DraftAddress>(key: K, v: DraftAddress[K]) {
     setDraft((prev) => ({ ...prev, [key]: v }));
   }
 
@@ -214,7 +235,7 @@ function AddressEditor({
       >
         <header className="flex items-center justify-between border-b border-border/60 px-5 py-4">
           <h2 className="font-display text-xl text-charcoal">
-            {value.label ? "Edit address" : "New address"}
+            {value.id ? "Edit address" : "New address"}
           </h2>
           <button
             type="button"
@@ -225,15 +246,49 @@ function AddressEditor({
           </button>
         </header>
         <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5">
-          <Field label="Label" value={draft.label} onChange={(v) => set("label", v)} placeholder="Home, Studio…" />
-          <Field label="Full name" value={draft.fullName} onChange={(v) => set("fullName", v)} required />
-          <Field label="Address line 1" value={draft.line1} onChange={(v) => set("line1", v)} required />
-          <Field label="Address line 2" value={draft.line2 ?? ""} onChange={(v) => set("line2", v)} />
+          <Field
+            label="Label"
+            value={draft.label}
+            onChange={(v) => set("label", v)}
+            placeholder="Home, Studio…"
+          />
+          <Field
+            label="Full name"
+            value={draft.fullName}
+            onChange={(v) => set("fullName", v)}
+            required
+          />
+          <Field
+            label="Address line 1"
+            value={draft.line1}
+            onChange={(v) => set("line1", v)}
+            required
+          />
+          <Field
+            label="Address line 2"
+            value={draft.line2 ?? ""}
+            onChange={(v) => set("line2", v)}
+          />
           <div className="grid grid-cols-2 gap-3">
-            <Field label="City" value={draft.city} onChange={(v) => set("city", v)} required />
-            <Field label="Postcode" value={draft.postcode} onChange={(v) => set("postcode", v)} required />
+            <Field
+              label="City"
+              value={draft.city}
+              onChange={(v) => set("city", v)}
+              required
+            />
+            <Field
+              label="Postcode"
+              value={draft.postcode}
+              onChange={(v) => set("postcode", v)}
+              required
+            />
           </div>
-          <Field label="Country" value={draft.country} onChange={(v) => set("country", v)} required />
+          <Field
+            label="Country"
+            value={draft.country}
+            onChange={(v) => set("country", v)}
+            required
+          />
           <label className="flex items-center gap-2 font-sans text-[13px] text-charcoal/80">
             <input
               type="checkbox"
@@ -254,9 +309,10 @@ function AddressEditor({
           </button>
           <button
             type="submit"
-            className="rounded-full bg-clay px-5 py-2 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-warm-white hover:bg-clay-deep"
+            disabled={saving}
+            className="rounded-full bg-clay px-5 py-2 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-warm-white hover:bg-clay-deep disabled:opacity-60"
           >
-            Save address
+            {saving ? "Saving…" : "Save address"}
           </button>
         </footer>
       </form>

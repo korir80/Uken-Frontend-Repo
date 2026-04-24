@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { useCreatorOrders } from "@/lib/queries";
+import { useCreatorOrders, useUpdateOrderStatus } from "@/lib/queries";
 import { PageHeader, StatusPill, EmptyState } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
 import type { OrderStatus } from "@/services";
@@ -30,7 +31,18 @@ function CreatorOrders() {
   const { user } = useAuth();
   const creatorId = user?.creatorId ?? "wanjiru";
   const { data: orders = [] } = useCreatorOrders();
+  const updateStatus = useUpdateOrderStatus();
   const [filter, setFilter] = useState<OrderStatus | "ALL">("ALL");
+
+  async function advance(id: string, next: OrderStatus) {
+    try {
+      await updateStatus.mutateAsync({ id, status: next });
+      toast.success(`Order marked ${next.toLowerCase()}.`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't update status.");
+    }
+  }
+
 
   const mine = useMemo(
     () => orders.filter((o) => o.items.some((i) => i.creator.id === creatorId)),
@@ -115,16 +127,38 @@ function CreatorOrders() {
                 </ul>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <button className="rounded-full bg-clay px-4 py-1.5 font-sans text-[12px] font-medium text-warm-white hover:bg-clay-deep">
-                    Mark preparing
-                  </button>
-                  <button className="rounded-full border border-border bg-warm-white px-4 py-1.5 font-sans text-[12px] font-medium text-charcoal hover:bg-cream">
-                    Mark shipped
-                  </button>
+                  {o.status === "PENDING" && (
+                    <button
+                      onClick={() => advance(o.id, "PREPARING")}
+                      disabled={updateStatus.isPending}
+                      className="rounded-full bg-clay px-4 py-1.5 font-sans text-[12px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
+                    >
+                      Mark preparing
+                    </button>
+                  )}
+                  {o.status === "PREPARING" && (
+                    <button
+                      onClick={() => advance(o.id, "SHIPPED")}
+                      disabled={updateStatus.isPending}
+                      className="rounded-full bg-clay px-4 py-1.5 font-sans text-[12px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
+                    >
+                      Mark shipped
+                    </button>
+                  )}
+                  {o.status === "SHIPPED" && (
+                    <button
+                      onClick={() => advance(o.id, "DELIVERED")}
+                      disabled={updateStatus.isPending}
+                      className="rounded-full bg-clay px-4 py-1.5 font-sans text-[12px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
+                    >
+                      Mark delivered
+                    </button>
+                  )}
                   <button className="rounded-full px-4 py-1.5 font-sans text-[12px] text-charcoal/60 hover:text-charcoal hover:underline">
                     Print packing slip
                   </button>
                 </div>
+
               </article>
             );
           })}

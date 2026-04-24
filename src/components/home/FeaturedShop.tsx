@@ -2,10 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { getAllProducts } from "@/components/product/product-data";
 import { formatGBP } from "@/lib/cart";
+import type { Craft } from "@/components/explore/creators-data";
 
 const FEATURED_IDS = ["p-mara-01", "p-kaj-01", "p-nrb-01", "p-mwi-01", "p-lam-01", "p-mara-04"];
 
-const CRAFT_TILES: { craft: string; label: string; tagline: string }[] = [
+const CRAFT_TILES: { craft: Craft; label: string; tagline: string }[] = [
   { craft: "Weaving", label: "Weaving", tagline: "Sisal, coiled by hand." },
   { craft: "Beadwork", label: "Beadwork", tagline: "Stories told in glass." },
   { craft: "Pottery", label: "Pottery", tagline: "Earth, fire, water." },

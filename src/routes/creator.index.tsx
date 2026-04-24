@@ -62,8 +62,8 @@ function CreatorOverview() {
             body="As soon as a buyer places an order with one of your pieces, it will appear here."
           />
         ) : (
-          <div className="overflow-hidden rounded-2xl border border-border/60">
-            <table className="min-w-full divide-y divide-border/60">
+          <div className="overflow-x-auto rounded-2xl border border-border/60">
+            <table className="min-w-[640px] divide-y divide-border/60 sm:min-w-full">
               <thead className="bg-cream/60 text-left">
                 <tr>
                   <Th>Order</Th>

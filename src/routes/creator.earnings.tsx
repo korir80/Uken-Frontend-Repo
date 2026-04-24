@@ -33,8 +33,8 @@ function CreatorEarnings() {
 
       <section>
         <h2 className="font-display text-2xl text-charcoal">Recent transactions</h2>
-        <div className="mt-4 overflow-hidden rounded-2xl border border-border/60">
-          <table className="min-w-full divide-y divide-border/60">
+        <div className="mt-4 overflow-x-auto rounded-2xl border border-border/60">
+          <table className="min-w-[640px] divide-y divide-border/60 sm:min-w-full">
             <thead className="bg-cream/60 text-left">
               <tr>
                 <th className="px-4 py-3 font-sans text-[11px] uppercase tracking-[0.18em] text-charcoal/60">Order</th>

@@ -268,3 +268,54 @@ export function useSubmitApplication() {
     mutationFn: (payload) => applicationService.submit(payload),
   });
 }
+
+/* ---------------- Buyer addresses ---------------- */
+
+export function useBuyerAddresses() {
+  return useQuery<BuyerAddress[]>({
+    queryKey: queryKeys.addresses(),
+    queryFn: () => profileService.listAddresses(),
+  });
+}
+
+export function useCreateAddress() {
+  const qc = useQueryClient();
+  return useMutation<BuyerAddress, Error, BuyerAddressInput>({
+    mutationFn: (payload) => profileService.createAddress(payload),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: queryKeys.addresses() }),
+  });
+}
+
+export function useUpdateAddress() {
+  const qc = useQueryClient();
+  return useMutation<
+    BuyerAddress,
+    Error,
+    { id: string; payload: BuyerAddressInput }
+  >({
+    mutationFn: ({ id, payload }) =>
+      profileService.updateAddress(id, payload),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: queryKeys.addresses() }),
+  });
+}
+
+export function useDeleteAddress() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => profileService.deleteAddress(id),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: queryKeys.addresses() }),
+  });
+}
+
+export function useSetDefaultAddress() {
+  const qc = useQueryClient();
+  return useMutation<BuyerAddress[], Error, string>({
+    mutationFn: (id) => profileService.setDefaultAddress(id),
+    onSuccess: (data) => {
+      qc.setQueryData(queryKeys.addresses(), data);
+    },
+  });
+}

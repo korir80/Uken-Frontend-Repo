@@ -42,6 +42,9 @@ const shopSearchSchema = z.object({
 
 export const Route = createFileRoute("/shop")({
   validateSearch: zodValidator(shopSearchSchema),
+  loader: ({ context: { queryClient } }) => {
+    queryClient.ensureQueryData(productsQueryOptions());
+  },
   head: () => ({
     meta: [
       { title: "Shop all pieces — Ukena" },

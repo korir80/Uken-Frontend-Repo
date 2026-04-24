@@ -43,7 +43,6 @@ import { Route as AdminCreatorsRouteImport } from './routes/admin.creators'
 import { Route as AdminContentRouteImport } from './routes/admin.content'
 import { Route as AdminBuyersRouteImport } from './routes/admin.buyers'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
-import { Route as AccountSavedRouteImport } from './routes/account.saved'
 
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
@@ -215,15 +214,10 @@ const AdminApplicationsRoute = AdminApplicationsRouteImport.update({
   path: '/applications',
   getParentRoute: () => AdminRoute,
 } as any)
-const AccountSavedRoute = AccountSavedRouteImport.update({
-  id: '/saved',
-  path: '/saved',
-  getParentRoute: () => AccountRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/account': typeof AccountRouteWithChildren
+  '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
@@ -234,7 +228,6 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
-  '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
   '/admin/content': typeof AdminContentRoute
@@ -260,7 +253,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/account': typeof AccountRouteWithChildren
+  '/account': typeof AccountRoute
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/explore': typeof ExploreRoute
@@ -269,7 +262,6 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
-  '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
   '/admin/content': typeof AdminContentRoute
@@ -296,7 +288,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/account': typeof AccountRouteWithChildren
+  '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
@@ -307,7 +299,6 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
-  '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
   '/admin/content': typeof AdminContentRoute
@@ -346,7 +337,6 @@ export interface FileRouteTypes {
     | '/signin'
     | '/story'
     | '/styleguide'
-    | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
     | '/admin/content'
@@ -381,7 +371,6 @@ export interface FileRouteTypes {
     | '/signin'
     | '/story'
     | '/styleguide'
-    | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
     | '/admin/content'
@@ -418,7 +407,6 @@ export interface FileRouteTypes {
     | '/signin'
     | '/story'
     | '/styleguide'
-    | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
     | '/admin/content'
@@ -445,7 +433,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AccountRoute: typeof AccountRouteWithChildren
+  AccountRoute: typeof AccountRoute
   AdminRoute: typeof AdminRouteWithChildren
   BagRoute: typeof BagRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
@@ -702,26 +690,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminApplicationsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/account/saved': {
-      id: '/account/saved'
-      path: '/saved'
-      fullPath: '/account/saved'
-      preLoaderRoute: typeof AccountSavedRouteImport
-      parentRoute: typeof AccountRoute
-    }
   }
 }
-
-interface AccountRouteChildren {
-  AccountSavedRoute: typeof AccountSavedRoute
-}
-
-const AccountRouteChildren: AccountRouteChildren = {
-  AccountSavedRoute: AccountSavedRoute,
-}
-
-const AccountRouteWithChildren =
-  AccountRoute._addFileChildren(AccountRouteChildren)
 
 interface AdminRouteChildren {
   AdminApplicationsRoute: typeof AdminApplicationsRoute
@@ -788,7 +758,7 @@ const CreatorRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AccountRoute: AccountRouteWithChildren,
+  AccountRoute: AccountRoute,
   AdminRoute: AdminRouteWithChildren,
   BagRoute: BagRoute,
   CheckoutRoute: CheckoutRouteWithChildren,

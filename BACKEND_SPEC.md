@@ -766,22 +766,63 @@ application payloads as plain strings.
 | GET   | `/admin/applications/{id}` | ADMIN | — | `ArtisanApplication` |
 | PATCH | `/admin/applications/{id}/status` | ADMIN | `ApplicationStatusUpdate` | `ArtisanApplication` |
 
-### 7.6 Admin — buyers, payouts, reviews, featured
+### 7.6 Admin — buyers, payouts, reviews, featured, product moderation
 | Method | Path | Auth | Body | Returns |
 |---|---|---|---|---|
 | GET   | `/admin/buyers` | ADMIN | — | `AdminBuyerRow[]` |
 | PATCH | `/admin/buyers/{id}/suspend` | ADMIN | — | 204 |
 | GET   | `/admin/payouts` | ADMIN | — | `CreatorPayoutDto[]` |
 | POST  | `/admin/payouts/{creatorId}/pay` | ADMIN | `{}` | `CreatorPayoutDto` (zero pendingPence, log payment) |
+| POST  | `/admin/payouts/run` | ADMIN | `{}` | `CreatorPayoutDto[]` (pay every creator, end-of-cycle) |
 | GET   | `/admin/reviews` | ADMIN | — | `ProductReviewDto[]` |
 | PATCH | `/admin/reviews/{id}/status` | ADMIN | `{ "status": "PUBLISHED|REMOVED|FLAGGED|PENDING" }` | `ProductReviewDto` |
 | GET   | `/admin/featured` | ADMIN | — | `FeaturedSlotDto[]` (length 4) |
 | PUT   | `/admin/featured` | ADMIN | `FeaturedSlotDto[]` | `FeaturedSlotDto[]` |
+| GET   | `/admin/products/statuses` | ADMIN | — | `ProductModerationRow[]` |
+| PATCH | `/admin/products/{id}/status` | ADMIN | `{ "status": "LIVE\|DRAFT\|TAKEN_DOWN" }` | `ProductModerationRow` |
+| PATCH | `/admin/creators/{id}/suspend` | ADMIN | — | 204 |
 
-### 7.7 Media
+### 7.7 Cart (buyer-scoped, persistent across devices)
 | Method | Path | Auth | Body | Returns |
 |---|---|---|---|---|
-| POST | `/media/upload` | any authenticated | `multipart/form-data` field `file` | `UploadedMediaDto` |
+| GET  | `/cart` | BUYER | — | `CartLineDto[]` |
+| PUT  | `/cart` | BUYER | `CartLineDto[]` | `CartLineDto[]` (full replace — server snaps name/price/image from product table) |
+| POST | `/cart/sync` | BUYER | `{ "items": CartLineDto[] }` | `CartLineDto[]` |
+
+`/cart/sync` merges the guest-side local cart with whatever the server already
+holds. Merge rule: for duplicate `productId`s take the **max** quantity across
+both sets. Called once on login by the frontend.
+
+### 7.8 Saved (wishlist) — buyer-scoped
+| Method | Path | Auth | Body | Returns |
+|---|---|---|---|---|
+| GET    | `/users/me/saved/products`            | BUYER | — | `string[]` (product IDs) |
+| POST   | `/users/me/saved/products/{id}`       | BUYER | — | `string[]` (full updated list) |
+| DELETE | `/users/me/saved/products/{id}`       | BUYER | — | `string[]` (full updated list) |
+| GET    | `/users/me/saved/creators`            | BUYER | — | `string[]` (creator IDs) |
+| POST   | `/users/me/saved/creators/{id}`       | BUYER | — | `string[]` |
+| DELETE | `/users/me/saved/creators/{id}`       | BUYER | — | `string[]` |
+| POST   | `/users/me/saved/sync`                | BUYER | `SavedCollections` | `SavedCollections` |
+
+`/sync` unions the guest local set with the server set. Called once on login.
+
+### 7.9 Buyer addresses
+| Method | Path | Auth | Body | Returns |
+|---|---|---|---|---|
+| GET    | `/users/me/addresses`                 | BUYER | — | `BuyerAddress[]` |
+| POST   | `/users/me/addresses`                 | BUYER | `BuyerAddress` (no `id`) | `BuyerAddress` (201) |
+| PUT    | `/users/me/addresses/{id}`            | BUYER | `BuyerAddress` (no `id`) | `BuyerAddress` |
+| DELETE | `/users/me/addresses/{id}`            | BUYER | — | 204 |
+| POST   | `/users/me/addresses/{id}/default`    | BUYER | `{}` | `BuyerAddress[]` (full list with new default) |
+
+When deleting the default address, the server promotes the next address (if any)
+to default. Setting a new default automatically clears the flag on the others.
+
+### 7.10 Media (no backend endpoint)
+
+There is **no `/api/media/upload`**. Image uploads go from the browser straight
+to Cloudinary via an unsigned preset; see §10. The backend only ever stores
+the resulting URL strings against products / portraits / applications.
 
 ---
 

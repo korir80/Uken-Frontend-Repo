@@ -106,7 +106,7 @@ export function useCreator(
 export function useAllProducts(
   options?: Omit<UseQueryOptions<ProductDto[]>, "queryKey" | "queryFn">,
 ) {
-  return useQuery<ProductDto[]>({
+  return useQuery({
     ...productsQueryOptions(),
     ...options,
   });
@@ -116,7 +116,7 @@ export function useProduct(
   id: string,
   options?: Omit<UseQueryOptions<ProductDto>, "queryKey" | "queryFn">,
 ) {
-  return useQuery<ProductDto>({
+  return useQuery({
     ...productQueryOptions(id),
     enabled: !!id,
     ...options,
@@ -141,7 +141,7 @@ export function useBuyerOrders() {
 }
 
 export function useBuyerOrder(id: string) {
-  return useQuery<OrderDto>({
+  return useQuery({
     ...orderQueryOptions(id),
     enabled: !!id,
   });

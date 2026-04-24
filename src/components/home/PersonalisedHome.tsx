@@ -5,8 +5,9 @@ import { Button, SectionLabel } from "@/components/ukena";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { creators } from "@/components/explore/creators-data";
 import { getProduct } from "@/components/product/product-data";
-import { readRecentProducts, readSavedCreators } from "@/lib/ukena-mode";
-import { useCart, formatGBP } from "@/lib/cart";
+import { readRecentProducts } from "@/lib/ukena-mode";
+import { useSavedCreators, useBuyerOrders } from "@/lib/queries";
+import { formatGBP } from "@/lib/cart";
 import type { AuthUser } from "@/services";
 
 interface PersonalisedHomeProps {
@@ -20,17 +21,16 @@ interface PersonalisedHomeProps {
  *  1. Greeting strip
  *  2. Saved makers (horizontal scroll on mobile)
  *  3. Recently viewed pieces
- *  4. Quick reorder — last placed order, "Buy again"
+ *  4. Quick reorder — most recent order, "Buy again"
  *  5. Discover something new — three creators they haven't saved yet
  */
 export function PersonalisedHome({ user }: PersonalisedHomeProps) {
-  const { lastOrder } = useCart();
+  const { data: savedIds = [] } = useSavedCreators();
+  const { data: orders = [] } = useBuyerOrders();
 
-  const [savedIds, setSavedIds] = useState<string[]>([]);
   const [recentIds, setRecentIds] = useState<string[]>([]);
 
   useEffect(() => {
-    setSavedIds(readSavedCreators());
     setRecentIds(readRecentProducts());
   }, []);
 
@@ -58,7 +58,17 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
     return creators.filter((c) => !savedSet.has(c.id)).slice(0, 3);
   }, [savedIds]);
 
-  const lastPurchase = lastOrder?.items?.[0] ?? null;
+  // Most recent order's first item drives the "Buy again" strip. Sorted by
+  // createdAt desc so we always reflect their latest purchase, not the
+  // ephemeral cart-side `lastOrder` (which was lost on refresh).
+  const lastPurchase = useMemo(() => {
+    if (orders.length === 0) return null;
+    const sorted = [...orders].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+    return sorted[0]?.items?.[0] ?? null;
+  }, [orders]);
 
   const firstName = (user.fullName ?? "").split(" ")[0] || "friend";
   const empty =

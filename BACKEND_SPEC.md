@@ -6,6 +6,18 @@
 >
 > **Rule of thumb.** Match the JSON shapes in §6 exactly. If you change a field name, you must update the frontend at the same time — there is no translation layer.
 
+> **Last updated: 2026-04-24.** Material changes since the previous revision:
+> 1. **Image uploads moved off the backend entirely.** The browser uploads
+>    directly to Cloudinary via an unsigned preset; the backend only stores
+>    URL strings (see §10). Drop any `/api/media/upload` work-in-progress.
+> 2. **New buyer-scoped resources:** `/cart` (+`/cart/sync`),
+>    `/users/me/saved/{products,creators}` (+`/sync`), `/users/me/addresses`.
+> 3. **New admin endpoints:** product moderation status (`/admin/products/...`),
+>    creator suspension, payout cycle (`/admin/payouts/run`).
+> 4. **Application submission (`POST /applications`) is public** — buyers apply
+>    before having an account; the approval flow creates the User + Creator.
+
+
 ---
 
 ## Table of contents
@@ -40,7 +52,7 @@
 | Migrations | **Flyway** | `src/main/resources/db/migration/V1__init.sql` etc. |
 | Auth | **Spring Security + JWT (jjwt 0.12.x)** | Stateless, `HS256`, 24h expiry. |
 | Mapping | **MapStruct 1.5+** | Compile-time entity ↔ DTO. |
-| Object storage | **Cloudinary** OR S3-compatible (Backblaze B2, Cloudflare R2) | See §10. |
+| Object storage | **None server-side.** The browser uploads images directly to Cloudinary via an unsigned preset (see §10). The backend only stores the resulting URL strings. |
 | Validation | **Jakarta Bean Validation** (`@Valid`, `@NotBlank`, etc.) | |
 | Testing | JUnit 5 + Spring Boot Test + **Testcontainers** (Postgres) | Integration tests run a real DB. |
 | Logging | SLF4J + Logback JSON encoder | Railway captures stdout. |
@@ -126,17 +138,31 @@ ukena-backend/
 │   │   ├── ApplicationController.java     // POST /api/applications + /api/admin/applications/*
 │   │   ├── ApplicationService.java
 │   │   └── dto/{ApplicationDto,SubmitRequest,StatusUpdateRequest}.java
-│   ├── admin/
-│   │   ├── AdminController.java           // buyers, payouts, reviews, featured
-│   │   ├── AdminService.java
-│   │   ├── PayoutEntity.java
-│   │   ├── ReviewEntity.java
-│   │   ├── FeaturedSlotEntity.java
-│   │   └── dto/{AdminBuyerRow,CreatorPayoutDto,ProductReviewDto,FeaturedSlotDto}.java
-│   └── media/
-│       ├── MediaController.java           // POST /api/media/upload
-│       ├── MediaService.java              // Cloudinary or S3 client
-│       └── dto/UploadedMediaDto.java
+│   ├── cart/
+│   │   ├── CartLine.java                  // @Entity (one row per buyer × productId)
+│   │   ├── CartRepository.java
+│   │   ├── CartController.java            // /api/cart, /api/cart/sync
+│   │   ├── CartService.java
+│   │   └── dto/CartLineDto.java
+│   ├── saved/
+│   │   ├── SavedItem.java                 // @Entity (buyer × kind × refId)
+│   │   ├── SavedRepository.java
+│   │   ├── SavedController.java           // /api/users/me/saved/*
+│   │   └── SavedService.java
+│   ├── address/
+│   │   ├── BuyerAddress.java              // @Entity
+│   │   ├── BuyerAddressRepository.java
+│   │   ├── BuyerAddressController.java    // /api/users/me/addresses/*
+│   │   ├── BuyerAddressService.java
+│   │   └── dto/BuyerAddressDto.java
+│   └── admin/
+│       ├── AdminController.java           // buyers, payouts, reviews, featured, product moderation
+│       ├── AdminService.java
+│       ├── PayoutEntity.java
+│       ├── ReviewEntity.java
+│       ├── FeaturedSlotEntity.java
+│       ├── ProductModerationStatusEntity.java
+│       └── dto/{AdminBuyerRow,CreatorPayoutDto,ProductReviewDto,FeaturedSlotDto,ProductModerationRow}.java
 ├── src/main/resources/
 │   ├── application.yml
 │   ├── application-dev.yml
@@ -195,13 +221,9 @@ ukena:
     expiration-hours: 24
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
-  media:
-    provider: ${MEDIA_PROVIDER:cloudinary}
-    cloudinary-url: ${CLOUDINARY_URL:}
-    s3-bucket: ${S3_BUCKET:}
-    s3-region: ${S3_REGION:}
-    s3-access-key: ${S3_ACCESS_KEY:}
-    s3-secret-key: ${S3_SECRET_KEY:}
+  # Media uploads happen browser → Cloudinary directly. The backend does not
+  # store or proxy any binaries. The Cloudinary credentials live on the frontend
+  # (VITE_CLOUDINARY_CLOUD_NAME, VITE_CLOUDINARY_UPLOAD_PRESET) — see §10.
 
 springdoc:
   swagger-ui:
@@ -238,9 +260,7 @@ logging.level.root: INFO
 | `PORT` | HTTP port | injected |
 | `JWT_SECRET` | 256-bit random string, base64 | `openssl rand -base64 64` |
 | `CORS_ORIGINS` | Comma-separated origins | `https://ukena.co.uk,https://www.ukena.co.uk` |
-| `MEDIA_PROVIDER` | `cloudinary` or `s3` | `cloudinary` |
-| `CLOUDINARY_URL` | If using Cloudinary | `cloudinary://key:secret@cloud` |
-| `S3_BUCKET` / `S3_REGION` / `S3_ACCESS_KEY` / `S3_SECRET_KEY` | If using S3 | — |
+| _(no media vars)_ | Image binaries never reach the backend. The browser uploads to Cloudinary directly. | — |
 | `SPRING_PROFILES_ACTIVE` | `prod` | `prod` |
 
 ---
@@ -641,9 +661,60 @@ When status transitions to `APPROVED`:
 }
 ```
 
-### 6.18 `UploadedMediaDto`
+### 6.18 `CartLineDto`
 ```json
-{ "url": "https://cdn.../abc123.jpg", "id": "abc123" }
+{
+  "productId": "p-mara-01",
+  "quantity": 2,
+  "name": "Mara Storage Basket",
+  "pricePence": 12500,
+  "image": "https://cdn.../hero.jpg",
+  "creator": { "id": "wanjiru", "fullName": "Wanjiru Kamau", "region": "Maragua" }
+}
+```
+The cart is a **flat list of `CartLineDto`** keyed by `productId`. Snapshots
+of name/price/image/creator are stored so the bag renders without a refetch
+even if the underlying product is later edited or removed.
+
+### 6.19 `SavedCollections`
+```json
+{
+  "products": ["p-mara-01", "p-mara-04"],
+  "creators": ["wanjiru", "kibet"]
+}
+```
+Saved lists are returned as plain ID arrays (the frontend joins them against
+the products / creators caches itself). Add / remove endpoints return the
+**updated array**, not the toggled item.
+
+### 6.20 `BuyerAddress`
+```json
+{
+  "id": "addr-7f3c…",
+  "label": "Home",
+  "fullName": "Eleanor Reid",
+  "line1": "12 Linden Mews",
+  "line2": null,
+  "city": "London",
+  "postcode": "E2 8DY",
+  "country": "United Kingdom",
+  "isDefault": true
+}
+```
+`POST` / `PUT` bodies omit `id`. At most one address per buyer may have
+`isDefault: true` — the server enforces this when a new default is set.
+
+### 6.21 `ProductModerationRow`
+```json
+{ "productId": "p-mara-01", "status": "LIVE | DRAFT | TAKEN_DOWN" }
+```
+
+### 6.22 Cloudinary upload result (frontend-only — for reference)
+The browser receives this directly from Cloudinary; the backend never sees it.
+The frontend persists `url` (and optionally `publicId`) into product / profile /
+application payloads as plain strings.
+```json
+{ "url": "https://res.cloudinary.com/.../abc123.jpg", "publicId": "ukena/abc123" }
 ```
 
 ---
@@ -707,22 +778,63 @@ When status transitions to `APPROVED`:
 | GET   | `/admin/applications/{id}` | ADMIN | — | `ArtisanApplication` |
 | PATCH | `/admin/applications/{id}/status` | ADMIN | `ApplicationStatusUpdate` | `ArtisanApplication` |
 
-### 7.6 Admin — buyers, payouts, reviews, featured
+### 7.6 Admin — buyers, payouts, reviews, featured, product moderation
 | Method | Path | Auth | Body | Returns |
 |---|---|---|---|---|
 | GET   | `/admin/buyers` | ADMIN | — | `AdminBuyerRow[]` |
 | PATCH | `/admin/buyers/{id}/suspend` | ADMIN | — | 204 |
 | GET   | `/admin/payouts` | ADMIN | — | `CreatorPayoutDto[]` |
 | POST  | `/admin/payouts/{creatorId}/pay` | ADMIN | `{}` | `CreatorPayoutDto` (zero pendingPence, log payment) |
+| POST  | `/admin/payouts/run` | ADMIN | `{}` | `CreatorPayoutDto[]` (pay every creator, end-of-cycle) |
 | GET   | `/admin/reviews` | ADMIN | — | `ProductReviewDto[]` |
 | PATCH | `/admin/reviews/{id}/status` | ADMIN | `{ "status": "PUBLISHED|REMOVED|FLAGGED|PENDING" }` | `ProductReviewDto` |
 | GET   | `/admin/featured` | ADMIN | — | `FeaturedSlotDto[]` (length 4) |
 | PUT   | `/admin/featured` | ADMIN | `FeaturedSlotDto[]` | `FeaturedSlotDto[]` |
+| GET   | `/admin/products/statuses` | ADMIN | — | `ProductModerationRow[]` |
+| PATCH | `/admin/products/{id}/status` | ADMIN | `{ "status": "LIVE\|DRAFT\|TAKEN_DOWN" }` | `ProductModerationRow` |
+| PATCH | `/admin/creators/{id}/suspend` | ADMIN | — | 204 |
 
-### 7.7 Media
+### 7.7 Cart (buyer-scoped, persistent across devices)
 | Method | Path | Auth | Body | Returns |
 |---|---|---|---|---|
-| POST | `/media/upload` | any authenticated | `multipart/form-data` field `file` | `UploadedMediaDto` |
+| GET  | `/cart` | BUYER | — | `CartLineDto[]` |
+| PUT  | `/cart` | BUYER | `CartLineDto[]` | `CartLineDto[]` (full replace — server snaps name/price/image from product table) |
+| POST | `/cart/sync` | BUYER | `{ "items": CartLineDto[] }` | `CartLineDto[]` |
+
+`/cart/sync` merges the guest-side local cart with whatever the server already
+holds. Merge rule: for duplicate `productId`s take the **max** quantity across
+both sets. Called once on login by the frontend.
+
+### 7.8 Saved (wishlist) — buyer-scoped
+| Method | Path | Auth | Body | Returns |
+|---|---|---|---|---|
+| GET    | `/users/me/saved/products`            | BUYER | — | `string[]` (product IDs) |
+| POST   | `/users/me/saved/products/{id}`       | BUYER | — | `string[]` (full updated list) |
+| DELETE | `/users/me/saved/products/{id}`       | BUYER | — | `string[]` (full updated list) |
+| GET    | `/users/me/saved/creators`            | BUYER | — | `string[]` (creator IDs) |
+| POST   | `/users/me/saved/creators/{id}`       | BUYER | — | `string[]` |
+| DELETE | `/users/me/saved/creators/{id}`       | BUYER | — | `string[]` |
+| POST   | `/users/me/saved/sync`                | BUYER | `SavedCollections` | `SavedCollections` |
+
+`/sync` unions the guest local set with the server set. Called once on login.
+
+### 7.9 Buyer addresses
+| Method | Path | Auth | Body | Returns |
+|---|---|---|---|---|
+| GET    | `/users/me/addresses`                 | BUYER | — | `BuyerAddress[]` |
+| POST   | `/users/me/addresses`                 | BUYER | `BuyerAddress` (no `id`) | `BuyerAddress` (201) |
+| PUT    | `/users/me/addresses/{id}`            | BUYER | `BuyerAddress` (no `id`) | `BuyerAddress` |
+| DELETE | `/users/me/addresses/{id}`            | BUYER | — | 204 |
+| POST   | `/users/me/addresses/{id}/default`    | BUYER | `{}` | `BuyerAddress[]` (full list with new default) |
+
+When deleting the default address, the server promotes the next address (if any)
+to default. Setting a new default automatically clears the flag on the others.
+
+### 7.10 Media (no backend endpoint)
+
+There is **no `/api/media/upload`**. Image uploads go from the browser straight
+to Cloudinary via an unsigned preset; see §10. The backend only ever stores
+the resulting URL strings against products / portraits / applications.
 
 ---
 
@@ -749,6 +861,10 @@ Use Bean Validation annotations on every request DTO.
 | `city`, `country` | `@NotBlank`, `@Size(max=120)` |
 | `rating` | `@Min(1)`, `@Max(5)` |
 | `position` (featured) | `@Min(1)`, `@Max(4)` |
+| `label` (address) | `@NotBlank`, `@Size(max=80)` |
+| `line1`, `line2` (address) | `@Size(max=200)` (`line1` `@NotBlank`) |
+| `productId`, `creatorId` (path/body refs) | `@Pattern("^[a-z0-9-]{1,80}$")` |
+| Image URL fields (`heroImage`, `gallery[].src`, `portraitImage`, `headerImage`, `portrait`, `workSample`, cart `image`, order item `image`) | `@Pattern("^https://.+")` — must be the Cloudinary URL returned by the browser-side upload. Reject `data:`, `blob:`, and non-HTTPS. |
 
 Status enums: validate via `@Pattern` or a custom `@ValidEnum` annotation against the allowed values listed in §6.
 
@@ -888,27 +1004,120 @@ CREATE TABLE featured_slots (
 );
 
 INSERT INTO featured_slots(position) VALUES (1),(2),(3),(4);
+
+-- ── Cart (one row per buyer × productId) ──
+CREATE TABLE cart_lines (
+  buyer_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  product_id    VARCHAR(80) NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  quantity      INTEGER NOT NULL CHECK (quantity > 0 AND quantity <= 99),
+  -- Snapshots so the bag renders without a product re-fetch:
+  product_name      VARCHAR(200) NOT NULL,
+  price_pence       INTEGER NOT NULL,
+  image             TEXT NOT NULL,
+  creator_id        VARCHAR(80) NOT NULL REFERENCES creators(id),
+  creator_full_name VARCHAR(120) NOT NULL,
+  creator_region    VARCHAR(120) NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (buyer_user_id, product_id)
+);
+
+-- ── Saved (wishlist) — one row per buyer × kind × refId ──
+CREATE TYPE saved_kind AS ENUM ('PRODUCT','CREATOR');
+
+CREATE TABLE saved_items (
+  buyer_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  kind          saved_kind NOT NULL,
+  ref_id        VARCHAR(80) NOT NULL,                      -- product slug or creator slug
+  saved_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (buyer_user_id, kind, ref_id)
+);
+CREATE INDEX saved_items_kind_idx ON saved_items(buyer_user_id, kind);
+
+-- ── Buyer addresses ──
+CREATE TABLE buyer_addresses (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  buyer_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  label         VARCHAR(80)  NOT NULL,
+  full_name     VARCHAR(120) NOT NULL,
+  line1         VARCHAR(200) NOT NULL,
+  line2         VARCHAR(200),
+  city          VARCHAR(120) NOT NULL,
+  postcode      VARCHAR(20)  NOT NULL,
+  country       VARCHAR(120) NOT NULL,
+  is_default    BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX buyer_addresses_buyer_idx ON buyer_addresses(buyer_user_id);
+-- At most one default per buyer:
+CREATE UNIQUE INDEX buyer_addresses_one_default
+  ON buyer_addresses(buyer_user_id) WHERE is_default;
+
+-- ── Product moderation status (admin override) ──
+CREATE TYPE product_moderation_status AS ENUM ('LIVE','DRAFT','TAKEN_DOWN');
+
+CREATE TABLE product_moderation (
+  product_id VARCHAR(80) PRIMARY KEY REFERENCES products(id) ON DELETE CASCADE,
+  status     product_moderation_status NOT NULL DEFAULT 'LIVE',
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 ```
 
 ---
 
-## 10. File / image uploads
+## 10. File / image uploads (direct browser → Cloudinary)
 
-### Endpoint
-`POST /api/media/upload` — `multipart/form-data` with field `file`. Authenticated.
+> **The Spring Boot backend never receives image binaries.** This is a deliberate
+> contract: the React app uploads files straight to Cloudinary using an unsigned
+> upload preset, then sends the resulting public URL (a plain string) to the
+> backend as part of normal JSON payloads (product create, profile update,
+> application submit).
 
-### Server validation
-- Allowed MIME: `image/jpeg`, `image/png`, `image/webp`.
-- Max size: 8 MB (Spring already enforces via `multipart.max-file-size`).
-- Reject anything else with 400.
-- Generate filename: `<uuid>.<ext>`. Never trust the client's filename.
+### Why this shape
+- Keeps the Spring service stateless and small — no multipart streams, no
+  proxying gigabytes through Railway.
+- Cloudinary handles CDN, format conversion (`f_auto`), quality (`q_auto`), and
+  on-the-fly resizing for free.
+- The backend only stores text columns; nothing changes at the DB layer.
 
-### Provider
-- **Cloudinary** is recommended for v1 (free tier, automatic CDN, transformations). Set `MEDIA_PROVIDER=cloudinary` and `CLOUDINARY_URL`.
-- Alternative: any S3-compatible bucket (Backblaze B2, Cloudflare R2). Build a tiny `MediaService` interface with two implementations and a Spring conditional.
+### Frontend setup (already wired — see `src/lib/cloudinary.ts`)
+1. In your Cloudinary dashboard → **Settings → Upload**, create an **unsigned
+   upload preset** (signing mode: **Unsigned**, folder: `ukena/`).
+2. Recommended preset settings: allowed formats `jpg,jpeg,png,webp,avif`,
+   max size **10 MB**, unique filename **on**, eager transformation
+   `w_1600,c_limit,q_auto,f_auto`.
+3. Set frontend env vars:
+   ```
+   VITE_CLOUDINARY_CLOUD_NAME=ukena-prod
+   VITE_CLOUDINARY_UPLOAD_PRESET=ukena_unsigned
+   ```
 
-### Returned URL
-Public, immutable CDN URL. The frontend stores this URL in product DTOs, profile fields, and application photos.
+### Upload flow
+```
+User picks file
+  → src/lib/cloudinary.ts → POST https://api.cloudinary.com/v1_1/<cloud>/auto/upload
+      (multipart/form-data: file, upload_preset, folder)
+  → Cloudinary returns { secure_url, public_id, width, height, ... }
+  → Frontend stores `secure_url` into the product / profile / application JSON
+  → Spring Boot receives that URL as a normal string field
+```
+
+### Backend responsibilities
+- **None for binaries.** Do NOT implement `/api/media/upload`.
+- **Validate URL strings** on incoming DTOs that carry images. A simple
+  `@Pattern(regexp = "^https://.+")` is sufficient for v1; tighten to
+  `^https://res\\.cloudinary\\.com/<cloud-name>/.+` if you want to lock the
+  source down.
+- **Store the URLs** in the existing text columns (`hero_image`, `gallery`,
+  `portrait_image`, `header_image`, `image`, `portrait`, `work_sample`).
+- **Do not download the images** server-side. If you ever need a smaller
+  variant (thumbnail, social card) build a Cloudinary URL with transformation
+  segments — e.g. `…/upload/w_400,c_fill,q_auto/…/abc123.jpg` — never re-host.
+
+### Optional (post-v1): asset deletion
+If a creator deletes a product, you may want to also delete its Cloudinary
+assets. That requires a **signed** call from the backend using the Cloudinary
+admin SDK and a service-side `CLOUDINARY_URL` env var. This is out of scope
+for v1 — orphaned assets are tolerable on the free tier.
 
 ---
 
@@ -988,7 +1197,12 @@ When you flip `VITE_USE_MOCK_API=false`, walk this list:
 - [ ] `/creators/me`, `/creators/me/products`, `/creators/me/orders` infer `creatorId` from the JWT, not from a path/body param.
 - [ ] `/orders` POST recomputes `totalPence` from products — never trusts the client total.
 - [ ] 401 responses use the envelope so the frontend's `triggerUnauthorized()` fires cleanly.
-- [ ] `/media/upload` accepts `multipart/form-data` with field name **`file`** (the frontend sends exactly that).
+- [ ] **No `/media/upload` endpoint exists.** Image URLs arrive as plain strings inside DTOs (uploaded browser-side to Cloudinary). Validate they are `https://` URLs.
+- [ ] `/cart` and `/cart/sync` are wired — guest carts merge in on login (max-quantity rule per `productId`).
+- [ ] `/users/me/saved/{products,creators}` add/remove endpoints return the **full updated array**, not the toggled item.
+- [ ] `/users/me/addresses` enforces "at most one default per buyer".
+- [ ] `/applications` (POST) is **public** — buyers apply before they have an account.
+- [ ] On `/admin/applications/{id}/status` → `APPROVED`, the server creates a `User(ROLE_CREATOR)` + `Creator` row and links them (see §6.13).
 - [ ] `OPTIONS` preflight returns 204 with the same CORS headers.
 
 ---

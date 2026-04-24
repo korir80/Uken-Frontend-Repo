@@ -290,10 +290,9 @@ function SavedPieceCard({ product, onRemove }: SavedPieceCardProps) {
     });
     setMoved(true);
     // Remove from saved after a beat — feels intentional, not jarring.
+    // onRemove already drives the saved-products mutation; no extra toggle needed.
     window.setTimeout(() => {
       onRemove();
-      // safe even if unmounted by then; toggle uses fresh state
-      toggleSavedProduct(product.id);
     }, 900);
   }
 

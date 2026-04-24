@@ -272,7 +272,7 @@ function SearchPage() {
           </div>
 
           {/* Type tabs */}
-          {query && (
+          {tokens.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-2">
               {(
                 [
@@ -305,7 +305,7 @@ function SearchPage() {
           )}
 
           {/* Suggestions when empty */}
-          {!query && suggestionChips.length > 0 && (
+          {tokens.length === 0 && suggestionChips.length > 0 && (
             <div className="mt-7">
               <p className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
                 Try a craft
@@ -329,7 +329,7 @@ function SearchPage() {
 
       {/* Results */}
       <section className="mx-auto max-w-7xl px-5 py-12 md:px-10 md:py-16">
-        {!query ? (
+        {tokens.length === 0 ? (
           <EmptyHint />
         ) : isLoading ? (
           <ResultsSkeleton />

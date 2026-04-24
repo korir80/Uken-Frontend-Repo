@@ -8,7 +8,7 @@ import {
 } from "@/components/dashboard/DashboardShell";
 import { formatGBP, useCart } from "@/lib/cart";
 import { useBuyerOrder, orderQueryOptions, queryKeys } from "@/lib/queries";
-import { orderService, type OrderStatus } from "@/services";
+import { orderService, type OrderDto, type OrderStatus, type OrderItem } from "@/services";
 import { ApiError } from "@/services/api";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
@@ -100,7 +100,7 @@ function OrderDetailPage() {
   const cancelled = order.status === "CANCELLED";
 
   function reorder() {
-    order.items.forEach((it) => {
+    order.items.forEach((it: OrderItem) => {
       for (let i = 0; i < it.quantity; i++) {
         addItem({
           productId: it.productId,
@@ -132,7 +132,7 @@ function OrderDetailPage() {
   }
 
   const subtotal = order.items.reduce(
-    (s, i) => s + i.pricePence * i.quantity,
+    (s: number, i: OrderItem) => s + i.pricePence * i.quantity,
     0,
   );
   const shipping = Math.max(0, order.totalPence - subtotal);
@@ -228,7 +228,7 @@ function OrderDetailPage() {
             Pieces in this order
           </p>
           <ul className="space-y-3">
-            {order.items.map((it) => (
+            {order.items.map((it: OrderItem) => (
               <li
                 key={it.productId}
                 className="flex items-center gap-4 rounded-2xl border border-border/60 bg-warm-white p-4"

@@ -8,11 +8,7 @@ import { CreatorAttribution } from "@/components/product/CreatorAttribution";
 import { Button } from "@/components/ukena/Button";
 import { SectionLabel } from "@/components/ukena";
 import { LazyImage } from "@/components/ui/lazy-image";
-import {
-  getAllProducts,
-  getProduct,
-  type Product,
-} from "@/components/product/product-data";
+import type { Product } from "@/components/product/product-data";
 import { ShopProductCard } from "@/components/shop/ShopProductCard";
 import { CreatorCard } from "@/components/explore/CreatorCard";
 import { creators as allCreators } from "@/components/explore/creators-data";
@@ -26,16 +22,36 @@ import {
 import { useCart, formatGBP } from "@/lib/cart";
 import { pushRecentProduct } from "@/lib/ukena-mode";
 import { cn } from "@/lib/utils";
+import {
+  productQueryOptions,
+  productsQueryOptions,
+  useProduct,
+  useAllProducts,
+} from "@/lib/queries";
+import type { ProductDto } from "@/services";
+import { ApiError } from "@/services/api";
 
-// TODO: replace seed data with:
-//   const product = await productService.getProductById(params.productId)
-//   TanStack Query key: ['product', params.productId]
-// The Spring Boot envelope is already unwrapped by services/api.ts.
+/** ProductDto ⊂ Product for what cards render. Cast at the boundary. */
+function asProduct(p: ProductDto): Product {
+  return p as unknown as Product;
+}
+
 export const Route = createFileRoute("/products/$productId")({
-  loader: ({ params }) => {
-    const product = getProduct(params.productId);
-    if (!product) throw notFound();
-    return { product };
+  loader: async ({ params, context: { queryClient } }) => {
+    try {
+      const product = await queryClient.ensureQueryData(
+        productQueryOptions(params.productId),
+      );
+      // Prime the related-products cache too — instant cross-links.
+      queryClient.ensureQueryData(productsQueryOptions());
+      return { product };
+    } catch (err) {
+      // Treat a 404 from the API (or "Product not found" from the mock)
+      // as a routing not-found so TanStack renders the notFoundComponent.
+      if (err instanceof ApiError && err.status === 404) throw notFound();
+      if (err instanceof Error && /not found/i.test(err.message)) throw notFound();
+      throw err;
+    }
   },
   head: ({ loaderData }) => {
     const p = loaderData?.product;
@@ -95,7 +111,14 @@ export const Route = createFileRoute("/products/$productId")({
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData();
+  // Loader has already primed the cache. Subscribe so background refetches
+  // re-render us with fresh data.
+  const { product: initialProduct } = Route.useLoaderData();
+  const { productId } = Route.useParams();
+  const { data: live } = useProduct(productId, { initialData: initialProduct });
+  const product = live ?? initialProduct;
+
+  const { data: catalogue } = useAllProducts();
   const { addItem } = useCart();
   const [selected, setSelected] = useState(0);
   const [added, setAdded] = useState(false);
@@ -128,7 +151,7 @@ function ProductPage() {
 
   // ── Related products: same creator first, then same craft ──────────────
   const related = useMemo<Product[]>(() => {
-    const all = getAllProducts();
+    const all = (catalogue ?? []).map(asProduct);
     const sameCreator = all.filter(
       (p) => p.creator.id === product.creator.id && p.id !== product.id,
     );
@@ -139,7 +162,7 @@ function ProductPage() {
         p.creator.id !== product.creator.id,
     );
     return [...sameCreator, ...sameCraft].slice(0, 3);
-  }, [product.id, product.creator.id, product.creator.craft]);
+  }, [catalogue, product.id, product.creator.id, product.creator.craft]);
 
   // ── Related creators: 2 creators that aren't this product's maker ─────
   const relatedCreators = useMemo(() => {
@@ -323,8 +346,9 @@ function ProductPage() {
 
                 {/* 7. Ethical sourcing line — centred under button */}
                 <p className="mt-4 text-center text-[11px] leading-relaxed text-charcoal/40">
-                  Handmade in Kenya · Ships within {product.leadTimeDays.min}–
-                  {product.leadTimeDays.max} days ·{" "}
+                  Handmade in Kenya · Ships within{" "}
+                  {(product as Product).leadTimeDays?.min ?? 7}–
+                  {(product as Product).leadTimeDays?.max ?? 21} days ·{" "}
                   <span className="text-charcoal/55">
                     {product.creator.firstName} earns fairly from every sale
                   </span>

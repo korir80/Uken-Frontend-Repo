@@ -33,6 +33,7 @@ import {
 export const queryKeys = {
   creators: (filters: CreatorFilters = {}) => ["creators", filters] as const,
   creator: (id: string) => ["creators", id] as const,
+  products: () => ["products", "all"] as const,
   product: (id: string) => ["products", id] as const,
   productsByCreator: (creatorId: string) =>
     ["products", "creator", creatorId] as const,
@@ -40,6 +41,28 @@ export const queryKeys = {
   ordersCreator: () => ["orders", "creator"] as const,
   myProfile: () => ["profile", "me"] as const,
 };
+
+/* ---------------- Query options factories (for use in route loaders) ---------------- */
+
+export const creatorsQueryOptions = (filters: CreatorFilters = {}) => ({
+  queryKey: queryKeys.creators(filters),
+  queryFn: () => creatorService.getCreators(filters),
+});
+
+export const creatorQueryOptions = (id: string) => ({
+  queryKey: queryKeys.creator(id),
+  queryFn: () => creatorService.getCreatorById(id),
+});
+
+export const productsQueryOptions = () => ({
+  queryKey: queryKeys.products(),
+  queryFn: () => productService.getAllProducts(),
+});
+
+export const productQueryOptions = (id: string) => ({
+  queryKey: queryKeys.product(id),
+  queryFn: () => productService.getProductById(id),
+});
 
 /* ---------------- Creators ---------------- */
 
@@ -68,13 +91,21 @@ export function useCreator(
 
 /* ---------------- Products ---------------- */
 
+export function useAllProducts(
+  options?: Omit<UseQueryOptions<ProductDto[]>, "queryKey" | "queryFn">,
+) {
+  return useQuery<ProductDto[]>({
+    ...productsQueryOptions(),
+    ...options,
+  });
+}
+
 export function useProduct(
   id: string,
   options?: Omit<UseQueryOptions<ProductDto>, "queryKey" | "queryFn">,
 ) {
   return useQuery<ProductDto>({
-    queryKey: queryKeys.product(id),
-    queryFn: () => productService.getProductById(id),
+    ...productQueryOptions(id),
     enabled: !!id,
     ...options,
   });

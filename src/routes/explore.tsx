@@ -9,10 +9,15 @@ import {
   type CraftFilterValue,
 } from "@/components/explore/CraftFilter";
 import { CreatorCard } from "@/components/explore/CreatorCard";
-import { creators } from "@/components/explore/creators-data";
+import type { Creator, Craft } from "@/components/explore/creators-data";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { useCreators, creatorsQueryOptions } from "@/lib/queries";
+import type { CreatorSummary } from "@/services";
 
 export const Route = createFileRoute("/explore")({
+  loader: ({ context: { queryClient } }) => {
+    queryClient.ensureQueryData(creatorsQueryOptions());
+  },
   head: () => ({
     meta: [
       { title: "The makers of Kenya — Ukena" },
@@ -34,16 +39,38 @@ export const Route = createFileRoute("/explore")({
 
 const PAGE_SIZE = 6;
 
+/** Adapt a CreatorSummary into the layout-aware Creator shape used by cards. */
+function toCreator(c: CreatorSummary, index: number): Creator {
+  return {
+    id: c.id,
+    firstName: c.firstName,
+    fullName: c.fullName,
+    craft: c.craft as Craft,
+    region: c.region,
+    hook: c.hook,
+    image: c.image,
+    // Every 4th card stretches taller, breaking the masonry rhythm.
+    emphasis: index % 4 === 0 ? "tall" : "standard",
+  };
+}
+
 function ExplorePage() {
   const [filter, setFilter] = useState<CraftFilterValue>("All");
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [draftFilter, setDraftFilter] = useState<CraftFilterValue>("All");
 
+  const { data: rawCreators = [], isLoading } = useCreators();
+
+  const creators = useMemo(
+    () => rawCreators.map((c, i) => toCreator(c, i)),
+    [rawCreators],
+  );
+
   const filtered = useMemo(() => {
     if (filter === "All") return creators;
     return creators.filter((c) => c.craft === filter);
-  }, [filter]);
+  }, [filter, creators]);
 
   const counts = useMemo(() => {
     const c: Partial<Record<CraftFilterValue, number>> = { All: creators.length };
@@ -51,7 +78,7 @@ function ExplorePage() {
       c[creator.craft] = (c[creator.craft] ?? 0) + 1;
     }
     return c;
-  }, []);
+  }, [creators]);
 
   const shown = filtered.slice(0, visible);
   const hasMore = visible < filtered.length;
@@ -171,7 +198,17 @@ function ExplorePage() {
         {/* Grid — single column on mobile, masonry from md */}
         <section className="bg-warm-white pb-10 pt-6 md:pb-20 md:pt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10">
-            {shown.length === 0 ? (
+            {isLoading && shown.length === 0 ? (
+              <div className="columns-1 gap-8 md:columns-2 md:gap-10 lg:columns-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="mb-8 md:mb-12">
+                    <div className="aspect-[4/5] w-full animate-pulse rounded-2xl bg-cream" />
+                    <div className="mt-5 h-4 w-3/4 animate-pulse rounded bg-cream" />
+                    <div className="mt-2 h-4 w-1/2 animate-pulse rounded bg-cream" />
+                  </div>
+                ))}
+              </div>
+            ) : shown.length === 0 ? (
               <div className="py-20 text-center">
                 <p className="font-display text-2xl italic text-charcoal md:text-3xl">
                   No makers in this craft yet.

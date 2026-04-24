@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
 import { CreatorHeader } from "@/components/creator/CreatorHeader";
@@ -7,14 +7,43 @@ import { CreatorProcess } from "@/components/creator/CreatorProcess";
 import { CreatorMeaning } from "@/components/creator/CreatorMeaning";
 import { CreatorProducts } from "@/components/creator/CreatorProducts";
 import { RelatedCreators } from "@/components/creator/RelatedCreators";
-import { getCreatorProfile } from "@/components/creator/creator-profile-data";
+import {
+  getCreatorProfile,
+  type CreatorProfile,
+} from "@/components/creator/creator-profile-data";
+import { creatorQueryOptions, productsQueryOptions } from "@/lib/queries";
+
+/**
+ * Query key for the rich /creators/:id profile (story + process + meaning).
+ *
+ * The thin {@link creatorService.getCreatorById} returns the API-shaped
+ * CreatorDetail which omits the seed-only `products` and `relatedCreators`
+ * arrays the on-page components depend on. Until the backend exposes those
+ * sub-resources we still source them from the local profile module — but
+ * everything goes through React Query so the cache, error states, and
+ * background refetches all flow through one place.
+ */
+const profileQueryOptions = (creatorId: string) => ({
+  queryKey: ["creators", creatorId, "profile"] as const,
+  queryFn: async (): Promise<CreatorProfile> => getCreatorProfile(creatorId),
+});
 
 export const Route = createFileRoute("/creators/$creatorId")({
-  loader: ({ params }) => {
-    // Mock data lookup — Phase 6 will replace this with a typed fetch
-    // from /api/creators/:id. The loader contract stays the same.
-    const creator = getCreatorProfile(params.creatorId);
-    return { creator };
+  loader: async ({ params, context: { queryClient } }) => {
+    try {
+      // Prime the thin DTO too — useful for any sibling consumers.
+      queryClient.ensureQueryData(creatorQueryOptions(params.creatorId));
+      // Prime the catalogue so cross-links to products are instant.
+      queryClient.ensureQueryData(productsQueryOptions());
+      const creator = await queryClient.ensureQueryData(
+        profileQueryOptions(params.creatorId),
+      );
+      return { creator };
+    } catch (err) {
+      if (err instanceof Error && /not in (the )?index/i.test(err.message))
+        throw notFound();
+      throw err;
+    }
   },
   head: ({ loaderData }) => {
     const c = loaderData?.creator;

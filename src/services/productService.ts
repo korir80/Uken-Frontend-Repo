@@ -22,6 +22,8 @@ export interface ProductDto {
   materials: string[];
   dimensions: string;
   care: string;
+  /** Optional lead time band, surfaced near the buy button. */
+  leadTimeDays?: { min: number; max: number };
   creator: {
     id: string;
     firstName: string;
@@ -41,6 +43,7 @@ export interface ProductCreatePayload {
   materials: string[];
   dimensions: string;
   care: string;
+  leadTimeDays?: { min: number; max: number };
 }
 
 export type ProductUpdatePayload = Partial<ProductCreatePayload>;
@@ -56,6 +59,7 @@ function toDto(p: Product): ProductDto {
     materials: p.materials,
     dimensions: p.dimensions,
     care: p.care,
+    leadTimeDays: p.leadTimeDays,
     creator: { ...p.creator },
   };
 }

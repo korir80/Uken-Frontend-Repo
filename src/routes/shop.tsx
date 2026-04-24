@@ -6,10 +6,7 @@ import { z } from "zod";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
 import { SectionLabel } from "@/components/ukena";
-import {
-  getAllProducts,
-  type Product,
-} from "@/components/product/product-data";
+import type { Product } from "@/components/product/product-data";
 import { ShopProductCard } from "@/components/shop/ShopProductCard";
 import {
   ShopFilterPanel,
@@ -19,6 +16,14 @@ import {
 import { CRAFTS } from "@/components/explore/creators-data";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { QuickViewDrawer } from "@/components/shop/QuickViewDrawer";
+import { useAllProducts, productsQueryOptions } from "@/lib/queries";
+import type { ProductDto } from "@/services";
+
+/** ProductDto ⊂ Product for the fields we render. Cast at the boundary so
+ *  the existing card components keep their seed-shaped types. */
+function asProduct(p: ProductDto): Product {
+  return p as unknown as Product;
+}
 
 /* ── URL search-param schema ─────────────────────────────────────────── */
 const shopSearchSchema = z.object({
@@ -37,6 +42,9 @@ const shopSearchSchema = z.object({
 
 export const Route = createFileRoute("/shop")({
   validateSearch: zodValidator(shopSearchSchema),
+  loader: ({ context: { queryClient } }) => {
+    queryClient.ensureQueryData(productsQueryOptions());
+  },
   head: () => ({
     meta: [
       { title: "Shop all pieces — Ukena" },
@@ -66,7 +74,11 @@ function ShopPage() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [quickProduct, setQuickProduct] = useState<Product | null>(null);
 
-  const all = useMemo(() => getAllProducts(), []);
+  const { data: products, isLoading } = useAllProducts();
+  const all = useMemo<Product[]>(
+    () => (products ?? []).map(asProduct),
+    [products],
+  );
 
   // Distinct regions, alphabetised — derived from the catalogue.
   const regions = useMemo(() => {
@@ -326,7 +338,17 @@ function ShopPage() {
         {/* Grid — masonry on desktop via CSS columns, 2-col on mobile */}
         <section className="bg-warm-white pb-10 pt-6 md:pb-20 md:pt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10">
-            {shown.length === 0 ? (
+            {isLoading && shown.length === 0 ? (
+              <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-8 md:gap-y-12">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i}>
+                    <div className="aspect-[4/5] w-full animate-pulse rounded-2xl bg-cream" />
+                    <div className="mt-3 h-4 w-3/4 animate-pulse rounded bg-cream" />
+                    <div className="mt-2 h-3 w-1/2 animate-pulse rounded bg-cream" />
+                  </div>
+                ))}
+              </div>
+            ) : shown.length === 0 ? (
               <div className="py-20 text-center">
                 <p className="font-display text-2xl italic text-charcoal md:text-3xl">
                   Nothing matches those filters yet.

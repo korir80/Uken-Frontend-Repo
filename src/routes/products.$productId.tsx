@@ -8,11 +8,7 @@ import { CreatorAttribution } from "@/components/product/CreatorAttribution";
 import { Button } from "@/components/ukena/Button";
 import { SectionLabel } from "@/components/ukena";
 import { LazyImage } from "@/components/ui/lazy-image";
-import {
-  getAllProducts,
-  getProduct,
-  type Product,
-} from "@/components/product/product-data";
+import type { Product } from "@/components/product/product-data";
 import { ShopProductCard } from "@/components/shop/ShopProductCard";
 import { CreatorCard } from "@/components/explore/CreatorCard";
 import { creators as allCreators } from "@/components/explore/creators-data";
@@ -26,16 +22,36 @@ import {
 import { useCart, formatGBP } from "@/lib/cart";
 import { pushRecentProduct } from "@/lib/ukena-mode";
 import { cn } from "@/lib/utils";
+import {
+  productQueryOptions,
+  productsQueryOptions,
+  useProduct,
+  useAllProducts,
+} from "@/lib/queries";
+import type { ProductDto } from "@/services";
+import { ApiError } from "@/services/api";
 
-// TODO: replace seed data with:
-//   const product = await productService.getProductById(params.productId)
-//   TanStack Query key: ['product', params.productId]
-// The Spring Boot envelope is already unwrapped by services/api.ts.
+/** ProductDto ⊂ Product for what cards render. Cast at the boundary. */
+function asProduct(p: ProductDto): Product {
+  return p as unknown as Product;
+}
+
 export const Route = createFileRoute("/products/$productId")({
-  loader: ({ params }) => {
-    const product = getProduct(params.productId);
-    if (!product) throw notFound();
-    return { product };
+  loader: async ({ params, context: { queryClient } }) => {
+    try {
+      const product = await queryClient.ensureQueryData(
+        productQueryOptions(params.productId),
+      );
+      // Prime the related-products cache too — instant cross-links.
+      queryClient.ensureQueryData(productsQueryOptions());
+      return { product };
+    } catch (err) {
+      // Treat a 404 from the API (or "Product not found" from the mock)
+      // as a routing not-found so TanStack renders the notFoundComponent.
+      if (err instanceof ApiError && err.status === 404) throw notFound();
+      if (err instanceof Error && /not found/i.test(err.message)) throw notFound();
+      throw err;
+    }
   },
   head: ({ loaderData }) => {
     const p = loaderData?.product;

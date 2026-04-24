@@ -30,6 +30,38 @@ export interface UploadedMedia {
   id: string;
 }
 
+/* ─── Buyer addresses ─── */
+
+export interface BuyerAddress {
+  id: string;
+  label: string;
+  fullName: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  postcode: string;
+  country: string;
+  isDefault: boolean;
+}
+
+export type BuyerAddressInput = Omit<BuyerAddress, "id">;
+
+const ADDR_STORAGE_KEY = "ukena.buyer.addresses";
+
+function readMockAddresses(): BuyerAddress[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(ADDR_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as BuyerAddress[]) : [];
+  } catch {
+    return [];
+  }
+}
+function writeMockAddresses(list: BuyerAddress[]) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(ADDR_STORAGE_KEY, JSON.stringify(list));
+}
+
 const mockOverrides: Record<string, CreatorProfileUpdate> = {};
 
 export const profileService = {

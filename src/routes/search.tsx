@@ -123,7 +123,10 @@ function SearchPage() {
     if (draft === q) return;
     const t = window.setTimeout(() => {
       navigate({
-        search: (prev) => ({ ...prev, q: draft }),
+        search: (prev: { q: string; type: "all" | "products" | "makers" }) => ({
+          ...prev,
+          q: draft,
+        }),
         replace: true,
       });
     }, 220);
@@ -217,7 +220,10 @@ function SearchPage() {
                   type="button"
                   onClick={() =>
                     navigate({
-                      search: (prev) => ({ ...prev, type: tab.key }),
+                      search: (prev: {
+                        q: string;
+                        type: "all" | "products" | "makers";
+                      }) => ({ ...prev, type: tab.key }),
                     })
                   }
                   className={`rounded-full px-4 py-1.5 font-sans text-[12px] font-medium tracking-wide transition ${

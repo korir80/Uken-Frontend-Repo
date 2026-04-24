@@ -209,13 +209,9 @@ ukena:
     expiration-hours: 24
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
-  media:
-    provider: ${MEDIA_PROVIDER:cloudinary}
-    cloudinary-url: ${CLOUDINARY_URL:}
-    s3-bucket: ${S3_BUCKET:}
-    s3-region: ${S3_REGION:}
-    s3-access-key: ${S3_ACCESS_KEY:}
-    s3-secret-key: ${S3_SECRET_KEY:}
+  # Media uploads happen browser → Cloudinary directly. The backend does not
+  # store or proxy any binaries. The Cloudinary credentials live on the frontend
+  # (VITE_CLOUDINARY_CLOUD_NAME, VITE_CLOUDINARY_UPLOAD_PRESET) — see §10.
 
 springdoc:
   swagger-ui:

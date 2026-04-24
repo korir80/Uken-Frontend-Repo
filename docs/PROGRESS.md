@@ -152,93 +152,89 @@ mobile, padding tightened so primary content sits above the fold.
 
 ### 5.3 Service layer (`src/services/`)
 
-All wired to the Spring Boot backend. Most UI does **not** consume them
-yet — it still reads from static seed data (see §6). Each consumer route
-has a `// TODO` annotation marking exactly where the swap will happen.
+All wired to the Spring Boot backend through `src/services/api.ts`. Every
+service ships with a **mock branch** (`USE_MOCK_API=true`) that resolves from
+seed data so the UI is fully testable without a backend running. Components
+consume them via React Query hooks in `src/lib/queries.ts` — never call a
+service directly from a component.
 
-| Service           | Endpoints                                                              |
-| ----------------- | ---------------------------------------------------------------------- |
-| `authService`     | `POST /auth/login`, `POST /auth/register`, `POST /auth/logout`         |
-| `creatorService`  | `GET /creators`, `GET /creators/:id`                                   |
-| `productService`  | `GET /products/:id`, `GET /products?creatorId=`                        |
-| `orderService`    | `POST /orders`, `GET /orders/buyer`, `GET /orders/creator`             |
-| `profileService`  | `GET/PUT /creators/me`, `POST /media/upload`                           |
+| Service              | Endpoints                                                                                                |
+| -------------------- | -------------------------------------------------------------------------------------------------------- |
+| `authService`        | `POST /auth/{login,register,logout}`, `GET /auth/me`                                                     |
+| `creatorService`     | `GET /creators`, `GET /creators/{id}` (filter via `?craft=&region=`)                                     |
+| `productService`     | `GET /products`, `GET /products/{id}`, `GET /products?creatorId=`, `POST/PUT/DELETE /creators/me/products`|
+| `orderService`       | `POST /orders`, `GET /orders/me`, `GET /creators/me/orders`, `GET /admin/orders`, `PATCH .../status`, refund |
+| `profileService`     | `GET/PUT /creators/me`, `uploadImage` (browser → Cloudinary, no backend hop), `/users/me/addresses/*`    |
+| `applicationService` | `POST /applications` (public), `GET/GET-one/PATCH /admin/applications`                                   |
+| `cartService`        | `GET/PUT /cart`, `POST /cart/sync`                                                                       |
+| `savedService`       | `GET/POST/DELETE /users/me/saved/{products,creators}/...`, `POST /users/me/saved/sync`                   |
+| `adminService`       | payouts, reviews, featured, buyers, product moderation, creator suspension                               |
 
 ### 5.4 Static seed data
 
-Most pages still render from these — swap to `useQuery` when wiring up live data:
+Used only as the in-memory store for the mock API branch. Live UI consumes
+the React Query hooks; the seed files no longer power any production code path.
 
 - `src/components/explore/creators-data.ts`
 - `src/components/creator/creator-profile-data.ts`
 - `src/components/product/product-data.ts`
+- `src/components/admin/admin-data.ts`
 
 ---
 
 ## 6. End-to-End Status Matrix
 
-| Capability                                | Status |
-| ----------------------------------------- | ------ |
-| Browse creators & products (static)       | ✅     |
-| Auth UI + context + interceptors          | ✅     |
-| Product detail w/ persistent creator card | ✅     |
-| Cart add / remove / quantity (local)      | ✅     |
-| Cart summary + clearCart action           | ✅     |
-| Checkout flow UI (delivery → payment → confirmation) | ✅ |
-| Order confirmation (per-creator messaging)| ✅     |
-| Saved items / personalised home (UI)      | ✅     |
-| Artisan application form (UI)             | ✅     |
-| Live data wiring (services → UI)          | ⚠️ partial — TODOs marked |
-| Real payments (Stripe/Paddle)             | ❌     |
-| Real order placement on checkout submit   | ❌     |
-| Persistent cart / saved items             | ❌     |
-| Image uploads from PhotoUploader          | ⚠️ service exists, not wired |
-| Creator dashboard (products, orders)      | ❌     |
-| Admin moderation tools                    | ❌     |
-| Search (creators + products)              | ❌     |
-| Reviews / ratings                         | ❌     |
-| Email notifications                       | ❌     |
+| Capability                                                  | Status                              |
+| ----------------------------------------------------------- | ----------------------------------- |
+| Browse creators & products                                  | ✅ via `useCreators` / `useProduct` |
+| Auth UI + context + interceptors                            | ✅                                  |
+| Product detail w/ persistent creator card                   | ✅                                  |
+| Cart add / remove / quantity (local + sync hook ready)      | ✅                                  |
+| Checkout flow UI (delivery → payment → confirmation)        | ✅                                  |
+| Order confirmation w/ printable receipt                     | ✅                                  |
+| Saved items (products + creators) w/ optimistic toggle      | ✅                                  |
+| Personalised home (buy again, saved makers)                 | ✅                                  |
+| Buyer addresses CRUD + default                              | ✅                                  |
+| Artisan application submit (`POST /applications`)           | ✅                                  |
+| Global search (`/search`)                                   | ✅                                  |
+| Creator dashboard (products CRUD, orders, profile)          | ✅                                  |
+| Creator analytics dashboard (Recharts)                      | ✅                                  |
+| Admin suite (apps, buyers, creators, products, payouts, …)  | ✅                                  |
+| Direct-to-Cloudinary image uploads                          | ✅                                  |
+| Real payments (Stripe/Paddle)                               | ❌ checkout still shows **Demo**    |
+| Real order placement on checkout submit                     | ⚠️ wired to `useCreateOrder` but gated on payment |
+| Reviews / ratings                                           | ❌                                  |
+| Email notifications                                         | ❌ (Spring backend's job)           |
 
 ---
 
 ## 7. Spring Boot Integration Seams
 
-TODO markers are already in place for the next wiring pass:
+The frontend is feature-complete against the contract in `BACKEND_SPEC.md`.
+What's left for the Spring side:
 
-- `src/routes/products.$productId.tsx` — replace seed lookup with
-  `productService.getProductById(params.productId)` via TanStack Query
-  (`['product', productId]`).
-- `src/routes/bag.tsx` — on login, hydrate from `GET /api/cart`; mirror
-  every mutation with `POST /api/cart/sync`.
-- `src/routes/checkout.payment.tsx` — wire Place Order to
-  `orderService.createOrder(...)` + Stripe PaymentIntent confirmation.
-  On success → `clearCart()` → navigate to `/checkout/confirmation`.
-- `src/routes/checkout.confirmation.tsx` — read order from the
-  `orderService` response rather than the (now-cleared) cart context.
+- Implement the new buyer-scoped resources: `/cart`, `/cart/sync`,
+  `/users/me/saved/*`, `/users/me/addresses/*` (see spec §7.7–7.9 + §9 schema).
+- Implement product moderation & creator suspension under `/admin/*`
+  (spec §7.6).
+- Validate image URL fields as `https://res.cloudinary.com/...` strings —
+  no multipart endpoint to build.
+- The frontend flips to live data the moment `VITE_USE_MOCK_API=false` and
+  `VITE_API_BASE_URL` points at the deployed Spring service. No further
+  frontend changes required to start the smoke test in spec §12.
 
 ---
 
 ## 8. Suggested Next Priorities
 
-In rough order of value:
-
-1. **Wire static UI to live services.** Replace seed data reads with
-   `useQuery` against `creatorService` / `productService`. Use
-   `queryClient.ensureQueryData` in route loaders for SSR. Start with
-   the marked TODO in `/products/$productId`.
-2. **Real checkout.** Wire `/checkout/payment` → `orderService.createOrder`
-   and integrate Stripe (or Paddle) for the payment step. Then update
-   `/checkout/confirmation` to read from the order response.
-3. **Persist cart & saved items** via the documented `/api/cart` endpoints
-   (will need Spring Boot work).
-4. **Creator dashboard** at `/account/creator/*` — product CRUD, order
-   list, profile editing. Services already exist (`profileService`,
-   `orderService.getOrdersByCreator`).
-5. **Search** for creators + products (filter UI exists, needs query
-   params + backend support).
-6. **Order history** in `/account` for buyers, plus the creator view
-   in the dashboard.
-7. **Artisan application submission** endpoint + admin review screen.
-8. **Reviews & ratings** on products/creators once order data flows.
+1. **Spring backend implementation** of the contract above so we can flip
+   `VITE_USE_MOCK_API=false`.
+2. **Real checkout.** Replace the Demo card form with Stripe Elements;
+   wire to `useCreateOrder` on `paymentIntent.succeeded`.
+3. **Reviews & ratings** once real orders flow (DTO already in spec §6.15).
+4. **Creator messaging / notifications** for status transitions.
+5. **SEO polish** — per-route `head()` for product / creator pages with
+   real og:image from Cloudinary.
 
 ---
 

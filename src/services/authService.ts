@@ -1,19 +1,19 @@
 /**
- * Mock auth service.
+ * Auth service.
  *
- * No HTTP — login/register resolve a fake session based on the email
- * pattern, mirroring the role-based behaviour the real Spring Boot
- * `/api/auth/*` endpoints will eventually return.
+ * Real backend endpoints (see BACKEND_SPEC.md §Auth):
+ *   POST /api/auth/login    → { token, user }
+ *   POST /api/auth/register → { token, user }
+ *   POST /api/auth/logout   → 204
+ *   GET  /api/auth/me       → user
  *
- * Email convention (case-insensitive):
+ * When `VITE_USE_MOCK_API=true` the email pattern decides the role so the
+ * dashboards remain reachable before the backend is up:
  *   *@admin.ukena    → ROLE_ADMIN
  *   *@creator.ukena  → ROLE_CREATOR
- *   *@buyer.ukena    → ROLE_BUYER
- *   anything else    → ROLE_BUYER  (sensible default for visitors)
- *
- * Any non-empty password is accepted while the backend is offline.
+ *   *@buyer.ukena    → ROLE_BUYER (default for any other email)
  */
-import { fakeResolve } from "./api";
+import { api, fakeResolve, USE_MOCK_API } from "./api";
 
 export type UserRole = "ROLE_BUYER" | "ROLE_CREATOR" | "ROLE_ADMIN";
 
@@ -31,12 +31,19 @@ export interface AuthSession {
   user: AuthUser;
 }
 
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
 export interface RegisterPayload {
   email: string;
   password: string;
   fullName: string;
   role: UserRole;
 }
+
+/* -------------------- Mock helpers -------------------- */
 
 function inferRole(email: string): UserRole {
   const e = email.trim().toLowerCase();
@@ -47,35 +54,22 @@ function inferRole(email: string): UserRole {
 
 function fullNameFromEmail(email: string): string {
   const local = email.split("@")[0] ?? "Friend";
-  return local
-    .split(/[._-]+/)
-    .filter(Boolean)
-    .map((p) => p[0]?.toUpperCase() + p.slice(1))
-    .join(" ") || "Friend";
+  return (
+    local
+      .split(/[._-]+/)
+      .filter(Boolean)
+      .map((p) => p[0]?.toUpperCase() + p.slice(1))
+      .join(" ") || "Friend"
+  );
 }
 
-/** Map known creator emails to a creator profile id from the seed data. */
 function inferCreatorId(email: string): string | undefined {
   const local = email.split("@")[0]?.toLowerCase() ?? "";
-  // Any seeded creator slug works as a login (e.g. wanjiru@creator.ukena)
-  const known = [
-    "wanjiru",
-    "naserian",
-    "mumo",
-    "akinyi",
-    "aluoch",
-    "otieno",
-    "saitoti",
-    "kibet",
-  ];
+  const known = ["wanjiru", "naserian", "mumo", "akinyi", "aluoch", "otieno", "saitoti", "kibet"];
   return known.includes(local) ? local : "wanjiru";
 }
 
-function buildSession(payload: {
-  email: string;
-  fullName?: string;
-  role?: UserRole;
-}): AuthSession {
+function buildMockSession(payload: { email: string; fullName?: string; role?: UserRole }): AuthSession {
   const role = payload.role ?? inferRole(payload.email);
   const user: AuthUser = {
     id: `mock-${payload.email.toLowerCase()}`,
@@ -84,31 +78,43 @@ function buildSession(payload: {
     role,
     creatorId: role === "ROLE_CREATOR" ? inferCreatorId(payload.email) : undefined,
   };
-  return {
-    token: `mock-token-${user.id}-${Date.now()}`,
-    user,
-  };
+  return { token: `mock-token-${user.id}-${Date.now()}`, user };
 }
 
+/* -------------------- Service -------------------- */
+
 export const authService = {
-  async login(email: string, _password: string): Promise<AuthSession> {
+  async login(email: string, password: string): Promise<AuthSession> {
     if (!email.trim()) throw new Error("Email is required");
-    return fakeResolve(buildSession({ email }), 250);
+    if (USE_MOCK_API) return fakeResolve(buildMockSession({ email }), 250);
+    const res = await api.post<AuthSession>("/auth/login", { email, password } satisfies LoginPayload);
+    return res.data;
   },
 
   async register(data: RegisterPayload): Promise<AuthSession> {
     if (!data.email.trim()) throw new Error("Email is required");
-    return fakeResolve(
-      buildSession({
-        email: data.email,
-        fullName: data.fullName,
-        role: data.role,
-      }),
-      250,
-    );
+    if (USE_MOCK_API)
+      return fakeResolve(buildMockSession({ email: data.email, fullName: data.fullName, role: data.role }), 250);
+    const res = await api.post<AuthSession>("/auth/register", data);
+    return res.data;
   },
 
   async logout(): Promise<void> {
-    return fakeResolve(undefined, 0);
+    if (USE_MOCK_API) return fakeResolve(undefined, 0);
+    try {
+      await api.post<void>("/auth/logout");
+    } catch {
+      // logout should be best-effort even if the cookie/token already expired
+    }
+  },
+
+  async me(): Promise<AuthUser | null> {
+    if (USE_MOCK_API) return null;
+    try {
+      const res = await api.get<AuthUser>("/auth/me");
+      return res.data;
+    } catch {
+      return null;
+    }
   },
 };

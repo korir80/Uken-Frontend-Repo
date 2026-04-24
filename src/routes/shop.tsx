@@ -74,8 +74,11 @@ function ShopPage() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [quickProduct, setQuickProduct] = useState<Product | null>(null);
 
-  const { data: products = [], isLoading } = useAllProducts();
-  const all = useMemo(() => products.map(asProduct), [products]);
+  const { data: products, isLoading } = useAllProducts();
+  const all = useMemo<Product[]>(
+    () => (products ?? []).map(asProduct),
+    [products],
+  );
 
   // Distinct regions, alphabetised — derived from the catalogue.
   const regions = useMemo(() => {

@@ -23,17 +23,6 @@ export function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(105deg,var(--charcoal)_0%,oklch(from_var(--charcoal)_l_c_h_/_0.92)_34%,oklch(from_var(--clay-deep)_l_c_h_/_0.62)_62%,oklch(from_var(--gold)_l_c_h_/_0.28)_100%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,oklch(from_var(--gold-soft)_l_c_h_/_0.22)_0%,transparent_45%)]" />
 
-      {/* 3 — Woven crosshatch texture */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          opacity: 0.12,
-          backgroundImage:
-            "repeating-linear-gradient(45deg, oklch(from var(--gold-soft) l c h / 0.42) 0 1px, transparent 1px 9px), repeating-linear-gradient(-45deg, oklch(from var(--sand) l c h / 0.26) 0 1px, transparent 1px 11px)",
-        }}
-      />
-
       {/* Content shell — snug, vertically centred */}
       <div
         className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-16 md:flex-row md:items-center md:justify-between md:px-10 md:py-20"
@@ -82,40 +71,6 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Scroll indicator — desktop only */}
-      <div
-        aria-hidden
-        className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
-      >
-        <span
-          className="font-sans uppercase"
-          style={{
-            fontSize: 9,
-            letterSpacing: "0.2em",
-            color: "oklch(from var(--warm-white) l c h / 0.24)",
-          }}
-        >
-          Scroll
-        </span>
-        <span
-          className="relative block overflow-hidden"
-          style={{
-            width: 1,
-            height: 32,
-            backgroundColor: "oklch(from var(--warm-white) l c h / 0.12)",
-          }}
-        >
-          <span
-            className="absolute left-0 top-0 block animate-[hero-scroll-cue_2s_ease-in-out_infinite]"
-            style={{
-              width: 1,
-              height: 12,
-              backgroundColor: "oklch(from var(--gold) l c h / 0.72)",
-            }}
-          />
-        </span>
-      </div>
-
       {/* Wavy bottom border — sits above bg, below text/card */}
       <svg
         aria-hidden
@@ -129,13 +84,6 @@ export function Hero() {
         />
       </svg>
 
-      <style>{`
-        @keyframes hero-scroll-cue {
-          0%   { transform: translateY(-100%); }
-          70%  { transform: translateY(220%); }
-          100% { transform: translateY(220%); }
-        }
-      `}</style>
     </section>
   );
 }

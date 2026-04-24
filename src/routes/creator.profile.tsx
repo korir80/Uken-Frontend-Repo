@@ -1,9 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { useMyCreatorProfile, useUpdateCreatorProfile } from "@/lib/queries";
+import {
+  useMyCreatorProfile,
+  useUpdateCreatorProfile,
+  useUploadImage,
+} from "@/lib/queries";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { validateImageFile } from "@/lib/cloudinary";
 
 export const Route = createFileRoute("/creator/profile")({
   component: CreatorProfile,

@@ -31,7 +31,18 @@ function CreatorOrders() {
   const { user } = useAuth();
   const creatorId = user?.creatorId ?? "wanjiru";
   const { data: orders = [] } = useCreatorOrders();
+  const updateStatus = useUpdateOrderStatus();
   const [filter, setFilter] = useState<OrderStatus | "ALL">("ALL");
+
+  async function advance(id: string, next: OrderStatus) {
+    try {
+      await updateStatus.mutateAsync({ id, status: next });
+      toast.success(`Order marked ${next.toLowerCase()}.`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't update status.");
+    }
+  }
+
 
   const mine = useMemo(
     () => orders.filter((o) => o.items.some((i) => i.creator.id === creatorId)),

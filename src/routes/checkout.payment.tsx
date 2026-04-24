@@ -50,14 +50,16 @@ function PaymentStep() {
     // 1. Persist the order on the server (Spring Boot once live; mock today).
     //    The mutation invalidates ['orders','buyer'] on success so the buyer
     //    dashboard picks up the new row immediately.
+    let serverOrderId: string | undefined;
     try {
-      await createOrder.mutateAsync({
+      const created = await createOrder.mutateAsync({
         items: items.map((i) => ({
           productId: i.productId,
           quantity: i.quantity,
         })),
         delivery,
       });
+      serverOrderId = created.id;
     } catch (err) {
       const msg =
         err instanceof Error
@@ -68,10 +70,10 @@ function PaymentStep() {
       return;
     }
 
-    // 2. Snapshot the order locally so /checkout/confirmation has a
-    //    server-independent payload to render. When Stripe lands this is
+    // 2. Snapshot the order locally (with the server id) so the confirmation
+    //    page can deep-link to /account/orders/:id. When Stripe lands this is
     //    where confirmCardPayment() will go (between API + local snapshot).
-    const local = placeOrder();
+    const local = placeOrder({ id: serverOrderId });
     if (!local) {
       setSubmitting(false);
       return;

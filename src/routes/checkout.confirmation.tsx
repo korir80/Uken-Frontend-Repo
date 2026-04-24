@@ -232,7 +232,8 @@ function ConfirmationPage() {
           </p>
           <address className="mt-2 not-italic text-[13px] leading-relaxed text-charcoal">
             <div>{delivery.fullName}</div>
-            <div>{delivery.address}</div>
+            <div>{delivery.addressLine1}</div>
+            {delivery.addressLine2 && <div>{delivery.addressLine2}</div>}
             <div>
               {delivery.city}
               {delivery.postcode ? `, ${delivery.postcode}` : ""}

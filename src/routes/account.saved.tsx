@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Heart, Bookmark, X } from "lucide-react";
 import {
   PageHeader,
@@ -9,12 +9,11 @@ import { LazyImage } from "@/components/ui/lazy-image";
 import { creators } from "@/components/explore/creators-data";
 import { getProduct } from "@/components/product/product-data";
 import {
-  readSavedCreators,
-  readSavedProducts,
-  subscribeSavedProducts,
-  writeSavedCreators,
-  writeSavedProducts,
-} from "@/lib/ukena-mode";
+  useSavedProducts,
+  useSavedCreators,
+  useToggleSavedProduct,
+  useToggleSavedCreator,
+} from "@/lib/queries";
 import { formatGBP, useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
@@ -26,15 +25,11 @@ type Tab = "pieces" | "makers";
 
 function BuyerSaved() {
   const [tab, setTab] = useState<Tab>("pieces");
-  const [productIds, setProductIds] = useState<string[]>([]);
-  const [creatorIds, setCreatorIds] = useState<string[]>([]);
+  const { data: productIds = [] } = useSavedProducts();
+  const { data: creatorIds = [] } = useSavedCreators();
+  const toggleProduct = useToggleSavedProduct();
+  const toggleCreator = useToggleSavedCreator();
   const { addItem } = useCart();
-
-  useEffect(() => {
-    setProductIds(readSavedProducts());
-    setCreatorIds(readSavedCreators());
-    return subscribeSavedProducts(setProductIds);
-  }, []);
 
   const products = useMemo(
     () =>
@@ -53,14 +48,10 @@ function BuyerSaved() {
   );
 
   function unsaveProduct(id: string) {
-    const next = productIds.filter((x) => x !== id);
-    setProductIds(next);
-    writeSavedProducts(next);
+    toggleProduct.mutate({ productId: id, saved: true });
   }
   function unsaveCreator(id: string) {
-    const next = creatorIds.filter((x) => x !== id);
-    setCreatorIds(next);
-    writeSavedCreators(next);
+    toggleCreator.mutate({ creatorId: id, saved: true });
   }
 
   return (

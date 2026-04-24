@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { JoinShell } from "@/components/join/JoinShell";
 import { JoinProgress } from "@/components/join/JoinProgress";
 import {
@@ -11,6 +12,7 @@ import {
 import { PhotoUploader } from "@/components/join/PhotoUploader";
 import { Button, SectionLabel } from "@/components/ukena";
 import { CRAFTS } from "@/components/explore/creators-data";
+import { useSubmitApplication } from "@/lib/queries";
 
 export const Route = createFileRoute("/join/apply")({
   head: () => ({
@@ -30,6 +32,7 @@ export const Route = createFileRoute("/join/apply")({
 
 interface ApplicationData {
   fullName: string;
+  email: string;
   region: string;
   craft: string;
   intro: string;
@@ -48,6 +51,7 @@ const STEP_LABELS = [
 
 const initial: ApplicationData = {
   fullName: "",
+  email: "",
   region: "",
   craft: "",
   intro: "",
@@ -57,16 +61,54 @@ const initial: ApplicationData = {
   photos: [],
 };
 
+/** Pull the first integer out of free-text like "thirty-two years" or "12+ yrs". */
+function parseYears(input: string): number {
+  const m = input.match(/\d+/);
+  return m ? Math.min(80, Math.max(0, parseInt(m[0], 10))) : 0;
+}
+
 function ApplyPage() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<ApplicationData>(initial);
+  const submit = useSubmitApplication();
 
   const update = <K extends keyof ApplicationData>(
     key: K,
     val: ApplicationData[K],
   ) => setData((d) => ({ ...d, [key]: val }));
 
+  const handleSubmit = async () => {
+    try {
+      await submit.mutateAsync({
+        fullName: data.fullName.trim(),
+        email: data.email.trim(),
+        region: data.region.trim(),
+        craft: data.craft,
+        yearsOfPractice: parseYears(data.yearsPracticing),
+        story: [data.intro, data.whoTaught, data.meaning]
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .join("\n\n"),
+        photos: data.photos,
+      });
+      toast.success("Application received — we'll be in touch within 48 hours.");
+      setStep(4);
+      if (typeof window !== "undefined")
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "We couldn't send your application. Please try again.";
+      toast.error(msg);
+    }
+  };
+
   const goNext = () => {
+    if (step === 3) {
+      void handleSubmit();
+      return;
+    }
     if (step < 4) setStep((s) => s + 1);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -75,11 +117,16 @@ function ApplyPage() {
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim());
   const canAdvanceStep1 =
-    data.fullName.trim() && data.region.trim() && data.craft && data.intro.trim().length > 10;
+    data.fullName.trim() &&
+    emailValid &&
+    data.region.trim() &&
+    data.craft &&
+    data.intro.trim().length > 10;
   const canAdvanceStep2 =
     data.yearsPracticing.trim() && data.whoTaught.trim() && data.meaning.trim();
-  const canAdvanceStep3 = data.photos.length >= 1;
+  const canAdvanceStep3 = data.photos.length >= 1 && !submit.isPending;
 
   return (
     <JoinShell>
@@ -130,8 +177,24 @@ function ApplyPage() {
                   }
                   className="bg-terracotta hover:bg-[oklch(0.52_0.13_38)]"
                 >
-                  {step === 3 ? "Send application" : "Continue"}
-                  <ArrowRight className="h-4 w-4" />
+                  {step === 3 ? (
+                    submit.isPending ? (
+                      <>
+                        Sending…
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      </>
+                    ) : (
+                      <>
+                        Send application
+                        <ArrowRight className="h-4 w-4" />
+                      </>
+                    )
+                  ) : (
+                    <>
+                      Continue
+                      <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
                 </Button>
               </div>
             </>
@@ -174,6 +237,16 @@ function Step1({
           value={data.fullName}
           onChange={(e) => update("fullName", e.target.value)}
           autoComplete="name"
+        />
+        <JoinInput
+          id="email"
+          type="email"
+          label="What's the best email to reach you on?"
+          helper="We'll only use this to reply about your application."
+          placeholder="you@example.com"
+          value={data.email}
+          onChange={(e) => update("email", e.target.value)}
+          autoComplete="email"
         />
         <JoinInput
           id="region"

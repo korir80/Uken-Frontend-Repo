@@ -85,12 +85,21 @@ function PaymentStep() {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <header>
-        <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">
-          Step two
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">
+            Step two
+          </p>
+          <span className="rounded-full border border-terracotta/30 bg-terracotta-soft/40 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.2em] text-terracotta">
+            Demo
+          </span>
+        </div>
         <h1 className="mt-3 font-display text-[28px] leading-[1.1] tracking-tight text-charcoal md:text-[34px]">
           Payment
         </h1>
+        <p className="mt-3 max-w-lg text-[13px] leading-relaxed text-ink-muted">
+          This card form is for demonstration only — no card is charged. Real
+          payments are processed server-side once the backend is live.
+        </p>
       </header>
 
       {/* Delivery recap */}
@@ -187,8 +196,8 @@ function PaymentStep() {
       <p className="inline-flex items-start gap-2 text-[11px] leading-relaxed text-charcoal/40">
         <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         <span>
-          Payment powered by Stripe — your card details are never stored on our
-          servers.
+          Demo checkout — no card is charged and no card details leave your
+          browser. Live payments will be handled by the backend.
         </span>
       </p>
 

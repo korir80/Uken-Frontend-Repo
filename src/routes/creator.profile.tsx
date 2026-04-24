@@ -1,9 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { useMyCreatorProfile, useUpdateCreatorProfile } from "@/lib/queries";
+import {
+  useMyCreatorProfile,
+  useUpdateCreatorProfile,
+  useUploadImage,
+} from "@/lib/queries";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { validateImageFile } from "@/lib/cloudinary";
 
 export const Route = createFileRoute("/creator/profile")({
   component: CreatorProfile,
@@ -22,6 +29,45 @@ function CreatorProfile() {
   const [pullQuote, setPullQuote] = useState("");
   const [storyText, setStoryText] = useState("");
   const [saved, setSaved] = useState(false);
+
+  const upload = useUploadImage();
+  const portraitInputRef = useRef<HTMLInputElement>(null);
+  const headerInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingKind, setUploadingKind] = useState<
+    "portrait" | "header" | null
+  >(null);
+
+  async function handleImageReplace(
+    kind: "portrait" | "header",
+    file: File | undefined,
+  ) {
+    if (!file) return;
+    try {
+      validateImageFile(file);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Invalid image.");
+      return;
+    }
+    setUploadingKind(kind);
+    try {
+      const { url } = await upload.mutateAsync({
+        file,
+        folder: `ukena/creators/${creatorId}`,
+      });
+      await update.mutateAsync(
+        kind === "portrait" ? { portraitImage: url } : { headerImage: url },
+      );
+      toast.success(
+        kind === "portrait" ? "Portrait updated." : "Workshop image updated.",
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Upload failed.");
+    } finally {
+      setUploadingKind(null);
+      if (portraitInputRef.current) portraitInputRef.current.value = "";
+      if (headerInputRef.current) headerInputRef.current.value = "";
+    }
+  }
 
   useEffect(() => {
     if (!profile) return;
@@ -116,33 +162,63 @@ function CreatorProfile() {
 
         <aside className="space-y-4">
           <p className="section-label">Your portrait</p>
-          <div className="overflow-hidden rounded-2xl">
+          <div className="relative overflow-hidden rounded-2xl">
             <LazyImage
               src={profile.portraitImage}
               alt={profile.fullName}
               className="h-72 w-full object-cover"
             />
+            {uploadingKind === "portrait" && (
+              <div className="absolute inset-0 grid place-items-center bg-charcoal/40 text-warm-white">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            )}
           </div>
+          <input
+            ref={portraitInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            className="sr-only"
+            onChange={(e) => handleImageReplace("portrait", e.target.files?.[0])}
+          />
           <button
             type="button"
-            className="w-full rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream"
+            disabled={uploadingKind !== null}
+            onClick={() => portraitInputRef.current?.click()}
+            className="w-full rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream disabled:opacity-60"
           >
-            Replace portrait
+            {uploadingKind === "portrait" ? "Uploading…" : "Replace portrait"}
           </button>
 
           <p className="section-label mt-6">Workshop image</p>
-          <div className="overflow-hidden rounded-2xl">
+          <div className="relative overflow-hidden rounded-2xl">
             <LazyImage
               src={profile.headerImage}
               alt="Workshop"
               className="h-40 w-full object-cover"
             />
+            {uploadingKind === "header" && (
+              <div className="absolute inset-0 grid place-items-center bg-charcoal/40 text-warm-white">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            )}
           </div>
+          <input
+            ref={headerInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            className="sr-only"
+            onChange={(e) => handleImageReplace("header", e.target.files?.[0])}
+          />
           <button
             type="button"
-            className="w-full rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream"
+            disabled={uploadingKind !== null}
+            onClick={() => headerInputRef.current?.click()}
+            className="w-full rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream disabled:opacity-60"
           >
-            Replace workshop image
+            {uploadingKind === "header"
+              ? "Uploading…"
+              : "Replace workshop image"}
           </button>
         </aside>
       </div>

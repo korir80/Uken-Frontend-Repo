@@ -61,16 +61,18 @@ export const creatorService = {
 
   async getCreatorById(id: string): Promise<CreatorDetail> {
     const profile = getCreatorProfile(id);
+    // Pull a `hook` from the seed list when the profile module doesn't carry one.
+    const summary = seedCreators.find((c) => c.id === profile.id);
     const detail: CreatorDetail = {
       id: profile.id,
       firstName: profile.firstName,
       fullName: profile.fullName,
       craft: profile.craft,
       region: profile.region,
-      hook: profile.hook ?? profile.storyParagraphs?.[0] ?? "",
-      image: profile.heroImage ?? profile.portraitImage,
+      hook: summary?.hook ?? profile.storyParagraphs?.[0] ?? "",
+      image: summary?.image ?? profile.portraitImage,
       portraitImage: profile.portraitImage,
-      headerImage: profile.heroImage ?? profile.portraitImage,
+      headerImage: profile.headerImage ?? profile.portraitImage,
       storyParagraphs: profile.storyParagraphs ?? [],
       pullQuote: profile.pullQuote ?? "",
       processSteps: (profile.processSteps ?? []).map((s) => ({

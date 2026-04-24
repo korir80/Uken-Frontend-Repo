@@ -120,17 +120,18 @@ export function useCreateOrder(
 
 /* ---------------- Profile ---------------- */
 
-export function useMyCreatorProfile() {
+export function useMyCreatorProfile(creatorId: string) {
   return useQuery<CreatorDetail>({
     queryKey: queryKeys.myProfile(),
-    queryFn: () => profileService.getCreatorProfile(),
+    queryFn: () => profileService.getCreatorProfile(creatorId),
+    enabled: !!creatorId,
   });
 }
 
-export function useUpdateCreatorProfile() {
+export function useUpdateCreatorProfile(creatorId: string) {
   const qc = useQueryClient();
   return useMutation<CreatorDetail, Error, CreatorProfileUpdate>({
-    mutationFn: (payload) => profileService.updateCreatorProfile(payload),
+    mutationFn: (payload) => profileService.updateCreatorProfile(creatorId, payload),
     onSuccess: (data) => {
       qc.setQueryData(queryKeys.myProfile(), data);
       qc.invalidateQueries({ queryKey: queryKeys.creator(data.id) });

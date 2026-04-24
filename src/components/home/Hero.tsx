@@ -54,8 +54,8 @@ export function Hero() {
 
       {/* Content shell — snug, vertically centred */}
       <div
-        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-20 md:flex-row md:items-center md:justify-between md:px-10 md:py-24"
-        style={{ minHeight: "520px" }}
+        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-14 md:flex-row md:items-center md:justify-between md:px-10 md:py-16"
+        style={{ minHeight: "440px" }}
       >
         {/* LEFT — copy block, tight grouping */}
         <div className="max-w-[560px] md:pl-[44px]">
@@ -129,7 +129,7 @@ export function Hero() {
         </div>
 
         {/* RIGHT — floating product card */}
-        <div className="mt-10 md:mt-0 md:pr-[52px]">
+        <div className="mt-8 md:mt-0 md:pr-[52px]">
           <FloatingProductCard />
         </div>
       </div>
@@ -137,7 +137,7 @@ export function Hero() {
       {/* Scroll indicator — desktop only */}
       <div
         aria-hidden
-        className="absolute bottom-16 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-3 md:flex"
+        className="absolute bottom-10 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
       >
         <span
           className="font-sans uppercase"
@@ -173,7 +173,7 @@ export function Hero() {
         aria-hidden
         viewBox="0 0 1440 48"
         preserveAspectRatio="none"
-        className="absolute bottom-0 left-0 z-[5] block h-8 w-full md:h-12"
+          className="absolute bottom-0 left-0 z-[5] block h-9 w-full md:h-14"
       >
         <path
           d="M0,24 C360,48 1080,0 1440,24 L1440,48 L0,48 Z"

@@ -1,10 +1,33 @@
 # Ukena — Project Progress & Architecture
 
-_Last updated: 2026-04-23_
+_Last updated: 2026-04-24_
 
 A living document describing what's been built, what's stubbed, and what's
 likely next. Read this before picking up new work so you know where the
 seams are.
+
+---
+
+## 0. What's new since the last update (P1 → P3)
+
+- **Service layer is now the source of truth.** Every page reads through
+  `src/services/*` + `src/lib/queries.ts` (TanStack Query hooks). The static
+  seed data only appears in mock-API fallbacks when `VITE_USE_MOCK_API=true`.
+- **Direct-to-Cloudinary uploads** (`src/lib/cloudinary.ts`,
+  `CloudinaryImagePicker`). The backend never touches binaries; it receives
+  URL strings only. See `BACKEND_SPEC.md` §10.
+- **New routes:** `/search` (global), `/account/addresses`,
+  `/creator/products` (CRUD), `/creator/orders`, `/creator/profile`,
+  `/creator/analytics` (full Recharts dashboard), the admin suite (`/admin/*`).
+- **Buyer persistence services:** `cartService` (`/cart` + `/cart/sync`),
+  `savedService` (`/users/me/saved/...`), and address management on
+  `profileService`.
+- **Application submission wired** (`POST /applications`, public).
+- **Checkout payment** keeps a mock card form with a clearly-marked **Demo**
+  label — real Stripe wiring is intentionally still stubbed.
+- **Order confirmation** now offers a print-friendly receipt (`@media print`).
+- **`<LazyImage>`** auto-injects Cloudinary `f_auto,q_auto` and a responsive
+  `srcset` for any `res.cloudinary.com` URL.
 
 ---
 

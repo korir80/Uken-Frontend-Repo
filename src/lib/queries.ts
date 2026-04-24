@@ -91,8 +91,6 @@ export function useCreator(
 
 /* ---------------- Products ---------------- */
 
-/* ---------------- Products ---------------- */
-
 export function useAllProducts(
   options?: Omit<UseQueryOptions<ProductDto[]>, "queryKey" | "queryFn">,
 ) {

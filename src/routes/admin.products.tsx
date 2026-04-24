@@ -28,8 +28,8 @@ function AdminProducts() {
         description="Approve drafts, take down listings that breach our guidelines, or feature a piece."
       />
 
-      <div className="overflow-hidden rounded-2xl border border-border/60">
-        <table className="min-w-full divide-y divide-border/60">
+      <div className="overflow-x-auto rounded-2xl border border-border/60">
+        <table className="min-w-[720px] divide-y divide-border/60 sm:min-w-full">
           <thead className="bg-cream/60 text-left">
             <tr>
               <Th>Piece</Th>

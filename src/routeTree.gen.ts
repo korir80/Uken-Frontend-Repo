@@ -50,6 +50,7 @@ import { Route as AccountProfileRouteImport } from './routes/account.profile'
 import { Route as AccountOrdersRouteImport } from './routes/account.orders'
 import { Route as AccountAddressesRouteImport } from './routes/account.addresses'
 import { Route as AccountActivityRouteImport } from './routes/account.activity'
+import { Route as AccountOrdersOrderIdRouteImport } from './routes/account.orders.$orderId'
 
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
@@ -256,6 +257,11 @@ const AccountActivityRoute = AccountActivityRouteImport.update({
   path: '/activity',
   getParentRoute: () => AccountRoute,
 } as any)
+const AccountOrdersOrderIdRoute = AccountOrdersOrderIdRouteImport.update({
+  id: '/$orderId',
+  path: '/$orderId',
+  getParentRoute: () => AccountOrdersRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -273,7 +279,7 @@ export interface FileRoutesByFullPath {
   '/styleguide': typeof StyleguideRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
-  '/account/orders': typeof AccountOrdersRoute
+  '/account/orders': typeof AccountOrdersRouteWithChildren
   '/account/profile': typeof AccountProfileRoute
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
@@ -299,6 +305,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/creator/': typeof CreatorIndexRoute
   '/join/': typeof JoinIndexRoute
+  '/account/orders/$orderId': typeof AccountOrdersOrderIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -313,7 +320,7 @@ export interface FileRoutesByTo {
   '/styleguide': typeof StyleguideRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
-  '/account/orders': typeof AccountOrdersRoute
+  '/account/orders': typeof AccountOrdersRouteWithChildren
   '/account/profile': typeof AccountProfileRoute
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
@@ -339,6 +346,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/creator': typeof CreatorIndexRoute
   '/join': typeof JoinIndexRoute
+  '/account/orders/$orderId': typeof AccountOrdersOrderIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -357,7 +365,7 @@ export interface FileRoutesById {
   '/styleguide': typeof StyleguideRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
-  '/account/orders': typeof AccountOrdersRoute
+  '/account/orders': typeof AccountOrdersRouteWithChildren
   '/account/profile': typeof AccountProfileRoute
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
@@ -383,6 +391,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/creator/': typeof CreatorIndexRoute
   '/join/': typeof JoinIndexRoute
+  '/account/orders/$orderId': typeof AccountOrdersOrderIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -428,6 +437,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/creator/'
     | '/join/'
+    | '/account/orders/$orderId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -468,6 +478,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/creator'
     | '/join'
+    | '/account/orders/$orderId'
   id:
     | '__root__'
     | '/'
@@ -511,6 +522,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/creator/'
     | '/join/'
+    | '/account/orders/$orderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -822,13 +834,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountActivityRouteImport
       parentRoute: typeof AccountRoute
     }
+    '/account/orders/$orderId': {
+      id: '/account/orders/$orderId'
+      path: '/$orderId'
+      fullPath: '/account/orders/$orderId'
+      preLoaderRoute: typeof AccountOrdersOrderIdRouteImport
+      parentRoute: typeof AccountOrdersRoute
+    }
   }
 }
+
+interface AccountOrdersRouteChildren {
+  AccountOrdersOrderIdRoute: typeof AccountOrdersOrderIdRoute
+}
+
+const AccountOrdersRouteChildren: AccountOrdersRouteChildren = {
+  AccountOrdersOrderIdRoute: AccountOrdersOrderIdRoute,
+}
+
+const AccountOrdersRouteWithChildren = AccountOrdersRoute._addFileChildren(
+  AccountOrdersRouteChildren,
+)
 
 interface AccountRouteChildren {
   AccountActivityRoute: typeof AccountActivityRoute
   AccountAddressesRoute: typeof AccountAddressesRoute
-  AccountOrdersRoute: typeof AccountOrdersRoute
+  AccountOrdersRoute: typeof AccountOrdersRouteWithChildren
   AccountProfileRoute: typeof AccountProfileRoute
   AccountSavedRoute: typeof AccountSavedRoute
   AccountIndexRoute: typeof AccountIndexRoute
@@ -837,7 +868,7 @@ interface AccountRouteChildren {
 const AccountRouteChildren: AccountRouteChildren = {
   AccountActivityRoute: AccountActivityRoute,
   AccountAddressesRoute: AccountAddressesRoute,
-  AccountOrdersRoute: AccountOrdersRoute,
+  AccountOrdersRoute: AccountOrdersRouteWithChildren,
   AccountProfileRoute: AccountProfileRoute,
   AccountSavedRoute: AccountSavedRoute,
   AccountIndexRoute: AccountIndexRoute,

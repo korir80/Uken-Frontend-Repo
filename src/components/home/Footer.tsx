@@ -16,6 +16,7 @@ const navColumns = [
     links: [
       { label: "Our Story", href: "/story" },
       { label: "For Artisans", href: "/artisans" },
+      { label: "Traceability", href: "/transparency" },
       { label: "Sustainability", href: "/sustainability" },
       { label: "Press", href: "/press" },
     ],
@@ -47,8 +48,8 @@ export function Footer() {
 
         <Divider className="!bg-warm-white/15 !bg-none" />
 
-        {/* Two columns */}
-        <div className="grid gap-12 py-14 md:grid-cols-2 md:gap-20">
+        {/* Footer columns */}
+        <div className="grid gap-12 py-14 lg:grid-cols-[1fr_0.95fr_1.15fr] lg:gap-14">
           {/* Nav links */}
           <div className="grid grid-cols-2 gap-10">
             {navColumns.map((col) => (
@@ -73,17 +74,17 @@ export function Footer() {
           </div>
 
           {/* Social + contact */}
-          <div className="md:text-right">
+          <div>
             <h4 className="text-[11px] uppercase tracking-[0.22em] text-warm-white/50">
               Stay close
             </h4>
-            <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-warm-white/75 md:ml-auto">
+            <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-warm-white/75">
               Letters from the workshops, once a month. No noise, no offers —
               just the makers.
             </p>
 
             <form
-              className="mt-6 flex max-w-sm gap-2 md:ml-auto"
+              className="mt-6 flex max-w-sm gap-2"
               onSubmit={(e) => e.preventDefault()}
             >
               <input
@@ -99,7 +100,7 @@ export function Footer() {
               </button>
             </form>
 
-            <div className="mt-10 flex flex-wrap gap-5 md:justify-end">
+            <div className="mt-10 flex flex-wrap gap-5">
               {socials.map((s) => (
                 <a
                   key={s.label}
@@ -116,6 +117,23 @@ export function Footer() {
             <p className="mt-6 text-[13px] text-warm-white/60 md:ml-auto">
               hello@ukena.co.uk
             </p>
+          </div>
+
+          <div>
+            <h4 className="text-[11px] uppercase tracking-[0.22em] text-warm-white/50">
+              Contact
+            </h4>
+            <div className="mt-5 space-y-4 text-[14px] leading-relaxed text-warm-white/72">
+              <p>
+                <span className="block font-medium text-warm-white/90">Head Office</span>
+                Osmaston 10, NG7 1SD, Nottingham, UK | Andrew Soi: +44 7425 241649
+              </p>
+              <p>
+                <span className="block font-medium text-warm-white/90">Nairobi Office</span>
+                Nairobi Garage – Karen, Watermark Business Park, Ndege Rd. Off Langata Rd. | Edwin Agasa: +254 720 848 695
+              </p>
+              <p>Email: hello@ukena.co.uk</p>
+            </div>
           </div>
         </div>
 

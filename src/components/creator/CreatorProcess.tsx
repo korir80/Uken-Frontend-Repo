@@ -15,26 +15,26 @@ interface CreatorProcessProps {
  */
 export function CreatorProcess({ creator }: CreatorProcessProps) {
   return (
-    <section className="bg-cream py-16 md:py-32">
+    <section className="bg-cream py-12 md:py-18 lg:py-20">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <Reveal>
           <SectionLabel>The craft in action</SectionLabel>
-          <h2 className="mt-5 font-display text-[32px] leading-[1.05] tracking-tight text-charcoal sm:text-5xl md:text-[64px]">
+          <h2 className="mt-3 font-display text-[30px] leading-[1.05] tracking-tight text-charcoal sm:text-[38px] md:text-[46px]">
             How {creator.firstName}{" "}
             <em className="italic text-clay">works</em>.
           </h2>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted md:text-[17px]">
+          <p className="mt-3 max-w-xl text-[14px] leading-relaxed text-ink-muted md:text-[15px]">
             Four moments from a single basket — start to finish, the way
             she would walk a visitor through the workshop on a quiet afternoon.
           </p>
         </Reveal>
 
         {/* Mobile: horizontal snap-scroll contact sheet */}
-        <ol className="mt-10 -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 md:hidden">
+        <ol className="mt-7 -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-3 md:hidden">
           {creator.processSteps.map((step, i) => (
             <li
               key={i}
-              className="w-[78%] shrink-0 snap-start"
+              className="w-[72%] shrink-0 snap-start"
             >
               <figure className="rounded-2xl border border-border/60 bg-warm-white p-3 shadow-[var(--shadow-card)]">
                 <div className="overflow-hidden rounded-xl bg-sand-soft">
@@ -45,11 +45,11 @@ export function CreatorProcess({ creator }: CreatorProcessProps) {
                     wrapperClassName="w-full"
                   />
                 </div>
-                <figcaption className="flex gap-3 px-1 pb-2 pt-4">
+                <figcaption className="flex gap-3 px-1 pb-1 pt-3">
                   <span className="font-display text-2xl leading-none text-terracotta/70">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <p className="text-base leading-relaxed text-charcoal/85">
+                  <p className="text-[14px] leading-relaxed text-charcoal/85">
                     {step.caption}
                   </p>
                 </figcaption>
@@ -59,7 +59,7 @@ export function CreatorProcess({ creator }: CreatorProcessProps) {
         </ol>
 
         {/* Desktop: alternating contact sheet */}
-        <ol className="mt-16 hidden space-y-20 md:mt-24 md:block md:space-y-28">
+        <ol className="mt-12 hidden space-y-12 md:mt-14 md:block md:space-y-16">
           {creator.processSteps.map((step, i) => {
             const isWide = i === 0 || i === creator.processSteps.length - 1;
             const isReversed = i % 2 === 1;
@@ -67,7 +67,7 @@ export function CreatorProcess({ creator }: CreatorProcessProps) {
               <li key={i}>
                 <Reveal>
                   {isWide ? (
-                    <figure className="grid gap-6 md:grid-cols-12 md:gap-10">
+                    <figure className="grid gap-5 md:grid-cols-12 md:gap-8">
                       <div className="md:col-span-12">
                         <div className="overflow-hidden rounded-2xl bg-sand-soft">
                           <LazyImage
@@ -78,11 +78,11 @@ export function CreatorProcess({ creator }: CreatorProcessProps) {
                           />
                         </div>
                       </div>
-                      <figcaption className="md:col-span-10 md:col-start-2 flex gap-6">
+                      <figcaption className="md:col-span-10 md:col-start-2 flex gap-4">
                         <span className="font-display text-3xl leading-none text-terracotta/70">
                           {String(i + 1).padStart(2, "0")}
                         </span>
-                        <p className="max-w-2xl text-[17px] leading-relaxed text-charcoal/85 md:text-[18px]">
+                        <p className="max-w-2xl text-[15px] leading-relaxed text-charcoal/85 md:text-[16px]">
                           {step.caption}
                         </p>
                       </figcaption>
@@ -90,7 +90,7 @@ export function CreatorProcess({ creator }: CreatorProcessProps) {
                   ) : (
                     <figure
                       className={cn(
-                        "grid items-center gap-10 md:grid-cols-12 md:gap-14",
+                        "grid items-center gap-7 md:grid-cols-12 md:gap-10",
                       )}
                     >
                       <div
@@ -117,7 +117,7 @@ export function CreatorProcess({ creator }: CreatorProcessProps) {
                         <span className="font-display text-3xl leading-none text-terracotta/70">
                           {String(i + 1).padStart(2, "0")}
                         </span>
-                        <p className="mt-4 text-[17px] leading-relaxed text-charcoal/85 md:text-[18px]">
+                        <p className="mt-3 text-[15px] leading-relaxed text-charcoal/85 md:text-[16px]">
                           {step.caption}
                         </p>
                       </figcaption>

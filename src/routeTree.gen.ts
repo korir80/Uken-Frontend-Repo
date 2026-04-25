@@ -18,6 +18,7 @@ import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as PressRouteImport } from './routes/press'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CreatorRouteImport } from './routes/creator'
 import { Route as CollectionsRouteImport } from './routes/collections'
@@ -101,6 +102,11 @@ const SearchRoute = SearchRouteImport.update({
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PressRoute = PressRouteImport.update({
+  id: '/press',
+  path: '/press',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -309,6 +315,7 @@ export interface FileRoutesByFullPath {
   '/collections': typeof CollectionsRoute
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/press': typeof PressRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -356,6 +363,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRouteWithChildren
   '/collections': typeof CollectionsRoute
   '/explore': typeof ExploreRoute
+  '/press': typeof PressRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -407,6 +415,7 @@ export interface FileRoutesById {
   '/collections': typeof CollectionsRoute
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/press': typeof PressRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -459,6 +468,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/creator'
     | '/explore'
+    | '/press'
     | '/saved'
     | '/search'
     | '/shop'
@@ -506,6 +516,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/collections'
     | '/explore'
+    | '/press'
     | '/saved'
     | '/search'
     | '/shop'
@@ -556,6 +567,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/creator'
     | '/explore'
+    | '/press'
     | '/saved'
     | '/search'
     | '/shop'
@@ -607,6 +619,7 @@ export interface RootRouteChildren {
   CollectionsRoute: typeof CollectionsRoute
   CreatorRoute: typeof CreatorRouteWithChildren
   ExploreRoute: typeof ExploreRoute
+  PressRoute: typeof PressRoute
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
   ShopRoute: typeof ShopRoute
@@ -685,6 +698,13 @@ declare module '@tanstack/react-router' {
       path: '/saved'
       fullPath: '/saved'
       preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/press': {
+      id: '/press'
+      path: '/press'
+      fullPath: '/press'
+      preLoaderRoute: typeof PressRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore': {
@@ -1071,6 +1091,7 @@ const rootRouteChildren: RootRouteChildren = {
   CollectionsRoute: CollectionsRoute,
   CreatorRoute: CreatorRouteWithChildren,
   ExploreRoute: ExploreRoute,
+  PressRoute: PressRoute,
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,
   ShopRoute: ShopRoute,

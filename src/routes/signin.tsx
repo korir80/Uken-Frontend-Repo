@@ -6,11 +6,11 @@ import { useAuth, defaultPathForRole } from "@/lib/auth";
 export const Route = createFileRoute("/signin")({
   head: () => ({
     meta: [
-      { title: "Sign in — Ukena" },
+      { title: "Sign in — Uken" },
       {
         name: "description",
         content:
-          "Sign in to your Ukena account. While the backend is in development, mock emails route you to the right dashboard.",
+          "Sign in to your Uken account. While the backend is in development, mock emails route you to the right dashboard.",
       },
     ],
   }),
@@ -71,7 +71,7 @@ function SignInPage() {
             to="/"
             className="font-display text-2xl tracking-tight text-charcoal"
           >
-            Ukena
+            Uken
           </Link>
           <p className="section-label mt-6">Sign in</p>
           <h1 className="mt-3 font-display text-3xl leading-tight text-charcoal md:text-4xl">
@@ -126,7 +126,7 @@ function SignInPage() {
           </form>
 
           <p className="mt-6 text-center font-sans text-[13px] text-charcoal/70">
-            New to Ukena?{" "}
+            New to Uken?{" "}
             <Link
               to="/signup"
               className="font-medium text-clay underline-offset-4 hover:underline"
@@ -143,7 +143,7 @@ function SignInPage() {
         <section>
           <p className="section-label">Demo accounts</p>
           <h2 className="mt-3 font-display text-2xl text-charcoal">
-            Try each side of Ukena.
+            Try each side of Uken.
           </h2>
           <p className="mt-3 font-sans text-sm leading-relaxed text-charcoal/70">
             Click any card below to fill the form. The email's domain determines

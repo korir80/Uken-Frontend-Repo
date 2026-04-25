@@ -14,7 +14,7 @@ const BUYER_LINKS = [
 export const Route = createFileRoute("/account")({
   head: () => ({
     meta: [
-      { title: "Your Account — Ukena" },
+      { title: "Your Account — Uken" },
       { name: "description", content: "Track orders, manage saved makers and pieces, and update your details." },
       { name: "robots", content: "noindex, nofollow" },
     ],

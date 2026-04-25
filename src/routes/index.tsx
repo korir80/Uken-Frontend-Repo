@@ -15,7 +15,7 @@ import { useAuth } from "@/lib/auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ukena — Story-driven craft from Kenyan artisans" },
+      { title: "Uken — Story-driven craft from Kenyan artisans" },
       {
         name: "description",
         content:
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content: "Ukena — Story-driven craft from Kenyan artisans",
+        content: "Uken — Story-driven craft from Kenyan artisans",
       },
       {
         property: "og:description",

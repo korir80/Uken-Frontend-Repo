@@ -1,5 +1,5 @@
 /**
- * Auth context for Ukena.
+ * Auth context for Uken.
  *
  * Stores { user, token, role } in React context, persists the JWT in
  * localStorage as a fallback (preferred path is the httpOnly cookie set

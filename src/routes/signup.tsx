@@ -7,11 +7,11 @@ import type { UserRole } from "@/services";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Create your account — Ukena" },
+      { title: "Create your account — Uken" },
       {
         name: "description",
         content:
-          "Join Ukena to save makers, track orders and discover handcrafted pieces from Kenyan artisans.",
+          "Join Uken to save makers, track orders and discover handcrafted pieces from Kenyan artisans.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -75,7 +75,7 @@ function SignUpPage() {
         fullName: fullName.trim(),
         role,
       });
-      toast.success(`Welcome to Ukena, ${user.fullName.split(" ")[0]}`);
+      toast.success(`Welcome to Uken, ${user.fullName.split(" ")[0]}`);
       navigate({ to: defaultPathForRole(user.role) });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Sign-up failed";
@@ -95,11 +95,11 @@ function SignUpPage() {
             to="/"
             className="font-display text-2xl tracking-tight text-charcoal"
           >
-            Ukena
+            Uken
           </Link>
           <p className="section-label mt-6">Create account</p>
           <h1 className="mt-3 font-display text-3xl leading-tight text-charcoal md:text-4xl">
-            Begin your Ukena.
+            Begin your Uken.
           </h1>
           <p className="mt-3 font-sans text-sm leading-relaxed text-charcoal/70">
             One account to follow makers, track every piece on its journey, and

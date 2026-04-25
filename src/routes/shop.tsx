@@ -47,17 +47,17 @@ export const Route = createFileRoute("/shop")({
   },
   head: () => ({
     meta: [
-      { title: "Shop all pieces — Ukena" },
+      { title: "Shop all pieces — Uken" },
       {
         name: "description",
         content:
-          "Browse every piece in the Ukena catalogue — handcrafted in Kenya, attributed to its maker, ready to ship to the UK.",
+          "Browse every piece in the Uken catalogue — handcrafted in Kenya, attributed to its maker, ready to ship to the UK.",
       },
-      { property: "og:title", content: "Shop all pieces — Ukena" },
+      { property: "og:title", content: "Shop all pieces — Uken" },
       {
         property: "og:description",
         content:
-          "Every Ukena piece, in one place. Filter by craft, region, and price.",
+          "Every Uken piece, in one place. Filter by craft, region, and price.",
       },
     ],
   }),

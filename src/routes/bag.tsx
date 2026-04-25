@@ -14,7 +14,7 @@ import { useCart, formatGBP } from "@/lib/cart";
 export const Route = createFileRoute("/bag")({
   head: () => ({
     meta: [
-      { title: "Your bag — Ukena" },
+      { title: "Your bag — Uken" },
       {
         name: "description",
         content: "Review the pieces in your bag and the makers behind them.",

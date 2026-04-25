@@ -11,7 +11,7 @@ import { useCart, formatGBP } from "@/lib/cart";
 export const Route = createFileRoute("/checkout/confirmation")({
   head: () => ({
     meta: [
-      { title: "Thank you — Ukena" },
+      { title: "Thank you — Uken" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -120,7 +120,7 @@ function ConfirmationPage() {
         >
           {/* Wordmark only shows on print so receipts read like a brand document */}
           <p className="hidden font-display text-3xl tracking-tight text-charcoal print:block">
-            Ukena
+            Uken
           </p>
           <h1 className="font-display text-[36px] italic leading-[1.1] text-charcoal print:mt-4 print:text-2xl print:not-italic">
             <span className="print:hidden">Thank you, {buyerFirstName}.</span>
@@ -295,7 +295,7 @@ function ConfirmationPage() {
 
         {/* Print-only footer with brand mark */}
         <footer className="hidden print:mt-12 print:block print:border-t print:border-border/60 print:pt-4 print:text-[11px] print:text-charcoal/55">
-          <p>Ukena · ukena.co.uk · Thank you for supporting Kenyan makers.</p>
+          <p>Uken · ukena.co.uk · Thank you for supporting Kenyan makers.</p>
         </footer>
       </main>
 
@@ -329,7 +329,7 @@ function SlimHeader() {
           to="/"
           className="font-display text-2xl tracking-tight text-charcoal"
         >
-          Ukena
+          Uken
         </Link>
       </div>
     </header>

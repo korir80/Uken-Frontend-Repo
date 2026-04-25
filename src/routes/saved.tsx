@@ -24,13 +24,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/saved")({
   head: () => ({
     meta: [
-      { title: "Saved — Ukena" },
+      { title: "Saved — Uken" },
       {
         name: "description",
         content:
           "The makers and pieces you've kept hold of. Pick up where you left off.",
       },
-      { property: "og:title", content: "Saved — Ukena" },
+      { property: "og:title", content: "Saved — Uken" },
       {
         property: "og:description",
         content: "Your saved Kenyan makers and pieces.",

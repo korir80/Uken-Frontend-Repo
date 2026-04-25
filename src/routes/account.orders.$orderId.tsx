@@ -29,7 +29,7 @@ export const Route = createFileRoute("/account/orders/$orderId")({
   },
   head: ({ params }) => ({
     meta: [
-      { title: `Order ${params.orderId} — Ukena` },
+      { title: `Order ${params.orderId} — Uken` },
       { name: "robots", content: "noindex" },
     ],
   }),

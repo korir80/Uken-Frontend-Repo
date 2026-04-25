@@ -20,13 +20,13 @@ export const Route = createFileRoute("/explore")({
   },
   head: () => ({
     meta: [
-      { title: "The makers of Kenya — Ukena" },
+      { title: "The makers of Kenya — Uken" },
       {
         name: "description",
         content:
-          "Browse the artisans behind every Ukena piece. Weavers, potters, beadworkers and woodcarvers — discover the people first.",
+          "Browse the artisans behind every Uken piece. Weavers, potters, beadworkers and woodcarvers — discover the people first.",
       },
-      { property: "og:title", content: "The makers of Kenya — Ukena" },
+      { property: "og:title", content: "The makers of Kenya — Uken" },
       {
         property: "og:description",
         content:

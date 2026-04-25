@@ -1,5 +1,5 @@
 /**
- * Ukena HTTP client.
+ * Uken HTTP client.
  *
  * Real fetch-based implementation that talks to the Java Spring Boot
  * backend documented in BACKEND_SPEC.md.

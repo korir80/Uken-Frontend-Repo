@@ -17,11 +17,11 @@ import productBeads from "@/assets/product-beads.jpg";
 export const Route = createFileRoute("/styleguide")({
   head: () => ({
     meta: [
-      { title: "Ukena · Style Guide" },
+      { title: "Uken · Style Guide" },
       {
         name: "description",
         content:
-          "The design system for Ukena: a story-driven marketplace connecting Kenyan artisans with UK buyers.",
+          "The design system for Uken: a story-driven marketplace connecting Kenyan artisans with UK buyers.",
       },
     ],
   }),
@@ -48,7 +48,7 @@ function DesignSystemShowcase() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-8 py-6">
           <div className="flex items-baseline gap-3">
             <span className="font-display text-3xl tracking-tight text-charcoal">
-              Ukena
+              Uken
             </span>
             <span className="text-[11px] uppercase tracking-[0.28em] text-ink-muted">
               Design Library
@@ -71,7 +71,7 @@ function DesignSystemShowcase() {
         </h1>
         <p className="mt-8 max-w-xl text-lg leading-relaxed text-ink-muted">
           Tokens, components, and editorial primitives — the building blocks for
-          Ukena's marketplace. Earthy, considered, and built to let stories breathe.
+          Uken's marketplace. Earthy, considered, and built to let stories breathe.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-3">
           <Button variant="primary" size="lg">
@@ -141,7 +141,7 @@ function DesignSystemShowcase() {
                 tag: "Body",
                 el: (
                   <p className="max-w-xl text-base leading-relaxed text-charcoal">
-                    Every Ukena piece arrives with a name, a place, and the
+                    Every Uken piece arrives with a name, a place, and the
                     person who made it. Our journal traces the route from
                     workshop to doorstep — from Maragua sisal fields to a
                     kitchen in Margate.
@@ -338,7 +338,7 @@ function DesignSystemShowcase() {
       <footer className="border-t border-border/70 bg-cream">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-8 py-12 md:flex-row md:items-center">
           <div>
-            <span className="font-display text-2xl text-charcoal">Ukena</span>
+            <span className="font-display text-2xl text-charcoal">Uken</span>
             <p className="mt-1 text-sm text-ink-muted">
               Story-driven craft, hand to hand.
             </p>

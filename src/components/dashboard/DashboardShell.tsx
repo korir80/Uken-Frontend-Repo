@@ -94,7 +94,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
             <MenuIcon />
           </button>
           <Link to="/" className="font-display text-xl text-charcoal">
-            Ukena
+            Uken
           </Link>
           <span className="hidden font-sans text-[10px] uppercase tracking-[0.22em] text-clay sm:inline">
             {eyebrow}
@@ -118,7 +118,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
         <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:flex-shrink-0 lg:flex-col lg:border-r lg:border-border/60 lg:bg-cream/40">
           <div className="flex-shrink-0 px-6 py-7">
             <Link to="/" className="font-display text-2xl text-charcoal">
-              Ukena
+              Uken
             </Link>
             <p className="mt-2 font-sans text-[11px] uppercase tracking-[0.24em] text-clay">
               {eyebrow}
@@ -151,7 +151,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
                     className="font-display text-2xl text-charcoal"
                     onClick={() => setDrawerOpen(false)}
                   >
-                    Ukena
+                    Uken
                   </Link>
                   <p className="mt-1 font-sans text-[11px] uppercase tracking-[0.24em] text-clay">
                     {eyebrow}

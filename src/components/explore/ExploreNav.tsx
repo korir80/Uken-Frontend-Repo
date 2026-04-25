@@ -7,8 +7,10 @@ import { BagIndicator } from "@/components/product/BagIndicator";
 const navLinks = [
   { label: "Shop", to: "/shop" as const },
   { label: "Explore Creators", to: "/explore" as const },
-  { label: "Mission & Story", to: "/story" as const },
-  { label: "Join as Artisan", to: "/join" as const },
+  { label: "Mission", to: "/story" as const },
+  { label: "Values", to: "/sustainability" as const },
+  { label: "Contact", to: "/contact" as const },
+  { label: "Join UKEN", to: "/join" as const },
 ];
 
 /**
@@ -44,13 +46,13 @@ export function ExploreNav() {
           UKEN
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex lg:gap-10">
+        <nav className="hidden items-center gap-5 md:flex lg:gap-8">
           {navLinks.map((l) => (
             <Link
               key={l.label}
               to={l.to}
               activeProps={{ className: "text-clay" }}
-              className="text-[14px] font-medium tracking-wide text-charcoal/80 transition-colors hover:text-clay"
+              className="text-[13px] font-medium tracking-wide text-charcoal/80 transition-colors hover:text-clay lg:text-[14px]"
             >
               {l.label}
             </Link>

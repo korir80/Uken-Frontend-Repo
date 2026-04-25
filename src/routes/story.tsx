@@ -39,7 +39,7 @@ function StoryPage() {
               We came for the makers — <em className="italic text-clay">and stayed for the hours.</em>
             </h1>
             <p className="mt-2.5 max-w-2xl text-[13px] leading-relaxed text-ink-muted md:text-sm">
-              A marketplace built around the people who shape the work. Kenyan artisans, told plainly, sold honestly.
+              A marketplace built around the people who grow, shape, and finish the work. Kenyan farmers, artisans, and makers, told plainly, sold honestly.
             </p>
           </div>
         </section>

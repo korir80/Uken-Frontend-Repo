@@ -75,28 +75,28 @@ function ContactPage() {
   return (
     <div className="min-h-screen bg-warm-white text-charcoal">
       <ExploreNav />
-      <main className="mx-auto max-w-7xl px-5 py-16 md:px-10 md:py-24">
+      <main className="mx-auto max-w-7xl px-5 py-10 md:px-10 md:py-14">
         <section className="max-w-3xl">
           <SectionLabel tone="terracotta">Contact</SectionLabel>
-          <h1 className="mt-4 font-display text-4xl leading-tight text-charcoal md:text-6xl">
+          <h1 className="mt-3 font-display text-[32px] leading-tight text-charcoal md:text-[46px]">
             Find Us
           </h1>
         </section>
 
-        <section className="mt-12 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="space-y-5">
-            <Card tone="cream" elevation="soft" className="p-7 md:p-8">
-              <h2 className="font-display text-3xl leading-tight text-charcoal">Head Office (UK)</h2>
-              <p className="mt-5 text-base leading-relaxed text-ink-muted">
+        <section className="mt-8 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="space-y-4">
+            <Card tone="cream" elevation="soft" className="p-5 md:p-6">
+              <h2 className="font-display text-[26px] leading-tight text-charcoal md:text-[30px]">Head Office (UK)</h2>
+              <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
                 Osmaston 10, NG7 1SD<br />
                 Nottingham, United Kingdom<br />
                 Andrew Soi: +44 7425 241649
               </p>
             </Card>
 
-            <Card tone="cream" elevation="soft" className="p-7 md:p-8">
-              <h2 className="font-display text-3xl leading-tight text-charcoal">Nairobi Office</h2>
-              <p className="mt-5 text-base leading-relaxed text-ink-muted">
+            <Card tone="cream" elevation="soft" className="p-5 md:p-6">
+              <h2 className="font-display text-[26px] leading-tight text-charcoal md:text-[30px]">Nairobi Office</h2>
+              <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
                 Nairobi Garage – Karen<br />
                 Cove Court, Watermark Business Park<br />
                 Ndege Rd. Off Langata Rd., Nairobi<br />
@@ -109,9 +109,9 @@ function ContactPage() {
             </p>
           </div>
 
-          <Card tone="warm-white" elevation="lift" className="p-7 md:p-9">
-            <form className="space-y-5" onSubmit={handleSubmit} noValidate>
-              <div className="grid gap-5 md:grid-cols-2">
+          <Card tone="warm-white" elevation="lift" className="p-5 md:p-7">
+            <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+              <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
                   <Input
@@ -157,7 +157,7 @@ function ContactPage() {
                   id="message"
                   value={form.message}
                   onChange={(event) => updateField("message", event.target.value)}
-                  className="min-h-[160px] bg-cream/30"
+                  className="min-h-[120px] bg-cream/30"
                 />
                 {errors.message && <p className="text-sm text-destructive">{errors.message}</p>}
               </div>

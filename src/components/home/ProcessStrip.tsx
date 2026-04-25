@@ -58,15 +58,15 @@ const artisanSteps: Step[] = [
 
 export function ProcessStrip() {
   return (
-    <section className="bg-cream py-24 md:py-32">
+    <section className="bg-cream py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
-        <div className="mb-16 max-w-2xl md:mb-20">
+        <div className="mb-10 max-w-2xl md:mb-12">
           <SectionLabel tone="gold">How Uken works</SectionLabel>
-          <h2 className="mt-5 font-display text-[36px] leading-[1.1] tracking-tight text-charcoal md:text-5xl">
+          <h2 className="mt-4 font-display text-[32px] leading-[1.08] tracking-tight text-charcoal md:text-[42px]">
             Two journeys.{" "}
             <em className="italic text-terracotta">One thread between them.</em>
           </h2>
-          <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-ink-muted">
+          <p className="mt-4 max-w-xl text-[14px] leading-relaxed text-ink-muted">
             Uken exists for the buyer who wants to know, and the Kenyan farmer,
             artisan, and maker who deserves to be known.
           </p>
@@ -78,7 +78,7 @@ export function ProcessStrip() {
         />
 
         {/* Editorial separator */}
-        <div className="my-20 flex items-center gap-6 md:my-28">
+        <div className="my-12 flex items-center gap-6 md:my-16">
           <span className="h-px flex-1 bg-border" />
           <span className="font-display text-2xl italic text-terracotta">
             &amp;

@@ -425,7 +425,7 @@ function ProductPage() {
 
         {/* ─────────── Related products ─────────── */}
         {related.length > 0 && (
-          <section className="mx-auto mt-24 max-w-7xl px-6 md:mt-32 md:px-10">
+          <section className="mx-auto mt-14 max-w-7xl px-5 md:mt-18 md:px-10">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <SectionLabel>More from the workshop</SectionLabel>
@@ -441,7 +441,7 @@ function ProductPage() {
                 See the full collection →
               </Link>
             </div>
-            <div className="mt-10 grid gap-8 sm:grid-cols-2 md:gap-10 lg:grid-cols-3">
+            <div className="mt-6 grid gap-5 sm:grid-cols-2 md:mt-8 md:gap-7 lg:grid-cols-3">
               {related.map((p, i) => (
                 <ShopProductCard key={p.id} product={p} index={i} />
               ))}
@@ -451,14 +451,14 @@ function ProductPage() {
 
         {/* ─────────── Related creators ─────────── */}
         {relatedCreators.length > 0 && (
-          <section className="mx-auto mt-24 max-w-7xl px-6 pb-24 md:mt-32 md:px-10 md:pb-32">
+          <section className="mx-auto mt-14 max-w-7xl px-5 pb-14 md:mt-18 md:px-10 md:pb-20">
             <div>
               <SectionLabel tone="clay">Other voices</SectionLabel>
               <h2 className="mt-3 font-display text-[28px] leading-tight text-charcoal md:text-[34px]">
                 You might also connect with
               </h2>
             </div>
-            <div className="mt-10 grid gap-8 sm:grid-cols-2 md:gap-10">
+            <div className="mt-6 grid gap-6 sm:grid-cols-2 md:mt-8 md:gap-8">
               {relatedCreators.map((c, i) => (
                 <CreatorCard key={c.id} creator={c} index={i} />
               ))}

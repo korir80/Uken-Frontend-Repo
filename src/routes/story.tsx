@@ -59,7 +59,7 @@ function StoryPage() {
           />
         </section>
 
-        <section className="mx-auto max-w-3xl px-6 pb-14 md:px-10 md:pb-18">
+        <section className="mx-auto max-w-3xl px-6 pb-14 md:px-10 md:pb-16">
           <div className="mb-8 space-y-6 md:space-y-7">
             <div>
               <SectionLabel tone="gold">Mission</SectionLabel>

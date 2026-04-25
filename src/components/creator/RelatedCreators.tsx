@@ -17,7 +17,7 @@ export function RelatedCreators({ creator }: RelatedCreatorsProps) {
   if (creator.relatedCreators.length === 0) return null;
 
   return (
-    <section className="bg-warm-white py-12 md:py-18 lg:py-20">
+    <section className="bg-warm-white py-12 md:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <Reveal>
           <SectionLabel>Continue the journey</SectionLabel>

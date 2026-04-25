@@ -14,7 +14,7 @@ interface CreatorProductsProps {
  */
 export function CreatorProducts({ creator }: CreatorProductsProps) {
   return (
-    <section className="bg-cream py-12 md:py-18 lg:py-20">
+    <section className="bg-cream py-12 md:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <Reveal>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-8">

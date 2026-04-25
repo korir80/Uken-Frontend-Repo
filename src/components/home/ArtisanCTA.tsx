@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 export function ArtisanCTA() {
   return (
-    <section className="relative overflow-hidden bg-warm-white py-14 md:py-18 lg:py-20">
+    <section className="relative overflow-hidden bg-warm-white py-14 md:py-16 lg:py-20">
       {/* Warm wash backdrop */}
       <div
         className="absolute inset-0 -z-0"

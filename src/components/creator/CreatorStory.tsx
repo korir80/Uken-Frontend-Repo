@@ -25,19 +25,21 @@ export function CreatorStory({ creator }: CreatorStoryProps) {
           {/* Portrait */}
           <div className="md:col-span-5 md:sticky md:top-28 md:self-start">
             <Reveal>
-              <div className="relative overflow-hidden rounded-2xl bg-cream shadow-[var(--shadow-card)]">
+              <figure className="rounded-2xl border border-border/60 bg-cream p-3 shadow-[var(--shadow-card)]">
+              <div className="relative overflow-hidden rounded-xl bg-sand-soft">
                 <img
                   src={creator.portraitImage}
                   alt={`Portrait of ${creator.fullName}`}
                   width={1024}
                   height={1280}
                   loading="lazy"
-                  className="aspect-[4/5] w-full object-cover"
+                  className="aspect-[4/3] w-full object-cover"
                 />
               </div>
-              <p className="mt-5 text-[12px] uppercase tracking-[0.22em] text-ink-muted">
+              <figcaption className="px-1 pb-2 pt-5 text-[12px] uppercase tracking-[0.22em] text-ink-muted">
                 {creator.fullName} · {creator.region}
-              </p>
+              </figcaption>
+              </figure>
             </Reveal>
           </div>
 

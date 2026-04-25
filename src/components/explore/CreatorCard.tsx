@@ -23,7 +23,7 @@ export function CreatorCard({ creator, index }: CreatorCardProps) {
         <div
           className={cn(
             "relative w-full overflow-hidden",
-            isTall ? "aspect-[3/4.4]" : "aspect-[4/5]",
+            isTall ? "aspect-[4/5]" : "aspect-[4/3]",
           )}
         >
           <LazyImage

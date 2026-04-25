@@ -36,16 +36,16 @@ export function CreatorProcess({ creator }: CreatorProcessProps) {
               key={i}
               className="w-[78%] shrink-0 snap-start"
             >
-              <figure>
-                <div className="overflow-hidden rounded-2xl bg-sand-soft">
+              <figure className="rounded-2xl border border-border/60 bg-warm-white p-3 shadow-[var(--shadow-card)]">
+                <div className="overflow-hidden rounded-xl bg-sand-soft">
                   <LazyImage
                     src={step.image}
                     alt=""
-                    ratio="4 / 5"
+                    ratio="4 / 3"
                     wrapperClassName="w-full"
                   />
                 </div>
-                <figcaption className="mt-3 flex gap-3">
+                <figcaption className="flex gap-3 px-1 pb-2 pt-4">
                   <span className="font-display text-2xl leading-none text-terracotta/70">
                     {String(i + 1).padStart(2, "0")}
                   </span>

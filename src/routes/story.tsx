@@ -34,7 +34,7 @@ function StoryPage() {
       <main>
         <section className="mx-auto max-w-7xl px-5 pb-5 pt-5 md:px-10 md:pb-6 md:pt-7">
           <div className="max-w-3xl">
-            <SectionLabel tone="terracotta">Our Story</SectionLabel>
+              <SectionLabel tone="terracotta">Mission, Vision & Story</SectionLabel>
             <h1 className="mt-3 font-display text-[30px] leading-[1.05] tracking-tight text-charcoal sm:text-[34px] md:mt-3 md:text-[42px]">
               We came for the makers — <em className="italic text-clay">and stayed for the hours.</em>
             </h1>
@@ -72,6 +72,15 @@ function StoryPage() {
               <p className="mt-3 text-[15px] leading-relaxed text-ink-muted md:text-base">
                 To be the premier gateway for Kenyan excellence in the United Kingdom, recognised for an unbroken chain of traceability connecting UK buyers directly to the farmers, artisans, and craftsmen behind the finest agricultural and hand-crafted goods.
               </p>
+            </div>
+            <div>
+              <SectionLabel tone="gold">Core Values</SectionLabel>
+              <ul className="mt-3 grid gap-2 text-[15px] leading-relaxed text-ink-muted md:grid-cols-2 md:text-base">
+                <li>Transparency</li>
+                <li>Fair value for makers</li>
+                <li>Traceable Kenyan excellence</li>
+                <li>Long-term stewardship</li>
+              </ul>
             </div>
             <div className="grid gap-3 text-sm leading-relaxed text-ink-muted md:grid-cols-3">
               <p><span className="font-medium text-charcoal">UK headquarters</span><br />Osmaston 10, NG7 1SD, Nottingham, UK.</p>

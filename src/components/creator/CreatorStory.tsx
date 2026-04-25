@@ -19,7 +19,7 @@ export function CreatorStory({ creator }: CreatorStoryProps) {
   const closing = creator.storyParagraphs.slice(mid);
 
   return (
-    <section className="bg-warm-white py-12 md:py-18 lg:py-20">
+    <section className="bg-warm-white py-12 md:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <div className="grid gap-8 md:grid-cols-12 md:gap-10 lg:gap-12">
           {/* Portrait */}

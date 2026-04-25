@@ -15,7 +15,7 @@ interface CreatorProcessProps {
  */
 export function CreatorProcess({ creator }: CreatorProcessProps) {
   return (
-    <section className="bg-cream py-12 md:py-18 lg:py-20">
+    <section className="bg-cream py-12 md:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <Reveal>
           <SectionLabel>The craft in action</SectionLabel>

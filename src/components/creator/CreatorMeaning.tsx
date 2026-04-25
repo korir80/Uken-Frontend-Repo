@@ -14,7 +14,7 @@ interface CreatorMeaningProps {
  */
 export function CreatorMeaning({ creator }: CreatorMeaningProps) {
   return (
-    <section className="bg-warm-white py-12 md:py-18 lg:py-20">
+    <section className="bg-warm-white py-12 md:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <div className="grid gap-8 md:grid-cols-12 md:gap-10">
           <div className="md:col-span-7">

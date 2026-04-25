@@ -6,11 +6,14 @@ import type { Craft } from "@/components/explore/creators-data";
 
 const FEATURED_IDS = ["p-mara-01", "p-kaj-01", "p-nrb-01", "p-mwi-01", "p-lam-01", "p-mara-04"];
 
-const CRAFT_TILES: { craft: Craft; label: string; tagline: string }[] = [
+const CATEGORY_TILES: { craft?: Craft; label: string; tagline: string }[] = [
   { craft: "Weaving", label: "Weaving", tagline: "Sisal, coiled by hand." },
   { craft: "Beadwork", label: "Beadwork", tagline: "Stories told in glass." },
   { craft: "Pottery", label: "Pottery", tagline: "Earth, fire, water." },
   { craft: "Leatherwork", label: "Leatherwork", tagline: "Saddle-stitched, never glued." },
+  { label: "Coffee & Tea", tagline: "Single-origin, farm to cup." },
+  { label: "Foods & Harvest", tagline: "Honey, spices, and grains." },
+  { label: "Fresh Produce", tagline: "What UK visitors still think about." },
 ];
 
 /**
@@ -78,15 +81,15 @@ export function FeaturedShop() {
           ))}
         </div>
 
-        {/* Shop by craft tiles */}
+        {/* Shop by category tiles */}
         <div className="mt-20">
-          <p className="section-label">Shop by craft</p>
+          <p className="section-label">Shop by category</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {CRAFT_TILES.map((tile) => (
+            {CATEGORY_TILES.map((tile) => (
               <Link
-                key={tile.craft}
+                key={tile.label}
                 to="/shop"
-                search={{ craft: tile.craft }}
+                search={tile.craft ? { craft: tile.craft } : undefined}
                 className="group block rounded-2xl border border-border/60 bg-cream/50 p-6 transition hover:-translate-y-0.5 hover:border-clay hover:shadow-soft"
               >
                 <p className="font-display text-2xl text-charcoal">{tile.label}</p>
@@ -94,7 +97,7 @@ export function FeaturedShop() {
                   {tile.tagline}
                 </p>
                 <p className="mt-6 font-sans text-[12px] text-clay">
-                  See pieces →
+                  See products →
                 </p>
               </Link>
             ))}

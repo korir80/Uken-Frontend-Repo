@@ -30,7 +30,7 @@ function AdminOverview() {
     <div className="space-y-10">
       <PageHeader
         eyebrow="Admin overview"
-        title="Uken, today."
+        title="UKEN, today."
         description="The platform at a glance — what's live, what's waiting, and what needs your attention."
       />
 

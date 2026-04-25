@@ -41,7 +41,7 @@ export function ExploreNav() {
           to="/"
           className="font-display text-2xl tracking-tight text-charcoal md:text-3xl"
         >
-          Uken
+          UKEN
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex lg:gap-10">

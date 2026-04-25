@@ -6,17 +6,17 @@ import { Card, SectionLabel } from "@/components/ukena";
 export const Route = createFileRoute("/sustainability")({
   head: () => ({
     meta: [
-      { title: "Sustainability — Ukena" },
+      { title: "Sustainability — UKEN" },
       {
         name: "description",
         content:
-          "How Ukena protects Kenyan soil, culture, and communities through long-term stewardship.",
+          "How UKEN protects Kenyan soil, culture, and communities through long-term stewardship.",
       },
-      { property: "og:title", content: "Sustainability — Ukena" },
+      { property: "og:title", content: "Sustainability — UKEN" },
       {
         property: "og:description",
         content:
-          "How Ukena protects Kenyan soil, culture, and communities through long-term stewardship.",
+          "How UKEN protects Kenyan soil, culture, and communities through long-term stewardship.",
       },
     ],
   }),
@@ -30,11 +30,11 @@ const stewardship = [
   },
   {
     title: "Cultural",
-    body: "Traditional artisanal skills only survive if they are profitable. Ukena ensures makers earn enough that young people in their communities choose to learn the craft rather than abandon it.",
+    body: "Traditional artisanal skills only survive if they are profitable. UKEN ensures makers earn enough that young people in their communities choose to learn the craft rather than abandon it.",
   },
   {
     title: "Economic",
-    body: "Every sale on Ukena is structured so the largest share of value stays in Kenya. We publish our margin structure openly because transparency is one of our five founding values.",
+    body: "Every sale on UKEN is structured so the largest share of value stays in Kenya. We publish our margin structure openly because transparency is one of our five founding values.",
   },
 ];
 

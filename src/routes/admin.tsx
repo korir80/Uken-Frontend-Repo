@@ -17,8 +17,8 @@ const ADMIN_LINKS = [
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Admin Studio — Uken" },
-      { name: "description", content: "Moderate, oversee and curate the Uken marketplace." },
+      { title: "Admin Studio — UKEN" },
+      { name: "description", content: "Moderate, oversee and curate the UKEN marketplace." },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

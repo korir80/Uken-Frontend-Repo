@@ -3,7 +3,7 @@ import { useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 /**
- * UkenPageLoader — full-bleed brand splash that covers the screen on the
+ * UKENPageLoader — full-bleed brand splash that covers the screen on the
  * very first visit and during route transitions. Replaces the previous slim
  * top-bar so navigation from / → /explore → /shop feels intentional and
  * cinematic, on-brand with the editorial typography.
@@ -118,7 +118,7 @@ export function RouteProgress() {
         {/* Wordmark with a soft breathing animation */}
         <div className="overflow-hidden">
           <span className="block font-display text-4xl tracking-tight text-charcoal animate-[ukena-rise_700ms_ease-out_both] md:text-5xl">
-            Uken
+            UKEN
           </span>
         </div>
 

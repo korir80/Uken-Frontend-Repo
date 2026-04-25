@@ -6,17 +6,17 @@ import { Card, SectionLabel } from "@/components/ukena";
 export const Route = createFileRoute("/press")({
   head: () => ({
     meta: [
-      { title: "Press — Ukena" },
+      { title: "Press — UKEN" },
       {
         name: "description",
         content:
-          "Press information, partners, affiliates, and media contact details for Ukena.",
+          "Press information, partners, affiliates, and media contact details for UKEN.",
       },
-      { property: "og:title", content: "Press — Ukena" },
+      { property: "og:title", content: "Press — UKEN" },
       {
         property: "og:description",
         content:
-          "Press information, partners, affiliates, and media contact details for Ukena.",
+          "Press information, partners, affiliates, and media contact details for UKEN.",
       },
     ],
   }),
@@ -30,7 +30,7 @@ function PressPage() {
       <main className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
         <SectionLabel tone="terracotta">Press</SectionLabel>
         <h1 className="mt-3 font-display text-[32px] leading-tight text-charcoal md:text-[46px]">
-          Ukena in the World
+          UKEN in the World
         </h1>
 
         <div className="mt-8 grid gap-4">
@@ -51,7 +51,7 @@ function PressPage() {
           <Card tone="cream" elevation="soft" className="p-5 md:p-7">
             <h2 className="font-display text-[28px] leading-tight text-charcoal md:text-[34px]">Future press coverage</h2>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-muted md:text-base">
-              Coverage and features will appear here as Ukena grows.
+              Coverage and features will appear here as UKEN grows.
             </p>
           </Card>
         </div>

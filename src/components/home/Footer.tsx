@@ -12,7 +12,7 @@ const navColumns = [
     ],
   },
   {
-    heading: "Uken",
+    heading: "UKEN",
     links: [
       { label: "Our Story", href: "/story" },
       { label: "For Artisans", href: "/artisans" },
@@ -36,7 +36,7 @@ export function Footer() {
         {/* Tagline */}
         <div className="mb-9 max-w-3xl md:mb-12">
           <p className="text-[11px] uppercase tracking-[0.28em] text-[oklch(0.85_0.08_55)]">
-            — Uken
+            — UKEN
           </p>
           <p className="mt-3 font-display text-[30px] leading-[1.1] tracking-tight text-warm-white md:text-[40px] lg:text-[46px]">
             Connecting hands to hearts{" "}
@@ -141,14 +141,14 @@ export function Footer() {
 
         <div className="flex flex-col items-start justify-between gap-3 pt-6 text-[10px] uppercase tracking-[0.18em] text-warm-white/45 md:flex-row md:items-center">
           <span className="font-display text-2xl normal-case tracking-normal text-warm-white">
-            Uken
+            UKEN
           </span>
           <div className="flex flex-wrap gap-6">
             <a href="/privacy" className="hover:text-warm-white">Privacy</a>
             <a href="/terms" className="hover:text-warm-white">Terms</a>
             <Link to="/styleguide" className="hover:text-warm-white">Style Guide</Link>
           </div>
-          <span>© {new Date().getFullYear()} Uken · Nottingham &amp; Nairobi</span>
+          <span>© {new Date().getFullYear()} UKEN · Nottingham &amp; Nairobi</span>
         </div>
       </div>
     </footer>

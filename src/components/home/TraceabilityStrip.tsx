@@ -11,7 +11,7 @@ export function TraceabilityStrip() {
               Scan it. Trace it. Trust it.
             </h2>
             <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-ink-muted md:text-[15px]">
-              Every product on Ukena carries a QR code. Scan it and see the GPS coordinates of the farm, the export stamp date, and container seal verification. No marketing speak — just proof.
+              Every product on UKEN carries a QR code. Scan it and see the GPS coordinates of the farm, the export stamp date, and container seal verification. No marketing speak — just proof.
             </p>
             <Link
               to="/transparency"

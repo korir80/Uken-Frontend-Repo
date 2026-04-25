@@ -11,17 +11,17 @@ import { Textarea } from "@/components/ui/textarea";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Ukena" },
+      { title: "Contact — UKEN" },
       {
         name: "description",
         content:
-          "Find Ukena in Nottingham and Nairobi, or contact the team for buyer, producer, press, and general enquiries.",
+          "Find UKEN in Nottingham and Nairobi, or contact the team for buyer, producer, press, and general enquiries.",
       },
-      { property: "og:title", content: "Contact — Ukena" },
+      { property: "og:title", content: "Contact — UKEN" },
       {
         property: "og:description",
         content:
-          "Find Ukena in Nottingham and Nairobi, or contact the team for buyer, producer, press, and general enquiries.",
+          "Find UKEN in Nottingham and Nairobi, or contact the team for buyer, producer, press, and general enquiries.",
       },
     ],
   }),
@@ -164,7 +164,7 @@ function ContactPage() {
 
               {submitted && (
                 <p className="rounded-xl bg-cream px-4 py-3 text-sm leading-relaxed text-ink-muted">
-                  Thank you. Your message is ready for the Ukena team.
+                  Thank you. Your message is ready for the UKEN team.
                 </p>
               )}
 

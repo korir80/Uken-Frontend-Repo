@@ -10,17 +10,17 @@ import workshopImage from "@/assets/creator-workshop-wanjiru.jpg";
 export const Route = createFileRoute("/story")({
   head: () => ({
     meta: [
-      { title: "Our Story — Ukena" },
+      { title: "Our Story — UKEN" },
       {
         name: "description",
         content:
-          "How Ukena bridges Kenyan producers directly to UK buyers through transparent, fair, and sustainable trade.",
+          "How UKEN bridges Kenyan producers directly to UK buyers through transparent, fair, and sustainable trade.",
       },
-      { property: "og:title", content: "Our Story — Ukena" },
+      { property: "og:title", content: "Our Story — UKEN" },
       {
         property: "og:description",
         content:
-          "How Ukena bridges Kenyan producers directly to UK buyers through transparent, fair, and sustainable trade.",
+          "How UKEN bridges Kenyan producers directly to UK buyers through transparent, fair, and sustainable trade.",
       },
     ],
   }),
@@ -86,7 +86,7 @@ function StoryPage() {
               the hands that remember the making.”
             </p>
             <p className="mt-6 text-xs uppercase tracking-[0.28em] text-charcoal/55">
-              The Uken promise
+              The UKEN promise
             </p>
           </div>
 

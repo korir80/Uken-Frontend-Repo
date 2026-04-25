@@ -7,13 +7,13 @@ import joinHero from "@/assets/join-hero.jpg";
 export const Route = createFileRoute("/join/")({
   head: () => ({
     meta: [
-      { title: "Join Ukena — A home for Kenyan makers" },
+      { title: "Join Uken — A home for Kenyan makers" },
       {
         name: "description",
         content:
-          "Ukena is built for Kenyan artisans first. Fair margins, your name on every piece, your story told the way you'd tell it.",
+          "Uken is built for Kenyan artisans first. Fair margins, your name on every piece, your story told the way you'd tell it.",
       },
-      { property: "og:title", content: "Join Ukena — A home for Kenyan makers" },
+      { property: "og:title", content: "Join Uken — A home for Kenyan makers" },
       {
         property: "og:description",
         content:
@@ -57,7 +57,7 @@ function JoinLanding() {
               <em className="italic text-terracotta">a global stage.</em>
             </h1>
             <p className="mt-2.5 max-w-xl text-[13px] leading-relaxed text-ink-muted md:text-sm">
-              Ukena was built for the makers first. We don't run a marketplace
+              Uken was built for the makers first. We don't run a marketplace
               of products — we keep an index of people. If you make something
               with your hands in Kenya, we'd like to hear from you.
             </p>

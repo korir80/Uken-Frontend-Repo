@@ -44,7 +44,7 @@ export function NavBar() {
             scrolled ? "text-charcoal" : "text-warm-white",
           )}
         >
-          Ukena
+          Uken
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex lg:gap-10">

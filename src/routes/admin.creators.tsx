@@ -24,7 +24,7 @@ function AdminCreators() {
     <div className="space-y-8">
       <PageHeader
         eyebrow="Creators"
-        title="Active makers on Ukena."
+        title="Active makers on Uken."
         description="Suspend a creator if needed, mark a profile as featured, or open their public page."
       />
 

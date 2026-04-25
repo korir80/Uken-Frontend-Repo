@@ -33,7 +33,7 @@ export function CreatorHeader({ creator }: CreatorHeaderProps) {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="text-[11px] font-medium uppercase tracking-[0.28em] text-warm-white/80"
         >
-          A Ukena Maker · No. {creator.id.slice(0, 2).toUpperCase()}
+          A Uken Maker · No. {creator.id.slice(0, 2).toUpperCase()}
         </motion.span>
 
         <motion.h1

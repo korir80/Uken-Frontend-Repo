@@ -17,11 +17,11 @@ import { useSubmitApplication } from "@/lib/queries";
 export const Route = createFileRoute("/join/apply")({
   head: () => ({
     meta: [
-      { title: "Tell us about you — Ukena" },
+      { title: "Tell us about you — Uken" },
       {
         name: "description",
         content:
-          "Begin your Ukena application. Four short chapters, no accounts required.",
+          "Begin your Uken application. Four short chapters, no accounts required.",
       },
     ],
   }),
@@ -408,7 +408,7 @@ function Step4({ name }: { name: string }) {
           to="/"
           className="text-[13px] font-medium uppercase tracking-[0.2em] text-ink-muted transition-colors hover:text-charcoal"
         >
-          Back to Ukena
+          Back to Uken
         </Link>
       </div>
     </div>

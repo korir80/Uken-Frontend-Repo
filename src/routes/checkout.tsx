@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
-      { title: "Checkout — Ukena" },
-      { name: "description", content: "Complete your Ukena purchase." },
+      { title: "Checkout — Uken" },
+      { name: "description", content: "Complete your Uken purchase." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -43,7 +43,7 @@ function CheckoutLayout() {
             to="/"
             className="font-display text-3xl tracking-tight text-charcoal"
           >
-            Ukena
+            Uken
           </Link>
           <Link
             to="/bag"

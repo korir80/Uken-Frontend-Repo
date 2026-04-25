@@ -50,7 +50,7 @@ function AdminContent() {
       <PageHeader
         eyebrow="Content moderation"
         title="Reviews & buyer stories."
-        description="Approve, remove, or flag any review or story published on Ukena."
+        description="Approve, remove, or flag any review or story published on Uken."
       />
 
       <div className="flex flex-wrap gap-2">

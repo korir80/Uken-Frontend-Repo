@@ -61,13 +61,13 @@ export function ProcessStrip() {
     <section className="bg-cream py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <div className="mb-16 max-w-2xl md:mb-20">
-          <SectionLabel tone="gold">How Ukena works</SectionLabel>
+          <SectionLabel tone="gold">How Uken works</SectionLabel>
           <h2 className="mt-5 font-display text-[36px] leading-[1.1] tracking-tight text-charcoal md:text-5xl">
             Two journeys.{" "}
             <em className="italic text-terracotta">One thread between them.</em>
           </h2>
           <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-ink-muted">
-            Ukena exists for the buyer who wants to know, and the maker who
+            Uken exists for the buyer who wants to know, and the maker who
             deserves to be known.
           </p>
         </div>

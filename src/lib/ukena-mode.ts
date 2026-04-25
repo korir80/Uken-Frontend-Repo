@@ -9,10 +9,10 @@
  */
 import { useCallback, useEffect, useState } from "react";
 
-export type UkenaMode = "story" | "shop";
+export type UkenMode = "story" | "shop";
 const STORAGE_KEY = "ukena_mode";
 
-export function readMode(): UkenaMode | null {
+export function readMode(): UkenMode | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -22,7 +22,7 @@ export function readMode(): UkenaMode | null {
   }
 }
 
-export function writeMode(mode: UkenaMode) {
+export function writeMode(mode: UkenMode) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(STORAGE_KEY, mode);
@@ -32,20 +32,20 @@ export function writeMode(mode: UkenaMode) {
 }
 
 /**
- * useUkenaMode — returns the persisted mode (or null on SSR / first visit)
+ * useUkenMode — returns the persisted mode (or null on SSR / first visit)
  * plus a setter that updates both state and localStorage.
  */
-export function useUkenaMode(): {
-  mode: UkenaMode | null;
-  setMode: (m: UkenaMode) => void;
+export function useUkenMode(): {
+  mode: UkenMode | null;
+  setMode: (m: UkenMode) => void;
 } {
-  const [mode, setModeState] = useState<UkenaMode | null>(null);
+  const [mode, setModeState] = useState<UkenMode | null>(null);
 
   useEffect(() => {
     setModeState(readMode());
   }, []);
 
-  const setMode = useCallback((m: UkenaMode) => {
+  const setMode = useCallback((m: UkenMode) => {
     setModeState(m);
     writeMode(m);
   }, []);

@@ -14,7 +14,7 @@ export const Route = createFileRoute("/story")({
       {
         name: "description",
         content:
-          "Why Uken exists: a marketplace where Kenyan makers come first, and every piece carries the hands and hours behind it.",
+          "Why Uken exists: direct, transparent, and sustainable trade connecting Kenyan farmers, artisans, and craftsmen with the UK market.",
       },
       { property: "og:title", content: "Our Story — Uken" },
       {
@@ -60,6 +60,26 @@ function StoryPage() {
         </section>
 
         <section className="mx-auto max-w-3xl px-6 pb-24 md:px-10">
+          <div className="mb-12 space-y-10">
+            <div>
+              <SectionLabel tone="gold">Mission</SectionLabel>
+              <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">
+                To empower Kenyan farmers, artisans, and craftsmen by bridging the gap to the UK market through direct, transparent, and sustainable trade — ensuring exceptional skill and quality are rewarded with equitable value.
+              </p>
+            </div>
+            <div>
+              <SectionLabel tone="terracotta">Vision</SectionLabel>
+              <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">
+                To be the premier gateway for Kenyan excellence in the UK, recognised for an unbroken chain of traceability connecting UK buyers directly to the people behind the finest agricultural and hand-crafted goods.
+              </p>
+            </div>
+            <div className="grid gap-4 text-sm leading-relaxed text-ink-muted md:grid-cols-3">
+              <p><span className="font-medium text-charcoal">UK headquarters</span><br />Osmaston 10, NG7 1SD, Nottingham, UK.</p>
+              <p><span className="font-medium text-charcoal">Nairobi office</span><br />Nairobi Garage, Karen — Watermark Business Park, Ndege Rd. Off Langata Rd.</p>
+              <p><span className="font-medium text-charcoal">Academic partner</span><br />University of Nottingham, collaborating on sustainable trade research.</p>
+            </div>
+          </div>
+
           <div className="rounded-3xl border border-border/60 bg-cream/40 p-8 md:p-12">
             <p className="font-display text-2xl italic leading-snug text-charcoal md:text-3xl">
               “We do not make objects. We make the hours that hold them — and

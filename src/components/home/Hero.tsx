@@ -30,15 +30,15 @@ export function Hero() {
         {/* LEFT — copy block, tight grouping */}
         <div className="max-w-[600px] md:pl-[44px]">
           <h1 className="m-0 max-w-[680px] font-display text-5xl font-light leading-tight text-warm-white md:text-6xl">
-            Kenyan craft,
-            <span className="block italic text-gold-soft">safari soul.</span>
+            Kenya,
+            <span className="block italic text-gold-soft">brought home.</span>
           </h1>
 
           {/* Sub-copy */}
           <p
             className="mb-7 mt-5 max-w-[420px] font-sans text-base font-light leading-relaxed text-warm-white/68"
           >
-            Handmade Kenyan pieces for thoughtful UK homes.
+            From the farmers, artisans, and makers of Kenya — to your home in the UK.
           </p>
 
           {/* CTAs */}

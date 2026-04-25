@@ -6,7 +6,7 @@ import { SectionLabel } from "@/components/ukena";
 export const Route = createFileRoute("/transparency")({
   head: () => ({
     meta: [
-      { title: "Traceability — Uken" },
+      { title: "Traceability — Ukena" },
       {
         name: "description",
         content:

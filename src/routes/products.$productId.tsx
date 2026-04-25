@@ -176,17 +176,17 @@ function ProductPage() {
       <ExploreNav />
 
       <main>
-        <div className="mx-auto max-w-7xl px-6 pt-8 md:px-10 md:pt-10">
+        <div className="mx-auto max-w-7xl px-5 pt-5 md:px-10 md:pt-7">
           <Breadcrumbs
             creatorName={product.creator.firstName}
             productName={product.name}
           />
 
           {/* Two-column layout: 55 / 45 on desktop */}
-          <div className="mt-6 grid gap-10 md:mt-8 md:grid-cols-[55%_45%] md:gap-12 lg:gap-16">
+          <div className="mt-4 grid gap-6 md:mt-6 md:grid-cols-[54%_46%] md:gap-8 lg:gap-10">
             {/* LEFT — Gallery */}
-            <div className="rounded-2xl border border-border/60 bg-cream/70 p-3 shadow-[var(--shadow-card)]">
-              <div className="overflow-hidden rounded-xl bg-sand-soft md:h-[420px]">
+            <div className="rounded-2xl border border-border/60 bg-cream/70 p-2.5 shadow-[var(--shadow-card)] md:p-3">
+              <div className="overflow-hidden rounded-xl bg-sand-soft md:h-[360px] lg:h-[400px]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={active.src}
@@ -209,7 +209,7 @@ function ProductPage() {
               </div>
 
               {/* Thumbnails — 3-4 across, no carousel chrome */}
-              <div className="mt-3 grid grid-cols-4 gap-2 md:mt-4 md:gap-3">
+              <div className="mt-2 grid grid-cols-4 gap-2 md:mt-3">
                 {thumbs.map((g: { src: string; alt: string; kind?: "product" | "process" }, i: number) => (
                   <button
                     key={i}
@@ -238,7 +238,7 @@ function ProductPage() {
                   </button>
                 ))}
               </div>
-              <p className="px-1 pt-4 text-[12px] leading-relaxed text-ink-muted">
+              <p className="px-1 pt-3 text-[11px] leading-relaxed text-ink-muted">
                 {active.alt}
               </p>
             </div>
@@ -271,27 +271,27 @@ function ProductPage() {
                 </Link>
 
                 {/* 2. Product name */}
-                <h1 className="mt-4 font-display text-[28px] leading-[1.1] tracking-tight text-charcoal md:text-[36px]">
+                <h1 className="mt-3 font-display text-[28px] leading-[1.08] tracking-tight text-charcoal md:text-[34px]">
                   {product.name}
                 </h1>
 
                 {/* 3. Price */}
-                <p className="mt-3 text-[28px] font-medium tabular-nums text-charcoal">
+                <p className="mt-2 text-[26px] font-medium tabular-nums text-charcoal">
                   {formatGBP(product.pricePence)}
                 </p>
 
                 {/* 4. The making — micro-story */}
-                <section className="mt-7">
+                <section className="mt-5">
                   <SectionLabel>The making</SectionLabel>
-                  <p className="mt-3 text-[14px] font-light leading-[1.7] text-charcoal/70">
+                  <p className="mt-2 text-[14px] font-light leading-[1.6] text-charcoal/70">
                     {product.pieceStory}
                   </p>
                 </section>
 
                 {/* 5. Product details — visible desktop, accordion mobile */}
-                <div className="mt-7">
+                <div className="mt-5">
                   {/* Desktop */}
-                  <dl className="hidden space-y-3 border-t border-border/70 pt-6 text-[13px] md:block">
+                  <dl className="hidden space-y-2.5 border-t border-border/70 pt-4 text-[13px] md:block">
                     <SpecRow
                       label="Materials"
                       value={product.materials.join(" · ")}
@@ -325,7 +325,7 @@ function ProductPage() {
                 </div>
 
                 {/* 6. Add to bag */}
-                <div className="mt-7 flex items-stretch gap-3">
+                <div className="mt-5 flex items-stretch gap-3">
                   <Button
                     variant="primary"
                     size="lg"
@@ -348,7 +348,7 @@ function ProductPage() {
                 </div>
 
                 {/* 7. Ethical sourcing line — centred under button */}
-                <p className="mt-4 text-center text-[11px] leading-relaxed text-charcoal/40">
+                <p className="mt-3 text-center text-[11px] leading-relaxed text-charcoal/40">
                   Handmade in Kenya · Ships within{" "}
                   {(product as Product).leadTimeDays?.min ?? 7}–
                   {(product as Product).leadTimeDays?.max ?? 21} days ·{" "}
@@ -358,11 +358,11 @@ function ProductPage() {
                 </p>
 
                 {/* 8. Persistent creator mini-card */}
-                <div className="mt-8 border-t border-border/60 pt-7">
+                <div className="mt-6 border-t border-border/60 pt-5">
                   <Link
                     to="/creators/$creatorId"
                     params={{ creatorId: product.creator.id }}
-                    className="group flex items-start gap-4 rounded-xl bg-cream/70 p-5 transition-all duration-500 hover:bg-cream"
+                    className="group flex items-start gap-3 rounded-xl bg-cream/70 p-4 transition-all duration-500 hover:bg-cream"
                   >
                     <img
                       src={product.creator.portrait}
@@ -394,7 +394,7 @@ function ProductPage() {
                 </div>
 
                 {/* 9. Two conversion links */}
-                <div className="mt-6 border-t border-border/60 pt-5">
+                <div className="mt-5 border-t border-border/60 pt-4">
                   <ul className="space-y-3">
                     <li>
                       <Link

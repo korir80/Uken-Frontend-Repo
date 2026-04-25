@@ -17,7 +17,7 @@ export function ArtisanCTA() {
       <div className="relative z-10 mx-auto grid max-w-7xl gap-14 px-6 md:grid-cols-12 md:gap-12 md:px-10">
         {/* Left: editorial mark */}
         <div className="md:col-span-4">
-          <SectionLabel tone="gold">Are you a Kenyan artisan?</SectionLabel>
+          <SectionLabel tone="gold">Are you a Kenyan farmer or maker?</SectionLabel>
           <div className="mt-8 hidden md:block">
             <span className="font-display text-[160px] leading-none italic text-terracotta/25">
               ❋
@@ -28,14 +28,13 @@ export function ArtisanCTA() {
         {/* Right: headline + CTA */}
         <div className="md:col-span-8">
           <h2 className="font-display text-[40px] leading-[1.05] tracking-tight text-charcoal md:text-6xl lg:text-[68px]">
-            Your craft deserves{" "}
+            Your work deserves{" "}
             <em className="italic text-terracotta">a global stage.</em>
           </h2>
 
           <p className="mt-8 max-w-xl text-[16px] leading-relaxed text-ink-muted md:text-[17px]">
-            We're building Uken for the makers first. Fair margins, your name
-            on every piece, your story told the way you'd tell it. No middlemen
-            mistranslating the work of your hands.
+            We're building Uken for farmers, artisans, and makers first. Fair
+            margins, your name on every product, your story told the way you'd tell it.
           </p>
 
           <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">

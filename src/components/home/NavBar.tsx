@@ -8,8 +8,10 @@ import { useAuth, defaultPathForRole } from "@/lib/auth";
 const navLinks = [
   { label: "Shop", to: "/shop" as const },
   { label: "Explore Creators", to: "/explore" as const },
-  { label: "Mission & Story", to: "/story" as const },
-  { label: "Join as Artisan", to: "/join" as const },
+  { label: "Mission", to: "/story" as const },
+  { label: "Values", to: "/sustainability" as const },
+  { label: "Contact", to: "/contact" as const },
+  { label: "Join UKEN", to: "/join" as const },
 ];
 
 /**
@@ -47,13 +49,13 @@ export function NavBar() {
           UKEN
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex lg:gap-10">
+        <nav className="hidden items-center gap-5 md:flex lg:gap-8">
           {navLinks.map((l) => (
             <Link
               key={l.label}
               to={l.to}
               className={cn(
-                "text-[14px] font-medium tracking-wide transition-colors",
+                "text-[13px] font-medium tracking-wide transition-colors lg:text-[14px]",
                 scrolled
                   ? "text-charcoal/80 hover:text-clay"
                   : "text-warm-white/85 hover:text-warm-white",

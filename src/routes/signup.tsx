@@ -11,7 +11,7 @@ export const Route = createFileRoute("/signup")({
       {
         name: "description",
         content:
-          "Join Uken to save makers, track orders and discover handcrafted pieces from Kenyan artisans.",
+          "Join Uken to save makers, track orders, and discover traceable Kenyan coffee, tea, foods, textiles, craft, and more.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -102,8 +102,8 @@ function SignUpPage() {
             Begin your Uken.
           </h1>
           <p className="mt-3 font-sans text-sm leading-relaxed text-charcoal/70">
-            One account to follow makers, track every piece on its journey, and
-            keep a record of what you've collected.
+            One account to follow makers, track products on their journey, and
+            keep a record of what you've brought home.
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
@@ -234,14 +234,14 @@ function SignUpPage() {
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-clay" />
               <span>
                 <strong className="text-charcoal">Follow makers.</strong> Be
-                first to see new pieces from your favourite artisans.
+                first to see new products from your favourite Kenyan sources.
               </span>
             </li>
             <li className="flex gap-3">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-clay" />
               <span>
-                <strong className="text-charcoal">Track every piece.</strong>{" "}
-                Watch your order travel from a Kenyan workshop to your door.
+                <strong className="text-charcoal">Track every product.</strong>{" "}
+                Watch your order travel from Kenya to your door.
               </span>
             </li>
             <li className="flex gap-3">

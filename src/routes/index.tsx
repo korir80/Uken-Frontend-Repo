@@ -16,20 +16,20 @@ import { useAuth } from "@/lib/auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Uken — Kenyan goods, traced to source" },
+      { title: "Ukena — Kenya, Brought Home" },
       {
         name: "description",
         content:
-          "A marketplace where Kenyan farmers, artisans, and makers come first. Discover specialty foods, coffee, textiles, craft, and more for homes across the UK.",
+          "Shop authentic Kenyan coffee, food, crafts, and artisan goods. Every product traced from maker to your UK door.",
       },
       {
         property: "og:title",
-        content: "Uken — Kenyan goods, traced to source",
+        content: "Ukena — Kenya, Brought Home",
       },
       {
         property: "og:description",
         content:
-          "Discover the people behind Kenyan coffee, tea, foods, textiles, beadwork, pottery, and more.",
+          "Shop authentic Kenyan coffee, food, crafts, and artisan goods. Every product traced from maker to your UK door.",
       },
     ],
   }),

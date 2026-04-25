@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransparencyRouteImport } from './routes/transparency'
+import { Route as SustainabilityRouteImport } from './routes/sustainability'
 import { Route as StyleguideRouteImport } from './routes/styleguide'
 import { Route as StoryRouteImport } from './routes/story'
 import { Route as SignupRouteImport } from './routes/signup'
@@ -17,10 +18,14 @@ import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as PressRouteImport } from './routes/press'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CreatorRouteImport } from './routes/creator'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BagRouteImport } from './routes/bag'
+import { Route as ArtisansRouteImport } from './routes/artisans'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
@@ -60,6 +65,11 @@ const TransparencyRoute = TransparencyRouteImport.update({
   path: '/transparency',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SustainabilityRoute = SustainabilityRouteImport.update({
+  id: '/sustainability',
+  path: '/sustainability',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
   path: '/styleguide',
@@ -95,6 +105,11 @@ const SavedRoute = SavedRouteImport.update({
   path: '/saved',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PressRoute = PressRouteImport.update({
+  id: '/press',
+  path: '/press',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreRoute = ExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
@@ -105,6 +120,16 @@ const CreatorRoute = CreatorRouteImport.update({
   path: '/creator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionsRoute = CollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
@@ -113,6 +138,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
 const BagRoute = BagRouteImport.update({
   id: '/bag',
   path: '/bag',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtisansRoute = ArtisansRouteImport.update({
+  id: '/artisans',
+  path: '/artisans',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -285,10 +315,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/artisans': typeof ArtisansRoute
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
+  '/collections': typeof CollectionsRoute
+  '/contact': typeof ContactRoute
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/press': typeof PressRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -296,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/sustainability': typeof SustainabilityRoute
   '/transparency': typeof TransparencyRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
@@ -330,9 +365,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/artisans': typeof ArtisansRoute
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
+  '/collections': typeof CollectionsRoute
+  '/contact': typeof ContactRoute
   '/explore': typeof ExploreRoute
+  '/press': typeof PressRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -340,6 +379,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/sustainability': typeof SustainabilityRoute
   '/transparency': typeof TransparencyRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
@@ -377,10 +417,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/artisans': typeof ArtisansRoute
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
+  '/collections': typeof CollectionsRoute
+  '/contact': typeof ContactRoute
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/press': typeof PressRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -388,6 +432,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/sustainability': typeof SustainabilityRoute
   '/transparency': typeof TransparencyRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
@@ -426,10 +471,14 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/admin'
+    | '/artisans'
     | '/bag'
     | '/checkout'
+    | '/collections'
+    | '/contact'
     | '/creator'
     | '/explore'
+    | '/press'
     | '/saved'
     | '/search'
     | '/shop'
@@ -437,6 +486,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/story'
     | '/styleguide'
+    | '/sustainability'
     | '/transparency'
     | '/account/activity'
     | '/account/addresses'
@@ -471,9 +521,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/artisans'
     | '/bag'
     | '/checkout'
+    | '/collections'
+    | '/contact'
     | '/explore'
+    | '/press'
     | '/saved'
     | '/search'
     | '/shop'
@@ -481,6 +535,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/story'
     | '/styleguide'
+    | '/sustainability'
     | '/transparency'
     | '/account/activity'
     | '/account/addresses'
@@ -517,10 +572,14 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/admin'
+    | '/artisans'
     | '/bag'
     | '/checkout'
+    | '/collections'
+    | '/contact'
     | '/creator'
     | '/explore'
+    | '/press'
     | '/saved'
     | '/search'
     | '/shop'
@@ -528,6 +587,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/story'
     | '/styleguide'
+    | '/sustainability'
     | '/transparency'
     | '/account/activity'
     | '/account/addresses'
@@ -565,10 +625,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
+  ArtisansRoute: typeof ArtisansRoute
   BagRoute: typeof BagRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
+  CollectionsRoute: typeof CollectionsRoute
+  ContactRoute: typeof ContactRoute
   CreatorRoute: typeof CreatorRouteWithChildren
   ExploreRoute: typeof ExploreRoute
+  PressRoute: typeof PressRoute
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
   ShopRoute: typeof ShopRoute
@@ -576,6 +640,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   StoryRoute: typeof StoryRoute
   StyleguideRoute: typeof StyleguideRoute
+  SustainabilityRoute: typeof SustainabilityRoute
   TransparencyRoute: typeof TransparencyRoute
   CreatorsCreatorIdRoute: typeof CreatorsCreatorIdRoute
   JoinApplyRoute: typeof JoinApplyRoute
@@ -590,6 +655,13 @@ declare module '@tanstack/react-router' {
       path: '/transparency'
       fullPath: '/transparency'
       preLoaderRoute: typeof TransparencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sustainability': {
+      id: '/sustainability'
+      path: '/sustainability'
+      fullPath: '/sustainability'
+      preLoaderRoute: typeof SustainabilityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/styleguide': {
@@ -641,6 +713,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SavedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/press': {
+      id: '/press'
+      path: '/press'
+      fullPath: '/press'
+      preLoaderRoute: typeof PressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore': {
       id: '/explore'
       path: '/explore'
@@ -655,6 +734,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collections': {
+      id: '/collections'
+      path: '/collections'
+      fullPath: '/collections'
+      preLoaderRoute: typeof CollectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout': {
       id: '/checkout'
       path: '/checkout'
@@ -667,6 +760,13 @@ declare module '@tanstack/react-router' {
       path: '/bag'
       fullPath: '/bag'
       preLoaderRoute: typeof BagRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artisans': {
+      id: '/artisans'
+      path: '/artisans'
+      fullPath: '/artisans'
+      preLoaderRoute: typeof ArtisansRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -1005,10 +1105,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
+  ArtisansRoute: ArtisansRoute,
   BagRoute: BagRoute,
   CheckoutRoute: CheckoutRouteWithChildren,
+  CollectionsRoute: CollectionsRoute,
+  ContactRoute: ContactRoute,
   CreatorRoute: CreatorRouteWithChildren,
   ExploreRoute: ExploreRoute,
+  PressRoute: PressRoute,
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,
   ShopRoute: ShopRoute,
@@ -1016,6 +1120,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   StoryRoute: StoryRoute,
   StyleguideRoute: StyleguideRoute,
+  SustainabilityRoute: SustainabilityRoute,
   TransparencyRoute: TransparencyRoute,
   CreatorsCreatorIdRoute: CreatorsCreatorIdRoute,
   JoinApplyRoute: JoinApplyRoute,

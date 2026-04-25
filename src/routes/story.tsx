@@ -70,7 +70,7 @@ function StoryPage() {
             <div>
               <SectionLabel tone="terracotta">Vision</SectionLabel>
               <p className="mt-4 text-base leading-relaxed text-ink-muted md:text-lg">
-                To be the premier gateway for Kenyan excellence in the UK, recognised for an unbroken chain of traceability connecting UK buyers directly to the people behind the finest agricultural and hand-crafted goods.
+                To be the premier gateway for Kenyan excellence in the United Kingdom, recognised for an unbroken chain of traceability connecting UK buyers directly to the farmers, artisans, and craftsmen behind the finest agricultural and hand-crafted goods.
               </p>
             </div>
             <div className="grid gap-4 text-sm leading-relaxed text-ink-muted md:grid-cols-3">

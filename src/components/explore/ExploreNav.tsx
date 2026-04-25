@@ -7,7 +7,7 @@ import { BagIndicator } from "@/components/product/BagIndicator";
 const navLinks = [
   { label: "Shop", to: "/shop" as const },
   { label: "Explore Creators", to: "/explore" as const },
-  { label: "Our Story", to: "/story" as const },
+  { label: "Mission & Story", to: "/story" as const },
   { label: "Join as Artisan", to: "/join" as const },
 ];
 

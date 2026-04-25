@@ -7,17 +7,17 @@ import { Button, Card, SectionLabel } from "@/components/ukena";
 export const Route = createFileRoute("/artisans")({
   head: () => ({
     meta: [
-      { title: "For Artisans — Ukena" },
+      { title: "For Artisans — UKEN" },
       {
         name: "description",
         content:
-          "Join Ukena. Set your price, tell your story, and reach UK buyers directly. No middlemen.",
+          "Join UKEN. Set your price, tell your story, and reach UK buyers directly. No middlemen.",
       },
-      { property: "og:title", content: "For Artisans — Ukena" },
+      { property: "og:title", content: "For Artisans — UKEN" },
       {
         property: "og:description",
         content:
-          "Join Ukena. Set your price, tell your story, and reach UK buyers directly. No middlemen.",
+          "Join UKEN. Set your price, tell your story, and reach UK buyers directly. No middlemen.",
       },
     ],
   }),
@@ -50,7 +50,7 @@ function ArtisansPage() {
             Your craft. Your name. Your price.
           </h1>
           <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-ink-muted md:text-base">
-            Ukena exists because the traditional route — exporter, broker, importer, wholesaler, retailer — takes most of the value before it ever reaches the maker. We cut that chain. You list your work, tell your story, set your price, and we handle export logistics, UK customs, and delivery. You get paid in full, on time, every time.
+            UKEN exists because the traditional route — exporter, broker, importer, wholesaler, retailer — takes most of the value before it ever reaches the maker. We cut that chain. You list your work, tell your story, set your price, and we handle export logistics, UK customs, and delivery. You get paid in full, on time, every time.
           </p>
         </section>
 
@@ -66,7 +66,7 @@ function ArtisansPage() {
         <div className="mt-8">
           <Button asChild variant="primary" size="lg">
             <Link to="/join">
-              Apply to join Ukena <ArrowRight className="h-4 w-4" />
+              Apply to join UKEN <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </div>

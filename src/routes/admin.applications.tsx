@@ -63,7 +63,7 @@ function AdminApplications() {
     <div className="space-y-8">
       <PageHeader
         eyebrow="Applications"
-        title="The next generation of Uken makers."
+        title="The next generation of UKEN makers."
         description="Move artisans through the curation pipeline. Each decision should be based on the work and the story together."
       />
 

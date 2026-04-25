@@ -49,10 +49,10 @@ export const Route = createFileRoute("/creators/$creatorId")({
     const c = loaderData?.creator;
     if (!c) {
       return {
-        meta: [{ title: "Creator — Uken" }],
+        meta: [{ title: "Creator — UKEN" }],
       };
     }
-    const title = `${c.fullName} — ${c.craft} from ${c.region} · Uken`;
+    const title = `${c.fullName} — ${c.craft} from ${c.region} · UKEN`;
     const description = `Meet ${c.firstName}, a ${c.craft.toLowerCase()} working from ${c.region}. ${c.pullQuote}`;
     return {
       meta: [

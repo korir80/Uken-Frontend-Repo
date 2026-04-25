@@ -15,8 +15,8 @@ const CREATOR_LINKS = [
 export const Route = createFileRoute("/creator")({
   head: () => ({
     meta: [
-      { title: "Maker Studio — Uken" },
-      { name: "description", content: "Manage your pieces, orders, profile and earnings on Uken." },
+      { title: "Maker Studio — UKEN" },
+      { name: "description", content: "Manage your pieces, orders, profile and earnings on UKEN." },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

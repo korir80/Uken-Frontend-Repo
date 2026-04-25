@@ -33,7 +33,7 @@ export function ArtisanCTA() {
           </h2>
 
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-ink-muted md:text-[16px]">
-            We're building Uken for farmers, artisans, and makers first. Fair
+            We're building UKEN for farmers, artisans, and makers first. Fair
             margins, your name on every product, your story told the way you'd tell it.
           </p>
 
@@ -45,7 +45,7 @@ export function ArtisanCTA() {
               className="bg-terracotta hover:bg-[oklch(0.52_0.13_38)]"
             >
               <Link to="/join">
-                Join Uken <ArrowRight className="h-4 w-4" />
+                Join UKEN <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <a

@@ -10,7 +10,7 @@ function CreatorApplication() {
     <div className="space-y-8">
       <PageHeader
         eyebrow="Application"
-        title="Your story to Uken."
+        title="Your story to UKEN."
         description="The application you sent us, and where it sits with the curation team."
       />
 
@@ -20,7 +20,7 @@ function CreatorApplication() {
           <StatusPill label="Approved" tone="good" />
         </div>
         <p className="mt-2 font-sans text-[13px] text-charcoal/65">
-          You've been a creator on Uken since March. Your profile is live and
+          You've been a creator on UKEN since March. Your profile is live and
           your pieces are appearing in the shop.
         </p>
       </div>

@@ -55,8 +55,8 @@ export const Route = createFileRoute("/products/$productId")({
   },
   head: ({ loaderData }) => {
     const p = loaderData?.product;
-    if (!p) return { meta: [{ title: "Piece — Uken" }] };
-    const title = `${p.name} by ${p.creator.fullName} · Uken`;
+    if (!p) return { meta: [{ title: "Piece — UKEN" }] };
+    const title = `${p.name} by ${p.creator.fullName} · UKEN`;
     const description = `${p.pieceStory.slice(0, 150)}…`;
     return {
       meta: [

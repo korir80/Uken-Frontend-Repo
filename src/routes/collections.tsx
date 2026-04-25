@@ -6,17 +6,17 @@ import { Card, SectionLabel } from "@/components/ukena";
 export const Route = createFileRoute("/collections")({
   head: () => ({
     meta: [
-      { title: "Collections — Ukena" },
+      { title: "Collections — UKEN" },
       {
         name: "description",
         content:
-          "Browse Ukena collections across Kenyan handcrafted goods, coffee, tea, honey, spices, and produce.",
+          "Browse UKEN collections across Kenyan handcrafted goods, coffee, tea, honey, spices, and produce.",
       },
-      { property: "og:title", content: "Collections — Ukena" },
+      { property: "og:title", content: "Collections — UKEN" },
       {
         property: "og:description",
         content:
-          "Browse Ukena collections across Kenyan handcrafted goods, coffee, tea, honey, spices, and produce.",
+          "Browse UKEN collections across Kenyan handcrafted goods, coffee, tea, honey, spices, and produce.",
       },
     ],
   }),
@@ -45,7 +45,7 @@ function CollectionsPage() {
             Kenyan goods for the homes that remember.
           </h1>
           <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-ink-muted md:text-base">
-            Ukena carries everything a UK visitor or Kenyan diaspora member misses — from single-origin coffee grown on the slopes of Mount Kenya to hand-coiled baskets built to last a lifetime.
+            UKEN carries everything a UK visitor or Kenyan diaspora member misses — from single-origin coffee grown on the slopes of Mount Kenya to hand-coiled baskets built to last a lifetime.
           </p>
         </section>
 

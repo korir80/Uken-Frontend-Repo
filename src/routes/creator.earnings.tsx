@@ -22,7 +22,7 @@ function CreatorEarnings() {
       <PageHeader
         eyebrow="Earnings"
         title="Fair work, paid fairly."
-        description="Uken pays creators monthly. Pending earnings move to paid on the 1st of each month."
+        description="UKEN pays creators monthly. Pending earnings move to paid on the 1st of each month."
       />
 
       <div className="grid gap-4 sm:grid-cols-3">

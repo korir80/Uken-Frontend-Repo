@@ -47,13 +47,13 @@ export const Route = createFileRoute("/shop")({
   },
   head: () => ({
     meta: [
-      { title: "Shop all pieces — Uken" },
+      { title: "Shop all pieces — UKEN" },
       {
         name: "description",
         content:
-          "Browse the Uken catalogue — specialty coffee, tea, foods, textiles, beadwork, pottery, and more from Kenya to the UK.",
+          "Browse the UKEN catalogue — specialty coffee, tea, foods, textiles, beadwork, pottery, and more from Kenya to the UK.",
       },
-      { property: "og:title", content: "Shop all pieces — Uken" },
+      { property: "og:title", content: "Shop all pieces — UKEN" },
       {
         property: "og:description",
         content:

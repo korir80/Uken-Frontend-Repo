@@ -6,17 +6,17 @@ import { SectionLabel } from "@/components/ukena";
 export const Route = createFileRoute("/transparency")({
   head: () => ({
     meta: [
-      { title: "Traceability — Ukena" },
+      { title: "Traceability — UKEN" },
       {
         name: "description",
         content:
-          "Scan any Ukena product QR code and trace it back to the farm, the maker, and the export date.",
+          "Scan any UKEN product QR code and trace it back to the farm, the maker, and the export date.",
       },
-      { property: "og:title", content: "Traceability — Ukena" },
+      { property: "og:title", content: "Traceability — UKEN" },
       {
         property: "og:description",
         content:
-          "Scan any Ukena product QR code and trace it back to the farm, the maker, and the export date.",
+          "Scan any UKEN product QR code and trace it back to the farm, the maker, and the export date.",
       },
     ],
   }),
@@ -33,7 +33,7 @@ function TransparencyPage() {
           Built on Proof, Not Promises
         </h1>
         <p className="mt-4 text-[15px] leading-relaxed text-ink-muted md:text-base">
-          Every product on Ukena is tied to a digital traceability record. Scan the QR code on any item and you will see:
+          Every product on UKEN is tied to a digital traceability record. Scan the QR code on any item and you will see:
         </p>
         <ul className="mt-5 space-y-2.5 border-y border-border/70 py-5 text-[15px] leading-relaxed text-ink-muted md:text-base">
           <li>GPS coordinates of the farm or workshop</li>

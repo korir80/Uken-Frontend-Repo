@@ -31,17 +31,17 @@ export const Route = createFileRoute("/search")({
   },
   head: () => ({
     meta: [
-      { title: "Search — Uken" },
+      { title: "Search — UKEN" },
       {
         name: "description",
         content:
-          "Search Uken: find Kenyan coffee, tea, foods, textiles, craft, and makers by name, region, or material.",
+          "Search UKEN: find Kenyan coffee, tea, foods, textiles, craft, and makers by name, region, or material.",
       },
-      { property: "og:title", content: "Search — Uken" },
+      { property: "og:title", content: "Search — UKEN" },
       {
         property: "og:description",
         content:
-          "Search the Uken marketplace for products, materials, regions, and makers.",
+          "Search the UKEN marketplace for products, materials, regions, and makers.",
       },
     ],
   }),
@@ -257,7 +257,7 @@ function SearchPage() {
               onChange={(e) => setDraft(e.target.value)}
               placeholder="Try ‘sisal basket’, ‘Lamu’, or ‘Wanjiru’"
               className="flex-1 bg-transparent font-sans text-[16px] text-charcoal placeholder:text-charcoal/40 focus:outline-none md:text-[18px]"
-              aria-label="Search Uken"
+              aria-label="Search UKEN"
             />
             {draft && (
               <button

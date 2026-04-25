@@ -42,7 +42,7 @@ export function StoryTrustStrip() {
             Buy the piece. Know the making.
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted">
-            Brief maker notes for UK homes that value Kenyan craft, honest materials, and the story behind each object.
+            Brief maker and grower notes for UK homes that value Kenyan craft, honest harvests, and the story behind each product.
           </p>
         </div>
 

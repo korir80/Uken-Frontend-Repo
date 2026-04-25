@@ -425,7 +425,7 @@ function ProductPage() {
 
         {/* ─────────── Related products ─────────── */}
         {related.length > 0 && (
-          <section className="mx-auto mt-14 max-w-7xl px-5 md:mt-18 md:px-10">
+          <section className="mx-auto mt-14 max-w-7xl px-5 md:mt-16 md:px-10">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <SectionLabel>More from the workshop</SectionLabel>
@@ -451,7 +451,7 @@ function ProductPage() {
 
         {/* ─────────── Related creators ─────────── */}
         {relatedCreators.length > 0 && (
-          <section className="mx-auto mt-14 max-w-7xl px-5 pb-14 md:mt-18 md:px-10 md:pb-20">
+          <section className="mx-auto mt-14 max-w-7xl px-5 pb-14 md:mt-16 md:px-10 md:pb-20">
             <div>
               <SectionLabel tone="clay">Other voices</SectionLabel>
               <h2 className="mt-3 font-display text-[28px] leading-tight text-charcoal md:text-[34px]">

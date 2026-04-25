@@ -83,7 +83,7 @@ export function MobileNavFab() {
       <ul className="absolute bottom-0 right-0">
         {items.map((item, i) => {
           const total = items.length;
-          const y = -72 * (i + 1);
+          const y = -58 * (i + 1);
           const isActive =
             item.to === "/"
               ? location.pathname === "/"

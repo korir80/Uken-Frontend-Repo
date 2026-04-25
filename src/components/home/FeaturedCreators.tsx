@@ -44,16 +44,16 @@ const creators: Creator[] = [
 
 export function FeaturedCreators() {
   return (
-    <section id="creators" className="bg-warm-white py-24 md:py-32">
+    <section id="creators" className="bg-warm-white py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
-        <div className="mb-14 flex flex-col gap-6 md:mb-20 md:flex-row md:items-end md:justify-between">
+        <div className="mb-9 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <SectionLabel>Meet the makers</SectionLabel>
-            <h2 className="mt-5 font-display text-[40px] leading-[1.05] tracking-tight text-charcoal md:text-6xl">
+            <h2 className="mt-3 font-display text-[34px] leading-[1.05] tracking-tight text-charcoal md:text-5xl">
               Begin with a person.{" "}
               <em className="italic text-terracotta">Not a product.</em>
             </h2>
-            <p className="mt-6 max-w-lg text-[15px] leading-relaxed text-ink-muted">
+            <p className="mt-4 max-w-lg text-[14px] leading-relaxed text-ink-muted">
               Three of the makers shaping this season's collection. Each has a
               workshop, a region, and a reason for the craft they keep alive.
             </p>

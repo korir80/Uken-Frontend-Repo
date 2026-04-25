@@ -6,6 +6,7 @@ import {
   Compass,
   Bookmark,
   User,
+  BookOpen,
   Menu,
   X,
 } from "lucide-react";
@@ -25,6 +26,7 @@ const items = [
   { label: "Home",    to: "/" as const,        icon: Home },
   { label: "Shop",    to: "/shop" as const,    icon: ShoppingBag },
   { label: "Explore", to: "/explore" as const, icon: Compass },
+  { label: "Mission", to: "/story" as const,   icon: BookOpen },
   { label: "Saved",   to: "/saved" as const,   icon: Bookmark },
   { label: "Account", to: "/account" as const, icon: User },
 ] as const;

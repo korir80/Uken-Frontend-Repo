@@ -48,8 +48,11 @@ export function StoryTrustStrip() {
 
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {stories.map((story) => (
-            <article key={story.title} className="group">
-              <Link to={story.to} className="block">
+            <article key={story.title} className="group h-full">
+              <Link
+                to={story.to}
+                className="block h-full rounded-2xl border border-border/60 bg-warm-white p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
+              >
                 <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sand-soft">
                   <LazyImage
                     src={story.image}
@@ -58,7 +61,7 @@ export function StoryTrustStrip() {
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   />
                 </div>
-                <div className="pt-5">
+                <div className="px-1 pb-2 pt-5">
                   <p className="text-xs font-medium uppercase tracking-[0.18em] text-terracotta">{story.maker}</p>
                   <h3 className="mt-2 font-display text-2xl leading-tight text-charcoal">{story.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-ink-muted">{story.text}</p>

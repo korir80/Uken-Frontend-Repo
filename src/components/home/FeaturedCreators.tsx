@@ -87,9 +87,9 @@ export function FeaturedCreators() {
 
 function CreatorCard({ creator, index }: { creator: Creator; index: number }) {
   return (
-    <article className="group h-full">
-      <div className="relative overflow-hidden rounded-2xl bg-cream">
-        <div className="aspect-[4/5] w-full">
+    <article className="group h-full rounded-2xl border border-border/60 bg-cream p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft">
+      <div className="relative overflow-hidden rounded-xl bg-sand-soft">
+        <div className="aspect-[4/3] w-full">
           <LazyImage
             src={creator.image}
             alt={`Portrait of ${creator.name}, ${creator.craft}`}
@@ -111,7 +111,7 @@ function CreatorCard({ creator, index }: { creator: Creator; index: number }) {
         </span>
       </div>
 
-      <div className="px-1 pt-6">
+      <div className="px-1 pb-2 pt-5">
         <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">
           {creator.craft}
         </p>

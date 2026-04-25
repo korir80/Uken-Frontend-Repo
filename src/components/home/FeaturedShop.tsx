@@ -56,16 +56,16 @@ export function FeaturedShop() {
               key={p.id}
               to="/products/$productId"
               params={{ productId: p.id }}
-              className="group block"
+              className="group block rounded-2xl border border-border/60 bg-cream/60 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
             >
-              <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-cream">
+              <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sand-soft">
                 <LazyImage
                   src={p.heroImage}
                   alt={p.name}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                 />
               </div>
-              <div className="mt-4 flex items-baseline justify-between">
+              <div className="mt-4 flex items-baseline justify-between gap-4 px-1 pb-1">
                 <div>
                   <h3 className="font-display text-xl text-charcoal">{p.name}</h3>
                   <p className="mt-0.5 font-sans text-[12px] text-clay">

@@ -185,8 +185,8 @@ function ProductPage() {
           {/* Two-column layout: 55 / 45 on desktop */}
           <div className="mt-6 grid gap-10 md:mt-8 md:grid-cols-[55%_45%] md:gap-12 lg:gap-16">
             {/* LEFT — Gallery */}
-            <div>
-              <div className="overflow-hidden rounded-2xl bg-cream md:h-[400px]">
+            <div className="rounded-2xl border border-border/60 bg-cream/70 p-3 shadow-[var(--shadow-card)]">
+              <div className="overflow-hidden rounded-xl bg-sand-soft md:h-[420px]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={active.src}
@@ -199,7 +199,7 @@ function ProductPage() {
                     <LazyImage
                       src={active.src}
                       alt={active.alt}
-                      ratio="1 / 1"
+                      ratio="4 / 3"
                       eager
                       wrapperClassName="md:h-full md:w-full"
                       className="md:h-full md:w-full md:object-cover"
@@ -218,7 +218,7 @@ function ProductPage() {
                     aria-label={g.alt}
                     aria-pressed={i === selected}
                     className={cn(
-                      "group relative overflow-hidden rounded-lg bg-cream transition-all",
+                      "group relative overflow-hidden rounded-lg bg-warm-white transition-all",
                       i === selected
                         ? "ring-2 ring-clay"
                         : "ring-1 ring-border/60 hover:ring-charcoal/30",
@@ -228,7 +228,7 @@ function ProductPage() {
                       src={g.src}
                       alt=""
                       loading="lazy"
-                      className="aspect-square w-full object-cover"
+                      className="aspect-[4/3] w-full object-cover"
                     />
                     {g.kind === "process" && (
                       <span className="absolute left-1.5 top-1.5 rounded-full bg-warm-white/90 px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.18em] text-clay">
@@ -238,6 +238,9 @@ function ProductPage() {
                   </button>
                 ))}
               </div>
+              <p className="px-1 pt-4 text-[12px] leading-relaxed text-ink-muted">
+                {active.alt}
+              </p>
             </div>
 
             {/* RIGHT — Details (creator first, then everything else) */}

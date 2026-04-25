@@ -21,6 +21,7 @@ import { Route as SavedRouteImport } from './routes/saved'
 import { Route as PressRouteImport } from './routes/press'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CreatorRouteImport } from './routes/creator'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BagRouteImport } from './routes/bag'
@@ -117,6 +118,11 @@ const ExploreRoute = ExploreRouteImport.update({
 const CreatorRoute = CreatorRouteImport.update({
   id: '/creator',
   path: '/creator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CollectionsRoute = CollectionsRouteImport.update({
@@ -313,6 +319,7 @@ export interface FileRoutesByFullPath {
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/collections': typeof CollectionsRoute
+  '/contact': typeof ContactRoute
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
   '/press': typeof PressRoute
@@ -362,6 +369,7 @@ export interface FileRoutesByTo {
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/collections': typeof CollectionsRoute
+  '/contact': typeof ContactRoute
   '/explore': typeof ExploreRoute
   '/press': typeof PressRoute
   '/saved': typeof SavedRoute
@@ -413,6 +421,7 @@ export interface FileRoutesById {
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/collections': typeof CollectionsRoute
+  '/contact': typeof ContactRoute
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
   '/press': typeof PressRoute
@@ -466,6 +475,7 @@ export interface FileRouteTypes {
     | '/bag'
     | '/checkout'
     | '/collections'
+    | '/contact'
     | '/creator'
     | '/explore'
     | '/press'
@@ -515,6 +525,7 @@ export interface FileRouteTypes {
     | '/bag'
     | '/checkout'
     | '/collections'
+    | '/contact'
     | '/explore'
     | '/press'
     | '/saved'
@@ -565,6 +576,7 @@ export interface FileRouteTypes {
     | '/bag'
     | '/checkout'
     | '/collections'
+    | '/contact'
     | '/creator'
     | '/explore'
     | '/press'
@@ -617,6 +629,7 @@ export interface RootRouteChildren {
   BagRoute: typeof BagRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
   CollectionsRoute: typeof CollectionsRoute
+  ContactRoute: typeof ContactRoute
   CreatorRoute: typeof CreatorRouteWithChildren
   ExploreRoute: typeof ExploreRoute
   PressRoute: typeof PressRoute
@@ -719,6 +732,13 @@ declare module '@tanstack/react-router' {
       path: '/creator'
       fullPath: '/creator'
       preLoaderRoute: typeof CreatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/collections': {
@@ -1089,6 +1109,7 @@ const rootRouteChildren: RootRouteChildren = {
   BagRoute: BagRoute,
   CheckoutRoute: CheckoutRouteWithChildren,
   CollectionsRoute: CollectionsRoute,
+  ContactRoute: ContactRoute,
   CreatorRoute: CreatorRouteWithChildren,
   ExploreRoute: ExploreRoute,
   PressRoute: PressRoute,

@@ -58,15 +58,15 @@ const artisanSteps: Step[] = [
 
 export function ProcessStrip() {
   return (
-    <section className="bg-cream py-16 md:py-20">
+    <section className="bg-cream py-12 md:py-14">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
-        <div className="mb-10 max-w-2xl md:mb-12">
+        <div className="mb-7 max-w-2xl md:mb-8">
           <SectionLabel tone="gold">How Uken works</SectionLabel>
-          <h2 className="mt-4 font-display text-[32px] leading-[1.08] tracking-tight text-charcoal md:text-[42px]">
+          <h2 className="mt-3 font-display text-[30px] leading-[1.08] tracking-tight text-charcoal md:text-[38px]">
             Two journeys.{" "}
             <em className="italic text-terracotta">One thread between them.</em>
           </h2>
-          <p className="mt-4 max-w-xl text-[14px] leading-relaxed text-ink-muted">
+          <p className="mt-3 max-w-xl text-[14px] leading-relaxed text-ink-muted">
             Uken exists for the buyer who wants to know, and the Kenyan farmer,
             artisan, and maker who deserves to be known.
           </p>
@@ -78,7 +78,7 @@ export function ProcessStrip() {
         />
 
         {/* Editorial separator */}
-        <div className="my-12 flex items-center gap-6 md:my-16">
+        <div className="my-8 flex items-center gap-6 md:my-10">
           <span className="h-px flex-1 bg-border" />
           <span className="font-display text-2xl italic text-terracotta">
             &amp;
@@ -110,10 +110,10 @@ function ProcessTrack({
 
   return (
     <div>
-      <p className="mb-10 text-[11px] uppercase tracking-[0.3em] text-ink-muted md:mb-14">
+      <p className="mb-6 text-[11px] uppercase tracking-[0.3em] text-ink-muted md:mb-8">
         — {eyebrow}
       </p>
-      <div className="grid gap-12 md:grid-cols-3 md:gap-10 lg:gap-16">
+      <div className="grid gap-8 md:grid-cols-3 md:gap-8 lg:gap-10">
         {steps.map((step, i) => (
           <div
             key={step.n}
@@ -126,12 +126,12 @@ function ProcessTrack({
               <span className="h-px flex-1 bg-border" />
             </div>
 
-            <step.Icon className="mt-8 h-12 w-12 text-clay-deep" />
+            <step.Icon className="mt-5 h-10 w-10 text-clay-deep" />
 
-            <h3 className="mt-7 font-display text-2xl leading-snug text-charcoal md:text-[28px]">
+            <h3 className="mt-5 font-display text-2xl leading-snug text-charcoal md:text-[26px]">
               {step.title}
             </h3>
-            <p className="mt-4 text-[15px] leading-relaxed text-ink-muted">
+            <p className="mt-3 text-[14px] leading-relaxed text-ink-muted">
               {step.copy}
             </p>
 

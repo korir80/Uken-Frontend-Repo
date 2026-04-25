@@ -32,21 +32,24 @@ export function CreatorProducts({ creator }: CreatorProductsProps) {
           </div>
         </Reveal>
 
-        <div className="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4 md:mt-20">
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 md:mt-20">
           {creator.products.map((product, i) => (
             <Reveal key={product.id} delay={i * 0.06}>
-              <a href={`/products/${product.id}`} className="group block">
-                <div className="relative overflow-hidden rounded-xl bg-warm-white">
+              <a
+                href={`/products/${product.id}`}
+                className="group block rounded-2xl border border-border/60 bg-warm-white p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
+              >
+                <div className="relative overflow-hidden rounded-xl bg-sand-soft">
                   <img
                     src={product.image}
                     alt={product.name}
                     width={1024}
                     height={1024}
                     loading="lazy"
-                    className="aspect-square w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                    className="aspect-[4/3] w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
                   />
                 </div>
-                <div className="mt-5 flex items-baseline justify-between gap-4">
+                <div className="mt-5 flex items-baseline justify-between gap-4 px-1">
                   <h3 className="font-display text-[22px] leading-tight text-charcoal">
                     {product.name}
                   </h3>
@@ -54,7 +57,7 @@ export function CreatorProducts({ creator }: CreatorProductsProps) {
                     {product.price}
                   </span>
                 </div>
-                <p className="mt-2 text-[14px] leading-relaxed text-ink-muted">
+                <p className="px-1 pb-1 pt-2 text-[14px] leading-relaxed text-ink-muted">
                   {product.description}
                 </p>
               </a>

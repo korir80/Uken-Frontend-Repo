@@ -58,15 +58,15 @@ const artisanSteps: Step[] = [
 
 export function ProcessStrip() {
   return (
-    <section className="bg-cream py-12 md:py-14">
+    <section className="bg-cream py-8 md:py-10">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
-        <div className="mb-7 max-w-2xl md:mb-8">
+        <div className="mb-5 max-w-2xl md:mb-6">
           <SectionLabel tone="gold">How Uken works</SectionLabel>
-          <h2 className="mt-3 font-display text-[30px] leading-[1.08] tracking-tight text-charcoal md:text-[38px]">
+          <h2 className="mt-2 font-display text-[28px] leading-[1.06] tracking-tight text-charcoal md:text-[34px]">
             Two journeys.{" "}
             <em className="italic text-terracotta">One thread between them.</em>
           </h2>
-          <p className="mt-3 max-w-xl text-[14px] leading-relaxed text-ink-muted">
+          <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-ink-muted md:text-[14px]">
             Uken exists for the buyer who wants to know, and the Kenyan farmer,
             artisan, and maker who deserves to be known.
           </p>
@@ -78,7 +78,7 @@ export function ProcessStrip() {
         />
 
         {/* Editorial separator */}
-        <div className="my-8 flex items-center gap-6 md:my-10">
+        <div className="my-5 flex items-center gap-4 md:my-6">
           <span className="h-px flex-1 bg-border" />
           <span className="font-display text-2xl italic text-terracotta">
             &amp;
@@ -110,10 +110,10 @@ function ProcessTrack({
 
   return (
     <div>
-      <p className="mb-6 text-[11px] uppercase tracking-[0.3em] text-ink-muted md:mb-8">
+      <p className="mb-4 text-[10px] uppercase tracking-[0.24em] text-ink-muted md:mb-5">
         — {eyebrow}
       </p>
-      <div className="grid gap-8 md:grid-cols-3 md:gap-8 lg:gap-10">
+      <div className="grid gap-5 md:grid-cols-3 md:gap-6 lg:gap-8">
         {steps.map((step, i) => (
           <div
             key={step.n}
@@ -126,17 +126,17 @@ function ProcessTrack({
               <span className="h-px flex-1 bg-border" />
             </div>
 
-            <step.Icon className="mt-5 h-10 w-10 text-clay-deep" />
+            <step.Icon className="mt-3 h-8 w-8 text-clay-deep" />
 
-            <h3 className="mt-5 font-display text-2xl leading-snug text-charcoal md:text-[26px]">
+            <h3 className="mt-3 font-display text-[22px] leading-snug text-charcoal md:text-[24px]">
               {step.title}
             </h3>
-            <p className="mt-3 text-[14px] leading-relaxed text-ink-muted">
+            <p className="mt-2 text-[13px] leading-relaxed text-ink-muted md:text-[14px]">
               {step.copy}
             </p>
 
             {i < steps.length - 1 && (
-              <div className="mt-8 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-ink-muted md:hidden">
+              <div className="mt-5 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-ink-muted md:hidden">
                 <span>then</span>
                 <span className="h-px w-8 bg-border" />
               </div>

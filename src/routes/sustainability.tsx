@@ -42,18 +42,18 @@ function SustainabilityPage() {
   return (
     <div className="min-h-screen bg-warm-white text-charcoal">
       <ExploreNav />
-      <main className="mx-auto max-w-7xl px-5 py-16 md:px-10 md:py-24">
+      <main className="mx-auto max-w-7xl px-5 py-10 md:px-10 md:py-14">
         <div className="max-w-3xl">
           <SectionLabel tone="gold">Stewardship</SectionLabel>
-          <h1 className="mt-4 font-display text-4xl leading-tight text-charcoal md:text-5xl">
+          <h1 className="mt-3 font-display text-[32px] leading-tight text-charcoal md:text-[42px]">
             Stewardship Over Short-Term Gain
           </h1>
         </div>
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
           {stewardship.map((item) => (
-            <Card key={item.title} tone="cream" elevation="lift" className="p-7 md:p-8">
-              <h2 className="font-display text-3xl leading-tight text-charcoal">{item.title}</h2>
-              <p className="mt-5 text-[15px] leading-relaxed text-ink-muted">{item.body}</p>
+            <Card key={item.title} tone="cream" elevation="lift" className="p-5 md:p-6">
+              <h2 className="font-display text-[26px] leading-tight text-charcoal md:text-[30px]">{item.title}</h2>
+              <p className="mt-3 text-[14px] leading-relaxed text-ink-muted">{item.body}</p>
             </Card>
           ))}
         </div>

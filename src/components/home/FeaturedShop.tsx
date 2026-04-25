@@ -28,16 +28,16 @@ export function FeaturedShop() {
   );
 
   return (
-    <section className="bg-warm-white py-20 md:py-28">
+    <section className="bg-warm-white py-12 md:py-16">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         {/* Section header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="section-label">Shop the collection</p>
-            <h2 className="mt-3 max-w-2xl font-display text-4xl leading-tight text-charcoal md:text-5xl">
+            <h2 className="mt-2 max-w-2xl font-display text-[32px] leading-tight text-charcoal md:text-[42px]">
               Kenyan goods leaving farms and studios this week.
             </h2>
-            <p className="mt-3 max-w-xl font-sans text-base leading-relaxed text-charcoal/70">
+            <p className="mt-2.5 max-w-xl font-sans text-[14px] leading-relaxed text-charcoal/70 md:text-[15px]">
               Coffee, tea, foods, textiles, and craft fresh from Kenyan hands. Every product carries its source and a fair share of every sale.
             </p>
           </div>
@@ -50,7 +50,7 @@ export function FeaturedShop() {
         </div>
 
         {/* Product grid */}
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {featured.map((p) => (
             <Link
               key={p.id}
@@ -65,7 +65,7 @@ export function FeaturedShop() {
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                 />
               </div>
-              <div className="mt-4 flex items-baseline justify-between gap-4 px-1 pb-1">
+              <div className="mt-3 flex items-baseline justify-between gap-3 px-1 pb-1">
                 <div>
                   <h3 className="font-display text-xl text-charcoal">{p.name}</h3>
                   <p className="mt-0.5 font-sans text-[12px] text-clay">
@@ -81,21 +81,21 @@ export function FeaturedShop() {
         </div>
 
         {/* Shop by category tiles */}
-        <div className="mt-20">
+        <div className="mt-10 md:mt-12">
           <p className="section-label">Shop by category</p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {CATEGORY_TILES.map((tile) => (
               <Link
                 key={tile.label}
                 to="/shop"
                 search={tile.craft ? { craft: tile.craft } : undefined}
-                className="group block rounded-2xl border border-border/60 bg-cream/50 p-6 transition hover:-translate-y-0.5 hover:border-clay hover:shadow-soft"
+                className="group block rounded-2xl border border-border/60 bg-cream/50 p-4 transition hover:-translate-y-0.5 hover:border-clay hover:shadow-soft md:p-5"
               >
                 <p className="font-display text-2xl text-charcoal">{tile.label}</p>
                 <p className="mt-2 font-sans text-[13px] text-charcoal/65">
                   {tile.tagline}
                 </p>
-                <p className="mt-6 font-sans text-[12px] text-clay">
+                <p className="mt-4 font-sans text-[12px] text-clay">
                   See products →
                 </p>
               </Link>

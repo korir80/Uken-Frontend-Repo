@@ -32,13 +32,13 @@ const socials = [
 export function Footer() {
   return (
     <footer className="bg-charcoal text-warm-white">
-      <div className="mx-auto max-w-7xl px-6 pt-20 pb-10 md:px-10 md:pt-28">
+      <div className="mx-auto max-w-7xl px-6 pt-12 pb-8 md:px-10 md:pt-16">
         {/* Tagline */}
-        <div className="mb-16 max-w-3xl md:mb-20">
+        <div className="mb-9 max-w-3xl md:mb-12">
           <p className="text-[11px] uppercase tracking-[0.28em] text-[oklch(0.85_0.08_55)]">
             — Uken
           </p>
-          <p className="mt-6 font-display text-[36px] leading-[1.1] tracking-tight text-warm-white md:text-5xl lg:text-[56px]">
+          <p className="mt-3 font-display text-[30px] leading-[1.1] tracking-tight text-warm-white md:text-[40px] lg:text-[46px]">
             Connecting hands to hearts{" "}
             <em className="italic text-[oklch(0.88_0.06_55)]">
               across continents.
@@ -49,15 +49,15 @@ export function Footer() {
         <Divider className="!bg-warm-white/15 !bg-none" />
 
         {/* Footer columns */}
-        <div className="grid gap-12 py-14 lg:grid-cols-[1fr_0.95fr_1.15fr] lg:gap-14">
+        <div className="grid gap-8 py-9 lg:grid-cols-[1fr_0.95fr_1.15fr] lg:gap-10">
           {/* Nav links */}
-          <div className="grid grid-cols-2 gap-10">
+          <div className="grid grid-cols-2 gap-6 md:gap-8">
             {navColumns.map((col) => (
               <div key={col.heading}>
                 <h4 className="text-[11px] uppercase tracking-[0.22em] text-warm-white/50">
                   {col.heading}
                 </h4>
-                <ul className="mt-5 space-y-3">
+                <ul className="mt-4 space-y-2.5">
                   {col.links.map((l) => (
                     <li key={l.label}>
                       <a
@@ -84,7 +84,7 @@ export function Footer() {
             </p>
 
             <form
-              className="mt-6 flex max-w-sm gap-2"
+                  className="mt-4 flex max-w-sm gap-2"
               onSubmit={(e) => e.preventDefault()}
             >
               <input
@@ -100,7 +100,7 @@ export function Footer() {
               </button>
             </form>
 
-            <div className="mt-10 flex flex-wrap gap-5">
+            <div className="mt-6 flex flex-wrap gap-4">
               {socials.map((s) => (
                 <a
                   key={s.label}
@@ -114,7 +114,7 @@ export function Footer() {
               ))}
             </div>
 
-            <p className="mt-6 text-[13px] text-warm-white/60 md:ml-auto">
+            <p className="mt-4 text-[13px] text-warm-white/60 md:ml-auto">
               hello@ukena.co.uk
             </p>
           </div>
@@ -123,7 +123,7 @@ export function Footer() {
             <h4 className="text-[11px] uppercase tracking-[0.22em] text-warm-white/50">
               Contact
             </h4>
-            <div className="mt-5 space-y-4 text-[14px] leading-relaxed text-warm-white/72">
+            <div className="mt-4 space-y-3 text-[13px] leading-relaxed text-warm-white/72 md:text-[14px]">
               <p>
                 <span className="block font-medium text-warm-white/90">Head Office</span>
                 Osmaston 10, NG7 1SD, Nottingham, UK | Andrew Soi: +44 7425 241649
@@ -139,7 +139,7 @@ export function Footer() {
 
         <Divider className="!bg-warm-white/15 !bg-none" />
 
-        <div className="flex flex-col items-start justify-between gap-4 pt-8 text-[11px] uppercase tracking-[0.2em] text-warm-white/45 md:flex-row md:items-center">
+        <div className="flex flex-col items-start justify-between gap-3 pt-6 text-[10px] uppercase tracking-[0.18em] text-warm-white/45 md:flex-row md:items-center">
           <span className="font-display text-2xl normal-case tracking-normal text-warm-white">
             Uken
           </span>

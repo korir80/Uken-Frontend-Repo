@@ -6,7 +6,7 @@ import savanna from "@/assets/authentic-savanna.jpg";
  */
 export function ParallaxBand() {
   return (
-    <section className="relative h-[60vh] min-h-[420px] w-full overflow-hidden bg-charcoal">
+    <section className="relative h-[42vh] min-h-[300px] w-full overflow-hidden bg-charcoal md:h-[48vh] md:min-h-[340px]">
       <div
         aria-hidden
         className="absolute inset-0 bg-cover bg-center md:bg-fixed"
@@ -20,7 +20,7 @@ export function ParallaxBand() {
         <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-warm-white/85">
           From the land they belong to
         </span>
-        <p className="mt-7 font-display text-3xl italic leading-tight text-warm-white md:text-5xl lg:text-[56px]">
+        <p className="mt-4 font-display text-[28px] italic leading-tight text-warm-white md:text-[42px] lg:text-[48px]">
           “Every piece begins where the maker stands —{" "}
           <span className="text-[oklch(0.88_0.06_55)]">in the soil, the herd, the morning light.”</span>
         </p>

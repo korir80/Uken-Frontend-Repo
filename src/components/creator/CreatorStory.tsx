@@ -19,9 +19,9 @@ export function CreatorStory({ creator }: CreatorStoryProps) {
   const closing = creator.storyParagraphs.slice(mid);
 
   return (
-    <section className="bg-warm-white py-20 md:py-32">
+    <section className="bg-warm-white py-12 md:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
-        <div className="grid gap-12 md:grid-cols-12 md:gap-16">
+        <div className="grid gap-8 md:grid-cols-12 md:gap-10 lg:gap-12">
           {/* Portrait */}
           <div className="md:col-span-5 md:sticky md:top-28 md:self-start">
             <Reveal>
@@ -36,7 +36,7 @@ export function CreatorStory({ creator }: CreatorStoryProps) {
                   className="aspect-[4/3] w-full object-cover"
                 />
               </div>
-              <figcaption className="px-1 pb-2 pt-5 text-[12px] uppercase tracking-[0.22em] text-ink-muted">
+              <figcaption className="px-1 pb-1 pt-3 text-[11px] uppercase tracking-[0.2em] text-ink-muted">
                 {creator.fullName} · {creator.region}
               </figcaption>
               </figure>
@@ -47,16 +47,16 @@ export function CreatorStory({ creator }: CreatorStoryProps) {
           <div className="md:col-span-7">
             <Reveal>
               <SectionLabel>The human story</SectionLabel>
-              <h2 className="mt-6 font-display text-[40px] leading-[1.05] tracking-tight text-charcoal md:text-[56px]">
+              <h2 className="mt-3 font-display text-[32px] leading-[1.05] tracking-tight text-charcoal md:text-[44px]">
                 Where {creator.firstName}{" "}
                 <em className="italic text-terracotta">comes from</em>.
               </h2>
             </Reveal>
 
-            <div className="mt-12 space-y-7">
+            <div className="mt-7 space-y-4 md:mt-8 md:space-y-5">
               {opening.map((para, i) => (
                 <Reveal key={`o-${i}`} delay={i * 0.05}>
-                  <p className="text-[17px] leading-[1.75] text-charcoal/85 md:text-[18px]">
+                  <p className="text-[15px] leading-[1.65] text-charcoal/85 md:text-[16px]">
                     {para}
                   </p>
                 </Reveal>
@@ -65,26 +65,26 @@ export function CreatorStory({ creator }: CreatorStoryProps) {
 
             {/* Pull quote */}
             <Reveal>
-              <figure className="my-16 border-y border-border/70 py-12 text-center md:my-20 md:py-16">
+              <figure className="my-10 border-y border-border/70 py-8 text-center md:my-12 md:py-10">
                 <span
                   aria-hidden
                   className="font-display text-7xl leading-none text-terracotta/40"
                 >
                   &ldquo;
                 </span>
-                <blockquote className="-mt-4 font-display text-[30px] italic leading-[1.25] text-charcoal md:text-[40px]">
+                <blockquote className="-mt-4 font-display text-[26px] italic leading-[1.22] text-charcoal md:text-[34px]">
                   {creator.pullQuote}
                 </blockquote>
-                <figcaption className="mt-8 text-[11px] uppercase tracking-[0.28em] text-ink-muted">
+                <figcaption className="mt-5 text-[10px] uppercase tracking-[0.24em] text-ink-muted">
                   — {creator.firstName}
                 </figcaption>
               </figure>
             </Reveal>
 
-            <div className="space-y-7">
+            <div className="space-y-4 md:space-y-5">
               {closing.map((para, i) => (
                 <Reveal key={`c-${i}`} delay={i * 0.05}>
-                  <p className="text-[17px] leading-[1.75] text-charcoal/85 md:text-[18px]">
+                  <p className="text-[15px] leading-[1.65] text-charcoal/85 md:text-[16px]">
                     {para}
                   </p>
                 </Reveal>

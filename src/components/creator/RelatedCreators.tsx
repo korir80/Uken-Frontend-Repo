@@ -17,17 +17,17 @@ export function RelatedCreators({ creator }: RelatedCreatorsProps) {
   if (creator.relatedCreators.length === 0) return null;
 
   return (
-    <section className="bg-warm-white py-24 md:py-32">
+    <section className="bg-warm-white py-12 md:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <Reveal>
           <SectionLabel>Continue the journey</SectionLabel>
-          <h2 className="mt-6 font-display text-[36px] leading-[1.05] tracking-tight text-charcoal md:text-[52px]">
+          <h2 className="mt-3 font-display text-[32px] leading-[1.05] tracking-tight text-charcoal md:text-[42px]">
             You might also{" "}
             <em className="italic text-terracotta">connect with</em>…
           </h2>
         </Reveal>
 
-        <div className="mt-14 grid gap-10 md:mt-20 md:grid-cols-2 md:gap-14">
+        <div className="mt-8 grid gap-7 md:mt-10 md:grid-cols-2 md:gap-8">
           {creator.relatedCreators.map((rel, i) => (
             <Reveal key={rel.id} delay={i * 0.08}>
               <Link
@@ -54,11 +54,11 @@ export function RelatedCreators({ creator }: RelatedCreatorsProps) {
                     </div>
                   </div>
                 </article>
-                <div className="px-1 pt-5">
-                  <p className="text-[15px] leading-relaxed text-ink-muted">
+                <div className="px-1 pt-3">
+                  <p className="text-[14px] leading-relaxed text-ink-muted">
                     {rel.hook}
                   </p>
-                  <span className="mt-4 inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.2em] text-clay">
+                  <span className="mt-3 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-clay">
                     See {rel.firstName}'s story
                     <span
                       aria-hidden

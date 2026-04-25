@@ -71,7 +71,7 @@ export function QuotePullout() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-clay-deep py-28 md:py-36">
+    <section className="relative overflow-hidden bg-clay-deep py-16 md:py-20">
       {/* Parallax photographic backdrop — fixed on desktop so foreground sections scroll over */}
       <div
         aria-hidden
@@ -100,18 +100,18 @@ export function QuotePullout() {
       />
 
       <div className="relative mx-auto max-w-4xl px-6 text-center md:px-10">
-        <QuoteGlyph className="mx-auto h-10 w-14 text-[oklch(0.85_0.08_55)] opacity-80 md:h-12 md:w-16" />
+        <QuoteGlyph className="mx-auto h-8 w-12 text-[oklch(0.85_0.08_55)] opacity-80 md:h-10 md:w-14" />
 
         <blockquote
           key={quote.name}
-          className="mt-10 animate-in fade-in duration-700"
+          className="mt-6 animate-in fade-in duration-700"
         >
-          <p className="font-display text-[30px] italic leading-[1.2] text-warm-white sm:text-4xl md:text-5xl lg:text-[56px]">
+          <p className="font-display text-[26px] italic leading-[1.2] text-warm-white sm:text-[34px] md:text-[42px] lg:text-[48px]">
             &ldquo;{quote.text}&rdquo;
           </p>
         </blockquote>
 
-        <div className="mt-12 flex flex-col items-center gap-3">
+        <div className="mt-8 flex flex-col items-center gap-2.5">
           <span className="h-px w-12 bg-[oklch(0.85_0.08_55)]/60" />
           <p className="font-display text-xl text-warm-white">{quote.name}</p>
           <p className="text-[11px] uppercase tracking-[0.28em] text-warm-white/60">

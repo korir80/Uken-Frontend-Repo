@@ -14,25 +14,25 @@ interface CreatorProductsProps {
  */
 export function CreatorProducts({ creator }: CreatorProductsProps) {
   return (
-    <section className="bg-cream py-24 md:py-32">
+    <section className="bg-cream py-12 md:py-18 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <Reveal>
-          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-10">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-8">
             <div>
               <SectionLabel>From her hands</SectionLabel>
-              <h2 className="mt-5 font-display text-[36px] leading-[1.05] tracking-tight text-charcoal md:text-[52px]">
+              <h2 className="mt-3 font-display text-[32px] leading-[1.05] tracking-tight text-charcoal md:text-[42px]">
                 From {creator.firstName}'s{" "}
                 <em className="italic text-clay">hands</em>.
               </h2>
             </div>
-            <p className="max-w-md text-[15px] leading-relaxed text-ink-muted">
+            <p className="max-w-md text-[14px] leading-relaxed text-ink-muted">
               A small selection. Each piece carries the marks of the workshop
               you just walked through.
             </p>
           </div>
         </Reveal>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 md:mt-20">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 md:mt-10">
           {creator.products.map((product, i) => (
             <Reveal key={product.id} delay={i * 0.06}>
               <a
@@ -49,15 +49,15 @@ export function CreatorProducts({ creator }: CreatorProductsProps) {
                     className="aspect-[4/3] w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
                   />
                 </div>
-                <div className="mt-5 flex items-baseline justify-between gap-4 px-1">
-                  <h3 className="font-display text-[22px] leading-tight text-charcoal">
+                <div className="mt-3 flex items-baseline justify-between gap-3 px-1">
+                  <h3 className="font-display text-[20px] leading-tight text-charcoal">
                     {product.name}
                   </h3>
                   <span className="font-display text-[18px] text-clay-deep">
                     {product.price}
                   </span>
                 </div>
-                <p className="px-1 pb-1 pt-2 text-[14px] leading-relaxed text-ink-muted">
+                <p className="px-1 pb-1 pt-1.5 text-[13px] leading-relaxed text-ink-muted">
                   {product.description}
                 </p>
               </a>
@@ -66,7 +66,7 @@ export function CreatorProducts({ creator }: CreatorProductsProps) {
         </div>
 
         <Reveal>
-          <div className="mt-16 flex justify-center md:mt-20">
+          <div className="mt-10 flex justify-center md:mt-12">
             <a
               href={`/creators/${creator.id}/pieces`}
               className="group inline-flex items-center gap-3 text-[12px] font-medium uppercase tracking-[0.22em] text-charcoal transition-colors hover:text-clay"

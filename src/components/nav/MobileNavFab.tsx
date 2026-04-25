@@ -7,6 +7,8 @@ import {
   Bookmark,
   User,
   BookOpen,
+  HeartHandshake,
+  Mail,
   Menu,
   X,
 } from "lucide-react";
@@ -27,6 +29,8 @@ const items = [
   { label: "Shop",    to: "/shop" as const,    icon: ShoppingBag },
   { label: "Explore", to: "/explore" as const, icon: Compass },
   { label: "Mission", to: "/story" as const,   icon: BookOpen },
+  { label: "Values",  to: "/sustainability" as const, icon: HeartHandshake },
+  { label: "Contact", to: "/contact" as const, icon: Mail },
   { label: "Saved",   to: "/saved" as const,   icon: Bookmark },
   { label: "Account", to: "/account" as const, icon: User },
 ] as const;

@@ -35,13 +35,13 @@ export const Route = createFileRoute("/search")({
       {
         name: "description",
         content:
-          "Search Uken: find pieces by name, craft, or material — and discover the makers behind them.",
+          "Search Uken: find Kenyan coffee, tea, foods, textiles, craft, and makers by name, region, or material.",
       },
       { property: "og:title", content: "Search — Uken" },
       {
         property: "og:description",
         content:
-          "Search the Uken marketplace for pieces, materials, regions, and makers.",
+          "Search the Uken marketplace for products, materials, regions, and makers.",
       },
     ],
   }),
@@ -398,8 +398,8 @@ function EmptyHint() {
         Start typing to search.
       </p>
       <p className="mt-3 font-sans text-[14px] leading-relaxed text-ink-muted">
-        Search across every piece in the catalogue and every maker in the
-        index — by name, craft, region, or material.
+        Search across the catalogue and every maker in the index — by name,
+        craft, region, or material.
       </p>
       <Link
         to="/explore"

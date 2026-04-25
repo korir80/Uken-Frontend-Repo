@@ -24,13 +24,13 @@ export const Route = createFileRoute("/explore")({
       {
         name: "description",
         content:
-          "Browse the artisans behind every Uken piece. Weavers, potters, beadworkers and woodcarvers — discover the people first.",
+          "Browse the Kenyan farmers, artisans, and makers behind Uken products — discover the people first.",
       },
       { property: "og:title", content: "The makers of Kenya — Uken" },
       {
         property: "og:description",
         content:
-          "Discover Kenyan artisans, the regions they work from and the stories behind their craft.",
+          "Discover Kenyan farmers, artisans, makers, the regions they work from, and the stories behind their products.",
       },
     ],
   }),
@@ -99,7 +99,7 @@ function ExplorePage() {
                   <em className="italic text-terracotta">of Kenya</em>.
                 </h1>
                 <p className="mt-2.5 text-[13px] leading-relaxed text-ink-muted md:text-sm">
-                  Seven regions. Five crafts. Begin with whoever holds your eye — the pieces will follow.
+                  Seven regions. Farms, studios, and workshops. Begin with whoever holds your eye — the products will follow.
                 </p>
               </div>
               <div className="flex shrink-0 items-end gap-8 md:gap-10">

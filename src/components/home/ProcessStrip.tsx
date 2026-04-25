@@ -17,20 +17,20 @@ interface Step {
 const buyerSteps: Step[] = [
   {
     n: "I",
-    title: "Discover a creator",
-    copy: "Begin with a person. Browse the makers, their regions, the techniques they keep alive.",
+    title: "Discover the source",
+    copy: "Begin with a person and a place. Browse makers, farmers, regions, and the methods behind each product.",
     Icon: CompassIcon,
   },
   {
     n: "II",
     title: "Feel their story",
-    copy: "Read the journal entries, see the workshop. Understand the hands before the heirloom.",
+    copy: "Read the notes, see the workshop or farm. Understand the hands before the piece, harvest, or cup.",
     Icon: ThreadIcon,
   },
   {
     n: "III",
-    title: "Own their craft",
-    copy: "Commission a piece, shipped from the workshop in Kenya to your home in the UK.",
+    title: "Bring Kenya home",
+    copy: "Choose coffee, tea, foods, textiles, or craft, shipped from Kenya to your home in the UK.",
     Icon: VesselIcon,
   },
 ];
@@ -67,8 +67,8 @@ export function ProcessStrip() {
             <em className="italic text-terracotta">One thread between them.</em>
           </h2>
           <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-ink-muted">
-            Uken exists for the buyer who wants to know, and the maker who
-            deserves to be known.
+            Uken exists for the buyer who wants to know, and the Kenyan farmer,
+            artisan, and maker who deserves to be known.
           </p>
         </div>
 

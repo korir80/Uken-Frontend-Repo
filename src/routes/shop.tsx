@@ -51,13 +51,13 @@ export const Route = createFileRoute("/shop")({
       {
         name: "description",
         content:
-          "Browse every piece in the Uken catalogue — handcrafted in Kenya, attributed to its maker, ready to ship to the UK.",
+          "Browse the Uken catalogue — specialty coffee, tea, foods, textiles, beadwork, pottery, and more from Kenya to the UK.",
       },
       { property: "og:title", content: "Shop all pieces — Uken" },
       {
         property: "og:description",
         content:
-          "Every Uken piece, in one place. Filter by craft, region, and price.",
+          "Kenyan coffee, tea, foods, textiles, beadwork, pottery, and more, in one place.",
       },
     ],
   }),
@@ -178,7 +178,7 @@ function ShopPage() {
                   <em className="italic text-terracotta">in one place</em>.
                 </h1>
                 <p className="mt-2.5 text-[13px] leading-relaxed text-ink-muted md:text-sm">
-                  Handmade in Kenya, attributed to the maker.{" "}
+                  Kenyan coffee, tea, foods, textiles, beadwork, pottery, and more — attributed to the source.{" "}
                   <Link
                     to="/explore"
                     className="font-medium text-clay underline-offset-4 transition-colors hover:text-clay-deep hover:underline"

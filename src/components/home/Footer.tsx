@@ -130,7 +130,7 @@ export function Footer() {
             <a href="/terms" className="hover:text-warm-white">Terms</a>
             <Link to="/styleguide" className="hover:text-warm-white">Style Guide</Link>
           </div>
-          <span>© {new Date().getFullYear()} Uken · London &amp; Nairobi</span>
+          <span>© {new Date().getFullYear()} Uken · Nottingham &amp; Nairobi</span>
         </div>
       </div>
     </footer>

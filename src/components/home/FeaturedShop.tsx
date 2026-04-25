@@ -6,11 +6,14 @@ import type { Craft } from "@/components/explore/creators-data";
 
 const FEATURED_IDS = ["p-mara-01", "p-kaj-01", "p-nrb-01", "p-mwi-01", "p-lam-01", "p-mara-04"];
 
-const CRAFT_TILES: { craft: Craft; label: string; tagline: string }[] = [
+const CATEGORY_TILES: { craft?: Craft; label: string; tagline: string }[] = [
   { craft: "Weaving", label: "Weaving", tagline: "Sisal, coiled by hand." },
   { craft: "Beadwork", label: "Beadwork", tagline: "Stories told in glass." },
   { craft: "Pottery", label: "Pottery", tagline: "Earth, fire, water." },
   { craft: "Leatherwork", label: "Leatherwork", tagline: "Saddle-stitched, never glued." },
+  { label: "Coffee & Tea", tagline: "Single-origin, farm to cup." },
+  { label: "Foods & Harvest", tagline: "Honey, spices, and grains." },
+  { label: "Fresh Produce", tagline: "What UK visitors still think about." },
 ];
 
 /**
@@ -32,11 +35,10 @@ export function FeaturedShop() {
           <div>
             <p className="section-label">Shop the collection</p>
             <h2 className="mt-3 max-w-2xl font-display text-4xl leading-tight text-charcoal md:text-5xl">
-              Pieces leaving studios this week.
+              Kenyan goods leaving farms and studios this week.
             </h2>
             <p className="mt-3 max-w-xl font-sans text-base leading-relaxed text-charcoal/70">
-              A handful of work fresh from the makers' hands. Every piece carries
-              its maker's name and a fair share of every sale.
+              Coffee, tea, foods, textiles, and craft fresh from Kenyan hands. Every product carries its source and a fair share of every sale.
             </p>
           </div>
           <Link
@@ -78,15 +80,15 @@ export function FeaturedShop() {
           ))}
         </div>
 
-        {/* Shop by craft tiles */}
+        {/* Shop by category tiles */}
         <div className="mt-20">
-          <p className="section-label">Shop by craft</p>
+          <p className="section-label">Shop by category</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {CRAFT_TILES.map((tile) => (
+            {CATEGORY_TILES.map((tile) => (
               <Link
-                key={tile.craft}
+                key={tile.label}
                 to="/shop"
-                search={{ craft: tile.craft }}
+                search={tile.craft ? { craft: tile.craft } : undefined}
                 className="group block rounded-2xl border border-border/60 bg-cream/50 p-6 transition hover:-translate-y-0.5 hover:border-clay hover:shadow-soft"
               >
                 <p className="font-display text-2xl text-charcoal">{tile.label}</p>
@@ -94,7 +96,7 @@ export function FeaturedShop() {
                   {tile.tagline}
                 </p>
                 <p className="mt-6 font-sans text-[12px] text-clay">
-                  See pieces →
+                  See products →
                 </p>
               </Link>
             ))}

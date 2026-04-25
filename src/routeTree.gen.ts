@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TransparencyRouteImport } from './routes/transparency'
 import { Route as StyleguideRouteImport } from './routes/styleguide'
 import { Route as StoryRouteImport } from './routes/story'
 import { Route as SignupRouteImport } from './routes/signup'
@@ -54,6 +55,11 @@ import { Route as AccountAddressesRouteImport } from './routes/account.addresses
 import { Route as AccountActivityRouteImport } from './routes/account.activity'
 import { Route as AccountOrdersOrderIdRouteImport } from './routes/account.orders.$orderId'
 
+const TransparencyRoute = TransparencyRouteImport.update({
+  id: '/transparency',
+  path: '/transparency',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
   path: '/styleguide',
@@ -290,6 +296,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/transparency': typeof TransparencyRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
@@ -333,6 +340,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/transparency': typeof TransparencyRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
@@ -380,6 +388,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
+  '/transparency': typeof TransparencyRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
@@ -428,6 +437,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/story'
     | '/styleguide'
+    | '/transparency'
     | '/account/activity'
     | '/account/addresses'
     | '/account/orders'
@@ -471,6 +481,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/story'
     | '/styleguide'
+    | '/transparency'
     | '/account/activity'
     | '/account/addresses'
     | '/account/orders'
@@ -517,6 +528,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/story'
     | '/styleguide'
+    | '/transparency'
     | '/account/activity'
     | '/account/addresses'
     | '/account/orders'
@@ -564,6 +576,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   StoryRoute: typeof StoryRoute
   StyleguideRoute: typeof StyleguideRoute
+  TransparencyRoute: typeof TransparencyRoute
   CreatorsCreatorIdRoute: typeof CreatorsCreatorIdRoute
   JoinApplyRoute: typeof JoinApplyRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
@@ -572,6 +585,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/transparency': {
+      id: '/transparency'
+      path: '/transparency'
+      fullPath: '/transparency'
+      preLoaderRoute: typeof TransparencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/styleguide': {
       id: '/styleguide'
       path: '/styleguide'
@@ -996,6 +1016,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   StoryRoute: StoryRoute,
   StyleguideRoute: StyleguideRoute,
+  TransparencyRoute: TransparencyRoute,
   CreatorsCreatorIdRoute: CreatorsCreatorIdRoute,
   JoinApplyRoute: JoinApplyRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,

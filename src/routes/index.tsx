@@ -5,6 +5,7 @@ import { StoryTrustStrip } from "@/components/home/StoryTrustStrip";
 import { FeaturedShop } from "@/components/home/FeaturedShop";
 import { FeaturedCreators } from "@/components/home/FeaturedCreators";
 import { ProcessStrip } from "@/components/home/ProcessStrip";
+import { TraceabilityStrip } from "@/components/home/TraceabilityStrip";
 import { ParallaxBand } from "@/components/home/ParallaxBand";
 import { QuotePullout } from "@/components/home/QuotePullout";
 import { ArtisanCTA } from "@/components/home/ArtisanCTA";
@@ -15,20 +16,20 @@ import { useAuth } from "@/lib/auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Uken — Story-driven craft from Kenyan artisans" },
+      { title: "Uken — Kenyan goods, traced to source" },
       {
         name: "description",
         content:
-          "A marketplace where Kenyan makers come first. Discover the artisans, then the heirlooms they handcraft for homes across the UK.",
+          "A marketplace where Kenyan farmers, artisans, and makers come first. Discover specialty foods, coffee, textiles, craft, and more for homes across the UK.",
       },
       {
         property: "og:title",
-        content: "Uken — Story-driven craft from Kenyan artisans",
+        content: "Uken — Kenyan goods, traced to source",
       },
       {
         property: "og:description",
         content:
-          "Discover the makers behind every piece. Handcrafted in Kenya, made to last a lifetime.",
+          "Discover the people behind Kenyan coffee, tea, foods, textiles, beadwork, pottery, and more.",
       },
     ],
   }),
@@ -49,6 +50,7 @@ function HomePage() {
         <FeaturedCreators />
         <ParallaxBand />
         <ProcessStrip />
+        <TraceabilityStrip />
         <QuotePullout />
         <ArtisanCTA />
       </main>

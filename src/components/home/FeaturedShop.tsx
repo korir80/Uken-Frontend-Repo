@@ -34,7 +34,7 @@ export function FeaturedShop() {
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="section-label">Shop the collection</p>
-            <h2 className="mt-2 max-w-2xl font-display text-[32px] leading-tight text-charcoal md:text-[42px]">
+            <h2 className="mt-2 max-w-2xl font-display text-[30px] leading-tight text-charcoal sm:text-[34px] md:text-[42px]">
               Kenyan goods leaving farms and studios this week.
             </h2>
             <p className="mt-2.5 max-w-xl font-sans text-[14px] leading-relaxed text-charcoal/70 md:text-[15px]">
@@ -43,7 +43,7 @@ export function FeaturedShop() {
           </div>
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 font-sans text-sm font-medium text-clay underline-offset-4 hover:underline"
+              className="inline-flex min-h-[44px] items-center gap-2 font-sans text-sm font-medium text-clay underline-offset-4 hover:underline"
           >
             Browse the full shop →
           </Link>
@@ -56,7 +56,7 @@ export function FeaturedShop() {
               key={p.id}
               to="/products/$productId"
               params={{ productId: p.id }}
-              className="group block rounded-2xl border border-border/60 bg-cream/60 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
+                className="group block rounded-2xl border border-border/60 bg-cream/85 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
             >
               <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sand-soft">
                 <LazyImage
@@ -89,7 +89,7 @@ export function FeaturedShop() {
                 key={tile.label}
                 to="/shop"
                 search={tile.craft ? { craft: tile.craft } : undefined}
-                className="group block rounded-2xl border border-border/60 bg-cream/50 p-4 transition hover:-translate-y-0.5 hover:border-clay hover:shadow-soft md:p-5"
+                className="group block rounded-2xl border border-border/60 bg-cream/85 p-4 transition hover:-translate-y-0.5 hover:border-clay hover:shadow-soft md:p-5"
               >
                 <p className="font-display text-2xl text-charcoal">{tile.label}</p>
                 <p className="mt-2 font-sans text-[13px] text-charcoal/65">

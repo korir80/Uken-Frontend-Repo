@@ -210,7 +210,7 @@ function ShopPage() {
         </section>
 
         {/* Slim filter bar — single row, products visible immediately below */}
-        <section className="sticky top-[60px] z-40 border-y border-border/60 bg-warm-white/95 backdrop-blur-md md:top-[76px]">
+        <section className="sticky top-[64px] z-40 border-y border-border/60 bg-warm-white/95 backdrop-blur-md md:top-[76px]">
           <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-2.5 md:px-10 md:py-3">
             {/* Mobile: single trigger that opens the sheet */}
             <button
@@ -339,7 +339,7 @@ function ShopPage() {
         <section className="bg-warm-white pb-10 pt-6 md:pb-20 md:pt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10">
             {isLoading && shown.length === 0 ? (
-              <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-8 md:gap-y-12">
+              <div className="grid grid-cols-1 gap-x-4 gap-y-8 min-[380px]:grid-cols-2 md:grid-cols-3 md:gap-x-8 md:gap-y-12">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i}>
                     <div className="aspect-[4/5] w-full animate-pulse rounded-2xl bg-cream" />
@@ -367,7 +367,7 @@ function ShopPage() {
             ) : (
               <>
                 {/* Mobile: clean 2-col grid */}
-                <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:hidden">
+                <div className="grid grid-cols-1 gap-x-4 gap-y-8 min-[380px]:grid-cols-2 md:hidden">
                   {shown.map((product, i) => (
                     <ShopProductCard
                       key={product.id}

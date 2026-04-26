@@ -147,9 +147,9 @@ export function HomeArtPattern() {
           key={`${motif.kind}-${index}`}
           viewBox="0 0 96 96"
           fill="none"
-          className={`absolute block text-clay/25 opacity-75 ${motif.className}`}
+          className={`absolute block text-clay/15 opacity-45 md:text-clay/25 md:opacity-75 ${motif.className}`}
           stroke="currentColor"
-          strokeWidth="1.45"
+          strokeWidth="1.35"
           strokeLinecap="round"
           strokeLinejoin="round"
         >

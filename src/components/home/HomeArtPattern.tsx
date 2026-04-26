@@ -75,15 +75,15 @@ function Motif({ kind }: { kind: MotifKind }) {
 
 export function HomeArtPattern() {
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-20 overflow-hidden mix-blend-multiply">
       {motifs.map((motif, index) => (
         <svg
           key={`${motif.kind}-${index}`}
           viewBox="0 0 96 96"
           fill="none"
-          className={`absolute hidden text-clay/10 sm:block ${motif.className}`}
+          className={`absolute block text-clay/20 opacity-70 ${motif.className}`}
           stroke="currentColor"
-          strokeWidth="1.15"
+          strokeWidth="1.25"
           strokeLinecap="round"
           strokeLinejoin="round"
         >

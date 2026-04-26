@@ -40,7 +40,7 @@ export function CreatorCard({ creator, index }: CreatorCardProps) {
           </span>
 
           {/* Craft chip */}
-          <span className="absolute right-5 top-5 rounded-full bg-warm-white/90 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-clay backdrop-blur">
+          <span className="absolute right-4 top-4 max-w-[52%] truncate rounded-full bg-warm-white/90 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-clay backdrop-blur sm:right-5 sm:top-5 sm:tracking-[0.22em]">
             {creator.craft}
           </span>
 
@@ -50,7 +50,7 @@ export function CreatorCard({ creator, index }: CreatorCardProps) {
               <p className="font-display text-[28px] leading-none text-warm-white md:text-[32px]">
                 {creator.firstName}
               </p>
-              <p className="mt-2 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-warm-white/80">
+              <p className="mt-2 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-warm-white/80 sm:tracking-[0.22em]">
                 <span className="h-px w-4 bg-warm-white/70" />
                 {creator.region}
               </p>

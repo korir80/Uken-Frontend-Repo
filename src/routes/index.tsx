@@ -10,6 +10,7 @@ import { ParallaxBand } from "@/components/home/ParallaxBand";
 import { QuotePullout } from "@/components/home/QuotePullout";
 import { ArtisanCTA } from "@/components/home/ArtisanCTA";
 import { Footer } from "@/components/home/Footer";
+import { HomeArtPattern } from "@/components/home/HomeArtPattern";
 import { PersonalisedHome } from "@/components/home/PersonalisedHome";
 import { useAuth } from "@/lib/auth";
 
@@ -41,9 +42,10 @@ function HomePage() {
   const showPersonalised = !isLoading && isAuthenticated && user?.role === "ROLE_BUYER";
 
   return (
-    <div className="min-h-screen bg-warm-white text-charcoal">
+    <div className="relative min-h-screen overflow-hidden bg-warm-white text-charcoal">
+      <HomeArtPattern />
       <NavBar />
-      <main>
+      <main className="relative z-10">
         {showPersonalised && user ? <PersonalisedHome user={user} /> : <Hero />}
         <StoryTrustStrip />
         <FeaturedShop />

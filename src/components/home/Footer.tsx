@@ -85,13 +85,13 @@ export function Footer() {
             </p>
 
             <form
-                  className="mt-4 flex max-w-sm gap-2"
+              className="mt-4 flex max-w-sm flex-col gap-2 min-[360px]:flex-row"
               onSubmit={(e) => e.preventDefault()}
             >
               <input
                 type="email"
                 placeholder="your@email.co.uk"
-                className="h-11 flex-1 rounded-md border border-warm-white/20 bg-transparent px-4 text-sm text-warm-white placeholder:text-warm-white/40 focus:border-[oklch(0.85_0.08_55)] focus:outline-none"
+                className="h-11 min-w-0 flex-1 rounded-md border border-warm-white/20 bg-transparent px-4 text-sm text-warm-white placeholder:text-warm-white/40 focus:border-[oklch(0.85_0.08_55)] focus:outline-none"
               />
               <button
                 type="submit"
@@ -144,7 +144,7 @@ export function Footer() {
           <span className="font-display text-2xl normal-case tracking-normal text-warm-white">
             UKEN
           </span>
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
             <a href="/privacy" className="hover:text-warm-white">Privacy</a>
             <a href="/terms" className="hover:text-warm-white">Terms</a>
             <Link to="/styleguide" className="hover:text-warm-white">Style Guide</Link>

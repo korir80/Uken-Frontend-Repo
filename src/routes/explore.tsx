@@ -117,7 +117,7 @@ function ExplorePage() {
         </section>
 
         {/* Slim filter strip — single row, cards visible immediately below */}
-        <section className="sticky top-[60px] z-40 border-y border-border/60 bg-warm-white/95 backdrop-blur-md md:top-[76px]">
+        <section className="sticky top-[64px] z-40 border-y border-border/60 bg-warm-white/95 backdrop-blur-md md:top-[76px]">
           <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-2.5 md:px-10 md:py-3">
             <button
               type="button"
@@ -131,7 +131,7 @@ function ExplorePage() {
                 <SlidersHorizontal className="h-4 w-4" />
                 Filter & Sort
               </span>
-              <span className="rounded-full bg-charcoal px-2 py-0.5 text-[11px] font-medium tabular-nums text-warm-white">
+              <span className="max-w-[45%] truncate rounded-full bg-charcoal px-2 py-0.5 text-[11px] font-medium tabular-nums text-warm-white">
                 {filter === "All" ? "All" : filter}
               </span>
             </button>

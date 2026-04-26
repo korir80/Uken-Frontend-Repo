@@ -46,7 +46,7 @@ export function StoryTrustStrip() {
           </p>
         </div>
 
-        <div className="mt-7 grid gap-4 border-y border-border/70 py-5 text-[13px] leading-relaxed text-ink-muted md:grid-cols-4 md:text-sm">
+        <div className="mt-7 grid gap-5 border-y border-border/70 py-5 text-[14px] leading-relaxed text-ink-muted sm:grid-cols-2 md:grid-cols-4 md:text-sm">
           <p><span className="block font-medium text-charcoal">Mission</span>To empower Kenyan farmers, artisans, and craftsmen by bridging the gap to the UK market through direct, transparent, and sustainable trade — ensuring exceptional skill and quality are rewarded with equitable value.</p>
           <p><span className="block font-medium text-charcoal">Vision</span>To be the premier gateway for Kenyan excellence in the United Kingdom, recognised for an unbroken chain of traceability connecting UK buyers directly to the farmers, artisans, and craftsmen behind the finest agricultural and hand-crafted goods.</p>
           <p><span className="block font-medium text-charcoal">Core Values</span>Transparency, fair value for makers, traceable Kenyan excellence, and long-term stewardship.</p>
@@ -58,7 +58,7 @@ export function StoryTrustStrip() {
             <article key={story.title} className="group h-full">
               <Link
                 to={story.to}
-                className="block h-full rounded-2xl border border-border/60 bg-warm-white p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
+                className="block h-full rounded-2xl border border-border/60 bg-warm-white/85 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
               >
                 <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sand-soft">
                   <LazyImage

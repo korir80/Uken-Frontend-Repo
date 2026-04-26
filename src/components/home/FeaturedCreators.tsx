@@ -68,12 +68,12 @@ export function FeaturedCreators() {
         </div>
 
         {/* Cards: horizontal scroll on mobile, grid on md+ */}
-        <div className="-mx-6 overflow-x-auto pb-4 md:mx-0 md:overflow-visible md:pb-0">
-          <ul className="flex w-max gap-4 px-6 md:grid md:w-full md:grid-cols-3 md:gap-6 md:px-0">
+        <div className="pb-4 md:pb-0">
+          <ul className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
             {creators.map((c, i) => (
               <li
                 key={c.id}
-                className="w-[280px] shrink-0 sm:w-[320px] md:w-auto"
+                className="min-w-0"
               >
                 <CreatorCard creator={c} index={i} />
               </li>
@@ -87,7 +87,7 @@ export function FeaturedCreators() {
 
 function CreatorCard({ creator, index }: { creator: Creator; index: number }) {
   return (
-    <article className="group h-full rounded-2xl border border-border/60 bg-cream p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft">
+    <article className="group h-full rounded-2xl border border-border/60 bg-cream/90 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft">
       <div className="relative overflow-hidden rounded-xl bg-sand-soft">
         <div className="aspect-[4/3] w-full">
           <LazyImage

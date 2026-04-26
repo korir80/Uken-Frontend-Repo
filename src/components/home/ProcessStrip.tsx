@@ -59,7 +59,7 @@ const artisanSteps: Step[] = [
 export function ProcessStrip() {
   return (
     <section className="bg-cream py-8 md:py-10">
-      <div className="mx-auto max-w-7xl px-6 md:px-10">
+      <div className="mx-auto max-w-7xl px-5 md:px-10">
         <div className="mb-5 max-w-2xl md:mb-6">
           <SectionLabel tone="gold">How UKEN works</SectionLabel>
           <h2 className="mt-2 font-display text-[28px] leading-[1.06] tracking-tight text-charcoal md:text-[34px]">
@@ -113,11 +113,11 @@ function ProcessTrack({
       <p className="mb-4 text-[10px] uppercase tracking-[0.24em] text-ink-muted md:mb-5">
         — {eyebrow}
       </p>
-      <div className="grid gap-5 md:grid-cols-3 md:gap-6 lg:gap-8">
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:gap-8">
         {steps.map((step, i) => (
           <div
             key={step.n}
-            className="relative md:border-l md:border-border md:pl-8 first:md:border-l-0 first:md:pl-0"
+            className="relative min-w-0 rounded-2xl bg-cream/65 p-4 ring-1 ring-border/55 sm:bg-transparent sm:p-0 sm:ring-0 md:border-l md:border-border md:pl-8 first:md:border-l-0 first:md:pl-0"
           >
             <div className="flex items-baseline gap-4">
               <span className={`font-display text-3xl ${numeralColor}`}>

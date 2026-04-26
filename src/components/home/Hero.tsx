@@ -24,20 +24,18 @@ export function Hero() {
 
       {/* Content shell — snug, vertically centred */}
       <div
-        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-16 md:px-10 md:py-20"
-        style={{ minHeight: "max(600px, calc(100svh - 112px))" }}
+        className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-center px-6 pb-20 pt-24 md:px-10 md:py-20"
+        style={{ minHeight: "clamp(560px, 92svh, 720px)" }}
       >
         {/* LEFT — copy block, tight grouping */}
         <div className="max-w-[600px] md:pl-[44px]">
-          <h1 className="m-0 max-w-[680px] font-display text-5xl font-light leading-tight text-warm-white md:text-6xl">
+          <h1 className="m-0 max-w-[680px] font-display text-[46px] font-light leading-[1.02] text-warm-white sm:text-5xl md:text-6xl">
             Kenya,
             <span className="block italic text-gold-soft">brought home.</span>
           </h1>
 
           {/* Sub-copy */}
-          <p
-            className="mb-7 mt-5 max-w-[420px] font-sans text-base font-light leading-relaxed text-warm-white/68"
-          >
+          <p className="mb-7 mt-5 max-w-[420px] font-sans text-[15px] font-light leading-relaxed text-warm-white/72 sm:text-base">
             From the farmers, artisans, and makers of Kenya — to your home in the UK.
           </p>
 
@@ -45,7 +43,7 @@ export function Hero() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             <Link
               to="/shop"
-              className="group/cta inline-flex items-center justify-center rounded-sm bg-gold-soft px-7 py-3 font-sans text-xs font-medium uppercase leading-none tracking-[0.08em] text-charcoal transition-colors hover:bg-gold"
+              className="group/cta inline-flex min-h-[48px] items-center justify-center rounded-sm bg-gold-soft px-6 py-3 font-sans text-[12px] font-medium uppercase leading-none tracking-[0.08em] text-charcoal transition-colors hover:bg-gold sm:px-7"
             >
               Shop collection
               <ArrowRight className="ml-2 h-3.5 w-3.5" strokeWidth={2} />
@@ -53,7 +51,7 @@ export function Hero() {
 
             <Link
               to="/explore"
-              className="group/meet inline-flex items-center py-3 font-sans text-xs font-normal uppercase leading-none tracking-[0.07em] text-warm-white/50 transition-colors hover:text-warm-white/85"
+              className="group/meet inline-flex min-h-[44px] items-center py-3 font-sans text-xs font-normal uppercase leading-none tracking-[0.07em] text-warm-white/60 transition-colors hover:text-warm-white/85"
             >
               <span
                 aria-hidden

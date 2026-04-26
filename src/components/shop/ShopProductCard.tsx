@@ -40,7 +40,7 @@ export function ShopProductCard({
     product.heroImage;
 
   return (
-    <article className="group flex h-full flex-col rounded-2xl border border-border/60 bg-cream/60 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft">
+    <article className="group flex h-full flex-col rounded-2xl border border-border/60 bg-cream/90 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft">
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-sand-soft">
         {/* Base image — the finished piece */}
         <Link
@@ -116,8 +116,8 @@ export function ShopProductCard({
       </div>
 
       <div className="flex flex-1 flex-col px-1 pb-1 pt-4 md:pt-5">
-        <div className="flex items-baseline justify-between gap-3">
-          <h3 className="font-display text-[17px] leading-tight text-charcoal md:text-[22px]">
+        <div className="flex flex-col gap-1 min-[380px]:flex-row min-[380px]:items-baseline min-[380px]:justify-between min-[380px]:gap-3">
+          <h3 className="font-display text-[20px] leading-tight text-charcoal min-[380px]:text-[17px] md:text-[22px]">
             <Link
               to="/products/$productId"
               params={{ productId: product.id }}
@@ -126,7 +126,7 @@ export function ShopProductCard({
               {product.name}
             </Link>
           </h3>
-          <span className="shrink-0 font-display text-[16px] tabular-nums text-clay-deep md:text-[18px]">
+          <span className="shrink-0 font-display text-[17px] tabular-nums text-clay-deep min-[380px]:text-[16px] md:text-[18px]">
             {formatGBP(product.pricePence)}
           </span>
         </div>

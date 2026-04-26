@@ -119,7 +119,7 @@ export function MobileNavFab() {
                 <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
                 <span
                   className={cn(
-                    "pointer-events-none absolute right-13 whitespace-nowrap rounded-full bg-charcoal/90 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-warm-white transition-opacity duration-200",
+                    "pointer-events-none absolute right-[52px] whitespace-nowrap rounded-full bg-charcoal/90 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-warm-white transition-opacity duration-200",
                     open ? "opacity-100" : "opacity-0",
                   )}
                   style={{ transitionDelay: open ? `${200 + i * 40}ms` : "0ms" }}
@@ -139,7 +139,7 @@ export function MobileNavFab() {
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
         className={cn(
-          "relative grid h-13 w-13 place-items-center rounded-full shadow-[0_10px_30px_-8px_rgba(0,0,0,0.45)] transition-all duration-300",
+          "relative grid h-[52px] w-[52px] place-items-center rounded-full shadow-[0_10px_30px_-8px_rgba(0,0,0,0.45)] transition-all duration-300",
           open
             ? "rotate-90 bg-charcoal text-warm-white"
             : "bg-clay text-warm-white hover:bg-clay-deep",

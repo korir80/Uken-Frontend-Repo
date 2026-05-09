@@ -15,7 +15,7 @@ const CATEGORY_TILES: { craft?: Craft; label: string; tagline: string }[] = [
 ];
 
 export function FeaturedShop() {
-  const { data: all = [], isLoading } = useAllProducts();
+  const { data: all, isLoading } = useAllProducts();
   const featured = Array.isArray(all) ? all.slice(0, 6) : [];
 
   return (
@@ -46,6 +46,7 @@ export function FeaturedShop() {
               <div key={i} className="rounded-2xl border border-border/60 bg-cream/85 p-3">
                 <div className="aspect-[4/3] w-full animate-pulse rounded-xl bg-cream" />
                 <div className="mt-3 h-5 w-2/3 animate-pulse rounded bg-cream" />
+                <div className="mt-1.5 h-3.5 w-1/3 animate-pulse rounded bg-cream" />
               </div>
             ))}
           </div>
@@ -72,7 +73,9 @@ export function FeaturedShop() {
                 <div className="mt-3 flex items-baseline justify-between gap-3 px-1 pb-1">
                   <div>
                     <h3 className="font-display text-xl text-charcoal">{p.name}</h3>
-                    {/* <p className="mt-0.5 font-sans text-[12px] text-clay"></p> */}
+                    {p.creator?.firstName && (
+                      <p className="mt-0.5 font-sans text-[12px] text-clay">by {p.creator.firstName}</p>
+                    )}
                   </div>
                   <span className="font-sans text-base text-charcoal">{formatGBP(p.pricePence)}</span>
                 </div>

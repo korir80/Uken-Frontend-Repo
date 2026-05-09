@@ -201,8 +201,9 @@ function PaymentStep() {
         <button
           type="submit"
           disabled={submitting}
-          className="inline-flex h-12 w-full items-center justify-center rounded-md bg-terracotta px-8 text-[14px] font-medium tracking-wide text-warm-white transition-all hover:bg-[oklch(0.52_0.13_38)] disabled:opacity-70"
+          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-terracotta px-8 text-[14px] font-medium tracking-wide text-warm-white transition-all hover:bg-[oklch(0.52_0.13_38)] disabled:cursor-not-allowed disabled:opacity-70"
         >
+          {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
           {submitting
             ? "Placing your order…"
             : `Place order · ${formatPrice(totalPence)}`}

@@ -1,12 +1,6 @@
 /**
- * Auth context for Uken.
- *
- * Stores { user, token, role } in React context, persists the JWT in
- * localStorage as a fallback (preferred path is the httpOnly cookie set
- * by the Spring Boot backend — `withCredentials: true` is already on
- * the axios client). Registers itself with the api module so the
- * request interceptor can attach the Bearer token, and the 401 handler
- * can boot the user back to /signin.
+ * Auth context for Uken — wired to the real Spring Boot backend via
+ * src/services/auth.ts and the fetch wrapper in src/services/api.ts.
  */
 import {
   createContext,
@@ -14,135 +8,90 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
+import { authService } from "@/services/auth";
 import {
-  authService,
-  cartService,
+  ApiError,
+  clearToken,
+  getToken,
   registerUnauthorizedHandler,
-  savedService,
-  setAuthToken,
-  type AuthUser,
-  type RegisterPayload,
-  type UserRole,
-} from "@/services";
+  setToken,
+} from "@/services/api";
+import type { AuthResponse, AuthUserDto } from "@/types/api";
+
+type Role = AuthUserDto["role"];
 
 interface AuthContextValue {
-  user: AuthUser | null;
-  token: string | null;
-  role: UserRole | null;
+  user: AuthUserDto | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<AuthUser>;
-  register: (data: RegisterPayload) => Promise<AuthUser>;
-  logout: () => Promise<void>;
+  isBuyer: boolean;
+  isCreator: boolean;
+  isAdmin: boolean;
+  login: (email: string, password: string) => Promise<AuthUserDto>;
+  register: (email: string, password: string, fullName: string) => Promise<AuthUserDto>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const STORAGE_KEY = "ukena.auth";
-
-interface PersistedAuth {
-  token: string;
-  user: AuthUser;
-}
-
-function readPersisted(): PersistedAuth | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw) as PersistedAuth;
-  } catch {
-    return null;
-  }
-}
-
-function writePersisted(value: PersistedAuth | null) {
-  if (typeof window === "undefined") return;
-  if (value) {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
-  } else {
-    window.localStorage.removeItem(STORAGE_KEY);
-  }
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<AuthUserDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // Hydrate from storage on mount
+  // Keep the latest navigate reference inside the 401 handler without
+  // re-registering on every render.
+  const navigateRef = useRef(navigate);
   useEffect(() => {
-    const persisted = readPersisted();
-    if (persisted) {
-      setUser(persisted.user);
-      setToken(persisted.token);
-      setAuthToken(persisted.token);
-    }
-    setIsLoading(false);
-  }, []);
+    navigateRef.current = navigate;
+  }, [navigate]);
 
-  const logout = useCallback(async () => {
-    await authService.logout();
-    setUser(null);
-    setToken(null);
-    setAuthToken(null);
-    writePersisted(null);
-    // Drop the local cart + saved snapshots on logout so the next visitor
-    // on this device doesn't inherit them.
-    if (typeof window !== "undefined") {
-      try {
-        window.localStorage.removeItem("ukena.cart.v1");
-        window.localStorage.removeItem("ukena.saved_products");
-        window.localStorage.removeItem("ukena.saved_creators");
-      } catch {
-        /* ignore */
+  // Hydrate from existing token on mount.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const token = getToken();
+      if (!token) {
+        setIsLoading(false);
+        return;
       }
-    }
+      try {
+        const me = await authService.me();
+        if (!cancelled) setUser(me);
+      } catch (err) {
+        if (err instanceof ApiError && err.status === 401) {
+          clearToken();
+          if (!cancelled) setUser(null);
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  // Wire the 401 → sign-out + redirect handler
+  // Wire 401 → sign-out + redirect.
   useEffect(() => {
     registerUnauthorizedHandler(() => {
+      clearToken();
       setUser(null);
-      setToken(null);
-      writePersisted(null);
-      if (typeof window !== "undefined" && window.location.pathname !== "/signin") {
-        window.location.assign("/signin");
-      }
+      toast.error("Session expired");
+      navigateRef.current({ to: "/signin" });
     });
   }, []);
 
-  const applySession = useCallback((session: { token: string; user: AuthUser }) => {
-    setUser(session.user);
+  const applySession = useCallback((session: AuthResponse) => {
     setToken(session.token);
-    setAuthToken(session.token);
-    writePersisted({ token: session.token, user: session.user });
-
-    // Best-effort post-login sync: merge guest cart + saved selections with
-    // whatever the server already has. Failures are non-fatal — the user
-    // is signed in regardless.
-    void (async () => {
-      try {
-        // Cart: read the local snapshot persisted by lib/cart.tsx.
-        if (typeof window !== "undefined") {
-          const raw = window.localStorage.getItem("ukena.cart.v1");
-          if (raw) {
-            const parsed = JSON.parse(raw) as { items?: unknown[] };
-            const items = Array.isArray(parsed.items) ? parsed.items : [];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            await cartService.syncOnLogin(items as any);
-          }
-        }
-        await savedService.syncOnLogin();
-      } catch {
-        /* swallow — sync is best-effort */
-      }
-    })();
-
+    setUser(session.user);
     return session.user;
   }, []);
 
@@ -155,26 +104,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const register = useCallback(
-    async (data: RegisterPayload) => {
-      const session = await authService.register(data);
+    async (email: string, password: string, fullName: string) => {
+      const session = await authService.register(email, password, fullName);
       return applySession(session);
     },
     [applySession],
   );
 
-  const value = useMemo<AuthContextValue>(
-    () => ({
+  const logout = useCallback(() => {
+    clearToken();
+    setUser(null);
+    navigate({ to: "/signin" });
+  }, [navigate]);
+
+  const value = useMemo<AuthContextValue>(() => {
+    const role: Role | null = user?.role ?? null;
+    return {
       user,
-      token,
-      role: user?.role ?? null,
-      isAuthenticated: !!user && !!token,
+      isAuthenticated: !!user,
       isLoading,
+      isBuyer: role === "ROLE_BUYER",
+      isCreator: role === "ROLE_CREATOR",
+      isAdmin: role === "ROLE_ADMIN",
       login,
       register,
       logout,
-    }),
-    [user, token, isLoading, login, register, logout],
-  );
+    };
+  }, [user, isLoading, login, register, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
@@ -185,15 +141,8 @@ export function useAuth(): AuthContextValue {
   return ctx;
 }
 
-/**
- * Default landing path per role — used by the post-login redirect logic.
- *
- * Mock email convention (while Spring Boot is offline):
- *   *@admin.ukena    → /admin
- *   *@creator.ukena  → /creator
- *   *@buyer.ukena    → /account
- */
-export function defaultPathForRole(role: UserRole | null): string {
+/** Default landing path per role — used by post-login redirect logic. */
+export function defaultPathForRole(role: Role | null | undefined): string {
   if (role === "ROLE_ADMIN") return "/admin";
   if (role === "ROLE_CREATOR") return "/creator";
   if (role === "ROLE_BUYER") return "/account";

@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth, defaultPathForRole } from "@/lib/auth";
+import { handleApiError } from "@/lib/handleApiError";
 
 export const Route = createFileRoute("/signin")({
   head: () => ({
@@ -41,22 +43,39 @@ function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
-    if (!email.trim()) return setError("Email is required");
-    if (!password.trim()) return setError("Password is required");
+    setEmailError(null);
+    setPasswordError(null);
+    setFormError(null);
+    if (!email.trim()) return setEmailError("Email is required");
+    if (!password.trim()) return setPasswordError("Password is required");
     setSubmitting(true);
     try {
       const user = await login(email.trim(), password);
       toast.success(`Welcome back, ${user.fullName.split(" ")[0]}`);
       navigate({ to: defaultPathForRole(user.role) });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Sign-in failed";
-      setError(msg);
-      toast.error(msg);
+      handleApiError(err, {
+        // Wrong credentials → inline under password, no toast, no redirect.
+        overrides: {
+          401: () => {
+            setPasswordError("Invalid email or password");
+            return true;
+          },
+        },
+        onFieldErrors: ({ fields, general }) => {
+          if (fields.email?.[0]) setEmailError(fields.email[0]);
+          if (fields.password?.[0]) setPasswordError(fields.password[0]);
+          if (general[0] && !fields.email && !fields.password) {
+            setFormError(general[0]);
+          }
+        },
+      });
     } finally {
       setSubmitting(false);
     }
@@ -82,7 +101,7 @@ function SignInPage() {
             our backend is in development.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5" noValidate>
             <label className="block">
               <span className="block font-sans text-[13px] font-medium text-charcoal">
                 Email
@@ -94,8 +113,12 @@ function SignInPage() {
                 placeholder="you@buyer.ukena"
                 className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-sm text-charcoal outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/15"
                 autoComplete="email"
+                aria-invalid={!!emailError}
                 required
               />
+              {emailError && (
+                <p className="mt-1.5 font-sans text-[12px] text-destructive">{emailError}</p>
+              )}
             </label>
             <label className="block">
               <span className="block font-sans text-[13px] font-medium text-charcoal">
@@ -108,19 +131,24 @@ function SignInPage() {
                 placeholder="any non-empty value"
                 className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-sm text-charcoal outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/15"
                 autoComplete="current-password"
+                aria-invalid={!!passwordError}
                 required
               />
+              {passwordError && (
+                <p className="mt-1.5 font-sans text-[12px] text-destructive">{passwordError}</p>
+              )}
             </label>
 
-            {error && (
-              <p className="font-sans text-[13px] text-destructive">{error}</p>
+            {formError && (
+              <p className="font-sans text-[13px] text-destructive">{formError}</p>
             )}
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-full bg-clay px-6 py-3 font-sans text-sm font-medium text-warm-white transition-colors hover:bg-clay-deep disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-clay px-6 py-3 font-sans text-sm font-medium text-warm-white transition-colors hover:bg-clay-deep disabled:cursor-not-allowed disabled:opacity-60"
             >
+              {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
               {submitting ? "Signing in…" : "Sign in"}
             </button>
           </form>

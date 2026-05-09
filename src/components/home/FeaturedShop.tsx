@@ -28,12 +28,13 @@ export function FeaturedShop() {
               Kenyan goods leaving farms and studios this week.
             </h2>
             <p className="mt-2.5 max-w-xl font-sans text-[14px] leading-relaxed text-charcoal/70 md:text-[15px]">
-              Coffee, tea, foods, textiles, and craft fresh from Kenyan hands. Every product carries its source and a fair share of every sale.
+              Coffee, tea, foods, textiles, and craft fresh from Kenyan hands. Every product carries its source and a
+              fair share of every sale.
             </p>
           </div>
           <Link
             to="/shop"
-              className="inline-flex min-h-[44px] items-center gap-2 font-sans text-sm font-medium text-clay underline-offset-4 hover:underline"
+            className="inline-flex min-h-[44px] items-center gap-2 font-sans text-sm font-medium text-clay underline-offset-4 hover:underline"
           >
             Browse the full shop →
           </Link>
@@ -59,7 +60,7 @@ export function FeaturedShop() {
                 key={p.id}
                 to="/products/$productId"
                 params={{ productId: p.id }}
-                  className="group block rounded-2xl border border-border/60 bg-cream/85 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
+                className="group block rounded-2xl border border-border/60 bg-cream/85 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
               >
                 <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sand-soft">
                   <LazyImage
@@ -71,13 +72,9 @@ export function FeaturedShop() {
                 <div className="mt-3 flex items-baseline justify-between gap-3 px-1 pb-1">
                   <div>
                     <h3 className="font-display text-xl text-charcoal">{p.name}</h3>
-                    <p className="mt-0.5 font-sans text-[12px] text-clay">
-                      by {p.creator.firstName} · {p.creator.region}
-                    </p>
+                    <p className="mt-0.5 font-sans text-[12px] text-clay">by {p.creatorName}</p>
                   </div>
-                  <span className="font-sans text-base text-charcoal">
-                    {formatGBP(p.pricePence)}
-                  </span>
+                  <span className="font-sans text-base text-charcoal">{formatGBP(p.pricePence)}</span>
                 </div>
               </Link>
             ))}
@@ -95,12 +92,8 @@ export function FeaturedShop() {
                 className="group block rounded-2xl border border-border/60 bg-cream/85 p-4 transition hover:-translate-y-0.5 hover:border-clay hover:shadow-soft md:p-5"
               >
                 <p className="font-display text-2xl text-charcoal">{tile.label}</p>
-                <p className="mt-2 font-sans text-[13px] text-charcoal/65">
-                  {tile.tagline}
-                </p>
-                <p className="mt-4 font-sans text-[12px] text-clay">
-                  See products →
-                </p>
+                <p className="mt-2 font-sans text-[13px] text-charcoal/65">{tile.tagline}</p>
+                <p className="mt-4 font-sans text-[12px] text-clay">See products →</p>
               </Link>
             ))}
           </div>

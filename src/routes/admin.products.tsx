@@ -79,25 +79,8 @@ function AdminProducts() {
                         }
                       />
                     </td>
-                    <td className="px-4 py-3 text-right font-sans text-[12px]">
-                      {s !== "LIVE" && (
-                        <button
-                          disabled={setStatus.isPending}
-                          onClick={() => update(p.id, "LIVE")}
-                          className="text-clay hover:underline disabled:opacity-50"
-                        >
-                          Approve
-                        </button>
-                      )}
-                      {s === "LIVE" && (
-                        <button
-                          disabled={setStatus.isPending}
-                          onClick={() => update(p.id, "TAKEN_DOWN")}
-                          className="text-destructive hover:underline disabled:opacity-50"
-                        >
-                          Take down
-                        </button>
-                      )}
+                    <td className="px-4 py-3 text-right font-sans text-[12px] text-charcoal/40">
+                      —
                     </td>
                   </tr>
                 );

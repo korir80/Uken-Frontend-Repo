@@ -6,7 +6,7 @@ import type { CreatorSummary } from "@/services";
 
 export function FeaturedCreators() {
   const { data: all = [], isLoading } = useCreators();
-  const creators = all.slice(0, 3);
+  const creators = Array.isArray(all) ? all.slice(0, 3) : [];
 
   return (
     <section id="creators" className="bg-warm-white py-10 md:py-14">
@@ -15,12 +15,11 @@ export function FeaturedCreators() {
           <div className="max-w-2xl">
             <SectionLabel>Meet the makers</SectionLabel>
             <h2 className="mt-2 font-display text-[30px] leading-[1.05] tracking-tight text-charcoal md:text-[40px]">
-              Begin with a person.{" "}
-              <em className="italic text-terracotta">Not a product.</em>
+              Begin with a person. <em className="italic text-terracotta">Not a product.</em>
             </h2>
             <p className="mt-2.5 max-w-lg text-[14px] leading-relaxed text-ink-muted">
-              The makers shaping this season's collection. Each has a workshop, a
-              region, and a reason for the craft they keep alive.
+              The makers shaping this season's collection. Each has a workshop, a region, and a reason for the craft
+              they keep alive.
             </p>
           </div>
           <a
@@ -73,9 +72,7 @@ function CreatorCard({ creator, index }: { creator: CreatorSummary; index: numbe
           />
         </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal/40 via-transparent to-transparent" />
-        <span className="absolute left-5 top-5 font-display text-2xl text-warm-white/90">
-          0{index + 1}
-        </span>
+        <span className="absolute left-5 top-5 font-display text-2xl text-warm-white/90">0{index + 1}</span>
         <span className="absolute bottom-5 left-5 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-warm-white/90">
           <span className="h-px w-5 bg-warm-white/70" />
           {creator.region}
@@ -83,15 +80,9 @@ function CreatorCard({ creator, index }: { creator: CreatorSummary; index: numbe
       </div>
 
       <div className="px-1 pb-1 pt-3">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">
-          {creator.craft}
-        </p>
-        <h3 className="mt-2 font-display text-[24px] leading-tight text-charcoal">
-          {creator.fullName}
-        </h3>
-        <p className="mt-2 text-[14px] leading-relaxed text-ink-muted">
-          {creator.hook}
-        </p>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">{creator.craft}</p>
+        <h3 className="mt-2 font-display text-[24px] leading-tight text-charcoal">{creator.fullName}</h3>
+        <p className="mt-2 text-[14px] leading-relaxed text-ink-muted">{creator.hook}</p>
         <a
           href={`/creators/${creator.id}`}
           className="group/link mt-4 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-clay"

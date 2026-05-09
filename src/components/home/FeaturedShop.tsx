@@ -16,7 +16,7 @@ const CATEGORY_TILES: { craft?: Craft; label: string; tagline: string }[] = [
 
 export function FeaturedShop() {
   const { data: all = [], isLoading } = useAllProducts();
-  const featured = all.slice(0, 6);
+  const featured = Array.isArray(all) ? all.slice(0, 6) : [];
 
   return (
     <section className="bg-warm-white py-12 md:py-16">
@@ -72,7 +72,7 @@ export function FeaturedShop() {
                 <div className="mt-3 flex items-baseline justify-between gap-3 px-1 pb-1">
                   <div>
                     <h3 className="font-display text-xl text-charcoal">{p.name}</h3>
-                    <p className="mt-0.5 font-sans text-[12px] text-clay"></p>
+                    {/* <p className="mt-0.5 font-sans text-[12px] text-clay"></p> */}
                   </div>
                   <span className="font-sans text-base text-charcoal">{formatGBP(p.pricePence)}</span>
                 </div>

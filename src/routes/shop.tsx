@@ -9,11 +9,7 @@ import { Footer } from "@/components/home/Footer";
 import { SectionLabel } from "@/components/ukena";
 import type { Product } from "@/components/product/product-data";
 import { ShopProductCard } from "@/components/shop/ShopProductCard";
-import {
-  ShopFilterPanel,
-  type CraftFilterValue,
-  type ShopSortValue,
-} from "@/components/shop/ShopFilterPanel";
+import { ShopFilterPanel, type CraftFilterValue, type ShopSortValue } from "@/components/shop/ShopFilterPanel";
 import { CRAFTS } from "@/components/explore/creators-data";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { QuickViewDrawer } from "@/components/shop/QuickViewDrawer";
@@ -28,17 +24,11 @@ function asProduct(p: ProductDto): Product {
 
 /* ── URL search-param schema ─────────────────────────────────────────── */
 const shopSearchSchema = z.object({
-  craft: fallback(
-    z.enum(["All", ...CRAFTS] as [CraftFilterValue, ...CraftFilterValue[]]),
-    "All",
-  ).default("All"),
+  craft: fallback(z.enum(["All", ...CRAFTS] as [CraftFilterValue, ...CraftFilterValue[]]), "All").default("All"),
   region: fallback(z.string(), "All").default("All"),
   minPrice: fallback(z.number().int().nonnegative().optional(), undefined),
   maxPrice: fallback(z.number().int().nonnegative().optional(), undefined),
-  sort: fallback(
-    z.enum(["newest", "price-asc", "price-desc"]),
-    "newest",
-  ).default("newest"),
+  sort: fallback(z.enum(["newest", "price-asc", "price-desc"]), "newest").default("newest"),
 });
 
 export const Route = createFileRoute("/shop")({
@@ -46,12 +36,13 @@ export const Route = createFileRoute("/shop")({
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(productsQueryOptions());
   },
-  head: () => routeSeo({
-    path: "/shop",
-    title: "Shop the UKEN collection — Kenyan goods",
-    description:
-      "Browse the UKEN catalogue — specialty coffee, tea, foods, textiles, beadwork, pottery and more, traced from maker to UK door.",
-  }),
+  head: () =>
+    routeSeo({
+      path: "/shop",
+      title: "Shop the UKEN collection — Kenyan goods",
+      description:
+        "Browse the UKEN catalogue — specialty coffee, tea, foods, textiles, beadwork, pottery and more, traced from maker to UK door.",
+    }),
   component: ShopPage,
 });
 
@@ -66,10 +57,10 @@ function ShopPage() {
   const [quickProduct, setQuickProduct] = useState<Product | null>(null);
 
   const { data: products, isLoading } = useAllProducts();
-  const all = useMemo<Product[]>(
-    () => (products ?? []).map(asProduct),
-    [products],
-  );
+
+  // Guard against the API returning a non-array (e.g. { data: [...] }),
+  // which causes "(N ?? []).map is not a function" at runtime.
+  const all = useMemo<Product[]>(() => (Array.isArray(products) ? products : []).map(asProduct), [products]);
 
   // Distinct regions, alphabetised — derived from the catalogue.
   const regions = useMemo(() => {
@@ -80,10 +71,8 @@ function ShopPage() {
 
   /** Single source of truth: URL search params drive the visible grid. */
   const filtered = useMemo(() => {
-    const minPence =
-      typeof search.minPrice === "number" ? search.minPrice * 100 : undefined;
-    const maxPence =
-      typeof search.maxPrice === "number" ? search.maxPrice * 100 : undefined;
+    const minPence = typeof search.minPrice === "number" ? search.minPrice * 100 : undefined;
+    const maxPence = typeof search.maxPrice === "number" ? search.maxPrice * 100 : undefined;
 
     let next = all.filter((p) => {
       if (search.craft !== "All" && p.creator.craft !== search.craft) return false;
@@ -93,8 +82,6 @@ function ShopPage() {
       return true;
     });
 
-    // "newest" defaults to the data order — newer items appear first in the
-    // mock dataset. Real API will return a sorted feed; we stay stable here.
     if (search.sort === "price-asc") {
       next = [...next].sort((a, b) => a.pricePence - b.pricePence);
     } else if (search.sort === "price-desc") {
@@ -127,9 +114,7 @@ function ShopPage() {
   const activeCount =
     (search.craft !== "All" ? 1 : 0) +
     (search.region !== "All" ? 1 : 0) +
-    (typeof search.minPrice === "number" || typeof search.maxPrice === "number"
-      ? 1
-      : 0) +
+    (typeof search.minPrice === "number" || typeof search.maxPrice === "number" ? 1 : 0) +
     (search.sort !== "newest" ? 1 : 0);
 
   function patchSearch(patch: Partial<typeof search>) {
@@ -158,15 +143,14 @@ function ShopPage() {
       <ExploreNav />
 
       <main className="pb-24 md:pb-0">
-        {/* Compact editorial header — tight, leaves products visible above the fold */}
+        {/* Compact editorial header */}
         <section className="bg-warm-white">
           <div className="mx-auto max-w-7xl px-5 pb-5 pt-6 md:px-10 md:pb-7 md:pt-10">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
               <div className="max-w-2xl">
                 <SectionLabel>The full catalogue</SectionLabel>
                 <h1 className="mt-3 font-display text-[30px] leading-[1.05] tracking-tight text-charcoal sm:text-[34px] md:mt-3 md:text-[42px]">
-                  Every piece,{" "}
-                  <em className="italic text-terracotta">in one place</em>.
+                  Every piece, <em className="italic text-terracotta">in one place</em>.
                 </h1>
                 <p className="mt-2.5 text-[13px] leading-relaxed text-ink-muted md:text-sm">
                   Kenyan coffee, tea, foods, textiles, beadwork, pottery, and more — attributed to the source.{" "}
@@ -180,17 +164,13 @@ function ShopPage() {
               </div>
               <div className="flex shrink-0 items-end gap-8 md:gap-10">
                 <div>
-                  <span className="text-[10px] uppercase tracking-[0.22em] text-ink-muted">
-                    Pieces
-                  </span>
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-ink-muted">Pieces</span>
                   <p className="font-display text-3xl tabular-nums leading-none text-charcoal md:text-4xl">
                     {String(all.length).padStart(2, "0")}
                   </p>
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase tracking-[0.22em] text-ink-muted">
-                    Makers
-                  </span>
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-ink-muted">Makers</span>
                   <p className="font-display text-3xl tabular-nums leading-none text-charcoal md:text-4xl">
                     {String(uniqueMakers).padStart(2, "0")}
                   </p>
@@ -200,10 +180,10 @@ function ShopPage() {
           </div>
         </section>
 
-        {/* Slim filter bar — single row, products visible immediately below */}
+        {/* Slim filter bar */}
         <section className="sticky top-[64px] z-40 border-y border-border/60 bg-warm-white/95 backdrop-blur-md md:top-[76px]">
           <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-2.5 md:px-10 md:py-3">
-            {/* Mobile: single trigger that opens the sheet */}
+            {/* Mobile: single trigger */}
             <button
               type="button"
               onClick={() => setSheetOpen(true)}
@@ -220,9 +200,8 @@ function ShopPage() {
               )}
             </button>
 
-            {/* Desktop: compact toolbar — craft chips inline + a "More filters" trigger */}
+            {/* Desktop: craft chips + more filters */}
             <div className="hidden flex-1 items-center gap-2 md:flex">
-              {/* Craft chips inline (the most-used facet) */}
               <div className="flex flex-1 flex-wrap items-center gap-1.5">
                 {(["All", ...CRAFTS] as CraftFilterValue[]).map((opt) => {
                   const active = opt === search.craft;
@@ -244,8 +223,7 @@ function ShopPage() {
                       {typeof count === "number" && (
                         <span
                           className={
-                            "text-[10px] tabular-nums " +
-                            (active ? "text-warm-white/60" : "text-ink-muted/70")
+                            "text-[10px] tabular-nums " + (active ? "text-warm-white/60" : "text-ink-muted/70")
                           }
                         >
                           {count}
@@ -256,7 +234,6 @@ function ShopPage() {
                 })}
               </div>
 
-              {/* More filters trigger (region/price/sort live in the sheet on desktop too) */}
               <button
                 type="button"
                 onClick={() => setSheetOpen(true)}
@@ -320,13 +297,11 @@ function ShopPage() {
             onSortChange={(sort) => patchSearch({ sort })}
             minPrice={search.minPrice}
             maxPrice={search.maxPrice}
-            onPriceChange={(minPrice, maxPrice) =>
-              patchSearch({ minPrice, maxPrice })
-            }
+            onPriceChange={(minPrice, maxPrice) => patchSearch({ minPrice, maxPrice })}
           />
         </BottomSheet>
 
-        {/* Grid — masonry on desktop via CSS columns, 2-col on mobile */}
+        {/* Product grid */}
         <section className="bg-warm-white pb-10 pt-6 md:pb-20 md:pt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10">
             {isLoading && shown.length === 0 ? (
@@ -344,9 +319,7 @@ function ShopPage() {
                 <p className="font-display text-2xl italic text-charcoal md:text-3xl">
                   Nothing matches those filters yet.
                 </p>
-                <p className="mt-4 text-base text-ink-muted">
-                  Try widening the price range or clearing a craft.
-                </p>
+                <p className="mt-4 text-base text-ink-muted">Try widening the price range or clearing a craft.</p>
                 <button
                   type="button"
                   onClick={resetFilters}
@@ -357,30 +330,18 @@ function ShopPage() {
               </div>
             ) : (
               <>
-                {/* Mobile: clean 2-col grid */}
+                {/* Mobile: 2-col grid */}
                 <div className="grid grid-cols-1 gap-x-4 gap-y-8 min-[380px]:grid-cols-2 md:hidden">
                   {shown.map((product, i) => (
-                    <ShopProductCard
-                      key={product.id}
-                      product={product}
-                      index={i}
-                      onQuickView={setQuickProduct}
-                    />
+                    <ShopProductCard key={product.id} product={product} index={i} onQuickView={setQuickProduct} />
                   ))}
                 </div>
 
-                {/* Desktop: true masonry via CSS columns */}
+                {/* Desktop: CSS masonry columns */}
                 <div className="hidden gap-x-8 md:block md:columns-2 lg:columns-3">
                   {shown.map((product, i) => (
-                    <div
-                      key={product.id}
-                      className="mb-12 break-inside-avoid"
-                    >
-                      <ShopProductCard
-                        product={product}
-                        index={i}
-                        onQuickView={setQuickProduct}
-                      />
+                    <div key={product.id} className="mb-12 break-inside-avoid">
+                      <ShopProductCard product={product} index={i} onQuickView={setQuickProduct} />
                     </div>
                   ))}
                 </div>
@@ -409,17 +370,11 @@ function ShopPage() {
         </section>
       </main>
 
-      {/* Quick view side drawer */}
-      <QuickViewDrawer
-        product={quickProduct}
-        onClose={() => setQuickProduct(null)}
-      />
+      <QuickViewDrawer product={quickProduct} onClose={() => setQuickProduct(null)} />
 
       <Footer />
     </div>
   );
 }
 
-// Re-export for backward compatibility — the BottomSheet and other consumers
-// previously imported this from the route file.
 export type { ShopSortValue };

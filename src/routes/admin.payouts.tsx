@@ -13,16 +13,20 @@ export const Route = createFileRoute("/admin/payouts")({
 });
 
 function AdminPayouts() {
-  const { data: payouts = [], isLoading } = useAdminPayouts();
+  const { data, isLoading } = useAdminPayouts();
+  const payouts = Array.isArray(data) ? data : [];
   const pay = usePayCreator();
   const runCycle = useRunPayoutCycle();
 
-  const totalPending = payouts.reduce((s, p) => s + p.pendingPence, 0);
+  const totalPending = payouts.reduce((s, p) => s + (p.pendingPence ?? 0), 0);
   const totalPaidThisMonth = payouts.reduce(
-    (s, p) => s + p.paidThisMonthPence,
+    (s, p) => s + (p.paidThisMonthPence ?? 0),
     0,
   );
-  const totalLifetime = payouts.reduce((s, p) => s + p.totalLifetimePence, 0);
+  const totalLifetime = payouts.reduce(
+    (s, p) => s + (p.totalLifetimePence ?? 0),
+    0,
+  );
 
   return (
     <div className="space-y-8">

@@ -28,7 +28,8 @@ export const Route = createFileRoute("/admin/content")({
 });
 
 function AdminContent() {
-  const { data: reviews = [], isLoading } = useAdminReviews();
+  const { data, isLoading } = useAdminReviews();
+  const reviews = Array.isArray(data) ? data : [];
   const updateStatus = useUpdateReviewStatus();
   const [filter, setFilter] = useState<ProductReview["status"] | "ALL">("ALL");
 

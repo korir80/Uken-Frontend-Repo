@@ -24,10 +24,17 @@ interface PersonalisedHomeProps {
  *  5. Discover something new — three creators they haven't saved yet
  */
 export function PersonalisedHome({ user }: PersonalisedHomeProps) {
-  const { data: savedIds = [] } = useSavedCreators();
-  const { data: orders = [] } = useBuyerOrders();
-  const { data: allCreators = [] } = useCreators();
-  const { data: allProducts = [] } = useAllProducts();
+  const { data: rawSavedIds } = useSavedCreators();
+  const { data: rawOrders } = useBuyerOrders();
+  const { data: rawCreators } = useCreators();
+  const { data: rawProducts } = useAllProducts();
+
+  // Guard every query result — the API may return an object or undefined
+  // instead of an array, which causes "a.slice is not a function" at runtime.
+  const savedIds = Array.isArray(rawSavedIds) ? rawSavedIds : [];
+  const orders = Array.isArray(rawOrders) ? rawOrders : [];
+  const allCreators = Array.isArray(rawCreators) ? rawCreators : [];
+  const allProducts = Array.isArray(rawProducts) ? rawProducts : [];
 
   const [recentIds, setRecentIds] = useState<string[]>([]);
 
@@ -64,18 +71,12 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
   // ephemeral cart-side `lastOrder` (which was lost on refresh).
   const lastPurchase = useMemo(() => {
     if (orders.length === 0) return null;
-    const sorted = [...orders].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
+    const sorted = [...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return sorted[0]?.items?.[0] ?? null;
   }, [orders]);
 
   const firstName = (user.fullName ?? "").split(" ")[0] || "friend";
-  const empty =
-    savedCreators.length === 0 &&
-    recentProducts.length === 0 &&
-    !lastPurchase;
+  const empty = savedCreators.length === 0 && recentProducts.length === 0 && !lastPurchase;
 
   return (
     <section className="bg-warm-white pt-28 pb-16 md:pt-36 md:pb-20">
@@ -106,12 +107,9 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
         {empty && (
           <div className="mt-12 grid gap-4 rounded-3xl border border-border/60 bg-cream/40 p-6 md:grid-cols-2 md:p-10">
             <div>
-              <h3 className="font-display text-2xl text-charcoal md:text-3xl">
-                Begin with a maker
-              </h3>
+              <h3 className="font-display text-2xl text-charcoal md:text-3xl">Begin with a maker</h3>
               <p className="mt-3 text-base leading-relaxed text-charcoal/70">
-                The story leads you to the work. Save the ones whose hands you
-                want to follow.
+                The story leads you to the work. Save the ones whose hands you want to follow.
               </p>
               <Button asChild variant="primary" size="md" className="mt-6">
                 <Link to="/explore">
@@ -120,9 +118,7 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
               </Button>
             </div>
             <div>
-              <h3 className="font-display text-2xl text-charcoal md:text-3xl">
-                Or browse the collection
-              </h3>
+              <h3 className="font-display text-2xl text-charcoal md:text-3xl">Or browse the collection</h3>
               <p className="mt-3 text-base leading-relaxed text-charcoal/70">
                 Pieces first — the maker is always one tap away.
               </p>
@@ -143,11 +139,14 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
             {/* Mobile horizontal scroll */}
             <ul className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 md:hidden">
               {savedCreators.map((c) => (
-                <li
-                  key={c.id}
-                  className="w-[62%] shrink-0 snap-start"
-                >
-                  <SavedCreatorCard creatorId={c.id} fullName={c.fullName} craft={c.craft} region={c.region} image={c.image} />
+                <li key={c.id} className="w-[62%] shrink-0 snap-start">
+                  <SavedCreatorCard
+                    creatorId={c.id}
+                    fullName={c.fullName}
+                    craft={c.craft}
+                    region={c.region}
+                    image={c.image}
+                  />
                 </li>
               ))}
             </ul>
@@ -156,7 +155,13 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
             <ul className="hidden gap-6 md:grid md:grid-cols-5">
               {savedCreators.map((c) => (
                 <li key={c.id}>
-                  <SavedCreatorCard creatorId={c.id} fullName={c.fullName} craft={c.craft} region={c.region} image={c.image} />
+                  <SavedCreatorCard
+                    creatorId={c.id}
+                    fullName={c.fullName}
+                    craft={c.craft}
+                    region={c.region}
+                    image={c.image}
+                  />
                 </li>
               ))}
             </ul>
@@ -173,11 +178,7 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
             <ul className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
               {recentProducts.map((p) => (
                 <li key={p.id}>
-                  <Link
-                    to="/products/$productId"
-                    params={{ productId: p.id }}
-                    className="group block"
-                  >
+                  <Link to="/products/$productId" params={{ productId: p.id }} className="group block">
                     <LazyImage
                       src={p.heroImage}
                       alt={p.name}
@@ -186,9 +187,7 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
                       className="transition-transform duration-700 group-hover:scale-[1.03]"
                     />
                     <div className="mt-3">
-                      <p className="font-display text-lg leading-tight text-charcoal">
-                        {p.name}
-                      </p>
+                      <p className="font-display text-lg leading-tight text-charcoal">{p.name}</p>
                       <p className="mt-1 text-sm text-charcoal/65">
                         {formatGBP(p.pricePence)} · by {p.creator.firstName}
                       </p>
@@ -202,27 +201,15 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
 
         {/* 4 — Quick reorder */}
         {lastPurchase && (
-          <Strip
-            icon={<Repeat className="h-5 w-5 text-clay" />}
-            title="Buy it again"
-          >
+          <Strip icon={<Repeat className="h-5 w-5 text-clay" />} title="Buy it again">
             <article className="overflow-hidden rounded-3xl border border-border/60 bg-cream/40">
               <div className="grid items-stretch md:grid-cols-12">
                 <div className="md:col-span-5 lg:col-span-4">
-                  <LazyImage
-                    src={lastPurchase.image}
-                    alt={lastPurchase.name}
-                    ratio="4/3"
-                    wrapperClassName="h-full"
-                  />
+                  <LazyImage src={lastPurchase.image} alt={lastPurchase.name} ratio="4/3" wrapperClassName="h-full" />
                 </div>
                 <div className="flex flex-col gap-4 p-6 md:col-span-7 md:p-10 lg:col-span-8">
-                  <span className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
-                    From your last order
-                  </span>
-                  <h3 className="font-display text-3xl leading-tight text-charcoal md:text-4xl">
-                    {lastPurchase.name}
-                  </h3>
+                  <span className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">From your last order</span>
+                  <h3 className="font-display text-3xl leading-tight text-charcoal md:text-4xl">{lastPurchase.name}</h3>
                   <p className="text-base text-charcoal/70">
                     by{" "}
                     <Link
@@ -239,10 +226,7 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
                   </p>
                   <div className="mt-2">
                     <Button asChild variant="primary" size="md">
-                      <Link
-                        to="/products/$productId"
-                        params={{ productId: lastPurchase.productId }}
-                      >
+                      <Link to="/products/$productId" params={{ productId: lastPurchase.productId }}>
                         Buy again <ArrowRight className="h-4 w-4" />
                       </Link>
                     </Button>
@@ -263,11 +247,7 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
             <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-8">
               {discoverCreators.map((c) => (
                 <li key={c.id}>
-                  <Link
-                    to="/creators/$creatorId"
-                    params={{ creatorId: c.id }}
-                    className="group block"
-                  >
+                  <Link to="/creators/$creatorId" params={{ creatorId: c.id }} className="group block">
                     <LazyImage
                       src={c.image}
                       alt={c.fullName}
@@ -276,15 +256,9 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
                       className="transition-transform duration-700 group-hover:scale-[1.03]"
                     />
                     <div className="mt-4">
-                      <p className="text-[11px] uppercase tracking-[0.22em] text-clay">
-                        {c.craft}
-                      </p>
-                      <p className="mt-1.5 font-display text-2xl leading-tight text-charcoal">
-                        {c.fullName}
-                      </p>
-                      <p className="mt-1 text-sm text-charcoal/70 line-clamp-2">
-                        {c.hook}
-                      </p>
+                      <p className="text-[11px] uppercase tracking-[0.22em] text-clay">{c.craft}</p>
+                      <p className="mt-1.5 font-display text-2xl leading-tight text-charcoal">{c.fullName}</p>
+                      <p className="mt-1 text-sm text-charcoal/70 line-clamp-2">{c.hook}</p>
                     </div>
                   </Link>
                 </li>
@@ -314,10 +288,7 @@ function Strip({ icon, title, link, children }: StripProps) {
           {title}
         </h2>
         {link && (
-          <Link
-            to={link.to}
-            className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 hover:text-clay"
-          >
+          <Link to={link.to} className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 hover:text-clay">
             {link.label}
           </Link>
         )}
@@ -334,19 +305,9 @@ interface SavedCreatorCardProps {
   region: string;
   image: string;
 }
-function SavedCreatorCard({
-  creatorId,
-  fullName,
-  craft,
-  region,
-  image,
-}: SavedCreatorCardProps) {
+function SavedCreatorCard({ creatorId, fullName, craft, region, image }: SavedCreatorCardProps) {
   return (
-    <Link
-      to="/creators/$creatorId"
-      params={{ creatorId }}
-      className="group block"
-    >
+    <Link to="/creators/$creatorId" params={{ creatorId }} className="group block">
       <LazyImage
         src={image}
         alt={fullName}
@@ -355,9 +316,7 @@ function SavedCreatorCard({
         className="transition-transform duration-700 group-hover:scale-[1.03]"
       />
       <div className="mt-3">
-        <p className="font-display text-lg leading-tight text-charcoal">
-          {fullName}
-        </p>
+        <p className="font-display text-lg leading-tight text-charcoal">{fullName}</p>
         <p className="mt-0.5 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
           {craft} · {region}
         </p>

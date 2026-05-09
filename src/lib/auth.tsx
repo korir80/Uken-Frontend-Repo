@@ -29,6 +29,8 @@ type Role = AuthUserDto["role"];
 
 interface AuthContextValue {
   user: AuthUserDto | null;
+  /** Convenience accessor for `user?.role ?? null`. */
+  role: Role | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   isBuyer: boolean;

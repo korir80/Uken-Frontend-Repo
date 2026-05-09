@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BagIndicator } from "@/components/product/BagIndicator";
+import { Logo } from "@/components/ukena";
 
 const navLinks = [
   { label: "Shop", to: "/shop" as const },
@@ -39,11 +40,8 @@ export function ExploreNav() {
       )}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 md:px-10 md:py-5">
-        <Link
-          to="/"
-          className="font-display text-2xl tracking-tight text-charcoal md:text-3xl"
-        >
-          UKEN
+        <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
+          <Logo className="h-9 md:h-10" />
         </Link>
 
         <nav className="hidden items-center gap-5 md:flex lg:gap-8">

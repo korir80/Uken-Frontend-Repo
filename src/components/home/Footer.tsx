@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Divider } from "@/components/ukena";
+import { Divider, Logo } from "@/components/ukena";
 
 const navColumns = [
   {
@@ -141,9 +141,8 @@ export function Footer() {
         <Divider className="!bg-warm-white/15 !bg-none" />
 
         <div className="flex flex-col items-start justify-between gap-3 pt-6 text-[10px] uppercase tracking-[0.18em] text-warm-white/45 md:flex-row md:items-center">
-          <span className="font-display text-2xl normal-case tracking-normal text-warm-white">
-            UKEN
-          </span>
+          <Logo variant="light" className="h-10" />
+
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <a href="/privacy" className="hover:text-warm-white">Privacy</a>
             <a href="/terms" className="hover:text-warm-white">Terms</a>

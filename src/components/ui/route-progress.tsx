@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import logoMark from "@/assets/uken-logo.png";
 
 /**
  * UKENPageLoader — full-bleed brand splash that covers the screen on the
@@ -115,12 +116,14 @@ export function RouteProgress() {
       />
 
       <div className="relative flex flex-col items-center gap-6">
-        {/* Wordmark with a soft breathing animation */}
-        <div className="overflow-hidden">
-          <span className="block font-display text-4xl tracking-tight text-charcoal animate-[ukena-rise_700ms_ease-out_both] md:text-5xl">
-            UKEN
-          </span>
-        </div>
+        {/* Brand logo with a soft rise animation */}
+        <img
+          src={logoMark}
+          alt="UKEN"
+          className="block h-20 w-auto select-none object-contain animate-[ukena-rise_700ms_ease-out_both] md:h-24"
+          draggable={false}
+        />
+
 
         {/* Hairline progress arc — terracotta → gold */}
         <div className="relative h-px w-32 overflow-hidden bg-charcoal/[0.08]">

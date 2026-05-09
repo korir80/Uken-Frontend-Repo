@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/ukena";
 
 async function signOutWithToast(logout: () => Promise<void>) {
   await logout();
@@ -93,8 +94,8 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
           >
             <MenuIcon />
           </button>
-          <Link to="/" className="font-display text-xl text-charcoal">
-            UKEN
+          <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
+            <Logo className="h-8" />
           </Link>
           <span className="hidden font-sans text-[10px] uppercase tracking-[0.22em] text-clay sm:inline">
             {eyebrow}
@@ -117,8 +118,8 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
         {/* Desktop sidebar — sticky column, internally scrollable */}
         <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:flex-shrink-0 lg:flex-col lg:border-r lg:border-border/60 lg:bg-cream/40">
           <div className="flex-shrink-0 px-6 py-7">
-            <Link to="/" className="font-display text-2xl text-charcoal">
-              UKEN
+            <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
+              <Logo className="h-10" />
             </Link>
             <p className="mt-2 font-sans text-[11px] uppercase tracking-[0.24em] text-clay">
               {eyebrow}
@@ -148,10 +149,11 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
                 <div>
                   <Link
                     to="/"
-                    className="font-display text-2xl text-charcoal"
+                    aria-label="UKEN home"
+                    className="inline-flex items-center"
                     onClick={() => setDrawerOpen(false)}
                   >
-                    UKEN
+                    <Logo className="h-9" />
                   </Link>
                   <p className="mt-1 font-sans text-[11px] uppercase tracking-[0.24em] text-clay">
                     {eyebrow}

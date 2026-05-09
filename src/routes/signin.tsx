@@ -84,7 +84,7 @@ function SignInPage() {
             our backend is in development.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5" noValidate>
             <label className="block">
               <span className="block font-sans text-[13px] font-medium text-charcoal">
                 Email
@@ -96,8 +96,12 @@ function SignInPage() {
                 placeholder="you@buyer.ukena"
                 className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-sm text-charcoal outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/15"
                 autoComplete="email"
+                aria-invalid={!!emailError}
                 required
               />
+              {emailError && (
+                <p className="mt-1.5 font-sans text-[12px] text-destructive">{emailError}</p>
+              )}
             </label>
             <label className="block">
               <span className="block font-sans text-[13px] font-medium text-charcoal">
@@ -110,19 +114,24 @@ function SignInPage() {
                 placeholder="any non-empty value"
                 className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-sm text-charcoal outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/15"
                 autoComplete="current-password"
+                aria-invalid={!!passwordError}
                 required
               />
+              {passwordError && (
+                <p className="mt-1.5 font-sans text-[12px] text-destructive">{passwordError}</p>
+              )}
             </label>
 
-            {error && (
-              <p className="font-sans text-[13px] text-destructive">{error}</p>
+            {formError && (
+              <p className="font-sans text-[13px] text-destructive">{formError}</p>
             )}
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-full bg-clay px-6 py-3 font-sans text-sm font-medium text-warm-white transition-colors hover:bg-clay-deep disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-clay px-6 py-3 font-sans text-sm font-medium text-warm-white transition-colors hover:bg-clay-deep disabled:cursor-not-allowed disabled:opacity-60"
             >
+              {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
               {submitting ? "Signing in…" : "Sign in"}
             </button>
           </form>

@@ -1,10 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { LazyImage } from "@/components/ui/lazy-image";
-import { getAllProducts } from "@/components/product/product-data";
+import { useAllProducts } from "@/lib/queries";
 import { formatGBP } from "@/lib/cart";
 import type { Craft } from "@/components/explore/creators-data";
-
-const FEATURED_IDS = ["p-mara-01", "p-kaj-01", "p-nrb-01", "p-mwi-01", "p-lam-01", "p-mara-04"];
 
 const CATEGORY_TILES: { craft?: Craft; label: string; tagline: string }[] = [
   { craft: "Weaving", label: "Weaving", tagline: "Sisal, coiled by hand." },
@@ -16,21 +14,13 @@ const CATEGORY_TILES: { craft?: Craft; label: string; tagline: string }[] = [
   { label: "Fresh Produce", tagline: "What UK visitors still think about." },
 ];
 
-/**
- * Featured commerce strip on the home page — sits between the hero/story
- * and the editorial creator strip so the page feels equally "marketplace"
- * and "magazine".
- */
 export function FeaturedShop() {
-  const all = getAllProducts();
-  const featured = FEATURED_IDS.map((id) => all.find((p) => p.id === id)).filter(
-    (p): p is NonNullable<typeof p> => Boolean(p),
-  );
+  const { data: all = [], isLoading } = useAllProducts();
+  const featured = all.slice(0, 6);
 
   return (
     <section className="bg-warm-white py-12 md:py-16">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
-        {/* Section header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="section-label">Shop the collection</p>
@@ -49,38 +39,51 @@ export function FeaturedShop() {
           </Link>
         </div>
 
-        {/* Product grid */}
-        <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((p) => (
-            <Link
-              key={p.id}
-              to="/products/$productId"
-              params={{ productId: p.id }}
-                className="group block rounded-2xl border border-border/60 bg-cream/85 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
-            >
-              <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sand-soft">
-                <LazyImage
-                  src={p.heroImage}
-                  alt={p.name}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                />
+        {isLoading ? (
+          <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl border border-border/60 bg-cream/85 p-3">
+                <div className="aspect-[4/3] w-full animate-pulse rounded-xl bg-cream" />
+                <div className="mt-3 h-5 w-2/3 animate-pulse rounded bg-cream" />
               </div>
-              <div className="mt-3 flex items-baseline justify-between gap-3 px-1 pb-1">
-                <div>
-                  <h3 className="font-display text-xl text-charcoal">{p.name}</h3>
-                  <p className="mt-0.5 font-sans text-[12px] text-clay">
-                    by {p.creator.firstName} · {p.creator.region}
-                  </p>
+            ))}
+          </div>
+        ) : featured.length === 0 ? (
+          <p className="mt-7 rounded-2xl border border-border/60 bg-cream/40 px-5 py-10 text-center font-sans text-[13px] text-charcoal/60">
+            No products available yet.
+          </p>
+        ) : (
+          <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((p) => (
+              <Link
+                key={p.id}
+                to="/products/$productId"
+                params={{ productId: p.id }}
+                  className="group block rounded-2xl border border-border/60 bg-cream/85 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
+              >
+                <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sand-soft">
+                  <LazyImage
+                    src={p.heroImage}
+                    alt={p.name}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  />
                 </div>
-                <span className="font-sans text-base text-charcoal">
-                  {formatGBP(p.pricePence)}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+                <div className="mt-3 flex items-baseline justify-between gap-3 px-1 pb-1">
+                  <div>
+                    <h3 className="font-display text-xl text-charcoal">{p.name}</h3>
+                    <p className="mt-0.5 font-sans text-[12px] text-clay">
+                      by {p.creator.firstName} · {p.creator.region}
+                    </p>
+                  </div>
+                  <span className="font-sans text-base text-charcoal">
+                    {formatGBP(p.pricePence)}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
 
-        {/* Shop by category tiles */}
         <div className="mt-10 md:mt-12">
           <p className="section-label">Shop by category</p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

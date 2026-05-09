@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
-import { useCreatorOrders } from "@/lib/queries";
-import { payouts } from "@/components/admin/admin-data";
+import { useCreatorOrders, useAdminPayouts } from "@/lib/queries";
 import { PageHeader, StatCard } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
 
@@ -11,8 +10,9 @@ export const Route = createFileRoute("/creator/earnings")({
 
 function CreatorEarnings() {
   const { user } = useAuth();
-  const creatorId = user?.creatorId ?? "wanjiru";
+  const creatorId = user?.creatorId ?? "";
   const { data: orders = [] } = useCreatorOrders();
+  const { data: payouts = [] } = useAdminPayouts();
   const summary = payouts.find((p) => p.creatorId === creatorId);
 
   const myOrders = orders.filter((o) => o.items.some((i) => i.creator.id === creatorId));

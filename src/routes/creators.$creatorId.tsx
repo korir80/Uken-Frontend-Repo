@@ -45,11 +45,13 @@ export const Route = createFileRoute("/creators/$creatorId")({
       throw err;
     }
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const c = loaderData?.creator;
+    const url = `https://ukena.co.uk/creators/${params.creatorId}`;
     if (!c) {
       return {
         meta: [{ title: "Creator — UKEN" }],
+        links: [{ rel: "canonical", href: url }],
       };
     }
     const title = `${c.fullName} — ${c.craft} from ${c.region} · UKEN`;
@@ -60,12 +62,33 @@ export const Route = createFileRoute("/creators/$creatorId")({
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
+        { property: "og:url", content: url },
         { property: "og:image", content: c.headerImage },
         { property: "og:type", content: "profile" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
         { name: "twitter:image", content: c.headerImage },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: c.fullName,
+            givenName: c.firstName,
+            jobTitle: c.craft,
+            address: {
+              "@type": "PostalAddress",
+              addressRegion: c.region,
+              addressCountry: "KE",
+            },
+            image: c.headerImage,
+            url,
+          }),
+        },
       ],
     };
   },

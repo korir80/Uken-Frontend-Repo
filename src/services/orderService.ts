@@ -173,7 +173,7 @@ export const orderService = {
       return fakeResolve(fake);
     }
     const res = await api.post<OrderDto>("/orders", payload);
-    return res.data;
+    return res;
   },
 
   async getOrderById(id: string): Promise<OrderDto> {
@@ -183,7 +183,7 @@ export const orderService = {
       return fakeResolve(o);
     }
     const res = await api.get<OrderDto>(`/orders/${encodeURIComponent(id)}`);
-    return res.data;
+    return res;
   },
 
   async getOrdersByBuyer(email?: string): Promise<OrderDto[]> {
@@ -192,7 +192,7 @@ export const orderService = {
       return fakeResolve(seedOrders.filter((o) => o.buyer.email.toLowerCase() === email.toLowerCase()));
     }
     const res = await api.get<OrderDto[]>("/orders/me");
-    return res.data;
+    return res;
   },
 
   async getOrdersByCreator(creatorId?: string): Promise<OrderDto[]> {
@@ -201,13 +201,13 @@ export const orderService = {
       return fakeResolve(seedOrders.filter((o) => o.items.some((i) => i.creator.id === creatorId)));
     }
     const res = await api.get<OrderDto[]>("/creators/me/orders");
-    return res.data;
+    return res;
   },
 
   async getAllOrders(): Promise<OrderDto[]> {
     if (USE_MOCK_API) return fakeResolve(seedOrders);
     const res = await api.get<OrderDto[]>("/admin/orders");
-    return res.data;
+    return res;
   },
 
   async updateStatus(orderId: string, status: OrderStatus): Promise<OrderDto> {
@@ -218,7 +218,7 @@ export const orderService = {
       return fakeResolve(o);
     }
     const res = await api.patch<OrderDto>(`/creators/me/orders/${encodeURIComponent(orderId)}/status`, { status });
-    return res.data;
+    return res;
   },
 
   async refund(orderId: string): Promise<OrderDto> {
@@ -229,6 +229,6 @@ export const orderService = {
       return fakeResolve(o);
     }
     const res = await api.patch<OrderDto>(`/admin/orders/${encodeURIComponent(orderId)}/refund`, {});
-    return res.data;
+    return res;
   },
 };

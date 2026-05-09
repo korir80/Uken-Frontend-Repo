@@ -28,13 +28,13 @@ export const cartService = {
   async getCart(): Promise<CartLineDto[]> {
     if (USE_MOCK_API) return fakeResolve([]);
     const res = await api.get<CartLineDto[]>("/cart");
-    return res.data;
+    return res;
   },
 
   async setCart(lines: CartLineDto[]): Promise<CartLineDto[]> {
     if (USE_MOCK_API) return fakeResolve(lines);
     const res = await api.put<CartLineDto[]>("/cart", lines);
-    return res.data;
+    return res;
   },
 
   /**
@@ -44,6 +44,6 @@ export const cartService = {
   async syncOnLogin(localLines: CartLineDto[]): Promise<CartLineDto[]> {
     if (USE_MOCK_API) return fakeResolve(localLines);
     const res = await api.post<CartLineDto[]>("/cart/sync", { items: localLines });
-    return res.data;
+    return res;
   },
 };

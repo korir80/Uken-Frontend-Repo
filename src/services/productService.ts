@@ -68,7 +68,7 @@ export const productService = {
   async getAllProducts(): Promise<ProductDto[]> {
     if (USE_MOCK_API) return fakeResolve(getAllProducts().map(toDto));
     const res = await api.get<ProductDto[]>("/products");
-    return res.data;
+    return res;
   },
 
   async getProductById(id: string): Promise<ProductDto> {
@@ -78,7 +78,7 @@ export const productService = {
       return fakeResolve(toDto(p));
     }
     const res = await api.get<ProductDto>(`/products/${encodeURIComponent(id)}`);
-    return res.data;
+    return res;
   },
 
   async getProductsByCreator(creatorId: string): Promise<ProductDto[]> {
@@ -87,7 +87,7 @@ export const productService = {
       return fakeResolve(list);
     }
     const res = await api.get<ProductDto[]>(`/products?creatorId=${encodeURIComponent(creatorId)}`);
-    return res.data;
+    return res;
   },
 
   async createMyProduct(payload: ProductCreatePayload): Promise<ProductDto> {
@@ -108,7 +108,7 @@ export const productService = {
       });
     }
     const res = await api.post<ProductDto>("/creators/me/products", payload);
-    return res.data;
+    return res;
   },
 
   async updateMyProduct(id: string, payload: ProductUpdatePayload): Promise<ProductDto> {
@@ -118,7 +118,7 @@ export const productService = {
       return fakeResolve({ ...toDto(p), ...payload });
     }
     const res = await api.put<ProductDto>(`/creators/me/products/${encodeURIComponent(id)}`, payload);
-    return res.data;
+    return res;
   },
 
   async deleteMyProduct(id: string): Promise<void> {

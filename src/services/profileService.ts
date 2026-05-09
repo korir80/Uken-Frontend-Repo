@@ -82,7 +82,7 @@ export const profileService = {
       };
     }
     const res = await api.get<CreatorDetail>("/creators/me");
-    return res.data;
+    return res;
   },
 
   async updateCreatorProfile(creatorId: string, payload: CreatorProfileUpdate): Promise<CreatorDetail> {
@@ -91,7 +91,7 @@ export const profileService = {
       return profileService.getCreatorProfile(creatorId);
     }
     const res = await api.put<CreatorDetail>("/creators/me", payload);
-    return res.data;
+    return res;
   },
 
   /**
@@ -128,7 +128,7 @@ export const profileService = {
   async listAddresses(): Promise<BuyerAddress[]> {
     if (USE_MOCK_API) return fakeResolve(readMockAddresses());
     const res = await api.get<BuyerAddress[]>("/users/me/addresses");
-    return res.data;
+    return res;
   },
 
   async createAddress(payload: BuyerAddressInput): Promise<BuyerAddress> {
@@ -146,7 +146,7 @@ export const profileService = {
       return fakeResolve(created);
     }
     const res = await api.post<BuyerAddress>("/users/me/addresses", payload);
-    return res.data;
+    return res;
   },
 
   async updateAddress(
@@ -167,7 +167,7 @@ export const profileService = {
       `/users/me/addresses/${encodeURIComponent(id)}`,
       payload,
     );
-    return res.data;
+    return res;
   },
 
   async deleteAddress(id: string): Promise<void> {
@@ -193,6 +193,6 @@ export const profileService = {
     const res = await api.post<BuyerAddress[]>(
       `/users/me/addresses/${encodeURIComponent(id)}/default`,
     );
-    return res.data;
+    return res;
   },
 };

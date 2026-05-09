@@ -72,7 +72,7 @@ export function FeaturedShop() {
                 <div className="mt-3 flex items-baseline justify-between gap-3 px-1 pb-1">
                   <div>
                     <h3 className="font-display text-xl text-charcoal">{p.name}</h3>
-                    <p className="mt-0.5 font-sans text-[12px] text-clay">by {p.creatorName}</p>
+                    <p className="mt-0.5 font-sans text-[12px] text-clay"></p>
                   </div>
                   <span className="font-sans text-base text-charcoal">{formatGBP(p.pricePence)}</span>
                 </div>

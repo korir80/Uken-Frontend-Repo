@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/ukena";
 
 async function signOutWithToast(logout: () => Promise<void>) {
   await logout();

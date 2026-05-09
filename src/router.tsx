@@ -3,8 +3,6 @@ import {
   QueryClient,
   QueryCache,
   MutationCache,
-  type Query,
-  type Mutation,
 } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
 import { handleApiError } from "@/lib/handleApiError";

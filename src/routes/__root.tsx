@@ -41,28 +41,103 @@ function NotFoundComponent() {
   );
 }
 
+const SITE_URL = "https://ukena.co.uk";
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+
+const ORGANIZATION_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "UKEN",
+  legalName: "UKEN",
+  url: SITE_URL,
+  logo: `${SITE_URL}/og-image.jpg`,
+  description:
+    "UKEN connects UK buyers directly with traceable Kenyan coffee, tea, foods, textiles, craft, and more.",
+  email: "hello@ukena.co.uk",
+  telephone: "+44 7425 241649",
+  sameAs: [] as string[],
+  address: [
+    {
+      "@type": "PostalAddress",
+      streetAddress: "Osmaston 10",
+      postalCode: "NG7 1SD",
+      addressLocality: "Nottingham",
+      addressCountry: "GB",
+    },
+    {
+      "@type": "PostalAddress",
+      streetAddress: "Nairobi Garage, Karen — Watermark Business Park, Ndege Rd, Off Langata Rd",
+      addressLocality: "Nairobi",
+      addressCountry: "KE",
+    },
+  ],
+};
+
+const WEBSITE_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "UKEN",
+  url: SITE_URL,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${SITE_URL}/shop?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
+};
+
 export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "UKEN and Kenya" },
-      { name: "description", content: "UKEN connects UK buyers with traceable Kenyan coffee, tea, foods, textiles, craft, and more." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "UKEN and Kenya" },
-      { property: "og:description", content: "UKEN connects UK buyers with traceable Kenyan coffee, tea, foods, textiles, craft, and more." },
+      { title: "UKEN — Kenya, brought home" },
+      {
+        name: "description",
+        content:
+          "UKEN connects UK buyers directly with traceable Kenyan coffee, tea, foods, textiles, beadwork, and craft — straight from the maker.",
+      },
+      { name: "author", content: "UKEN" },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
+      { name: "theme-color", content: "#1a1a1a" },
+      { name: "application-name", content: "UKEN" },
+      { httpEquiv: "Content-Language", content: "en-GB" },
+      { property: "og:site_name", content: "UKEN" },
+      { property: "og:locale", content: "en_GB" },
+      { property: "og:title", content: "UKEN — Kenya, brought home" },
+      {
+        property: "og:description",
+        content:
+          "UKEN connects UK buyers directly with traceable Kenyan coffee, tea, foods, textiles, beadwork, and craft — straight from the maker.",
+      },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "UKEN and Kenya" },
-      { name: "twitter:description", content: "UKEN connects UK buyers with traceable Kenyan coffee, tea, foods, textiles, craft, and more." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e141b600-67f1-4210-87e7-77ad79690f80/id-preview-f65e6923--6c267947-ca00-4067-8491-c423a2809113.lovable.app-1777041023195.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e141b600-67f1-4210-87e7-77ad79690f80/id-preview-f65e6923--6c267947-ca00-4067-8491-c423a2809113.lovable.app-1777041023195.png" },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:alt", content: "UKEN — traceable Kenyan goods, brought home to the UK" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "UKEN — Kenya, brought home" },
+      {
+        name: "twitter:description",
+        content:
+          "Traceable Kenyan coffee, tea, foods, textiles, beadwork, and craft — straight from the maker to UK doors.",
+      },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "canonical", href: SITE_URL },
+      { rel: "icon", href: "/favicon.ico" },
+      { rel: "sitemap", type: "application/xml", href: "/sitemap.xml" },
+      { rel: "preconnect", href: "https://res.cloudinary.com" },
+      { rel: "dns-prefetch", href: "https://res.cloudinary.com" },
+    ],
+    scripts: [
       {
-        rel: "stylesheet",
-        href: appCss,
+        type: "application/ld+json",
+        children: JSON.stringify(ORGANIZATION_JSONLD),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(WEBSITE_JSONLD),
       },
     ],
   }),

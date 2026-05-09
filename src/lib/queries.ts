@@ -199,25 +199,7 @@ export function useUpdateOrderStatus() {
   });
 }
 
-export function useAdminOrders() {
-  return useQuery<OrderDto[]>({
-    queryKey: queryKeys.ordersAll(),
-    queryFn: () => orderService.getAllOrders(),
-  });
-}
-
-export function useRefundOrder() {
-  const qc = useQueryClient();
-  return useMutation<OrderDto, Error, string>({
-    mutationFn: (id) => orderService.refund(id),
-    onSuccess: (data) => {
-      qc.invalidateQueries({ queryKey: queryKeys.ordersAll() });
-      qc.invalidateQueries({ queryKey: queryKeys.ordersBuyer() });
-      qc.setQueryData(queryKeys.order(data.id), data);
-    },
-  });
-}
-
+// useAdminOrders / useRefundOrder removed — backend endpoints do not exist.
 /* ---------------- Profile ---------------- */
 
 export function useMyCreatorProfile(creatorId: string) {
@@ -434,13 +416,7 @@ export function usePayCreator() {
   });
 }
 
-export function useRunPayoutCycle() {
-  const qc = useQueryClient();
-  return useMutation<CreatorPayout[], Error, void>({
-    mutationFn: () => adminService.runPayoutCycle(),
-    onSuccess: (data) => qc.setQueryData(queryKeys.adminPayouts(), data),
-  });
-}
+// useRunPayoutCycle removed — backend endpoint does not exist.
 
 export function useAdminReviews() {
   return useQuery<ProductReview[]>({

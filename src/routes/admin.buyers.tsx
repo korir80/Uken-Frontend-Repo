@@ -24,7 +24,7 @@ function AdminBuyers() {
   function handleUnsuspend(id: string, name: string) {
     unsuspend.mutate(id, {
       onSuccess: () => toast.success(`${name} reinstated.`),
-      onError: (e) => toast.error(e.message),
+      onError: (e: Error) => toast.error(e.message),
     });
   }
 

@@ -35,10 +35,10 @@ export interface AdminBuyerRow {
   id: string;
   fullName: string;
   email: string;
-  city: string;
-  orderCount: number;
-  totalPence: number;
-  lastOrderAt: string;
+  city?: string;
+  orderCount?: number;
+  totalPence?: number;
+  lastOrderAt?: string;
   suspended: boolean;
 }
 
@@ -175,6 +175,17 @@ export const adminService = {
     }
     await api.patch<void>(
       `/admin/buyers/${encodeURIComponent(buyerId)}/suspend`,
+      {},
+    );
+  },
+
+  async unsuspendBuyer(buyerId: string): Promise<void> {
+    if (USE_MOCK_API) {
+      mockSuspendedBuyers.delete(buyerId);
+      return fakeResolve(undefined);
+    }
+    await api.patch<void>(
+      `/admin/buyers/${encodeURIComponent(buyerId)}/unsuspend`,
       {},
     );
   },

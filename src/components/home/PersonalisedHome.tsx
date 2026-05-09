@@ -3,8 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, BookmarkCheck, Clock, Repeat, Sparkles } from "lucide-react";
 import { Button, SectionLabel } from "@/components/ukena";
 import { LazyImage } from "@/components/ui/lazy-image";
-import { creators } from "@/components/explore/creators-data";
-import { getProduct } from "@/components/product/product-data";
+import { useCreators, useAllProducts } from "@/lib/queries";
 import { readRecentProducts } from "@/lib/ukena-mode";
 import { useSavedCreators, useBuyerOrders } from "@/lib/queries";
 import { formatGBP } from "@/lib/cart";
@@ -27,6 +26,8 @@ interface PersonalisedHomeProps {
 export function PersonalisedHome({ user }: PersonalisedHomeProps) {
   const { data: savedIds = [] } = useSavedCreators();
   const { data: orders = [] } = useBuyerOrders();
+  const { data: allCreators = [] } = useCreators();
+  const { data: allProducts = [] } = useAllProducts();
 
   const [recentIds, setRecentIds] = useState<string[]>([]);
 
@@ -37,26 +38,26 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
   const savedCreators = useMemo(
     () =>
       savedIds
-        .map((id) => creators.find((c) => c.id === id))
+        .map((id) => allCreators.find((c) => c.id === id))
         .filter((c): c is NonNullable<typeof c> => Boolean(c))
         .slice(0, 5),
-    [savedIds],
+    [savedIds, allCreators],
   );
 
   const recentProducts = useMemo(
     () =>
       recentIds
-        .map((id) => getProduct(id))
-        .filter((p): p is NonNullable<ReturnType<typeof getProduct>> => Boolean(p))
+        .map((id) => allProducts.find((p) => p.id === id))
+        .filter((p): p is NonNullable<typeof p> => Boolean(p))
         .slice(0, 4),
-    [recentIds],
+    [recentIds, allProducts],
   );
 
   // "Discover" — three creators not already saved, deterministic.
   const discoverCreators = useMemo(() => {
     const savedSet = new Set(savedIds);
-    return creators.filter((c) => !savedSet.has(c.id)).slice(0, 3);
-  }, [savedIds]);
+    return allCreators.filter((c) => !savedSet.has(c.id)).slice(0, 3);
+  }, [savedIds, allCreators]);
 
   // Most recent order's first item drives the "Buy again" strip. Sorted by
   // createdAt desc so we always reflect their latest purchase, not the

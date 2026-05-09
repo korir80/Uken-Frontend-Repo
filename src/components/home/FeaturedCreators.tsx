@@ -1,48 +1,13 @@
 import { SectionLabel } from "@/components/ukena";
 import { ArrowRight } from "lucide-react";
 import { LazyImage } from "@/components/ui/lazy-image";
-import wanjiru from "@/assets/creator-wanjiru.jpg";
-import mumo from "@/assets/creator-mumo.jpg";
-import naserian from "@/assets/creator-naserian.jpg";
-
-// Shape mirrors the future API response — swap `creators` for a fetch later.
-export interface Creator {
-  id: string;
-  name: string;
-  craft: string;
-  region: string;
-  hook: string;
-  image: string;
-}
-
-const creators: Creator[] = [
-  {
-    id: "wanjiru",
-    name: "Wanjiru Kamau",
-    craft: "Sisal Basket Weaver",
-    region: "Maragua, Murang'a",
-    hook: "She learned the patterns from her grandmother — knots that once carried grain.",
-    image: wanjiru,
-  },
-  {
-    id: "mumo",
-    name: "Mumo Mwangi",
-    craft: "Ceramic Potter",
-    region: "Kiambu Highlands",
-    hook: "Trained as an architect, he came home to clay after his father's last vessels went unsold.",
-    image: mumo,
-  },
-  {
-    id: "naserian",
-    name: "Naserian Lekishon",
-    craft: "Maa Beadwork Artist",
-    region: "Kajiado County",
-    hook: "Each colour means something. She beads the conversations her elders never had time to write down.",
-    image: naserian,
-  },
-];
+import { useCreators } from "@/lib/queries";
+import type { CreatorSummary } from "@/services";
 
 export function FeaturedCreators() {
+  const { data: all = [], isLoading } = useCreators();
+  const creators = all.slice(0, 3);
+
   return (
     <section id="creators" className="bg-warm-white py-10 md:py-14">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
@@ -54,8 +19,8 @@ export function FeaturedCreators() {
               <em className="italic text-terracotta">Not a product.</em>
             </h2>
             <p className="mt-2.5 max-w-lg text-[14px] leading-relaxed text-ink-muted">
-              Three of the makers shaping this season's collection. Each has a
-              workshop, a region, and a reason for the craft they keep alive.
+              The makers shaping this season's collection. Each has a workshop, a
+              region, and a reason for the craft they keep alive.
             </p>
           </div>
           <a
@@ -67,44 +32,50 @@ export function FeaturedCreators() {
           </a>
         </div>
 
-        {/* Cards: horizontal scroll on mobile, grid on md+ */}
-        <div className="pb-4 md:pb-0">
+        {isLoading ? (
+          <ul className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <li key={i} className="min-w-0">
+                <div className="aspect-[4/3] w-full animate-pulse rounded-xl bg-cream" />
+                <div className="mt-3 h-5 w-2/3 animate-pulse rounded bg-cream" />
+                <div className="mt-2 h-4 w-1/2 animate-pulse rounded bg-cream" />
+              </li>
+            ))}
+          </ul>
+        ) : creators.length === 0 ? (
+          <p className="rounded-2xl border border-border/60 bg-cream/40 px-5 py-10 text-center font-sans text-[13px] text-ink-muted">
+            No makers in the index yet.
+          </p>
+        ) : (
           <ul className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
             {creators.map((c, i) => (
-              <li
-                key={c.id}
-                className="min-w-0"
-              >
+              <li key={c.id} className="min-w-0">
                 <CreatorCard creator={c} index={i} />
               </li>
             ))}
           </ul>
-        </div>
+        )}
       </div>
     </section>
   );
 }
 
-function CreatorCard({ creator, index }: { creator: Creator; index: number }) {
+function CreatorCard({ creator, index }: { creator: CreatorSummary; index: number }) {
   return (
     <article className="group h-full rounded-2xl border border-border/60 bg-cream/90 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft">
       <div className="relative overflow-hidden rounded-xl bg-sand-soft">
         <div className="aspect-[4/3] w-full">
           <LazyImage
             src={creator.image}
-            alt={`Portrait of ${creator.name}, ${creator.craft}`}
+            alt={`Portrait of ${creator.fullName}, ${creator.craft}`}
             wrapperClassName="h-full w-full"
             className="transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
           />
         </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal/40 via-transparent to-transparent" />
-
-        {/* Index numeral — editorial mark */}
         <span className="absolute left-5 top-5 font-display text-2xl text-warm-white/90">
           0{index + 1}
         </span>
-
-        {/* Region tag */}
         <span className="absolute bottom-5 left-5 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-warm-white/90">
           <span className="h-px w-5 bg-warm-white/70" />
           {creator.region}
@@ -116,7 +87,7 @@ function CreatorCard({ creator, index }: { creator: Creator; index: number }) {
           {creator.craft}
         </p>
         <h3 className="mt-2 font-display text-[24px] leading-tight text-charcoal">
-          {creator.name}
+          {creator.fullName}
         </h3>
         <p className="mt-2 text-[14px] leading-relaxed text-ink-muted">
           {creator.hook}

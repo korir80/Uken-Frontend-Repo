@@ -29,6 +29,8 @@ type Role = AuthUserDto["role"];
 
 interface AuthContextValue {
   user: AuthUserDto | null;
+  /** Convenience accessor for `user?.role ?? null`. */
+  role: Role | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   isBuyer: boolean;
@@ -121,6 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const role: Role | null = user?.role ?? null;
     return {
       user,
+      role,
       isAuthenticated: !!user,
       isLoading,
       isBuyer: role === "ROLE_BUYER",

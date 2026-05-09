@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ukena";
 
-async function signOutWithToast(logout: () => Promise<void>) {
+async function signOutWithToast(logout: () => void | Promise<void>) {
   await logout();
   toast.success("Signed out");
 }

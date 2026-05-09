@@ -1,6 +1,19 @@
 import { createRouter, useRouter } from "@tanstack/react-router";
-import { QueryClient } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryCache,
+  MutationCache,
+} from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
+import { handleApiError } from "@/lib/handleApiError";
+
+/**
+ * Allow individual queries / mutations to opt out of the global toast handler
+ * by passing `meta: { silent: true }` (e.g. forms that render errors inline).
+ */
+function shouldHandle(holder: { meta?: Record<string, unknown> } | undefined): boolean {
+  return !holder?.meta || holder.meta.silent !== true;
+}
 
 function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
@@ -58,6 +71,16 @@ function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => vo
 export const getRouter = () => {
   // Fresh QueryClient per request — prevents data leaking between SSR requests.
   const queryClient = new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error, query) => {
+        if (shouldHandle(query)) handleApiError(error);
+      },
+    }),
+    mutationCache: new MutationCache({
+      onError: (error, _vars, _ctx, mutation) => {
+        if (shouldHandle(mutation)) handleApiError(error);
+      },
+    }),
     defaultOptions: {
       queries: {
         staleTime: 60_000,

@@ -1,12 +1,11 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { Lock } from "lucide-react";
-import { toast } from "sonner";
+import { Lock, Loader2 } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/auth";
 import { ordersService } from "@/services/orders";
 import { paymentService } from "@/services/payment";
-import { ApiError } from "@/services/api";
+import { handleApiError } from "@/lib/handleApiError";
 import { formatPrice, type DeliveryDto } from "@/types/api";
 
 export const Route = createFileRoute("/checkout/payment")({
@@ -72,21 +71,10 @@ function PaymentStep() {
       const init = await paymentService.initiate(order.id);
       window.location.href = init.paymentLink;
     } catch (err) {
-      if (err instanceof ApiError) {
-        if (err.errors && err.errors.length > 0) {
-          err.errors.forEach((m) => toast.error(m));
-        } else {
-          toast.error(err.message);
-        }
-      } else {
-        toast.error(
-          err instanceof Error
-            ? err.message
-            : "We couldn't place your order. Please try again.",
-        );
-      }
+      handleApiError(err);
       setSubmitting(false);
-      navigate; // no redirect on error
+      // Intentionally do NOT redirect on error.
+      void navigate;
     }
   };
 

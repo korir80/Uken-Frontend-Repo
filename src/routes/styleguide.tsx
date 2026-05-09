@@ -8,6 +8,7 @@ import {
   Card,
   StoryCard,
   ProductCard,
+  Logo,
 } from "@/components/ukena";
 import { ArrowRight, Heart, ShoppingBag } from "lucide-react";
 import storyWeaver from "@/assets/story-weaver.jpg";

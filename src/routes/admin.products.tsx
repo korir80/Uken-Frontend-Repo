@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { toast } from "sonner";
 import type { ProductModerationStatus } from "@/services";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
 import { LazyImage } from "@/components/ui/lazy-image";
-import { useAllProducts, useSetProductStatus } from "@/lib/queries";
+import { useAllProducts } from "@/lib/queries";
 
 export const Route = createFileRoute("/admin/products")({
   component: AdminProducts,
@@ -13,20 +12,6 @@ export const Route = createFileRoute("/admin/products")({
 function AdminProducts() {
   const { data, isLoading } = useAllProducts();
   const products = Array.isArray(data) ? data : [];
-  const setStatus = useSetProductStatus();
-
-  function update(productId: string, status: ProductModerationStatus) {
-    setStatus.mutate(
-      { productId, status },
-      {
-        onSuccess: () =>
-          toast.success(
-            `Marked ${status.replace(/_/g, " ").toLowerCase()}.`,
-          ),
-        onError: (e) => toast.error(e.message),
-      },
-    );
-  }
 
   return (
     <div className="space-y-8">

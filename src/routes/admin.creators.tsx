@@ -71,14 +71,6 @@ function AdminCreators() {
                   >
                     View
                   </Link>
-                  <span className="mx-2 text-charcoal/30">·</span>
-                  <button
-                    disabled={suspend.isPending}
-                    onClick={() => handleSuspend(c.id, c.fullName)}
-                    className="text-destructive hover:underline disabled:opacity-50"
-                  >
-                    Suspend
-                  </button>
                 </td>
               </tr>
             ))}

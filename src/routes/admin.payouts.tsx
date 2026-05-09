@@ -5,7 +5,6 @@ import { formatGBP } from "@/lib/cart";
 import {
   useAdminPayouts,
   usePayCreator,
-  useRunPayoutCycle,
 } from "@/lib/queries";
 
 export const Route = createFileRoute("/admin/payouts")({
@@ -16,7 +15,6 @@ function AdminPayouts() {
   const { data, isLoading } = useAdminPayouts();
   const payouts = Array.isArray(data) ? data : [];
   const pay = usePayCreator();
-  const runCycle = useRunPayoutCycle();
 
   const totalPending = payouts.reduce((s, p) => s + (p.pendingPence ?? 0), 0);
   const totalPaidThisMonth = payouts.reduce(

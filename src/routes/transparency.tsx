@@ -1,24 +1,15 @@
+import { routeSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
 import { SectionLabel } from "@/components/ukena";
 
 export const Route = createFileRoute("/transparency")({
-  head: () => ({
-    meta: [
-      { title: "Traceability — UKEN" },
-      {
-        name: "description",
-        content:
-          "Scan any UKEN product QR code and trace it back to the farm, the maker, and the export date.",
-      },
-      { property: "og:title", content: "Traceability — UKEN" },
-      {
-        property: "og:description",
-        content:
-          "Scan any UKEN product QR code and trace it back to the farm, the maker, and the export date.",
-      },
-    ],
+  head: () => routeSeo({
+    path: "/transparency",
+    title: "Traceability — UKEN",
+    description:
+      "Scan any UKEN product QR code and trace it back to the farm, the maker, and the export date.",
   }),
   component: TransparencyPage,
 });

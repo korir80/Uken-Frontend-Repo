@@ -1,3 +1,4 @@
+import { routeSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
@@ -18,21 +19,11 @@ export const Route = createFileRoute("/explore")({
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(creatorsQueryOptions());
   },
-  head: () => ({
-    meta: [
-      { title: "The makers of Kenya — UKEN" },
-      {
-        name: "description",
-        content:
-          "Browse the Kenyan farmers, artisans, and makers behind UKEN products — discover the people first.",
-      },
-      { property: "og:title", content: "The makers of Kenya — UKEN" },
-      {
-        property: "og:description",
-        content:
-          "Discover Kenyan farmers, artisans, makers, the regions they work from, and the stories behind their products.",
-      },
-    ],
+  head: () => routeSeo({
+    path: "/explore",
+    title: "Meet the makers of Kenya — UKEN",
+    description:
+      "Browse the Kenyan farmers, artisans, and makers behind every UKEN product. Discover the people behind the work.",
   }),
   component: ExplorePage,
 });

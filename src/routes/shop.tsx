@@ -1,3 +1,4 @@
+import { routeSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
@@ -45,21 +46,11 @@ export const Route = createFileRoute("/shop")({
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(productsQueryOptions());
   },
-  head: () => ({
-    meta: [
-      { title: "Shop all pieces — UKEN" },
-      {
-        name: "description",
-        content:
-          "Browse the UKEN catalogue — specialty coffee, tea, foods, textiles, beadwork, pottery, and more from Kenya to the UK.",
-      },
-      { property: "og:title", content: "Shop all pieces — UKEN" },
-      {
-        property: "og:description",
-        content:
-          "Kenyan coffee, tea, foods, textiles, beadwork, pottery, and more, in one place.",
-      },
-    ],
+  head: () => routeSeo({
+    path: "/shop",
+    title: "Shop the UKEN collection — Kenyan goods",
+    description:
+      "Browse the UKEN catalogue — specialty coffee, tea, foods, textiles, beadwork, pottery and more, traced from maker to UK door.",
   }),
   component: ShopPage,
 });

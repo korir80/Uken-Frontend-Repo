@@ -1,24 +1,15 @@
+import { routeSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
 import { Card, SectionLabel } from "@/components/ukena";
 
 export const Route = createFileRoute("/sustainability")({
-  head: () => ({
-    meta: [
-      { title: "Sustainability — UKEN" },
-      {
-        name: "description",
-        content:
-          "How UKEN protects Kenyan soil, culture, and communities through long-term stewardship.",
-      },
-      { property: "og:title", content: "Sustainability — UKEN" },
-      {
-        property: "og:description",
-        content:
-          "How UKEN protects Kenyan soil, culture, and communities through long-term stewardship.",
-      },
-    ],
+  head: () => routeSeo({
+    path: "/sustainability",
+    title: "Sustainability and stewardship — UKEN",
+    description:
+      "How UKEN protects Kenyan soil, culture, and communities through long-term stewardship over short-term gain.",
   }),
   component: SustainabilityPage,
 });

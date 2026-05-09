@@ -1,3 +1,4 @@
+import { routeSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
@@ -8,21 +9,11 @@ import marketImage from "@/assets/authentic-craft-market.jpg";
 import workshopImage from "@/assets/creator-workshop-wanjiru.jpg";
 
 export const Route = createFileRoute("/story")({
-  head: () => ({
-    meta: [
-      { title: "Our Story — UKEN" },
-      {
-        name: "description",
-        content:
-          "How UKEN bridges Kenyan producers directly to UK buyers through transparent, fair, and sustainable trade.",
-      },
-      { property: "og:title", content: "Our Story — UKEN" },
-      {
-        property: "og:description",
-        content:
-          "How UKEN bridges Kenyan producers directly to UK buyers through transparent, fair, and sustainable trade.",
-      },
-    ],
+  head: () => routeSeo({
+    path: "/story",
+    title: "Our story, mission and vision — UKEN",
+    description:
+      "How UKEN bridges Kenyan producers directly to UK buyers through transparent, fair, and sustainable trade.",
   }),
   component: StoryPage,
 });

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, useMemo, type ImgHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-interface LazyImageProps extends ImgHTMLAttributes<HTMLImageElement> {
-  src: string;
+interface LazyImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
+  src?: string | null;
   alt: string;
   /** Aspect ratio wrapper (e.g. "4/5"). Optional — omit to let parent control sizing. */
   ratio?: string;
@@ -122,9 +122,16 @@ export function LazyImage({
     return () => io.disconnect();
   }, [eager, inView]);
 
+  const isUsableSrc =
+    !!src &&
+    !src.includes("cloudinary.com/demo") &&
+    !src.includes("/demo/") &&
+    !src.includes("sample") &&
+    !src.includes("placeholder");
+
   const cloud = useMemo(
-    () => buildCloudinarySources(src, displayWidth),
-    [src, displayWidth],
+    () => (isUsableSrc ? buildCloudinarySources(src as string, displayWidth) : { src: "" }),
+    [isUsableSrc, src, displayWidth],
   );
 
   return (
@@ -147,7 +154,7 @@ export function LazyImage({
         <div className="absolute inset-0 bg-[linear-gradient(110deg,oklch(0.95_0.012_78)_8%,oklch(0.88_0.025_70)_18%,oklch(0.95_0.012_78)_33%)] bg-[length:200%_100%] animate-[ukena-shimmer_1.6s_ease-in-out_infinite]" />
       </div>
 
-      {inView && (
+      {inView && isUsableSrc && (
         <img
           src={cloud.src}
           srcSet={cloud.srcSet}

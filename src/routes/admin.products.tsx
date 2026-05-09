@@ -1,30 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
 import { toast } from "sonner";
 import type { ProductModerationStatus } from "@/services";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
 import { LazyImage } from "@/components/ui/lazy-image";
-import {
-  useAllProducts,
-  useAdminProductStatuses,
-  useSetProductStatus,
-} from "@/lib/queries";
+import { useAllProducts, useSetProductStatus } from "@/lib/queries";
 
 export const Route = createFileRoute("/admin/products")({
   component: AdminProducts,
 });
 
 function AdminProducts() {
-  const { data: products = [], isLoading } = useAllProducts();
-  const { data: statuses = [] } = useAdminProductStatuses();
+  const { data, isLoading } = useAllProducts();
+  const products = Array.isArray(data) ? data : [];
   const setStatus = useSetProductStatus();
-
-  const statusMap = useMemo(() => {
-    const m = new Map<string, ProductModerationStatus>();
-    for (const s of statuses) m.set(s.productId, s.status);
-    return m;
-  }, [statuses]);
 
   function update(productId: string, status: ProductModerationStatus) {
     setStatus.mutate(
@@ -63,8 +52,7 @@ function AdminProducts() {
             </thead>
             <tbody className="divide-y divide-border/40 bg-warm-white">
               {products.map((p) => {
-                const s: ProductModerationStatus =
-                  statusMap.get(p.id) ?? "LIVE";
+                const s: ProductModerationStatus = "LIVE";
                 return (
                   <tr key={p.id}>
                     <td className="px-4 py-3">

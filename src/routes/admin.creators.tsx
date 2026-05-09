@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useCreators, useSuspendCreator } from "@/lib/queries";
+import { useSuspendCreator } from "@/lib/queries";
+import { api } from "@/services/api";
+import type { CreatorSummary } from "@/services";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
 
@@ -9,7 +12,11 @@ export const Route = createFileRoute("/admin/creators")({
 });
 
 function AdminCreators() {
-  const { data: creators = [], isLoading } = useCreators();
+  const { data, isLoading } = useQuery<CreatorSummary[]>({
+    queryKey: ["admin", "creators", "real"],
+    queryFn: () => api.get<CreatorSummary[]>("/creators"),
+  });
+  const creators = Array.isArray(data) ? data : [];
   const suspend = useSuspendCreator();
 
   function handleSuspend(id: string, name: string) {

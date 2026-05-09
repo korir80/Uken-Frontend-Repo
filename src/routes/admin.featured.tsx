@@ -16,9 +16,12 @@ export const Route = createFileRoute("/admin/featured")({
 });
 
 function AdminFeatured() {
-  const { data: creators = [] } = useCreators();
-  const { data: products = [] } = useAllProducts();
-  const { data: serverSlots = [] } = useAdminFeatured();
+  const { data: creatorsData } = useCreators();
+  const { data: productsData } = useAllProducts();
+  const { data: serverSlotsData } = useAdminFeatured();
+  const creators = Array.isArray(creatorsData) ? creatorsData : [];
+  const products = Array.isArray(productsData) ? productsData : [];
+  const serverSlots = Array.isArray(serverSlotsData) ? serverSlotsData : [];
   const save = useSetFeatured();
 
   const [slots, setSlots] = useState<FeaturedSlot[]>([]);

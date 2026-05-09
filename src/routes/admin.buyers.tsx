@@ -1,16 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
-import { formatGBP } from "@/lib/cart";
-import { useAdminBuyers, useSuspendBuyer } from "@/lib/queries";
+import { useAdminBuyers, useSuspendBuyer, useUnsuspendBuyer } from "@/lib/queries";
 
 export const Route = createFileRoute("/admin/buyers")({
   component: AdminBuyers,
 });
 
 function AdminBuyers() {
-  const { data: buyers = [], isLoading } = useAdminBuyers();
+  const { data, isLoading } = useAdminBuyers();
+  const buyers = Array.isArray(data) ? data : [];
   const suspend = useSuspendBuyer();
+  const unsuspend = useUnsuspendBuyer();
 
   function handleSuspend(id: string, name: string) {
     if (!window.confirm(`Suspend ${name}?`)) return;
@@ -20,12 +21,19 @@ function AdminBuyers() {
     });
   }
 
+  function handleUnsuspend(id: string, name: string) {
+    unsuspend.mutate(id, {
+      onSuccess: () => toast.success(`${name} reinstated.`),
+      onError: (e: Error) => toast.error(e.message),
+    });
+  }
+
   return (
     <div className="space-y-8">
       <PageHeader
         eyebrow="Buyers"
         title="People bringing the work home."
-        description="Lifetime spend per buyer. Suspend a buyer or reset their access if abuse is reported."
+        description="Suspend a buyer or reset their access if abuse is reported."
       />
 
       <div className="overflow-x-auto rounded-2xl border border-border/60">
@@ -51,14 +59,14 @@ function AdminBuyers() {
                     {b.email}
                   </p>
                 </td>
-                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">
-                  {b.city}
+                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/40">
+                  —
                 </td>
-                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">
-                  {b.orderCount}
+                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/40">
+                  —
                 </td>
-                <td className="px-4 py-3 font-sans text-[13px] text-charcoal">
-                  {formatGBP(b.totalPence)}
+                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/40">
+                  —
                 </td>
                 <td className="px-4 py-3">
                   {b.suspended ? (
@@ -68,17 +76,23 @@ function AdminBuyers() {
                   )}
                 </td>
                 <td className="px-4 py-3 text-right font-sans text-[12px]">
-                  <button className="text-charcoal/60 hover:text-charcoal hover:underline">
-                    Reset password
-                  </button>
-                  <span className="mx-2 text-charcoal/30">·</span>
-                  <button
-                    disabled={suspend.isPending || b.suspended}
-                    onClick={() => handleSuspend(b.id, b.fullName)}
-                    className="text-destructive hover:underline disabled:opacity-50"
-                  >
-                    {b.suspended ? "Suspended" : "Suspend"}
-                  </button>
+                  {b.suspended ? (
+                    <button
+                      disabled={unsuspend.isPending}
+                      onClick={() => handleUnsuspend(b.id, b.fullName)}
+                      className="text-clay hover:underline disabled:opacity-50"
+                    >
+                      Unsuspend
+                    </button>
+                  ) : (
+                    <button
+                      disabled={suspend.isPending}
+                      onClick={() => handleSuspend(b.id, b.fullName)}
+                      className="text-destructive hover:underline disabled:opacity-50"
+                    >
+                      Suspend
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

@@ -494,6 +494,15 @@ export function useSuspendBuyer() {
   });
 }
 
+export function useUnsuspendBuyer() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (buyerId) => adminService.unsuspendBuyer(buyerId),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: queryKeys.adminBuyers() }),
+  });
+}
+
 export function useSuspendCreator() {
   const qc = useQueryClient();
   return useMutation<void, Error, string>({

@@ -1,7 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { useSuspendCreator } from "@/lib/queries";
 import { api } from "@/services/api";
 import type { CreatorSummary } from "@/services";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
@@ -17,16 +15,6 @@ function AdminCreators() {
     queryFn: () => api.get<CreatorSummary[]>("/creators"),
   });
   const creators = Array.isArray(data) ? data : [];
-  const suspend = useSuspendCreator();
-
-  function handleSuspend(id: string, name: string) {
-    if (!window.confirm(`Suspend ${name}?`)) return;
-    suspend.mutate(id, {
-      onSuccess: () => toast.success(`${name} suspended.`),
-      onError: (e) => toast.error(e.message),
-    });
-  }
-
   return (
     <div className="space-y-8">
       <PageHeader

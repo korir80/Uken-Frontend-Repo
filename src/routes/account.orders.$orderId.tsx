@@ -115,21 +115,10 @@ function OrderDetailPage() {
   }
 
   async function cancelOrder() {
-    if (!confirm("Cancel this order? Your maker will be notified.")) return;
-    setCancelling(true);
-    try {
-      const updated = await orderService.refund(order.id);
-      qc.setQueryData(queryKeys.order(order.id), updated);
-      qc.invalidateQueries({ queryKey: queryKeys.ordersBuyer() });
-      toast.success("Order cancelled");
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Couldn't cancel this order",
-      );
-    } finally {
-      setCancelling(false);
-    }
+    // Order cancellation/refund is not yet supported by the backend.
+    toast.error("Order cancellation is not available yet.");
   }
+  void setCancelling;
 
   const subtotal = order.items.reduce(
     (s: number, i: OrderItem) => s + i.pricePence * i.quantity,

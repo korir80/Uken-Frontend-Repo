@@ -73,6 +73,16 @@ function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => vo
 export const getRouter = () => {
   // Fresh QueryClient per request — prevents data leaking between SSR requests.
   const queryClient = new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error, query: Query) => {
+        if (shouldHandle(query)) handleApiError(error);
+      },
+    }),
+    mutationCache: new MutationCache({
+      onError: (error, _vars, _ctx, mutation: Mutation) => {
+        if (shouldHandle(mutation)) handleApiError(error);
+      },
+    }),
     defaultOptions: {
       queries: {
         staleTime: 60_000,

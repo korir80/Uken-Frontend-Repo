@@ -53,21 +53,53 @@ export const Route = createFileRoute("/products/$productId")({
       throw err;
     }
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const p = loaderData?.product;
-    if (!p) return { meta: [{ title: "Piece — UKEN" }] };
+    const url = `https://ukena.co.uk/products/${params.productId}`;
+    if (!p)
+      return {
+        meta: [{ title: "Piece — UKEN" }],
+        links: [{ rel: "canonical", href: url }],
+      };
     const title = `${p.name} by ${p.creator.fullName} · UKEN`;
     const description = `${p.pieceStory.slice(0, 150)}…`;
+    const productJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: p.name,
+      description,
+      image: p.heroImage,
+      url,
+      brand: { "@type": "Brand", name: "UKEN" },
+      category: p.creator.craft,
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "GBP",
+        price: (p.pricePence / 100).toFixed(2),
+        availability: "https://schema.org/InStock",
+        url,
+      },
+    };
     return {
       meta: [
         { title },
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
+        { property: "og:url", content: url },
         { property: "og:image", content: p.heroImage },
         { property: "og:type", content: "product" },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
         { name: "twitter:image", content: p.heroImage },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(productJsonLd),
+        },
       ],
     };
   },

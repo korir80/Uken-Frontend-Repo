@@ -1,24 +1,15 @@
+import { routeSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
 import { Card, SectionLabel } from "@/components/ukena";
 
 export const Route = createFileRoute("/collections")({
-  head: () => ({
-    meta: [
-      { title: "Collections — UKEN" },
-      {
-        name: "description",
-        content:
-          "Browse UKEN collections across Kenyan handcrafted goods, coffee, tea, honey, spices, and produce.",
-      },
-      { property: "og:title", content: "Collections — UKEN" },
-      {
-        property: "og:description",
-        content:
-          "Browse UKEN collections across Kenyan handcrafted goods, coffee, tea, honey, spices, and produce.",
-      },
-    ],
+  head: () => routeSeo({
+    path: "/collections",
+    title: "Collections — UKEN",
+    description:
+      "Browse UKEN collections across Kenyan handcrafted goods, coffee, tea, honey, spices and produce.",
   }),
   component: CollectionsPage,
 });

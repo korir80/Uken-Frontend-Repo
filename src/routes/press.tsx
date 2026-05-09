@@ -1,24 +1,15 @@
+import { routeSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
 import { Card, SectionLabel } from "@/components/ukena";
 
 export const Route = createFileRoute("/press")({
-  head: () => ({
-    meta: [
-      { title: "Press — UKEN" },
-      {
-        name: "description",
-        content:
-          "Press information, partners, affiliates, and media contact details for UKEN.",
-      },
-      { property: "og:title", content: "Press — UKEN" },
-      {
-        property: "og:description",
-        content:
-          "Press information, partners, affiliates, and media contact details for UKEN.",
-      },
-    ],
+  head: () => routeSeo({
+    path: "/press",
+    title: "Press and partners — UKEN",
+    description:
+      "Press information, partners, affiliates, and media contact details for UKEN.",
   }),
   component: PressPage,
 });

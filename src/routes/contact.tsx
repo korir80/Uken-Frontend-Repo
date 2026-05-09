@@ -1,3 +1,4 @@
+import { routeSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
@@ -9,21 +10,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact — UKEN" },
-      {
-        name: "description",
-        content:
-          "Find UKEN in Nottingham and Nairobi, or contact the team for buyer, producer, press, and general enquiries.",
-      },
-      { property: "og:title", content: "Contact — UKEN" },
-      {
-        property: "og:description",
-        content:
-          "Find UKEN in Nottingham and Nairobi, or contact the team for buyer, producer, press, and general enquiries.",
-      },
-    ],
+  head: () => routeSeo({
+    path: "/contact",
+    title: "Contact UKEN — Nottingham and Nairobi",
+    description:
+      "Find UKEN in Nottingham and Nairobi, or contact the team for buyer, producer, press, and general enquiries.",
   }),
   component: ContactPage,
 });

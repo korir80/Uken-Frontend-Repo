@@ -14,25 +14,14 @@ import { HomeArtPattern } from "@/components/home/HomeArtPattern";
 import { PersonalisedHome } from "@/components/home/PersonalisedHome";
 import { useAuth } from "@/lib/auth";
 
+import { routeSeo } from "@/lib/seo";
+
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "UKEN — Kenya, Brought Home" },
-      {
-        name: "description",
-        content:
-          "Shop authentic Kenyan coffee, food, crafts, and artisan goods. Every product traced from maker to your UK door.",
-      },
-      {
-        property: "og:title",
-        content: "UKEN — Kenya, Brought Home",
-      },
-      {
-        property: "og:description",
-        content:
-          "Shop authentic Kenyan coffee, food, crafts, and artisan goods. Every product traced from maker to your UK door.",
-      },
-    ],
+  head: () => routeSeo({
+    path: "/",
+    title: "UKEN — Kenya, brought home",
+    description:
+      "Shop authentic Kenyan coffee, food, crafts, and artisan goods. Every product traced from maker to your UK door.",
   }),
   component: HomePage,
 });

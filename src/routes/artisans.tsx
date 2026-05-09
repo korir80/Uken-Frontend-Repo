@@ -1,3 +1,4 @@
+import { routeSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { ExploreNav } from "@/components/explore/ExploreNav";
@@ -5,21 +6,11 @@ import { Footer } from "@/components/home/Footer";
 import { Button, Card, SectionLabel } from "@/components/ukena";
 
 export const Route = createFileRoute("/artisans")({
-  head: () => ({
-    meta: [
-      { title: "For Artisans — UKEN" },
-      {
-        name: "description",
-        content:
-          "Join UKEN. Set your price, tell your story, and reach UK buyers directly. No middlemen.",
-      },
-      { property: "og:title", content: "For Artisans — UKEN" },
-      {
-        property: "og:description",
-        content:
-          "Join UKEN. Set your price, tell your story, and reach UK buyers directly. No middlemen.",
-      },
-    ],
+  head: () => routeSeo({
+    path: "/artisans",
+    title: "For artisans — sell on UKEN",
+    description:
+      "Join UKEN. Set your price, tell your story, and reach UK buyers directly. No middlemen.",
   }),
   component: ArtisansPage,
 });

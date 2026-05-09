@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth, defaultPathForRole } from "@/lib/auth";
+import { handleApiError } from "@/lib/handleApiError";
 
 export const Route = createFileRoute("/signin")({
   head: () => ({

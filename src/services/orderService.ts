@@ -1,5 +1,8 @@
 /**
  * Order service — backed by /api/orders.
+ *
+ * Note: getAllOrders and refund have been removed because the corresponding
+ * admin backend endpoints do not exist.
  */
 import { api } from "./api";
 
@@ -57,19 +60,10 @@ export const orderService = {
   async getOrdersByCreator(): Promise<OrderDto[]> {
     return api.get<OrderDto[]>("/creators/me/orders");
   },
-  async getAllOrders(): Promise<OrderDto[]> {
-    return api.get<OrderDto[]>("/admin/orders");
-  },
   async updateStatus(orderId: string, status: OrderStatus): Promise<OrderDto> {
     return api.patch<OrderDto>(
       `/creators/me/orders/${encodeURIComponent(orderId)}/status`,
       { status },
-    );
-  },
-  async refund(orderId: string): Promise<OrderDto> {
-    return api.patch<OrderDto>(
-      `/admin/orders/${encodeURIComponent(orderId)}/refund`,
-      {},
     );
   },
 };

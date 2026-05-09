@@ -115,15 +115,20 @@ export function RouteProgress() {
         className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,oklch(0.96_0.012_78)_0%,oklch(0.93_0.018_70)_55%,oklch(0.88_0.022_60)_100%)]"
       />
 
-      <div className="relative flex flex-col items-center gap-6">
-        {/* Brand logo with a soft rise animation */}
-        <img
-          src={logoMark}
-          alt="UKEN"
-          className="block h-20 w-auto select-none object-contain animate-[ukena-rise_700ms_ease-out_both] md:h-24"
-          draggable={false}
-        />
-
+      <div className="relative flex flex-col items-center gap-7">
+        {/* Logo + soft warm pulse glow */}
+        <div className="relative grid place-items-center">
+          <div
+            aria-hidden
+            className="absolute inset-0 -m-10 rounded-full blur-3xl opacity-70 animate-[ukena-glow_2.8s_ease-in-out_infinite] bg-[radial-gradient(circle,oklch(0.78_0.16_70/0.55)_0%,oklch(0.62_0.18_38/0.35)_45%,transparent_72%)]"
+          />
+          <img
+            src={logoMark}
+            alt="UKEN — From Heart to Hands"
+            className="relative block h-28 w-auto select-none object-contain animate-[ukena-rise_700ms_ease-out_both] md:h-32"
+            draggable={false}
+          />
+        </div>
 
         {/* Hairline progress arc — terracotta → gold */}
         <div className="relative h-px w-32 overflow-hidden bg-charcoal/[0.08]">
@@ -137,15 +142,20 @@ export function RouteProgress() {
 
       <style>{`
         @keyframes ukena-rise {
-          0%   { transform: translateY(110%); opacity: 0; }
-          100% { transform: translateY(0%);   opacity: 1; }
+          0%   { transform: translateY(28px); opacity: 0; }
+          100% { transform: translateY(0);    opacity: 1; }
         }
         @keyframes ukena-loader-sweep {
           0%   { transform: translateX(-110%); }
           50%  { transform: translateX(140%); }
           100% { transform: translateX(280%); }
         }
+        @keyframes ukena-glow {
+          0%, 100% { opacity: 0.45; transform: scale(0.94); }
+          50%      { opacity: 0.85; transform: scale(1.08); }
+        }
       `}</style>
+
     </div>
   );
 }

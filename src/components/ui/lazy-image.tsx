@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useMemo, type ImgHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-interface LazyImageProps extends ImgHTMLAttributes<HTMLImageElement> {
+interface LazyImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
   src?: string | null;
   alt: string;
   /** Aspect ratio wrapper (e.g. "4/5"). Optional — omit to let parent control sizing. */

@@ -71,11 +71,11 @@ export const Route = createFileRoute("/products/$productId")({
       image: p.heroImage,
       url,
       brand: { "@type": "Brand", name: "UKEN" },
-      category: p.craft,
+      category: p.creator.craft,
       offers: {
         "@type": "Offer",
         priceCurrency: "GBP",
-        price: typeof p.price === "number" ? p.price : undefined,
+        price: (p.pricePence / 100).toFixed(2),
         availability: "https://schema.org/InStock",
         url,
       },

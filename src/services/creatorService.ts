@@ -94,12 +94,12 @@ export const creatorService = {
     if (filters.pageSize != null) params.set("pageSize", String(filters.pageSize));
     const qs = params.toString();
     const res = await api.get<CreatorSummary[]>(`/creators${qs ? `?${qs}` : ""}`);
-    return res.data;
+    return res;
   },
 
   async getCreatorById(id: string): Promise<CreatorDetail> {
     if (USE_MOCK_API) return fakeResolve(buildMockDetail(id));
     const res = await api.get<CreatorDetail>(`/creators/${encodeURIComponent(id)}`);
-    return res.data;
+    return res;
   },
 };

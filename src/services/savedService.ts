@@ -36,8 +36,8 @@ export const savedService = {
     if (USE_MOCK_API) return fakeResolve(readSavedProducts());
     const res = await api.get<string[]>("/users/me/saved/products");
     // Mirror locally so heart icons stay in sync without a refetch.
-    writeSavedProducts(res.data);
-    return res.data;
+    writeSavedProducts(res);
+    return res;
   },
 
   async addSavedProduct(productId: string): Promise<string[]> {
@@ -53,8 +53,8 @@ export const savedService = {
       `/users/me/saved/products/${encodeURIComponent(productId)}`,
       {},
     );
-    writeSavedProducts(res.data);
-    return res.data;
+    writeSavedProducts(res);
+    return res;
   },
 
   async removeSavedProduct(productId: string): Promise<string[]> {
@@ -66,16 +66,16 @@ export const savedService = {
     const res = await api.delete<string[]>(
       `/users/me/saved/products/${encodeURIComponent(productId)}`,
     );
-    writeSavedProducts(res.data);
-    return res.data;
+    writeSavedProducts(res);
+    return res;
   },
 
   /* ---------------- Creators ---------------- */
   async listSavedCreators(): Promise<string[]> {
     if (USE_MOCK_API) return fakeResolve(readSavedCreators());
     const res = await api.get<string[]>("/users/me/saved/creators");
-    writeSavedCreators(res.data);
-    return res.data;
+    writeSavedCreators(res);
+    return res;
   },
 
   async addSavedCreator(creatorId: string): Promise<string[]> {
@@ -91,8 +91,8 @@ export const savedService = {
       `/users/me/saved/creators/${encodeURIComponent(creatorId)}`,
       {},
     );
-    writeSavedCreators(res.data);
-    return res.data;
+    writeSavedCreators(res);
+    return res;
   },
 
   async removeSavedCreator(creatorId: string): Promise<string[]> {
@@ -104,8 +104,8 @@ export const savedService = {
     const res = await api.delete<string[]>(
       `/users/me/saved/creators/${encodeURIComponent(creatorId)}`,
     );
-    writeSavedCreators(res.data);
-    return res.data;
+    writeSavedCreators(res);
+    return res;
   },
 
   /**
@@ -129,8 +129,8 @@ export const savedService = {
       products: localProducts,
       creators: localCreators,
     });
-    writeSavedProducts(res.data.products);
-    writeSavedCreators(res.data.creators);
-    return res.data;
+    writeSavedProducts(res.products);
+    writeSavedCreators(res.creators);
+    return res;
   },
 };

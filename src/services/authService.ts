@@ -88,7 +88,7 @@ export const authService = {
     if (!email.trim()) throw new Error("Email is required");
     if (USE_MOCK_API) return fakeResolve(buildMockSession({ email }), 250);
     const res = await api.post<AuthSession>("/auth/login", { email, password } satisfies LoginPayload);
-    return res.data;
+    return res;
   },
 
   async register(data: RegisterPayload): Promise<AuthSession> {
@@ -96,7 +96,7 @@ export const authService = {
     if (USE_MOCK_API)
       return fakeResolve(buildMockSession({ email: data.email, fullName: data.fullName, role: data.role }), 250);
     const res = await api.post<AuthSession>("/auth/register", data);
-    return res.data;
+    return res;
   },
 
   async logout(): Promise<void> {
@@ -112,7 +112,7 @@ export const authService = {
     if (USE_MOCK_API) return null;
     try {
       const res = await api.get<AuthUser>("/auth/me");
-      return res.data;
+      return res;
     } catch {
       return null;
     }

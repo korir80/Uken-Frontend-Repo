@@ -62,7 +62,7 @@ export const adminService = {
   async listPayouts(): Promise<CreatorPayout[]> {
     if (USE_MOCK_API) return fakeResolve(seedPayouts);
     const res = await api.get<CreatorPayout[]>("/admin/payouts");
-    return res.data;
+    return res;
   },
 
   async payCreator(creatorId: string): Promise<CreatorPayout> {
@@ -79,7 +79,7 @@ export const adminService = {
       `/admin/payouts/${encodeURIComponent(creatorId)}/pay`,
       {},
     );
-    return res.data;
+    return res;
   },
 
   async runPayoutCycle(): Promise<CreatorPayout[]> {
@@ -93,14 +93,14 @@ export const adminService = {
       return fakeResolve(seedPayouts);
     }
     const res = await api.post<CreatorPayout[]>("/admin/payouts/run", {});
-    return res.data;
+    return res;
   },
 
   /* ---------------- Reviews / content ---------------- */
   async listReviews(): Promise<ProductReview[]> {
     if (USE_MOCK_API) return fakeResolve(seedReviews);
     const res = await api.get<ProductReview[]>("/admin/reviews");
-    return res.data;
+    return res;
   },
 
   async updateReviewStatus(
@@ -117,14 +117,14 @@ export const adminService = {
       `/admin/reviews/${encodeURIComponent(id)}/status`,
       payload,
     );
-    return res.data;
+    return res;
   },
 
   /* ---------------- Featured curation ---------------- */
   async getFeatured(): Promise<FeaturedSlot[]> {
     if (USE_MOCK_API) return fakeResolve(seedFeatured);
     const res = await api.get<FeaturedSlot[]>("/admin/featured");
-    return res.data;
+    return res;
   },
 
   async setFeatured(slots: FeaturedSlot[]): Promise<FeaturedSlot[]> {
@@ -135,7 +135,7 @@ export const adminService = {
       return fakeResolve(seedFeatured);
     }
     const res = await api.put<FeaturedSlot[]>("/admin/featured", slots);
-    return res.data;
+    return res;
   },
 
   /* ---------------- Buyers (derived from orders in mock) ---------------- */
@@ -165,7 +165,7 @@ export const adminService = {
       return [...byEmail.values()].sort((a, b) => b.totalPence - a.totalPence);
     }
     const res = await api.get<AdminBuyerRow[]>("/admin/buyers");
-    return res.data;
+    return res;
   },
 
   async suspendBuyer(buyerId: string): Promise<void> {
@@ -202,7 +202,7 @@ export const adminService = {
     const res = await api.get<ProductModerationRow[]>(
       "/admin/products/statuses",
     );
-    return res.data;
+    return res;
   },
 
   async setProductStatus(
@@ -217,6 +217,6 @@ export const adminService = {
       `/admin/products/${encodeURIComponent(productId)}/status`,
       { status },
     );
-    return res.data;
+    return res;
   },
 };

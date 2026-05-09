@@ -52,13 +52,13 @@ export const applicationService = {
       return fakeResolve(created);
     }
     const res = await api.post<ArtisanApplication>("/applications", payload);
-    return res.data;
+    return res;
   },
 
   async list(): Promise<ArtisanApplication[]> {
     if (USE_MOCK_API) return fakeResolve(seedApplications);
     const res = await api.get<ArtisanApplication[]>("/admin/applications");
-    return res.data;
+    return res;
   },
 
   async get(id: string): Promise<ArtisanApplication> {
@@ -68,7 +68,7 @@ export const applicationService = {
       return fakeResolve(a);
     }
     const res = await api.get<ArtisanApplication>(`/admin/applications/${encodeURIComponent(id)}`);
-    return res.data;
+    return res;
   },
 
   async updateStatus(id: string, payload: ApplicationStatusUpdate): Promise<ArtisanApplication> {
@@ -82,6 +82,6 @@ export const applicationService = {
       `/admin/applications/${encodeURIComponent(id)}/status`,
       payload,
     );
-    return res.data;
+    return res;
   },
 };

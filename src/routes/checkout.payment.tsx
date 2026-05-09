@@ -2,8 +2,12 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Lock } from "lucide-react";
 import { toast } from "sonner";
-import { useCart, formatGBP } from "@/lib/cart";
-import { useCreateOrder } from "@/lib/queries";
+import { useCart } from "@/lib/cart";
+import { useAuth } from "@/lib/auth";
+import { ordersService } from "@/services/orders";
+import { paymentService } from "@/services/payment";
+import { ApiError } from "@/services/api";
+import { formatPrice, type DeliveryDto } from "@/types/api";
 
 export const Route = createFileRoute("/checkout/payment")({
   component: PaymentStep,
@@ -11,8 +15,8 @@ export const Route = createFileRoute("/checkout/payment")({
 
 function PaymentStep() {
   const navigate = useNavigate();
-  const { delivery, items, placeOrder, totalPence } = useCart();
-  const createOrder = useCreateOrder();
+  const { delivery, items, totalPence } = useCart();
+  const { user } = useAuth();
 
   const [card, setCard] = useState({
     holder: "",
@@ -47,39 +51,43 @@ function PaymentStep() {
     if (!delivery || items.length === 0) return;
     setSubmitting(true);
 
-    // 1. Persist the order on the server (Spring Boot once live; mock today).
-    //    The mutation invalidates ['orders','buyer'] on success so the buyer
-    //    dashboard picks up the new row immediately.
-    let serverOrderId: string | undefined;
-    try {
-      const created = await createOrder.mutateAsync({
-        items: items.map((i) => ({
-          productId: i.productId,
-          quantity: i.quantity,
-        })),
-        delivery,
-      });
-      serverOrderId = created.id;
-    } catch (err) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : "We couldn't place your order. Please try again.";
-      toast.error(msg);
-      setSubmitting(false);
-      return;
-    }
+    const deliveryPayload: DeliveryDto = {
+      fullName: delivery.fullName,
+      email: (delivery as { email?: string }).email ?? user?.email ?? "",
+      addressLine1: delivery.addressLine1,
+      addressLine2: delivery.addressLine2,
+      city: delivery.city,
+      postcode: delivery.postcode,
+      country: delivery.country,
+    };
 
-    // 2. Snapshot the order locally (with the server id) so the confirmation
-    //    page can deep-link to /account/orders/:id. When Stripe lands this is
-    //    where confirmCardPayment() will go (between API + local snapshot).
-    const local = placeOrder({ id: serverOrderId });
-    if (!local) {
+    try {
+      // 1. Create the order on the backend.
+      const order = await ordersService.create(
+        items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+        deliveryPayload,
+      );
+
+      // 2. Initiate payment and redirect to the gateway.
+      const init = await paymentService.initiate(order.id);
+      window.location.href = init.paymentLink;
+    } catch (err) {
+      if (err instanceof ApiError) {
+        if (err.errors && err.errors.length > 0) {
+          err.errors.forEach((m) => toast.error(m));
+        } else {
+          toast.error(err.message);
+        }
+      } else {
+        toast.error(
+          err instanceof Error
+            ? err.message
+            : "We couldn't place your order. Please try again.",
+        );
+      }
       setSubmitting(false);
-      return;
+      navigate; // no redirect on error
     }
-    toast.success("Order placed — your maker has been notified.");
-    navigate({ to: "/checkout/confirmation" });
   };
 
   return (
@@ -209,7 +217,7 @@ function PaymentStep() {
         >
           {submitting
             ? "Placing your order…"
-            : `Place order · ${formatGBP(totalPence)}`}
+            : `Place order · ${formatPrice(totalPence)}`}
         </button>
       </div>
     </form>

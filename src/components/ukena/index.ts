@@ -4,3 +4,4 @@ export { Avatar } from "./Avatar";
 export { Divider } from "./Divider";
 export { SectionLabel } from "./SectionLabel";
 export { Card, StoryCard, ProductCard } from "./Card";
+export { Logo } from "./Logo";

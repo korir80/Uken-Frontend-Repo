@@ -43,22 +43,39 @@ function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
-    if (!email.trim()) return setError("Email is required");
-    if (!password.trim()) return setError("Password is required");
+    setEmailError(null);
+    setPasswordError(null);
+    setFormError(null);
+    if (!email.trim()) return setEmailError("Email is required");
+    if (!password.trim()) return setPasswordError("Password is required");
     setSubmitting(true);
     try {
       const user = await login(email.trim(), password);
       toast.success(`Welcome back, ${user.fullName.split(" ")[0]}`);
       navigate({ to: defaultPathForRole(user.role) });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Sign-in failed";
-      setError(msg);
-      toast.error(msg);
+      handleApiError(err, {
+        // Wrong credentials → inline under password, no toast, no redirect.
+        overrides: {
+          401: () => {
+            setPasswordError("Invalid email or password");
+            return true;
+          },
+        },
+        onFieldErrors: ({ fields, general }) => {
+          if (fields.email?.[0]) setEmailError(fields.email[0]);
+          if (fields.password?.[0]) setPasswordError(fields.password[0]);
+          if (general[0] && !fields.email && !fields.password) {
+            setFormError(general[0]);
+          }
+        },
+      });
     } finally {
       setSubmitting(false);
     }

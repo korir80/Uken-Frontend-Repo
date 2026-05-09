@@ -1,5 +1,9 @@
 /**
  * Admin service — backed by /api/admin/*.
+ *
+ * Note: getAllOrders, refund, listProductStatuses, setProductStatus,
+ * suspendCreator, and runPayoutCycle have been removed because the
+ * corresponding backend endpoints do not exist.
  */
 import { api } from "./api";
 import type {
@@ -44,9 +48,6 @@ export const adminService = {
       {},
     );
   },
-  async runPayoutCycle(): Promise<CreatorPayout[]> {
-    return api.post<CreatorPayout[]>("/admin/payouts/run", {});
-  },
   async listReviews(): Promise<ProductReview[]> {
     return api.get<ProductReview[]>("/admin/reviews");
   },
@@ -78,24 +79,6 @@ export const adminService = {
     await api.patch<void>(
       `/admin/buyers/${encodeURIComponent(buyerId)}/unsuspend`,
       {},
-    );
-  },
-  async suspendCreator(creatorId: string): Promise<void> {
-    await api.patch<void>(
-      `/admin/creators/${encodeURIComponent(creatorId)}/suspend`,
-      {},
-    );
-  },
-  async listProductStatuses(): Promise<ProductModerationRow[]> {
-    return api.get<ProductModerationRow[]>("/admin/products/statuses");
-  },
-  async setProductStatus(
-    productId: string,
-    status: ProductModerationStatus,
-  ): Promise<ProductModerationRow> {
-    return api.patch<ProductModerationRow>(
-      `/admin/products/${encodeURIComponent(productId)}/status`,
-      { status },
     );
   },
 };

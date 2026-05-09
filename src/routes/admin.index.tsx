@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   useAdminApplications,
-  useAdminOrders,
   useAdminPayouts,
   useCreators,
 } from "@/lib/queries";
@@ -14,13 +13,9 @@ export const Route = createFileRoute("/admin/")({
 
 function AdminOverview() {
   const { data: creators = [] } = useCreators();
-  const { data: orders = [] } = useAdminOrders();
   const { data: applications = [] } = useAdminApplications();
   const { data: payouts = [] } = useAdminPayouts();
 
-  const gmvPence = orders
-    .filter((o) => o.status !== "CANCELLED")
-    .reduce((s, o) => s + o.totalPence, 0);
   const pendingApps = applications.filter(
     (a) => a.status === "PENDING" || a.status === "UNDER_REVIEW",
   ).length;
@@ -35,21 +30,25 @@ function AdminOverview() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="GMV" value={formatGBP(gmvPence)} hint="Across all orders" />
         <StatCard
           label="Active creators"
           value={String(creators.length)}
           hint="Live profiles"
         />
         <StatCard
-          label="Total orders"
-          value={String(orders.length)}
-          hint="All time"
+          label="Pending applications"
+          value={String(pendingApps)}
+          hint="Awaiting review"
         />
         <StatCard
           label="Pending payouts"
           value={formatGBP(totalPayout)}
           hint="To be settled"
+        />
+        <StatCard
+          label="Payout creators"
+          value={String(payouts.length)}
+          hint="On the next cycle"
         />
       </div>
 
@@ -60,9 +59,9 @@ function AdminOverview() {
           to="/admin/applications"
         />
         <ActionCard
-          title={`${orders.filter((o) => o.status === "PENDING").length} orders pending creator action`}
-          body="Nudge the maker if a piece has been pending too long, or step in on a stuck dispute."
-          to="/admin/orders"
+          title="Review pending payouts"
+          body="Approve payouts to push pending earnings to makers' accounts."
+          to="/admin/payouts"
         />
       </div>
 

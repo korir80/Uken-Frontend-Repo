@@ -5,7 +5,6 @@ import { formatGBP } from "@/lib/cart";
 import {
   useAdminPayouts,
   usePayCreator,
-  useRunPayoutCycle,
 } from "@/lib/queries";
 
 export const Route = createFileRoute("/admin/payouts")({
@@ -16,7 +15,6 @@ function AdminPayouts() {
   const { data, isLoading } = useAdminPayouts();
   const payouts = Array.isArray(data) ? data : [];
   const pay = usePayCreator();
-  const runCycle = useRunPayoutCycle();
 
   const totalPending = payouts.reduce((s, p) => s + (p.pendingPence ?? 0), 0);
   const totalPaidThisMonth = payouts.reduce(
@@ -34,20 +32,6 @@ function AdminPayouts() {
         eyebrow="Payouts"
         title="What we owe the makers."
         description="Cycle runs on the 1st of each month. Approve a payout to push pending earnings to the maker's account."
-        action={
-          <button
-            disabled={runCycle.isPending || totalPending === 0}
-            onClick={() =>
-              runCycle.mutate(undefined, {
-                onSuccess: () => toast.success("Cycle complete — all pending balances cleared."),
-                onError: (e) => toast.error(e.message),
-              })
-            }
-            className="rounded-full bg-clay px-5 py-2.5 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
-          >
-            {runCycle.isPending ? "Running cycle…" : "Run cycle"}
-          </button>
-        }
       />
 
       <div className="grid gap-4 sm:grid-cols-3">

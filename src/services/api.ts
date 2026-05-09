@@ -1,86 +1,102 @@
 /**
  * Uken HTTP client.
  *
- * Real fetch-based implementation that talks to the Java Spring Boot
- * backend documented in BACKEND_SPEC.md.
- *
- * Behaviour:
- * - Reads the base URL from `VITE_API_BASE_URL` (e.g. http://localhost:8080/api).
- * - Attaches `Authorization: Bearer <token>` when a JWT is set via
- *   {@link setAuthToken}.
- * - Sends `Content-Type: application/json` for JSON bodies.
- * - Unwraps the standard Spring Boot envelope `{ success, data, message, errors }`
- *   so service callers receive the inner payload directly.
- * - On HTTP 401 it clears the in-memory token and invokes any handler
- *   registered through {@link registerUnauthorizedHandler} — typically the
- *   AuthProvider, which boots the user back to /signin.
- *
- * A mock-fallback flag is exposed for development: `VITE_USE_MOCK_API=true`
- * lets every service short-circuit to the seed data shipped in the repo so
- * the app is fully usable before the Spring Boot service is reachable.
+ * Thin fetch wrapper around the Java Spring Boot backend. Handles:
+ * - JWT token storage in localStorage (key: `ukena_token`)
+ * - Bearer token attachment on every request
+ * - Standard envelope unwrapping ({ success, data, message, errors })
+ * - 401 handling via a registerable unauthorized handler
  */
 
-export interface ApiEnvelope<T> {
-  success: boolean;
-  data: T;
-  message?: string;
-  errors?: string[];
-}
+const BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 
-export interface ApiResponse<T> {
-  data: T;
-  status: number;
-}
+/* ------------------------------------------------------------------ */
+/* Mock toggle (kept so existing services compile — read from env)     */
+/* ------------------------------------------------------------------ */
+
+export const USE_MOCK_API: boolean =
+  String(import.meta.env.VITE_USE_MOCK_API ?? "false").toLowerCase() === "true";
+
+/* ------------------------------------------------------------------ */
+/* Error type                                                          */
+/* ------------------------------------------------------------------ */
 
 export class ApiError extends Error {
-  status: number;
-  errors?: string[];
-  constructor(message: string, status: number, errors?: string[]) {
+  constructor(
+    public override message: string,
+    public errors: string[],
+    public status: number,
+  ) {
     super(message);
     this.name = "ApiError";
-    this.status = status;
-    this.errors = errors;
   }
 }
 
 /* ------------------------------------------------------------------ */
-/* Configuration                                                       */
+/* Token storage (localStorage, key = ukena_token)                     */
 /* ------------------------------------------------------------------ */
 
-const BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
-  "http://localhost:8080/api";
-
-/**
- * When true, every service falls back to its in-repo seed data instead of
- * calling the backend. Defaults to true in development so the app keeps
- * working before Spring Boot is up. Flip to "false" in `.env.production`
- * (or once the backend is reachable in dev) to exercise the real API.
- */
-export const USE_MOCK_API: boolean =
-  String(import.meta.env.VITE_USE_MOCK_API ?? "true").toLowerCase() === "true";
-
-/* ------------------------------------------------------------------ */
-/* Token store                                                         */
-/* ------------------------------------------------------------------ */
+const TOKEN_KEY = "ukena_token";
 
 let currentToken: string | null = null;
-let onUnauthorized: (() => void) | null = null;
 
-export function setAuthToken(token: string | null) {
-  currentToken = token;
+// Hydrate on module load (client only).
+if (typeof window !== "undefined") {
+  try {
+    currentToken = window.localStorage.getItem(TOKEN_KEY);
+  } catch {
+    currentToken = null;
+  }
 }
 
-export function getAuthToken() {
+export function getToken(): string | null {
   return currentToken;
 }
 
-export function registerUnauthorizedHandler(handler: () => void) {
-  onUnauthorized = handler;
+export function setToken(t: string): void {
+  currentToken = t;
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(TOKEN_KEY, t);
+    } catch {
+      /* ignore */
+    }
+  }
 }
 
-export function triggerUnauthorized() {
+export function clearToken(): void {
   currentToken = null;
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.removeItem(TOKEN_KEY);
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Back-compat aliases for existing call-sites                         */
+/* ------------------------------------------------------------------ */
+
+export const setAuthToken = (t: string | null): void => {
+  if (t) setToken(t);
+  else clearToken();
+};
+export const getAuthToken = getToken;
+
+/* ------------------------------------------------------------------ */
+/* Unauthorized (401) handler                                          */
+/* ------------------------------------------------------------------ */
+
+let onUnauthorized: (() => void) | null = null;
+
+export function registerUnauthorizedHandler(fn: () => void): void {
+  onUnauthorized = fn;
+}
+
+export function triggerUnauthorized(): void {
+  clearToken();
   onUnauthorized?.();
 }
 
@@ -88,50 +104,33 @@ export function triggerUnauthorized() {
 /* Core request                                                        */
 /* ------------------------------------------------------------------ */
 
-interface RequestOptions {
-  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  body?: unknown;
-  headers?: Record<string, string>;
-  /** Pass FormData/Blob etc. to skip JSON serialisation. */
-  raw?: boolean;
-  /** Override `credentials` (defaults to `include` for cookie-based auth). */
-  credentials?: RequestCredentials;
-  /** Skip envelope unwrap — useful if a future endpoint returns a bare list. */
-  rawResponse?: boolean;
-  signal?: AbortSignal;
+interface ApiEnvelope<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+  errors?: string[];
 }
 
-async function request<T>(path: string, opts: RequestOptions = {}): Promise<ApiResponse<T>> {
-  const url = path.startsWith("http") ? path : `${BASE_URL}${path}`;
-
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const token = getToken();
   const headers: Record<string, string> = {
+    "Content-Type": "application/json",
     Accept: "application/json",
-    ...(opts.headers ?? {}),
+    ...(options.headers as Record<string, string> | undefined),
   };
-  if (currentToken) headers.Authorization = `Bearer ${currentToken}`;
-
-  let body: BodyInit | undefined;
-  if (opts.body !== undefined && opts.body !== null) {
-    if (opts.raw) {
-      body = opts.body as BodyInit;
-    } else {
-      headers["Content-Type"] = headers["Content-Type"] ?? "application/json";
-      body = JSON.stringify(opts.body);
-    }
-  }
+  if (token) headers["Authorization"] = `Bearer ${token}`;
 
   let res: Response;
   try {
-    res = await fetch(url, {
-      method: opts.method ?? "GET",
+    res = await fetch(`${BASE_URL}${path}`, {
+      ...options,
+      credentials: "omit",
       headers,
-      body,
-      credentials: opts.credentials ?? "include",
-      signal: opts.signal,
     });
   } catch (networkErr) {
     throw new ApiError(
       networkErr instanceof Error ? networkErr.message : "Network error",
+      [],
       0,
     );
   }
@@ -142,81 +141,77 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<ApiR
 
   // 204 No Content
   if (res.status === 204) {
-    return { data: undefined as unknown as T, status: 204 };
+    return undefined as unknown as T;
   }
 
-  let parsed: unknown = null;
-  const contentType = res.headers.get("content-type") ?? "";
-  if (contentType.includes("application/json")) {
-    try {
-      parsed = await res.json();
-    } catch {
-      parsed = null;
-    }
-  } else {
-    parsed = await res.text();
+  let json: Partial<ApiEnvelope<T>> & { message?: string; errors?: string[] };
+  try {
+    json = (await res.json()) as ApiEnvelope<T>;
+  } catch {
+    throw new ApiError(
+      `Invalid JSON response (${res.status})`,
+      [],
+      res.status,
+    );
   }
 
-  if (!res.ok) {
-    const env = parsed as Partial<ApiEnvelope<unknown>> | null;
-    const message =
-      (env && typeof env === "object" && env.message) ||
-      (typeof parsed === "string" && parsed) ||
-      `Request failed (${res.status})`;
-    throw new ApiError(String(message), res.status, env?.errors);
+  if (!res.ok || !json.success) {
+    throw new ApiError(
+      json.message ?? "Something went wrong",
+      json.errors ?? [],
+      res.status,
+    );
   }
 
-  if (opts.rawResponse) {
-    return { data: parsed as T, status: res.status };
-  }
-
-  // Unwrap envelope when present.
-  if (
-    parsed &&
-    typeof parsed === "object" &&
-    "success" in (parsed as object) &&
-    "data" in (parsed as object)
-  ) {
-    return { data: (parsed as ApiEnvelope<T>).data, status: res.status };
-  }
-
-  return { data: parsed as T, status: res.status };
+  return json.data as T;
 }
 
+/* ------------------------------------------------------------------ */
+/* Public api                                                          */
+/* ------------------------------------------------------------------ */
+
 export const api = {
-  get<T = unknown>(path: string, opts?: Omit<RequestOptions, "method" | "body">) {
-    return request<T>(path, { ...opts, method: "GET" });
+  get<T = unknown>(path: string, options: RequestInit = {}) {
+    return request<T>(path, { ...options, method: "GET" });
   },
-  post<T = unknown>(path: string, body?: unknown, opts?: Omit<RequestOptions, "method" | "body">) {
-    return request<T>(path, { ...opts, method: "POST", body });
+  post<T = unknown>(path: string, body?: unknown, options: RequestInit = {}) {
+    return request<T>(path, {
+      ...options,
+      method: "POST",
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
   },
-  put<T = unknown>(path: string, body?: unknown, opts?: Omit<RequestOptions, "method" | "body">) {
-    return request<T>(path, { ...opts, method: "PUT", body });
+  put<T = unknown>(path: string, body?: unknown, options: RequestInit = {}) {
+    return request<T>(path, {
+      ...options,
+      method: "PUT",
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
   },
-  patch<T = unknown>(path: string, body?: unknown, opts?: Omit<RequestOptions, "method" | "body">) {
-    return request<T>(path, { ...opts, method: "PATCH", body });
+  patch<T = unknown>(path: string, body?: unknown, options: RequestInit = {}) {
+    return request<T>(path, {
+      ...options,
+      method: "PATCH",
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
   },
-  delete<T = unknown>(path: string, opts?: Omit<RequestOptions, "method" | "body">) {
-    return request<T>(path, { ...opts, method: "DELETE" });
-  },
-  /** Multipart upload helper. */
-  upload<T = unknown>(path: string, file: File, fieldName = "file") {
-    const fd = new FormData();
-    fd.append(fieldName, file);
-    return request<T>(path, { method: "POST", body: fd, raw: true });
+  delete<T = unknown>(path: string, options: RequestInit = {}) {
+    return request<T>(path, { ...options, method: "DELETE" });
   },
 };
 
-/** Compatibility helper kept for existing call-sites — `api` already unwraps. */
-export function unwrap<T>(response: { data: ApiEnvelope<T> | T }): T {
-  const body = response.data as ApiEnvelope<T> | T;
-  if (body && typeof body === "object" && "success" in (body as object) && "data" in (body as object)) {
-    return (body as ApiEnvelope<T>).data;
+/* ------------------------------------------------------------------ */
+/* Compatibility helpers retained for existing services                */
+/* ------------------------------------------------------------------ */
+
+/** Identity passthrough — `api.*` already returns the unwrapped data. */
+export function unwrap<T>(value: T | { data: T }): T {
+  if (value && typeof value === "object" && "data" in (value as object)) {
+    return (value as { data: T }).data;
   }
-  return body as T;
+  return value as T;
 }
 
-/** Used by mock branches to mimic network latency without forcing it. */
 export function fakeResolve<T>(value: T, delayMs = 0): Promise<T> {
   if (delayMs <= 0) return Promise.resolve(value);
   return new Promise((res) => setTimeout(() => res(value), delayMs));

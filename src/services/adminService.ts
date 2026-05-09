@@ -156,13 +156,13 @@ export const adminService = {
           lastOrderAt: o.createdAt,
           suspended: mockSuspendedBuyers.has(key),
         };
-        row.orderCount += 1;
-        row.totalPence += o.totalPence;
-        if (new Date(o.createdAt) > new Date(row.lastOrderAt))
+        row.orderCount = (row.orderCount ?? 0) + 1;
+        row.totalPence = (row.totalPence ?? 0) + o.totalPence;
+        if (new Date(o.createdAt) > new Date(row.lastOrderAt ?? 0))
           row.lastOrderAt = o.createdAt;
         byEmail.set(key, row);
       }
-      return [...byEmail.values()].sort((a, b) => b.totalPence - a.totalPence);
+      return [...byEmail.values()].sort((a, b) => (b.totalPence ?? 0) - (a.totalPence ?? 0));
     }
     const res = await api.get<AdminBuyerRow[]>("/admin/buyers");
     return res;

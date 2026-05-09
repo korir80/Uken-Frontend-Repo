@@ -8,10 +8,10 @@ import { getProduct } from "@/components/product/product-data";
 import { readRecentProducts } from "@/lib/ukena-mode";
 import { useSavedCreators, useBuyerOrders } from "@/lib/queries";
 import { formatGBP } from "@/lib/cart";
-import type { AuthUser } from "@/services";
+import type { AuthUserDto } from "@/types/api";
 
 interface PersonalisedHomeProps {
-  user: AuthUser;
+  user: AuthUserDto;
 }
 
 /**

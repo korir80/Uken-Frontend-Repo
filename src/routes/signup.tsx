@@ -1,8 +1,11 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth, defaultPathForRole } from "@/lib/auth";
-import type { UserRole } from "@/services";
+import { handleApiError } from "@/lib/handleApiError";
+
+type SignupRole = "ROLE_BUYER" | "ROLE_CREATOR";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
@@ -20,7 +23,7 @@ export const Route = createFileRoute("/signup")({
 });
 
 const ROLE_OPTIONS: {
-  value: UserRole;
+  value: SignupRole;
   label: string;
   hint: string;
 }[] = [
@@ -43,20 +46,28 @@ function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [role, setRole] = useState<UserRole>("ROLE_BUYER");
+  const [role, setRole] = useState<SignupRole>("ROLE_BUYER");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const [fullNameError, setFullNameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [confirmError, setConfirmError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setFullNameError(null);
+    setEmailError(null);
+    setPasswordError(null);
+    setConfirmError(null);
+    setFormError(null);
 
-    if (!fullName.trim()) return setError("Your name is required");
-    if (!email.trim()) return setError("Email is required");
+    if (!fullName.trim()) return setFullNameError("Your name is required");
+    if (!email.trim()) return setEmailError("Email is required");
     if (password.length < 6)
-      return setError("Password must be at least 6 characters");
-    if (password !== confirm)
-      return setError("Passwords don't match");
+      return setPasswordError("Password must be at least 6 characters");
+    if (password !== confirm) return setConfirmError("Passwords don't match");
 
     // Creator signup currently goes through the application flow; redirect them.
     if (role === "ROLE_CREATOR") {
@@ -69,18 +80,25 @@ function SignUpPage() {
 
     setSubmitting(true);
     try {
-      const user = await register({
-        email: email.trim(),
-        password,
-        fullName: fullName.trim(),
-        role,
-      });
+      const user = await register(email.trim(), password, fullName.trim());
       toast.success(`Welcome to UKEN, ${user.fullName.split(" ")[0]}`);
       navigate({ to: defaultPathForRole(user.role) });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Sign-up failed";
-      setError(msg);
-      toast.error(msg);
+      handleApiError(err, {
+        // Duplicate email → inline under email field.
+        overrides: {
+          409: () => {
+            setEmailError("Email already registered");
+            return true;
+          },
+        },
+        onFieldErrors: ({ fields, general }) => {
+          if (fields.fullName?.[0]) setFullNameError(fields.fullName[0]);
+          if (fields.email?.[0]) setEmailError(fields.email[0]);
+          if (fields.password?.[0]) setPasswordError(fields.password[0]);
+          if (general[0]) setFormError(general[0]);
+        },
+      });
     } finally {
       setSubmitting(false);
     }
@@ -106,7 +124,7 @@ function SignUpPage() {
             keep a record of what you've brought home.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5" noValidate>
             {/* Role chooser */}
             <div className="grid grid-cols-2 gap-3">
               {ROLE_OPTIONS.map((opt) => {
@@ -145,8 +163,12 @@ function SignUpPage() {
                 placeholder="Anya Patel"
                 className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-sm text-charcoal outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/15"
                 autoComplete="name"
+                aria-invalid={!!fullNameError}
                 required
               />
+              {fullNameError && (
+                <p className="mt-1.5 font-sans text-[12px] text-destructive">{fullNameError}</p>
+              )}
             </label>
             <label className="block">
               <span className="block font-sans text-[13px] font-medium text-charcoal">
@@ -159,8 +181,12 @@ function SignUpPage() {
                 placeholder="you@example.co.uk"
                 className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-sm text-charcoal outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/15"
                 autoComplete="email"
+                aria-invalid={!!emailError}
                 required
               />
+              {emailError && (
+                <p className="mt-1.5 font-sans text-[12px] text-destructive">{emailError}</p>
+              )}
             </label>
             <div className="grid gap-5 sm:grid-cols-2">
               <label className="block">
@@ -174,9 +200,13 @@ function SignUpPage() {
                   placeholder="At least 6 characters"
                   className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-sm text-charcoal outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/15"
                   autoComplete="new-password"
+                  aria-invalid={!!passwordError}
                   required
                   minLength={6}
                 />
+                {passwordError && (
+                  <p className="mt-1.5 font-sans text-[12px] text-destructive">{passwordError}</p>
+                )}
               </label>
               <label className="block">
                 <span className="block font-sans text-[13px] font-medium text-charcoal">
@@ -189,21 +219,26 @@ function SignUpPage() {
                   placeholder="Repeat password"
                   className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-sm text-charcoal outline-none transition focus:border-clay focus:ring-2 focus:ring-clay/15"
                   autoComplete="new-password"
+                  aria-invalid={!!confirmError}
                   required
                   minLength={6}
                 />
+                {confirmError && (
+                  <p className="mt-1.5 font-sans text-[12px] text-destructive">{confirmError}</p>
+                )}
               </label>
             </div>
 
-            {error && (
-              <p className="font-sans text-[13px] text-destructive">{error}</p>
+            {formError && (
+              <p className="font-sans text-[13px] text-destructive">{formError}</p>
             )}
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-full bg-clay px-6 py-3 font-sans text-sm font-medium text-warm-white transition-colors hover:bg-clay-deep disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-clay px-6 py-3 font-sans text-sm font-medium text-warm-white transition-colors hover:bg-clay-deep disabled:cursor-not-allowed disabled:opacity-60"
             >
+              {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
               {submitting
                 ? "Creating account…"
                 : role === "ROLE_CREATOR"

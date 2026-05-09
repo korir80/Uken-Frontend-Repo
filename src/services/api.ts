@@ -14,8 +14,8 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 /* Mock toggle (kept so existing services compile — read from env)     */
 /* ------------------------------------------------------------------ */
 
-export const USE_MOCK_API: boolean =
-  String(import.meta.env.VITE_USE_MOCK_API ?? "false").toLowerCase() === "true";
+/** Mock API mode is permanently disabled — all data must come from the backend. */
+export const USE_MOCK_API: false = false;
 
 /* ------------------------------------------------------------------ */
 /* Error type                                                          */

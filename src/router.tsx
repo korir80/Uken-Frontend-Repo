@@ -72,12 +72,12 @@ export const getRouter = () => {
   // Fresh QueryClient per request — prevents data leaking between SSR requests.
   const queryClient = new QueryClient({
     queryCache: new QueryCache({
-      onError: (error, query: Query) => {
+      onError: (error, query) => {
         if (shouldHandle(query)) handleApiError(error);
       },
     }),
     mutationCache: new MutationCache({
-      onError: (error, _vars, _ctx, mutation: Mutation) => {
+      onError: (error, _vars, _ctx, mutation) => {
         if (shouldHandle(mutation)) handleApiError(error);
       },
     }),

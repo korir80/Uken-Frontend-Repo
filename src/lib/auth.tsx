@@ -123,6 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const role: Role | null = user?.role ?? null;
     return {
       user,
+      role,
       isAuthenticated: !!user,
       isLoading,
       isBuyer: role === "ROLE_BUYER",

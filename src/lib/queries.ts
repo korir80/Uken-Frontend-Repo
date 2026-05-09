@@ -479,33 +479,7 @@ export function useUnsuspendBuyer() {
   });
 }
 
-export function useSuspendCreator() {
-  const qc = useQueryClient();
-  return useMutation<void, Error, string>({
-    mutationFn: (creatorId) => adminService.suspendCreator(creatorId),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: queryKeys.creators() }),
-  });
-}
+// useSuspendCreator / useAdminProductStatuses / useSetProductStatus removed —
+// backend endpoints do not exist.
 
-export function useAdminProductStatuses() {
-  return useQuery<ProductModerationRow[]>({
-    queryKey: queryKeys.adminProductStatuses(),
-    queryFn: () => adminService.listProductStatuses(),
-  });
-}
-
-export function useSetProductStatus() {
-  const qc = useQueryClient();
-  return useMutation<
-    ProductModerationRow,
-    Error,
-    { productId: string; status: ProductModerationStatus }
-  >({
-    mutationFn: ({ productId, status }) =>
-      adminService.setProductStatus(productId, status),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: queryKeys.adminProductStatuses() }),
-  });
-}
 

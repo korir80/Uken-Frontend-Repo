@@ -58,10 +58,11 @@ export type ProductUpdatePayload = Partial<ProductCreatePayload>;
 
 export const productService = {
   async getAllProducts(): Promise<ProductSummaryDto[]> {
-    const result = await api.get<any>("/products");
-    const arr = result?.content ?? result;
-    return Array.isArray(arr) ? arr : [];
-  },
+  const result = await api.get<any>("/products");
+  const arr = result?.content ?? result;
+  return Array.isArray(arr) ? arr : [];
+},
+},
 
   async getProductById(id: string): Promise<ProductDto> {
     return api.get<ProductDto>(`/products/${encodeURIComponent(id)}`);

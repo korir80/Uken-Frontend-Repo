@@ -1,48 +1,52 @@
 import { Link } from "@tanstack/react-router";
 import { Eye } from "lucide-react";
-import type { Product } from "@/components/product/product-data";
 import { formatGBP } from "@/lib/cart";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { SaveHeart } from "@/components/product/SaveHeart";
 import { cn } from "@/lib/utils";
 
 interface ShopProductCardProps {
-  product: Product;
-  /** index used for editorial numerals — 0-based */
+  product: {
+    id: string;
+    name: string;
+    pricePence: number;
+    heroImage: string;
+    creatorId?: string;
+    creatorName?: string;
+    craft?: string;
+    dimensions?: string;
+    materials?: string[];
+    creator?: {
+      id: string;
+      fullName: string;
+      craft: string;
+      region: string;
+      portrait?: string;
+    };
+    gallery?: { src: string; alt: string; kind?: string }[];
+  };
   index: number;
-  /** Open the right-side quick-view drawer with this product. */
-  onQuickView?: (product: Product) => void;
+  onQuickView?: (product: any) => void;
 }
 
-/**
- * Quieter, product-led card for the /shop catalogue surface.
- *
- * - Hero image dominates. On hover, a process/detail shot from the gallery
- *   slides in to hint at how the piece was made — the story is *visible*
- *   without being mandatory.
- * - A "Learn the story" link surfaces only on hover, routing to the full
- *   creator profile.
- * - A "Quick view" button (also hover-only) opens the side drawer so a
- *   buyer can add to bag without leaving the grid.
- * - Creator attribution is preserved at the foot of every card so the
- *   "fast path" for returning buyers never strips the maker away.
- */
-export function ShopProductCard({
-  product,
-  index,
-  onQuickView,
-}: ShopProductCardProps) {
-  // Pick the first non-product image as the hover/process reveal. Falls
-  // back to the hero so we never crash on partial datasets.
+export function ShopProductCard({ product, index, onQuickView }: ShopProductCardProps) {
+  // Support both ProductSummaryDto (flat) and ProductDto (nested creator)
+  const creatorId = product.creator?.id ?? product.creatorId ?? "";
+  const creatorName = product.creator?.fullName ?? product.creatorName ?? "";
+  const craft = product.creator?.craft ?? product.craft ?? "";
+  const dimensions = (product as any).dimensions ?? "";
+  const materials: string[] = (product as any).materials ?? [];
+
+  // Safe gallery — works with both old Product shape and new ProductDto
+  const gallery = product.gallery ?? [];
   const processImage =
-    product.gallery.find((g) => g.kind === "process")?.src ??
-    product.gallery.find((g) => g.src !== product.heroImage)?.src ??
+    gallery.find((g) => g.kind === "process")?.src ??
+    gallery.find((g) => g.src !== product.heroImage)?.src ??
     product.heroImage;
 
   return (
     <article className="group flex h-full flex-col rounded-2xl border border-border/60 bg-cream/90 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft">
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-sand-soft">
-        {/* Base image — the finished piece */}
         <Link
           to="/products/$productId"
           params={{ productId: product.id }}
@@ -51,14 +55,13 @@ export function ShopProductCard({
         >
           <LazyImage
             src={product.heroImage}
-            alt={`${product.name} by ${product.creator.fullName}`}
+            alt={`${product.name} by ${creatorName}`}
             wrapperClassName="absolute inset-0"
             className={cn(
               "transition-all duration-[900ms] ease-out",
               "md:group-hover:scale-[1.02] md:group-hover:opacity-0",
             )}
           />
-          {/* Process image — fades in on hover (desktop only) */}
           <img
             src={processImage}
             alt=""
@@ -72,29 +75,23 @@ export function ShopProductCard({
           />
         </Link>
 
-        {/* Editorial numeral — desktop only, keeps mobile cards clean */}
         <span className="pointer-events-none absolute left-3 top-3 hidden font-display text-xl text-charcoal/80 mix-blend-multiply md:left-4 md:top-4 md:block">
           {String(index + 1).padStart(2, "0")}
         </span>
 
-        {/* Craft chip — desktop only on overlay; mobile keeps image clean */}
-        <span className="pointer-events-none absolute right-3 top-3 hidden rounded-full bg-warm-white/95 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-clay backdrop-blur md:right-4 md:top-4 md:inline-block">
-          {product.creator.craft}
-        </span>
+        {craft && (
+          <span className="pointer-events-none absolute right-3 top-3 hidden rounded-full bg-warm-white/95 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-clay backdrop-blur md:right-4 md:top-4 md:inline-block">
+            {craft}
+          </span>
+        )}
 
-        {/* Wishlist heart — top-left on mobile, alongside numeral on desktop */}
-        <SaveHeart
-          productId={product.id}
-          productName={product.name}
-          className="absolute right-2 top-2 md:hidden"
-        />
+        <SaveHeart productId={product.id} productName={product.name} className="absolute right-2 top-2 md:hidden" />
         <SaveHeart
           productId={product.id}
           productName={product.name}
           className="absolute bottom-3 right-3 hidden md:inline-flex"
         />
 
-        {/* Quick view — desktop hover only, with focus fallback for keyboard users */}
         {onQuickView && (
           <button
             type="button"
@@ -132,38 +129,41 @@ export function ShopProductCard({
         </div>
 
         <p className="mt-1.5 text-[13px] leading-relaxed text-ink-muted line-clamp-1 md:mt-2 md:line-clamp-2">
-          <span className="md:hidden">{product.creator.craft}</span>
+          <span className="md:hidden">{craft}</span>
           <span className="hidden md:inline">
-            {product.dimensions} · {product.materials[0]}
+            {dimensions}
+            {materials[0] ? ` · ${materials[0]}` : ""}
           </span>
         </p>
 
-        {/* Creator byline — small, subtle, links to her profile */}
-        <p className="mt-1.5 text-[13px] text-charcoal/75 md:mt-2">
-          by{" "}
+        {creatorName && (
+          <p className="mt-1.5 text-[13px] text-charcoal/75 md:mt-2">
+            by{" "}
+            <Link
+              to="/creators/$creatorId"
+              params={{ creatorId }}
+              className="font-medium text-charcoal underline-offset-4 transition-colors hover:text-clay hover:underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {creatorName}
+            </Link>
+          </p>
+        )}
+
+        {creatorId && (
           <Link
             to="/creators/$creatorId"
-            params={{ creatorId: product.creator.id }}
-            className="font-medium text-charcoal underline-offset-4 transition-colors hover:text-clay hover:underline"
+            params={{ creatorId }}
             onClick={(e) => e.stopPropagation()}
+            className={cn(
+              "mt-auto hidden items-center gap-1.5 pt-3 text-[11px] font-medium uppercase tracking-[0.22em] text-clay opacity-0",
+              "transition-opacity duration-300 md:inline-flex md:group-hover:opacity-100",
+            )}
           >
-            {product.creator.fullName}
+            Learn the story
+            <span aria-hidden className="h-px w-5 bg-clay" />
           </Link>
-        </p>
-
-        {/* Hover-only "Learn the story" — desktop. Tap-target equivalent on mobile is the byline link above. */}
-        <Link
-          to="/creators/$creatorId"
-          params={{ creatorId: product.creator.id }}
-          onClick={(e) => e.stopPropagation()}
-          className={cn(
-            "mt-auto hidden items-center gap-1.5 pt-3 text-[11px] font-medium uppercase tracking-[0.22em] text-clay opacity-0",
-            "transition-opacity duration-300 md:inline-flex md:group-hover:opacity-100",
-          )}
-        >
-          Learn the story
-          <span aria-hidden className="h-px w-5 bg-clay" />
-        </Link>
+        )}
       </div>
     </article>
   );

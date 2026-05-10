@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2, X, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import {
-  uploadToCloudinary,
-  validateImageFile,
-  isCloudinaryConfigured,
-} from "@/lib/cloudinary";
+  cloudinaryService,
+  validateUploadFile,
+} from "@/services/cloudinaryService";
 import { cn } from "@/lib/utils";
 
 /**

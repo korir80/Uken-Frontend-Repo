@@ -33,7 +33,6 @@ function HomePage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-warm-white text-charcoal">
       <HomeArtPattern />
-      <NavBar />
       <main className="relative z-10">
         {showPersonalised && user ? <PersonalisedHome user={user} /> : <Hero />}
         <StoryTrustStrip />

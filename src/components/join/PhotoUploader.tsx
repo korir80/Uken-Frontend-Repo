@@ -42,27 +42,24 @@ export function PhotoUploader({
     if (list.length === 0) return;
 
     try {
-      list.forEach((f) => validateImageFile(f));
+      list.forEach((f) => validateUploadFile(f));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid file.");
-      return;
-    }
-
-    if (!isCloudinaryConfigured()) {
-      // Dev fallback — keep the form usable without creds.
-      const next = list.map((f) => URL.createObjectURL(f));
-      onChange([...value, ...next]);
+      const msg = e instanceof Error ? e.message : "Invalid file.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     setBusyCount((c) => c + list.length);
     try {
-      const uploaded = await Promise.all(
-        list.map((f) => uploadToCloudinary(f, { folder: "ukena/applications" })),
+      const urls = await Promise.all(
+        list.map((f) => cloudinaryService.upload(f, "ukena/applications")),
       );
-      onChange([...value, ...uploaded.map((u) => u.url)]);
+      onChange([...value, ...urls]);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Upload failed.");
+      const msg = e instanceof Error ? e.message : "Upload failed.";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setBusyCount((c) => Math.max(0, c - list.length));
       if (inputRef.current) inputRef.current.value = "";

@@ -150,7 +150,7 @@ export function CloudinaryImagePicker({
             <input
               ref={inputRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/avif"
+              accept="image/jpeg,image/png,image/webp"
               multiple={multiple}
               className="sr-only"
               onChange={(e) => handleFiles(e.target.files)}
@@ -167,11 +167,6 @@ export function CloudinaryImagePicker({
         <p className="font-sans text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
           {value.length} of {max} added
         </p>
-        {!isCloudinaryConfigured() && (
-          <p className="font-sans text-[11px] text-charcoal/45">
-            Dev mode — local preview only.
-          </p>
-        )}
       </div>
 
       {error && (

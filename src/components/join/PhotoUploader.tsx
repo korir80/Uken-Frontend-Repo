@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
 import { Camera, X, Loader2, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
-  uploadToCloudinary,
-  validateImageFile,
-  isCloudinaryConfigured,
-} from "@/lib/cloudinary";
+  cloudinaryService,
+  validateUploadFile,
+} from "@/services/cloudinaryService";
 
 const MAX_PHOTOS = 5;
 

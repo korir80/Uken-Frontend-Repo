@@ -13,21 +13,11 @@ import { ShopProductCard } from "@/components/shop/ShopProductCard";
 import { CreatorCard } from "@/components/explore/CreatorCard";
 import { creators as allCreators } from "@/components/explore/creators-data";
 import { SaveHeart } from "@/components/product/SaveHeart";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useCart, formatGBP } from "@/lib/cart";
 import { pushRecentProduct } from "@/lib/ukena-mode";
 import { cn } from "@/lib/utils";
-import {
-  productQueryOptions,
-  productsQueryOptions,
-  useProduct,
-  useAllProducts,
-} from "@/lib/queries";
+import { productQueryOptions, productsQueryOptions, useProduct, useAllProducts } from "@/lib/queries";
 import type { ProductDto } from "@/services";
 import { ApiError } from "@/services/api";
 
@@ -39,9 +29,7 @@ function asProduct(p: ProductDto): Product {
 export const Route = createFileRoute("/products/$productId")({
   loader: async ({ params, context: { queryClient } }) => {
     try {
-      const product = await queryClient.ensureQueryData(
-        productQueryOptions(params.productId),
-      );
+      const product = await queryClient.ensureQueryData(productQueryOptions(params.productId));
       // Prime the related-products cache too — instant cross-links.
       queryClient.ensureQueryData(productsQueryOptions());
       return { product };
@@ -107,15 +95,9 @@ export const Route = createFileRoute("/products/$productId")({
     <div className="min-h-screen bg-warm-white">
       <ExploreNav />
       <div className="mx-auto max-w-xl px-6 py-32 text-center">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">
-          Not in the workshop today
-        </p>
-        <h1 className="mt-6 font-display text-5xl text-charcoal">
-          We couldn't find this piece
-        </h1>
-        <p className="mt-6 text-ink-muted">
-          It may have already found a home, or the link is no longer current.
-        </p>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">Not in the workshop today</p>
+        <h1 className="mt-6 font-display text-5xl text-charcoal">We couldn't find this piece</h1>
+        <p className="mt-6 text-ink-muted">It may have already found a home, or the link is no longer current.</p>
         <Link
           to="/explore"
           className="mt-10 inline-block text-[12px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
@@ -129,12 +111,8 @@ export const Route = createFileRoute("/products/$productId")({
     <div className="min-h-screen bg-warm-white">
       <ExploreNav />
       <div className="mx-auto max-w-xl px-6 py-32 text-center">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">
-          Something went quiet
-        </p>
-        <h1 className="mt-6 font-display text-4xl text-charcoal">
-          We couldn't load this piece
-        </h1>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">Something went quiet</p>
+        <h1 className="mt-6 font-display text-4xl text-charcoal">We couldn't load this piece</h1>
         <p className="mt-4 text-ink-muted">{error.message}</p>
       </div>
     </div>
@@ -178,29 +156,30 @@ function ProductPage() {
   };
 
   // 3 thumbnails — first three gallery entries
-  const thumbs = product.gallery.slice(0, 4);
-  const active = product.gallery[selected] ?? product.gallery[0];
+  const gallery =
+    (product as any).images?.map((img: any) => ({
+      src: img.url,
+      alt: img.altText || product.name,
+      kind: "product",
+    })) ?? (product.heroImage ? [{ src: product.heroImage, alt: product.name, kind: "product" }] : []);
+
+  const thumbs = gallery.slice(0, 4);
+  const active = gallery[selected] ?? gallery[0];
 
   // ── Related products: same creator first, then same craft ──────────────
   const related = useMemo<Product[]>(() => {
     const all = (catalogue ?? []).map(asProduct);
-    const sameCreator = all.filter(
-      (p) => p.creator.id === product.creator.id && p.id !== product.id,
-    );
+    const sameCreator = all.filter((p) => p.creator.id === product.creator.id && p.id !== product.id);
     if (sameCreator.length >= 3) return sameCreator.slice(0, 3);
     const sameCraft = all.filter(
-      (p) =>
-        p.creator.craft === product.creator.craft &&
-        p.creator.id !== product.creator.id,
+      (p) => p.creator.craft === product.creator.craft && p.creator.id !== product.creator.id,
     );
     return [...sameCreator, ...sameCraft].slice(0, 3);
   }, [catalogue, product.id, product.creator.id, product.creator.craft]);
 
   // ── Related creators: 2 creators that aren't this product's maker ─────
   const relatedCreators = useMemo(() => {
-    return allCreators
-      .filter((c) => c.id !== product.creator.id)
-      .slice(0, 2);
+    return allCreators.filter((c) => c.id !== product.creator.id).slice(0, 2);
   }, [product.creator.id]);
 
   return (
@@ -209,10 +188,7 @@ function ProductPage() {
 
       <main>
         <div className="mx-auto max-w-7xl px-5 pt-5 md:px-10 md:pt-7">
-          <Breadcrumbs
-            creatorName={product.creator.firstName}
-            productName={product.name}
-          />
+          <Breadcrumbs creatorName={product.creator.firstName} productName={product.name} />
 
           {/* Two-column layout: 55 / 45 on desktop */}
           <div className="mt-4 grid gap-6 md:mt-6 md:grid-cols-[54%_46%] md:gap-8 lg:gap-10">
@@ -251,17 +227,10 @@ function ProductPage() {
                     aria-pressed={i === selected}
                     className={cn(
                       "group relative overflow-hidden rounded-lg bg-warm-white transition-all",
-                      i === selected
-                        ? "ring-2 ring-clay"
-                        : "ring-1 ring-border/60 hover:ring-charcoal/30",
+                      i === selected ? "ring-2 ring-clay" : "ring-1 ring-border/60 hover:ring-charcoal/30",
                     )}
                   >
-                    <img
-                      src={g.src}
-                      alt=""
-                      loading="lazy"
-                      className="aspect-[4/3] w-full object-cover"
-                    />
+                    <img src={g.src} alt="" loading="lazy" className="aspect-[4/3] w-full object-cover" />
                     {g.kind === "process" && (
                       <span className="absolute left-1.5 top-1.5 rounded-full bg-warm-white/90 px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.18em] text-clay">
                         Process
@@ -270,9 +239,7 @@ function ProductPage() {
                   </button>
                 ))}
               </div>
-              <p className="px-1 pt-3 text-[11px] leading-relaxed text-ink-muted">
-                {active.alt}
-              </p>
+              <p className="px-1 pt-3 text-[11px] leading-relaxed text-ink-muted">{active.alt}</p>
             </div>
 
             {/* RIGHT — Details (creator first, then everything else) */}
@@ -315,19 +282,14 @@ function ProductPage() {
                 {/* 4. The making — micro-story */}
                 <section className="mt-5">
                   <SectionLabel>The making</SectionLabel>
-                  <p className="mt-2 text-[14px] font-light leading-[1.6] text-charcoal/70">
-                    {product.pieceStory}
-                  </p>
+                  <p className="mt-2 text-[14px] font-light leading-[1.6] text-charcoal/70">{product.pieceStory}</p>
                 </section>
 
                 {/* 5. Product details — visible desktop, accordion mobile */}
                 <div className="mt-5">
                   {/* Desktop */}
                   <dl className="hidden space-y-2.5 border-t border-border/70 pt-4 text-[13px] md:block">
-                    <SpecRow
-                      label="Materials"
-                      value={product.materials.join(" · ")}
-                    />
+                    <SpecRow label="Materials" value={product.materials.join(" · ")} />
                     <SpecRow label="Dimensions" value={product.dimensions} />
                     <SpecRow label="Care" value={product.care} />
                   </dl>
@@ -340,14 +302,8 @@ function ProductPage() {
                         </AccordionTrigger>
                         <AccordionContent>
                           <dl className="space-y-3 pt-2 text-[13px]">
-                            <SpecRow
-                              label="Materials"
-                              value={product.materials.join(" · ")}
-                            />
-                            <SpecRow
-                              label="Dimensions"
-                              value={product.dimensions}
-                            />
+                            <SpecRow label="Materials" value={product.materials.join(" · ")} />
+                            <SpecRow label="Dimensions" value={product.dimensions} />
                             <SpecRow label="Care" value={product.care} />
                           </dl>
                         </AccordionContent>
@@ -381,12 +337,9 @@ function ProductPage() {
 
                 {/* 7. Ethical sourcing line — centred under button */}
                 <p className="mt-3 text-center text-[11px] leading-relaxed text-charcoal/40">
-                  Handmade in Kenya · Ships within{" "}
-                  {(product as Product).leadTimeDays?.min ?? 7}–
+                  Handmade in Kenya · Ships within {(product as Product).leadTimeDays?.min ?? 7}–
                   {(product as Product).leadTimeDays?.max ?? 21} days ·{" "}
-                  <span className="text-charcoal/55">
-                    {product.creator.firstName} earns fairly from every sale
-                  </span>
+                  <span className="text-charcoal/55">{product.creator.firstName} earns fairly from every sale</span>
                 </p>
 
                 {/* 8. Persistent creator mini-card */}
@@ -405,9 +358,7 @@ function ProductPage() {
                       className="h-12 w-12 shrink-0 rounded-full object-cover ring-1 ring-border/70"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-terracotta">
-                        The maker
-                      </p>
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-terracotta">The maker</p>
                       <p className="mt-1 font-display text-[20px] leading-tight text-charcoal">
                         {product.creator.fullName}
                       </p>
@@ -507,21 +458,13 @@ function ProductPage() {
 function SpecRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="grid grid-cols-3 gap-4">
-      <dt className="text-[11px] uppercase tracking-[0.18em] text-ink-muted">
-        {label}
-      </dt>
+      <dt className="text-[11px] uppercase tracking-[0.18em] text-ink-muted">{label}</dt>
       <dd className="col-span-2 text-[13px] text-charcoal/85">{value}</dd>
     </div>
   );
 }
 
-function Breadcrumbs({
-  creatorName,
-  productName,
-}: {
-  creatorName: string;
-  productName: string;
-}) {
+function Breadcrumbs({ creatorName, productName }: { creatorName: string; productName: string }) {
   return (
     <nav
       aria-label="Breadcrumb"
@@ -541,7 +484,6 @@ function Breadcrumbs({
 /** Pull the maker's 1-line hook from the creators dataset. */
 function makerHook(creatorId: string): string {
   return (
-    allCreators.find((c) => c.id === creatorId)?.hook ??
-    "A maker working in the slow, deliberate way of their region."
+    allCreators.find((c) => c.id === creatorId)?.hook ?? "A maker working in the slow, deliberate way of their region."
   );
 }

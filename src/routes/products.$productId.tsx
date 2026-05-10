@@ -156,6 +156,7 @@ function ProductPage() {
   };
 
   // 3 thumbnails — first three gallery entries
+  //gallery
   const gallery =
     (product as any).images?.map((img: any) => ({
       src: img.url,

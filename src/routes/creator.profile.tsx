@@ -6,11 +6,13 @@ import { useAuth } from "@/lib/auth";
 import {
   useMyCreatorProfile,
   useUpdateCreatorProfile,
-  useUploadImage,
 } from "@/lib/queries";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
-import { validateImageFile } from "@/lib/cloudinary";
+import {
+  cloudinaryService,
+  validateUploadFile,
+} from "@/services/cloudinaryService";
 
 export const Route = createFileRoute("/creator/profile")({
   component: CreatorProfile,

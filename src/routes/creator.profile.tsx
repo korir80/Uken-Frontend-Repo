@@ -175,7 +175,7 @@ function CreatorProfile() {
           <input
             ref={portraitInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
+            accept="image/jpeg,image/png,image/webp"
             className="sr-only"
             onChange={(e) => handleImageReplace("portrait", e.target.files?.[0])}
           />
@@ -204,7 +204,7 @@ function CreatorProfile() {
           <input
             ref={headerInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
+            accept="image/jpeg,image/png,image/webp"
             className="sr-only"
             onChange={(e) => handleImageReplace("header", e.target.files?.[0])}
           />

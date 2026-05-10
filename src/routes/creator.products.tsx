@@ -1,18 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
-import {
-  useProductsByCreator,
-  useCreateMyProduct,
-  useUpdateMyProduct,
-  useDeleteMyProduct,
-} from "@/lib/queries";
+import { useCreateMyProduct, useUpdateMyProduct, useDeleteMyProduct } from "@/lib/queries";
+import { productService } from "@/services/productService";
+import type { ProductSummaryDto, ProductCreatePayload } from "@/services/productService";
 import { PageHeader, EmptyState, StatusPill } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicker";
-import type { ProductCreatePayload, ProductDto } from "@/services";
 
 export const Route = createFileRoute("/creator/products")({
   component: CreatorProducts,
@@ -41,39 +38,45 @@ const emptyDraft: DraftProduct = {
 
 function toPayload(d: DraftProduct): ProductCreatePayload {
   const pricePence = Math.round(parseFloat(d.pricePounds || "0") * 100);
-  const [hero, ...rest] = d.images;
+  const [hero] = d.images;
   return {
     name: d.name.trim(),
     pricePence,
     heroImage: hero ?? "",
-    gallery: [
-      ...(hero ? [{ src: hero, alt: d.name, kind: "product" as const }] : []),
-      ...rest.map((src) => ({ src, alt: d.name, kind: "product" as const })),
-    ],
     pieceStory: d.pieceStory.trim(),
-    materials: d.materials.split(",").map((m) => m.trim()).filter(Boolean),
+    materials: d.materials
+      .split(",")
+      .map((m) => m.trim())
+      .filter(Boolean),
     dimensions: d.dimensions.trim(),
     care: d.care.trim(),
   };
 }
 
-function fromProduct(p: ProductDto): DraftProduct {
+function fromSummary(p: ProductSummaryDto): DraftProduct {
   return {
     id: p.id,
     name: p.name,
     pricePounds: (p.pricePence / 100).toFixed(2),
-    dimensions: p.dimensions,
-    materials: p.materials.join(", "),
-    pieceStory: p.pieceStory,
-    care: p.care,
-    images: [p.heroImage, ...p.gallery.filter((g) => g.src !== p.heroImage).map((g) => g.src)],
+    dimensions: "",
+    materials: "",
+    pieceStory: "",
+    care: "",
+    images: p.heroImage ? [p.heroImage] : [],
   };
 }
 
 function CreatorProducts() {
   const { user } = useAuth();
-  const creatorId = user?.creatorId ?? "wanjiru";
-  const { data: products = [], isLoading } = useProductsByCreator(creatorId);
+  const creatorId = user?.creatorId ?? "";
+
+  const { data: rawProducts, isLoading } = useQuery({
+    queryKey: ["creator-my-products", creatorId],
+    queryFn: () => productService.getMyProducts(),
+    enabled: !!user,
+  });
+  const products: ProductSummaryDto[] = Array.isArray(rawProducts) ? rawProducts : [];
+
   const create = useCreateMyProduct(creatorId);
   const update = useUpdateMyProduct(creatorId);
   const remove = useDeleteMyProduct(creatorId);
@@ -170,20 +173,14 @@ function CreatorProducts() {
                   <h3 className="font-display text-lg text-charcoal">{p.name}</h3>
                   <span className="font-sans text-sm text-charcoal">{formatGBP(p.pricePence)}</span>
                 </div>
-                <p className="mt-1 font-sans text-[12px] text-charcoal/60">{p.dimensions}</p>
+                <p className="mt-1 font-sans text-[12px] text-charcoal/60">{p.craft}</p>
                 <div className="mt-4 flex items-center justify-between">
                   <StatusPill label="Live" tone="good" />
                   <div className="flex gap-3 font-sans text-[12px]">
-                    <button
-                      onClick={() => setEditing(fromProduct(p))}
-                      className="text-clay hover:underline"
-                    >
+                    <button onClick={() => setEditing(fromSummary(p))} className="text-clay hover:underline">
                       Edit
                     </button>
-                    <button
-                      onClick={() => handleDelete(p.id, p.name)}
-                      className="text-destructive hover:underline"
-                    >
+                    <button onClick={() => handleDelete(p.id, p.name)} className="text-destructive hover:underline">
                       Remove
                     </button>
                   </div>
@@ -253,7 +250,6 @@ function ProductEditor({
             max={6}
             folder="ukena/products"
           />
-
           <Field label="Name" value={draft.name} onChange={(v) => set("name", v)} placeholder="Spiral table mat" />
           <div className="grid grid-cols-2 gap-3">
             <Field
@@ -283,12 +279,7 @@ function ProductEditor({
             placeholder="A few sentences — what makes this one yours?"
             textarea
           />
-          <Field
-            label="Care instructions"
-            value={draft.care}
-            onChange={(v) => set("care", v)}
-            textarea
-          />
+          <Field label="Care instructions" value={draft.care} onChange={(v) => set("care", v)} textarea />
         </div>
 
         <footer className="flex flex-shrink-0 justify-end gap-3 border-t border-border/40 px-6 py-4">

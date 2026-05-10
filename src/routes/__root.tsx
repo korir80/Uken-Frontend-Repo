@@ -4,6 +4,7 @@ import {
   createRootRouteWithContext,
   HeadContent,
   Scripts,
+  useLocation,
 } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -11,6 +12,7 @@ import { CartProvider } from "@/lib/cart";
 import { AuthProvider } from "@/lib/auth";
 import { RouteProgress } from "@/components/ui/route-progress";
 import { MobileNavFab } from "@/components/nav/MobileNavFab";
+import { NavBar } from "@/components/home/NavBar";
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
@@ -167,6 +169,7 @@ function RootComponent() {
       <AuthProvider>
         <CartProvider>
           <RouteProgress />
+          <GlobalNav />
           <Outlet />
           <MobileNavFab />
           <Toaster richColors position="top-center" />
@@ -174,4 +177,18 @@ function RootComponent() {
       </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+/**
+ * Renders the marketing NavBar on every route except dashboard areas
+ * (admin / creator / account) which provide their own DashboardShell chrome,
+ * and the apply flow which uses JoinShell.
+ */
+function GlobalNav() {
+  const { pathname } = useLocation();
+  const hideOn = ["/admin", "/creator", "/account", "/join/apply"];
+  if (hideOn.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
+    return null;
+  }
+  return <NavBar />;
 }

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { NavBar } from "@/components/home/NavBar";
+
 import { Hero } from "@/components/home/Hero";
 import { StoryTrustStrip } from "@/components/home/StoryTrustStrip";
 import { FeaturedShop } from "@/components/home/FeaturedShop";
@@ -33,7 +33,6 @@ function HomePage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-warm-white text-charcoal">
       <HomeArtPattern />
-      <NavBar />
       <main className="relative z-10">
         {showPersonalised && user ? <PersonalisedHome user={user} /> : <Hero />}
         <StoryTrustStrip />

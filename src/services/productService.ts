@@ -5,7 +5,6 @@
  */
 import { api } from "./api";
 
-// What the backend actually returns for list endpoints
 export interface ProductSummaryDto {
   id: string;
   name: string;
@@ -16,7 +15,6 @@ export interface ProductSummaryDto {
   craft: string;
 }
 
-// What the backend returns for single product
 export interface ProductDto {
   id: string;
   name: string;
@@ -58,11 +56,10 @@ export type ProductUpdatePayload = Partial<ProductCreatePayload>;
 
 export const productService = {
   async getAllProducts(): Promise<ProductSummaryDto[]> {
-  const result = await api.get<any>("/products");
-  const arr = result?.content ?? result;
-  return Array.isArray(arr) ? arr : [];
-},
-},
+    const result = await api.get<any>("/products");
+    const arr = result?.content ?? result;
+    return Array.isArray(arr) ? arr : [];
+  },
 
   async getProductById(id: string): Promise<ProductDto> {
     return api.get<ProductDto>(`/products/${encodeURIComponent(id)}`);

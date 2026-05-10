@@ -4,6 +4,7 @@ import {
   createRootRouteWithContext,
   HeadContent,
   Scripts,
+  useLocation,
 } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -11,6 +12,7 @@ import { CartProvider } from "@/lib/cart";
 import { AuthProvider } from "@/lib/auth";
 import { RouteProgress } from "@/components/ui/route-progress";
 import { MobileNavFab } from "@/components/nav/MobileNavFab";
+import { NavBar } from "@/components/home/NavBar";
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";

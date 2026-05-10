@@ -1,19 +1,39 @@
 /**
- * Product service — backed by GET /api/products.
+ * Product service — backed by the real Spring Boot API.
+ * ProductSummaryDto  → GET /products, GET /creators/me/products
+ * ProductDto         → GET /products/{id}
  */
 import { api } from "./api";
 
+// What the backend actually returns for list endpoints
+export interface ProductSummaryDto {
+  id: string;
+  name: string;
+  pricePence: number;
+  heroImage: string;
+  creatorId: string;
+  creatorName: string;
+  craft: string;
+}
+
+// What the backend returns for single product
 export interface ProductDto {
   id: string;
   name: string;
   pricePence: number;
   heroImage: string;
-  gallery: { src: string; alt: string; kind: "product" | "process" }[];
+  images: {
+    id: number;
+    url: string;
+    isPrimary: boolean;
+    displayOrder: number;
+    altText: string;
+  }[];
   pieceStory: string;
   materials: string[];
   dimensions: string;
   care: string;
-  leadTimeDays?: { min: number; max: number };
+  status: "ACTIVE" | "OUT_OF_STOCK" | "SUSPENDED_BY_CREATOR" | "SUSPENDED_BY_ADMIN";
   creator: {
     id: string;
     firstName: string;
@@ -28,27 +48,27 @@ export interface ProductCreatePayload {
   name: string;
   pricePence: number;
   heroImage: string;
-  gallery?: { src: string; alt: string; kind: "product" | "process" }[];
   pieceStory: string;
   materials: string[];
   dimensions: string;
   care: string;
-  leadTimeDays?: { min: number; max: number };
 }
 
 export type ProductUpdatePayload = Partial<ProductCreatePayload>;
 
 export const productService = {
-  async getAllProducts(): Promise<ProductDto[]> {
-    return api.get<ProductDto[]>("/products");
+  async getAllProducts(): Promise<ProductSummaryDto[]> {
+    const result = await api.get<ProductSummaryDto[]>("/products");
+    return Array.isArray(result) ? result : [];
   },
 
   async getProductById(id: string): Promise<ProductDto> {
     return api.get<ProductDto>(`/products/${encodeURIComponent(id)}`);
   },
 
-  async getProductsByCreator(creatorId: string): Promise<ProductDto[]> {
-    return api.get<ProductDto[]>(`/products?creatorId=${encodeURIComponent(creatorId)}`);
+  async getMyProducts(): Promise<ProductSummaryDto[]> {
+    const result = await api.get<ProductSummaryDto[]>("/creators/me/products");
+    return Array.isArray(result) ? result : [];
   },
 
   async createMyProduct(payload: ProductCreatePayload): Promise<ProductDto> {

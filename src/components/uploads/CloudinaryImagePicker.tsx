@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2, X, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import {
-  uploadToCloudinary,
-  validateImageFile,
-  isCloudinaryConfigured,
-} from "@/lib/cloudinary";
+  cloudinaryService,
+  validateUploadFile,
+} from "@/services/cloudinaryService";
 import { cn } from "@/lib/utils";
 
 /**
@@ -52,27 +52,24 @@ export function CloudinaryImagePicker({
 
     // Validate all up front so we don't half-upload a bad batch.
     try {
-      list.forEach((f) => validateImageFile(f));
+      list.forEach((f) => validateUploadFile(f));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid file.");
-      return;
-    }
-
-    if (!isCloudinaryConfigured()) {
-      // Dev fallback — local previews. Backend gets these URLs only in mock mode.
-      const next = list.map((f) => URL.createObjectURL(f));
-      onChange([...value, ...next]);
+      const msg = e instanceof Error ? e.message : "Invalid file.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     setBusyCount((c) => c + list.length);
     try {
-      const uploaded = await Promise.all(
-        list.map((f) => uploadToCloudinary(f, { folder })),
+      const urls = await Promise.all(
+        list.map((f) => cloudinaryService.upload(f, folder)),
       );
-      onChange([...value, ...uploaded.map((u) => u.url)]);
+      onChange([...value, ...urls]);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Upload failed.");
+      const msg = e instanceof Error ? e.message : "Upload failed.";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setBusyCount((c) => Math.max(0, c - list.length));
       if (inputRef.current) inputRef.current.value = "";
@@ -153,7 +150,7 @@ export function CloudinaryImagePicker({
             <input
               ref={inputRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/avif"
+              accept="image/jpeg,image/png,image/webp"
               multiple={multiple}
               className="sr-only"
               onChange={(e) => handleFiles(e.target.files)}
@@ -170,11 +167,6 @@ export function CloudinaryImagePicker({
         <p className="font-sans text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
           {value.length} of {max} added
         </p>
-        {!isCloudinaryConfigured() && (
-          <p className="font-sans text-[11px] text-charcoal/45">
-            Dev mode — local preview only.
-          </p>
-        )}
       </div>
 
       {error && (

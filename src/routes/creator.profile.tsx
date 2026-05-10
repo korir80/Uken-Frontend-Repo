@@ -6,11 +6,13 @@ import { useAuth } from "@/lib/auth";
 import {
   useMyCreatorProfile,
   useUpdateCreatorProfile,
-  useUploadImage,
 } from "@/lib/queries";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
-import { validateImageFile } from "@/lib/cloudinary";
+import {
+  cloudinaryService,
+  validateUploadFile,
+} from "@/services/cloudinaryService";
 
 export const Route = createFileRoute("/creator/profile")({
   component: CreatorProfile,
@@ -30,7 +32,6 @@ function CreatorProfile() {
   const [storyText, setStoryText] = useState("");
   const [saved, setSaved] = useState(false);
 
-  const upload = useUploadImage();
   const portraitInputRef = useRef<HTMLInputElement>(null);
   const headerInputRef = useRef<HTMLInputElement>(null);
   const [uploadingKind, setUploadingKind] = useState<
@@ -43,17 +44,14 @@ function CreatorProfile() {
   ) {
     if (!file) return;
     try {
-      validateImageFile(file);
+      validateUploadFile(file);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Invalid image.");
       return;
     }
     setUploadingKind(kind);
     try {
-      const { url } = await upload.mutateAsync({
-        file,
-        folder: `ukena/creators/${creatorId}`,
-      });
+      const url = await cloudinaryService.upload(file, "ukena/creators");
       await update.mutateAsync(
         kind === "portrait" ? { portraitImage: url } : { headerImage: url },
       );
@@ -177,7 +175,7 @@ function CreatorProfile() {
           <input
             ref={portraitInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
+            accept="image/jpeg,image/png,image/webp"
             className="sr-only"
             onChange={(e) => handleImageReplace("portrait", e.target.files?.[0])}
           />
@@ -206,7 +204,7 @@ function CreatorProfile() {
           <input
             ref={headerInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
+            accept="image/jpeg,image/png,image/webp"
             className="sr-only"
             onChange={(e) => handleImageReplace("header", e.target.files?.[0])}
           />

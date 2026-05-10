@@ -29,9 +29,7 @@ function PaymentStep() {
   if (!delivery && items.length > 0) {
     return (
       <div>
-        <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">
-          Almost there
-        </p>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">Almost there</p>
         <h1 className="mt-3 font-display text-[28px] leading-[1.1] tracking-tight text-charcoal md:text-[34px]">
           We need your delivery details first
         </h1>
@@ -62,18 +60,19 @@ function PaymentStep() {
 
     try {
       // 1. Create the order on the backend.
+      // UKENA-CHECKOUT-V2 - buyerId added 2026-05-10
       const order = await ordersService.create(
         items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
         deliveryPayload,
+        user!.id,
       );
 
       // 2. Initiate payment and redirect to the gateway.
-      const init = await paymentService.initiate(order.id);
+      const init = await paymentService.initiate(order.id, user!.id);
       window.location.href = init.paymentLink;
     } catch (err) {
       handleApiError(err);
       setSubmitting(false);
-      // Intentionally do NOT redirect on error.
       void navigate;
     }
   };
@@ -82,9 +81,7 @@ function PaymentStep() {
     <form onSubmit={handleSubmit} className="space-y-8">
       <header>
         <div className="flex items-center gap-3">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">
-            Step two
-          </p>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">Step two</p>
           <span className="rounded-full border border-terracotta/30 bg-terracotta-soft/40 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.2em] text-terracotta">
             Demo
           </span>
@@ -93,18 +90,15 @@ function PaymentStep() {
           Payment
         </h1>
         <p className="mt-3 max-w-lg text-[13px] leading-relaxed text-ink-muted">
-          This card form is for demonstration only — no card is charged. Real
-          payments are processed server-side once the backend is live.
+          This card form is for demonstration only — no card is charged. Real payments are processed server-side once
+          the backend is live.
         </p>
       </header>
 
-      {/* Delivery recap */}
       {delivery && (
         <section className="rounded-xl border border-border/70 bg-cream p-5">
           <div className="flex items-baseline justify-between gap-4">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
-              Delivering to
-            </p>
+            <p className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">Delivering to</p>
             <Link
               to="/checkout/delivery"
               className="text-[11px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
@@ -113,9 +107,7 @@ function PaymentStep() {
             </Link>
           </div>
           <p className="mt-3 text-[13px] leading-relaxed text-charcoal/85">
-            <span className="font-medium text-charcoal">
-              {delivery.fullName}
-            </span>
+            <span className="font-medium text-charcoal">{delivery.fullName}</span>
             <br />
             {delivery.addressLine1}
             {delivery.addressLine2 ? `, ${delivery.addressLine2}` : ""}
@@ -127,11 +119,8 @@ function PaymentStep() {
         </section>
       )}
 
-      {/* Card fields */}
       <fieldset className="space-y-5">
-        <legend className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
-          Card details
-        </legend>
+        <legend className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">Card details</legend>
         <Field
           label="Card number"
           name="number"
@@ -192,8 +181,8 @@ function PaymentStep() {
       <p className="inline-flex items-start gap-2 text-[11px] leading-relaxed text-charcoal/40">
         <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         <span>
-          Demo checkout — no card is charged and no card details leave your
-          browser. Live payments will be handled by the backend.
+          Demo checkout — no card is charged and no card details leave your browser. Live payments will be handled by
+          the backend.
         </span>
       </p>
 
@@ -204,18 +193,12 @@ function PaymentStep() {
           className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-terracotta px-8 text-[14px] font-medium tracking-wide text-warm-white transition-all hover:bg-[oklch(0.52_0.13_38)] disabled:cursor-not-allowed disabled:opacity-70"
         >
           {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
-          {submitting
-            ? "Placing your order…"
-            : `Place order · ${formatPrice(totalPence)}`}
+          {submitting ? "Placing your order…" : `Place order · ${formatPrice(totalPence)}`}
         </button>
       </div>
     </form>
   );
 }
-
-// ───────────────────────────────────────────────────────────────────────────
-// Field primitive (matches delivery step styling for consistency)
-// ───────────────────────────────────────────────────────────────────────────
 
 interface FieldProps {
   label: string;
@@ -228,16 +211,7 @@ interface FieldProps {
   inputMode?: "text" | "numeric";
 }
 
-function Field({
-  label,
-  name,
-  value,
-  onChange,
-  required,
-  placeholder,
-  autoComplete,
-  inputMode,
-}: FieldProps) {
+function Field({ label, name, value, onChange, required, placeholder, autoComplete, inputMode }: FieldProps) {
   return (
     <label className="block">
       <span className="text-[13px] font-medium text-charcoal">

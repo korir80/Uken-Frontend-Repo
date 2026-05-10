@@ -169,6 +169,7 @@ function RootComponent() {
       <AuthProvider>
         <CartProvider>
           <RouteProgress />
+          <GlobalNav />
           <Outlet />
           <MobileNavFab />
           <Toaster richColors position="top-center" />
@@ -176,4 +177,18 @@ function RootComponent() {
       </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+/**
+ * Renders the marketing NavBar on every route except dashboard areas
+ * (admin / creator / account) which provide their own DashboardShell chrome,
+ * and the apply flow which uses JoinShell.
+ */
+function GlobalNav() {
+  const { pathname } = useLocation();
+  const hideOn = ["/admin", "/creator", "/account", "/join/apply"];
+  if (hideOn.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
+    return null;
+  }
+  return <NavBar />;
 }

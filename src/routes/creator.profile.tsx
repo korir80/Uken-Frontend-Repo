@@ -32,7 +32,6 @@ function CreatorProfile() {
   const [storyText, setStoryText] = useState("");
   const [saved, setSaved] = useState(false);
 
-  const upload = useUploadImage();
   const portraitInputRef = useRef<HTMLInputElement>(null);
   const headerInputRef = useRef<HTMLInputElement>(null);
   const [uploadingKind, setUploadingKind] = useState<
@@ -45,17 +44,14 @@ function CreatorProfile() {
   ) {
     if (!file) return;
     try {
-      validateImageFile(file);
+      validateUploadFile(file);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Invalid image.");
       return;
     }
     setUploadingKind(kind);
     try {
-      const { url } = await upload.mutateAsync({
-        file,
-        folder: `ukena/creators/${creatorId}`,
-      });
+      const url = await cloudinaryService.upload(file, "ukena/creators");
       await update.mutateAsync(
         kind === "portrait" ? { portraitImage: url } : { headerImage: url },
       );

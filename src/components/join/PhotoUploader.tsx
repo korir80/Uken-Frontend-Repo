@@ -142,7 +142,7 @@ export function PhotoUploader({
             <input
               ref={inputRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/avif"
+              accept="image/jpeg,image/png,image/webp"
               multiple
               className="sr-only"
               onChange={(e) => addFiles(e.target.files)}
@@ -159,11 +159,6 @@ export function PhotoUploader({
         <p className="text-[12px] uppercase tracking-[0.2em] text-ink-muted">
           {value.length} of {MAX_PHOTOS} added
         </p>
-        {!isCloudinaryConfigured() && (
-          <p className="text-[11px] text-ink-muted">
-            Dev mode — local preview only.
-          </p>
-        )}
       </div>
 
       {error && (

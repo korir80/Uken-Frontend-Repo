@@ -84,7 +84,7 @@ export function NavBar() {
           >
             <Search className="h-[18px] w-[18px]" strokeWidth={1.75} />
           </Link>
-          <DashboardLink scrolled={scrolled} />
+          <AuthNavItem scrolled={scrolled} />
           <BagIndicator tone={scrolled ? "light" : "dark"} />
         </div>
       </div>
@@ -92,27 +92,65 @@ export function NavBar() {
   );
 }
 
-function DashboardLink({ scrolled }: { scrolled: boolean }) {
-  const { isAuthenticated, role } = useAuth();
-  if (!isAuthenticated || !role) return null;
-  const to = defaultPathForRole(role);
-  const label =
+function getInitials(name: string | undefined, email: string | undefined): string {
+  const src = (name && name.trim()) || email || "";
+  if (!src) return "U";
+  const parts = src.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return src.slice(0, 2).toUpperCase();
+}
+
+function AuthNavItem({ scrolled }: { scrolled: boolean }) {
+  const { isAuthenticated, isLoading, role, user, logout } = useAuth();
+  if (isLoading) return null;
+
+  if (!isAuthenticated || !role || !user) {
+    return (
+      <Link
+        to="/signin"
+        className={cn(
+          "rounded-full px-3.5 py-1.5 font-sans text-[12px] font-medium transition-colors",
+          scrolled
+            ? "text-charcoal/80 hover:bg-cream hover:text-clay"
+            : "text-warm-white/85 hover:bg-warm-white/15 hover:text-warm-white",
+        )}
+      >
+        Sign in
+      </Link>
+    );
+  }
+
+  const dashPath = defaultPathForRole(role);
+  const dashLabel =
     role === "ROLE_ADMIN"
       ? "Admin Studio"
       : role === "ROLE_CREATOR"
         ? "Maker Studio"
         : "Your Account";
+
   return (
-    <Link
-      to={to}
-      className={cn(
-        "hidden rounded-full px-3.5 py-1.5 font-sans text-[12px] font-medium transition-colors md:inline-flex",
-        scrolled
-          ? "bg-clay text-warm-white hover:bg-clay-deep"
-          : "bg-warm-white/15 text-warm-white ring-1 ring-warm-white/30 hover:bg-warm-white/25",
-      )}
-    >
-      {label}
-    </Link>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        aria-label="Account menu"
+        className={cn(
+          "grid h-9 w-9 place-items-center rounded-full font-sans text-[11px] font-semibold tracking-wide transition-colors outline-none",
+          scrolled
+            ? "bg-clay text-warm-white hover:bg-clay-deep"
+            : "bg-warm-white/15 text-warm-white ring-1 ring-warm-white/30 hover:bg-warm-white/25",
+        )}
+      >
+        {getInitials(user.fullName, user.email)}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-52">
+        <DropdownMenuItem asChild>
+          <Link to={dashPath}>{dashLabel}</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => logout()}>
+          <LogOut className="mr-2 h-4 w-4" />
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

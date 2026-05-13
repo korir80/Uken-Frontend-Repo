@@ -50,7 +50,7 @@ export const Route = createFileRoute("/search")({
 
 /* ───────── adapters ───────── */
 
-function asProduct(dto: ProductDto): Product {
+function asProduct(dto: any): Product {
   return dto as unknown as Product;
 }
 function asCreator(c: CreatorSummary, idx: number): Creator {

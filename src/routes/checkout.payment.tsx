@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Lock, Loader2 } from "lucide-react";
 import { useCart } from "@/lib/cart";
@@ -6,16 +6,16 @@ import { useAuth } from "@/lib/auth";
 import { ordersService } from "@/services/orders";
 import { paymentService } from "@/services/payment";
 import { handleApiError } from "@/lib/handleApiError";
-import { formatPrice, type DeliveryDto } from "@/types/api";
+import { formatPrice } from "@/types/api";
+import type { DeliveryPayload } from "@/services/orderService";
 
 export const Route = createFileRoute("/checkout/payment")({
   component: PaymentStep,
 });
 
 function PaymentStep() {
-  const navigate = useNavigate();
   const { delivery, items, totalPence } = useCart();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const [card, setCard] = useState({
     holder: "",
@@ -48,9 +48,14 @@ function PaymentStep() {
     if (!delivery || items.length === 0) return;
     setSubmitting(true);
 
-    const deliveryPayload: DeliveryDto = {
-      fullName: delivery.fullName,
-      email: (delivery as { email?: string }).email ?? user?.email ?? "",
+    // Email used for guest order linkage — falls back to user email when logged in.
+    const email = delivery.email || user?.email || "";
+    const fullName = delivery.fullName || user?.fullName || "";
+
+    const deliveryPayload: DeliveryPayload = {
+      fullName,
+      email,
+      phone: delivery.phone,
       addressLine1: delivery.addressLine1,
       addressLine2: delivery.addressLine2,
       city: delivery.city,
@@ -59,21 +64,43 @@ function PaymentStep() {
     };
 
     try {
-      // 1. Create the order on the backend.
-      // UKENA-CHECKOUT-V2 - buyerId added 2026-05-10
+      // 1. Create the order — guest fields only when not logged in.
       const order = await ordersService.create(
         items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
         deliveryPayload,
-        user!.id,
+        isAuthenticated
+          ? undefined
+          : { guestEmail: email, guestFullName: fullName },
       );
 
-      // 2. Initiate payment and redirect to the gateway.
-      const init = await paymentService.initiate(order.id, user!.id);
+      // 2. Initiate payment — guestEmail only for guests.
+      const init = await paymentService.initiate(
+        order.displayId,
+        isAuthenticated ? undefined : email,
+      );
+
+      // 3. Persist where to land after the gateway returns. Our gateway
+      // redirect URL is configured server-side; the tracking page reads
+      // these query params if the buyer ends up there.
+      if (typeof window !== "undefined") {
+        try {
+          sessionStorage.setItem(
+            "ukena.lastOrder",
+            JSON.stringify({
+              displayId: order.displayId,
+              email,
+              isGuest: !isAuthenticated,
+            }),
+          );
+        } catch {
+          /* ignore */
+        }
+      }
+
       window.location.href = init.paymentLink;
     } catch (err) {
       handleApiError(err);
       setSubmitting(false);
-      void navigate;
     }
   };
 

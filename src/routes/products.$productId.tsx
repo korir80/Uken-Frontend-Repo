@@ -308,7 +308,7 @@ function ProductPage() {
                 <div className="mt-5">
                   {/* Desktop */}
                   <dl className="hidden space-y-2.5 border-t border-border/70 pt-4 text-[13px] md:block">
-                    <SpecRow label="Materials" value={product.materials.join(" · ")} />
+                    <SpecRow label="Materials" value={(Array.isArray(product.materials) ? product.materials.join(" · ") : "—")} />
                     <SpecRow label="Dimensions" value={product.dimensions} />
                     <SpecRow label="Care" value={product.care} />
                   </dl>
@@ -321,7 +321,7 @@ function ProductPage() {
                         </AccordionTrigger>
                         <AccordionContent>
                           <dl className="space-y-3 pt-2 text-[13px]">
-                            <SpecRow label="Materials" value={product.materials.join(" · ")} />
+                            <SpecRow label="Materials" value={(Array.isArray(product.materials) ? product.materials.join(" · ") : "—")} />
                             <SpecRow label="Dimensions" value={product.dimensions} />
                             <SpecRow label="Care" value={product.care} />
                           </dl>

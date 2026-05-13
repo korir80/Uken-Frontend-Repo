@@ -159,9 +159,9 @@ function ProductPage() {
       pricePence: product.pricePence,
       image: product.heroImage,
       creator: {
-        id: product.creator.id,
-        fullName: product.creator.fullName,
-        region: product.creator.region,
+        id: creator.id,
+        fullName: creator.fullName,
+        region: creator.region,
       },
     });
     setAdded(true);
@@ -195,18 +195,18 @@ function ProductPage() {
   // ── Related products: same creator first, then same craft ──────────────
   const related = useMemo<Product[]>(() => {
     const all = (catalogue ?? []).map(asProduct);
-    const sameCreator = all.filter((p) => p.creator.id === product.creator.id && p.id !== product.id);
+    const sameCreator = all.filter((p) => p.creator.id === creator.id && p.id !== product.id);
     if (sameCreator.length >= 3) return sameCreator.slice(0, 3);
     const sameCraft = all.filter(
-      (p) => p.creator.craft === product.creator.craft && p.creator.id !== product.creator.id,
+      (p) => p.creator.craft === creator.craft && p.creator.id !== creator.id,
     );
     return [...sameCreator, ...sameCraft].slice(0, 3);
-  }, [catalogue, product.id, product.creator.id, product.creator.craft]);
+  }, [catalogue, product.id, creator.id, creator.craft]);
 
   // ── Related creators: 2 creators that aren't this product's maker ─────
   const relatedCreators = useMemo(() => {
-    return allCreators.filter((c) => c.id !== product.creator.id).slice(0, 2);
-  }, [product.creator.id]);
+    return allCreators.filter((c) => c.id !== creator.id).slice(0, 2);
+  }, [creator.id]);
 
   return (
     <div className="min-h-screen bg-warm-white text-charcoal">
@@ -214,7 +214,7 @@ function ProductPage() {
 
       <main>
         <div className="mx-auto max-w-7xl px-5 pt-5 md:px-10 md:pt-7">
-          <Breadcrumbs creatorName={product.creator.firstName} productName={product.name} />
+          <Breadcrumbs creatorName={creator.firstName} productName={product.name} />
 
           {/* Two-column layout: 55 / 45 on desktop */}
           <div className="mt-4 grid gap-6 md:mt-6 md:grid-cols-[54%_46%] md:gap-8 lg:gap-10">
@@ -274,7 +274,7 @@ function ProductPage() {
                 {/* 1. Creator attribution — very first element */}
                 <Link
                   to="/creators/$creatorId"
-                  params={{ creatorId: product.creator.id }}
+                  params={{ creatorId: creator.id }}
                   className="group inline-flex items-center gap-2.5 text-[12px] text-clay transition-colors hover:text-clay-deep"
                 >
                   {portraitSafe ? (
@@ -293,9 +293,9 @@ function ProductPage() {
                   <span>
                     by{" "}
                     <span className="font-medium underline-offset-4 group-hover:underline">
-                      {product.creator.fullName}
+                      {creator.fullName}
                     </span>{" "}
-                    · {product.creator.region}, Kenya
+                    · {creator.region}, Kenya
                   </span>
                   <ArrowRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
                 </Link>
@@ -370,20 +370,20 @@ function ProductPage() {
                 <p className="mt-3 text-center text-[11px] leading-relaxed text-charcoal/40">
                   Handmade in Kenya · Ships within {(product as Product).leadTimeDays?.min ?? 7}–
                   {(product as Product).leadTimeDays?.max ?? 21} days ·{" "}
-                  <span className="text-charcoal/55">{product.creator.firstName} earns fairly from every sale</span>
+                  <span className="text-charcoal/55">{creator.firstName} earns fairly from every sale</span>
                 </p>
 
                 {/* 8. Persistent creator mini-card */}
                 <div className="mt-6 border-t border-border/60 pt-5">
                   <Link
                     to="/creators/$creatorId"
-                    params={{ creatorId: product.creator.id }}
+                    params={{ creatorId: creator.id }}
                     className="group flex items-start gap-3 rounded-xl bg-cream/70 p-4 transition-all duration-500 hover:bg-cream"
                   >
                     {portraitSafe ? (
                       <img
                         src={portraitSafe}
-                        alt={product.creator.fullName}
+                        alt={creator.fullName}
                         width={96}
                         height={96}
                         loading="lazy"
@@ -396,16 +396,16 @@ function ProductPage() {
                     <div className="min-w-0 flex-1">
                       <p className="text-[10px] uppercase tracking-[0.22em] text-terracotta">The maker</p>
                       <p className="mt-1 font-display text-[20px] leading-tight text-charcoal">
-                        {product.creator.fullName}
+                        {creator.fullName}
                       </p>
                       <p className="mt-0.5 text-[11px] uppercase tracking-[0.18em] text-ink-muted">
-                        {product.creator.craft} · {product.creator.region}
+                        {creator.craft} · {creator.region}
                       </p>
                       <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-charcoal/75">
-                        {makerHook(product.creator.id)}
+                        {makerHook(creator.id)}
                       </p>
                       <span className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-clay">
-                        Read {product.creator.firstName}'s full story
+                        Read {creator.firstName}'s full story
                         <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                       </span>
                     </div>
@@ -418,7 +418,7 @@ function ProductPage() {
                     <li>
                       <Link
                         to="/creators/$creatorId"
-                        params={{ creatorId: product.creator.id }}
+                        params={{ creatorId: creator.id }}
                         className="group inline-flex items-center gap-2 text-[12px] text-clay transition-colors hover:text-clay-deep"
                       >
                         Meet the talent behind this
@@ -428,7 +428,7 @@ function ProductPage() {
                     <li>
                       <Link
                         to="/shop"
-                        search={{ craft: product.creator.craft as never }}
+                        search={{ craft: creator.craft as never }}
                         className="group inline-flex items-center gap-2 text-[12px] text-charcoal/50 transition-colors hover:text-charcoal"
                       >
                         See similar pieces
@@ -449,12 +449,12 @@ function ProductPage() {
               <div>
                 <SectionLabel>More from the workshop</SectionLabel>
                 <h2 className="mt-3 font-display text-[28px] leading-tight text-charcoal md:text-[34px]">
-                  More from {product.creator.firstName}
+                  More from {creator.firstName}
                 </h2>
               </div>
               <Link
                 to="/creators/$creatorId"
-                params={{ creatorId: product.creator.id }}
+                params={{ creatorId: creator.id }}
                 className="text-[12px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
               >
                 See the full collection →

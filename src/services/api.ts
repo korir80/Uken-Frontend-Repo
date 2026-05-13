@@ -40,10 +40,22 @@ const TOKEN_KEY = "ukena_token";
 
 let currentToken: string | null = null;
 
-// Hydrate on module load (client only).
+/** A real backend JWT has the shape `header.payload.signature` (3 base64url segments). */
+function isLikelyJwt(t: string): boolean {
+  return /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(t);
+}
+
+// Hydrate on module load (client only). Discard stale mock tokens left over
+// from the previous mock-auth era — they would otherwise poison every request.
 if (typeof window !== "undefined") {
   try {
-    currentToken = window.localStorage.getItem(TOKEN_KEY);
+    const stored = window.localStorage.getItem(TOKEN_KEY);
+    if (stored && (stored.startsWith("mock-") || !isLikelyJwt(stored))) {
+      window.localStorage.removeItem(TOKEN_KEY);
+      currentToken = null;
+    } else {
+      currentToken = stored;
+    }
   } catch {
     currentToken = null;
   }

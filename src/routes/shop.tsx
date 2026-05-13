@@ -315,7 +315,21 @@ function ShopPage() {
         {/* Product grid */}
         <section className="bg-warm-white pb-10 pt-6 md:pb-20 md:pt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10">
-            {isLoading && shown.length === 0 ? (
+            {isError ? (
+              <div className="py-20 text-center">
+                <p className="font-display text-2xl italic text-charcoal md:text-3xl">
+                  We couldn't load the catalogue.
+                </p>
+                <p className="mt-4 text-base text-ink-muted">{error?.message ?? "Please try again."}</p>
+                <button
+                  type="button"
+                  onClick={() => refetch()}
+                  className="mt-6 inline-flex min-h-[48px] items-center gap-3 rounded-full border border-charcoal/30 px-7 py-3 text-[12px] font-medium uppercase tracking-[0.22em] text-charcoal transition-colors hover:border-clay hover:bg-clay hover:text-warm-white"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : isLoading && shown.length === 0 ? (
               <div className="grid grid-cols-1 gap-x-4 gap-y-8 min-[380px]:grid-cols-2 md:grid-cols-3 md:gap-x-8 md:gap-y-12">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i}>
@@ -325,10 +339,17 @@ function ShopPage() {
                   </div>
                 ))}
               </div>
+            ) : all.length === 0 ? (
+              <div className="py-20 text-center">
+                <p className="font-display text-2xl italic text-charcoal md:text-3xl">
+                  No pieces in the catalogue yet.
+                </p>
+                <p className="mt-4 text-base text-ink-muted">Check back soon — new work is added each week.</p>
+              </div>
             ) : shown.length === 0 ? (
               <div className="py-20 text-center">
                 <p className="font-display text-2xl italic text-charcoal md:text-3xl">
-                  Nothing matches those filters yet.
+                  No pieces match these filters.
                 </p>
                 <p className="mt-4 text-base text-ink-muted">Try widening the price range or clearing a craft.</p>
                 <button

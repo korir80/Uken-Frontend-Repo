@@ -1,6 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import type { ProductCreatorRef } from "@/components/product/product-data";
+import { safeImg } from "@/lib/safeImage";
+
+const hideOnError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  e.currentTarget.style.display = "none";
+};
 
 interface CreatorAttributionProps {
   creator: ProductCreatorRef | {
@@ -28,7 +33,7 @@ export function CreatorAttribution({
   variant = "prominent",
   className,
 }: CreatorAttributionProps) {
-  const portrait = "portrait" in creator ? creator.portrait : undefined;
+  const portrait = safeImg("portrait" in creator ? creator.portrait : undefined);
 
   if (variant === "inline") {
     return (
@@ -48,6 +53,7 @@ export function CreatorAttribution({
             width={20}
             height={20}
             loading="lazy"
+            onError={hideOnError}
           />
         )}
         <span>
@@ -80,6 +86,7 @@ export function CreatorAttribution({
             width={120}
             height={120}
             loading="lazy"
+            onError={hideOnError}
             className="h-20 w-20 shrink-0 rounded-full object-cover md:h-24 md:w-24"
           />
         )}
@@ -123,6 +130,7 @@ export function CreatorAttribution({
           width={48}
           height={48}
           loading="lazy"
+            onError={hideOnError}
           className="h-10 w-10 rounded-full object-cover ring-1 ring-border/70"
         />
       )}

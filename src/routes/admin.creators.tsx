@@ -10,7 +10,7 @@ export const Route = createFileRoute("/admin/creators")({
 });
 
 function AdminCreators() {
-  const { data, isLoading } = useQuery<CreatorSummary[]>({
+  const { data, isLoading, isError, refetch } = useQuery<CreatorSummary[]>({
     queryKey: ["admin", "creators", "real"],
     queryFn: () => api.get<CreatorSummary[]>("/creators"),
   });
@@ -81,6 +81,23 @@ function AdminCreators() {
                   className="px-4 py-10 text-center font-sans text-[13px] text-charcoal/60"
                 >
                   Loading creators…
+                </td>
+              </tr>
+            )}
+            {isError && !isLoading && (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="px-4 py-10 text-center font-sans text-[13px] text-destructive"
+                >
+                  Couldn't load creators.{" "}
+                  <button
+                    type="button"
+                    onClick={() => refetch()}
+                    className="underline hover:text-clay"
+                  >
+                    Retry
+                  </button>
                 </td>
               </tr>
             )}

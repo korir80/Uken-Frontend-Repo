@@ -265,14 +265,19 @@ function ProductPage() {
                   params={{ creatorId: product.creator.id }}
                   className="group inline-flex items-center gap-2.5 text-[12px] text-clay transition-colors hover:text-clay-deep"
                 >
-                  <img
-                    src={product.creator.portrait}
-                    alt=""
-                    width={32}
-                    height={32}
-                    loading="lazy"
-                    className="h-8 w-8 rounded-full object-cover ring-1 ring-border/70"
-                  />
+                  {portraitSafe ? (
+                    <img
+                      src={portraitSafe}
+                      alt=""
+                      width={32}
+                      height={32}
+                      loading="lazy"
+                      onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
+                      className="h-8 w-8 rounded-full object-cover ring-1 ring-border/70"
+                    />
+                  ) : (
+                    <span className="h-8 w-8 rounded-full bg-cream ring-1 ring-border/70" aria-hidden />
+                  )}
                   <span>
                     by{" "}
                     <span className="font-medium underline-offset-4 group-hover:underline">

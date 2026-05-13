@@ -1,6 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import type { ProductCreatorRef } from "@/components/product/product-data";
+import { safeImg } from "@/lib/safeImage";
+
+const hideOnError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  e.currentTarget.style.display = "none";
+};
 
 interface CreatorAttributionProps {
   creator: ProductCreatorRef | {

@@ -194,9 +194,10 @@ function ConfirmationPage() {
               >
                 <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-warm-white print:hidden">
                   <img
-                    src={item.image}
+                    src={safeImg(item.image)}
                     alt=""
                     loading="lazy"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     className="h-full w-full object-cover"
                   />
                 </div>

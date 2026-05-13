@@ -313,7 +313,7 @@ function ProductPage() {
                 {/* 4. The making — micro-story */}
                 <section className="mt-5">
                   <SectionLabel>The making</SectionLabel>
-                  <p className="mt-2 text-[14px] font-light leading-[1.6] text-charcoal/70">{product.pieceStory}</p>
+                  <p className="mt-2 text-[14px] font-light leading-[1.6] text-charcoal/70">{product.pieceStory ?? ""}</p>
                 </section>
 
                 {/* 5. Product details — visible desktop, accordion mobile */}
@@ -321,8 +321,8 @@ function ProductPage() {
                   {/* Desktop */}
                   <dl className="hidden space-y-2.5 border-t border-border/70 pt-4 text-[13px] md:block">
                     <SpecRow label="Materials" value={(Array.isArray(product.materials) ? product.materials.join(" · ") : "—")} />
-                    <SpecRow label="Dimensions" value={product.dimensions} />
-                    <SpecRow label="Care" value={product.care} />
+                    <SpecRow label="Dimensions" value={product.dimensions ?? "—"} />
+                    <SpecRow label="Care" value={product.care ?? "—"} />
                   </dl>
                   {/* Mobile accordion */}
                   <div className="md:hidden">
@@ -334,8 +334,8 @@ function ProductPage() {
                         <AccordionContent>
                           <dl className="space-y-3 pt-2 text-[13px]">
                             <SpecRow label="Materials" value={(Array.isArray(product.materials) ? product.materials.join(" · ") : "—")} />
-                            <SpecRow label="Dimensions" value={product.dimensions} />
-                            <SpecRow label="Care" value={product.care} />
+                            <SpecRow label="Dimensions" value={product.dimensions ?? "—"} />
+                            <SpecRow label="Care" value={product.care ?? "—"} />
                           </dl>
                         </AccordionContent>
                       </AccordionItem>

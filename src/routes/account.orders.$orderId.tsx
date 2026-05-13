@@ -225,8 +225,6 @@ function OrderDetailPage() {
                 <img
                   src={it.image}
                   alt=""
-                  loading="lazy"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   className="h-20 w-20 flex-shrink-0 rounded-lg object-cover"
                 />
                 <div className="min-w-0 flex-1">

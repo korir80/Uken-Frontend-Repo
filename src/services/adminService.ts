@@ -40,7 +40,7 @@ export type ReviewStatusUpdate = { status: ProductReview["status"] };
 
 export const adminService = {
   async listPayouts(): Promise<CreatorPayout[]> {
-    return api.get<CreatorPayout[]>("/admin/payouts");
+    return unwrapList<CreatorPayout>(await api.get<unknown>("/admin/payouts"));
   },
   async payCreator(creatorId: string): Promise<CreatorPayout> {
     return api.post<CreatorPayout>(
@@ -49,7 +49,7 @@ export const adminService = {
     );
   },
   async listReviews(): Promise<ProductReview[]> {
-    return api.get<ProductReview[]>("/admin/reviews");
+    return unwrapList<ProductReview>(await api.get<unknown>("/admin/reviews"));
   },
   async updateReviewStatus(
     id: string,
@@ -61,13 +61,13 @@ export const adminService = {
     );
   },
   async getFeatured(): Promise<FeaturedSlot[]> {
-    return api.get<FeaturedSlot[]>("/admin/featured");
+    return unwrapList<FeaturedSlot>(await api.get<unknown>("/admin/featured"));
   },
   async setFeatured(slots: FeaturedSlot[]): Promise<FeaturedSlot[]> {
     return api.put<FeaturedSlot[]>("/admin/featured", slots);
   },
   async listBuyers(): Promise<AdminBuyerRow[]> {
-    return api.get<AdminBuyerRow[]>("/admin/buyers");
+    return unwrapList<AdminBuyerRow>(await api.get<unknown>("/admin/buyers"));
   },
   async suspendBuyer(buyerId: string): Promise<void> {
     await api.patch<void>(

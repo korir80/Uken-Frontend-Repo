@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Printer } from "lucide-react";
 import { Footer } from "@/components/home/Footer";
 import { useCart, formatGBP } from "@/lib/cart";
+import { safeImg } from "@/lib/safeImage";
 
 // TODO: read order from orderService response (orderService.getOrder(id))
 // once real orders are placed via POST /api/orders.

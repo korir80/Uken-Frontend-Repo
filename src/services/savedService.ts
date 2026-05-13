@@ -17,7 +17,7 @@
  *     the heart icon stays optimistic and the list survives navigations.
  *   - On login the local set is merged into the server set via /sync.
  */
-import { api, fakeResolve, USE_MOCK_API } from "./api";
+import { api } from "./api";
 import {
   readSavedCreators,
   readSavedProducts,
@@ -33,7 +33,6 @@ export interface SavedCollections {
 export const savedService = {
   /* ---------------- Products ---------------- */
   async listSavedProducts(): Promise<string[]> {
-    if (USE_MOCK_API) return fakeResolve(readSavedProducts());
     const res = await api.get<string[]>("/users/me/saved/products");
     // Mirror locally so heart icons stay in sync without a refetch.
     writeSavedProducts(res);
@@ -41,7 +40,6 @@ export const savedService = {
   },
 
   async addSavedProduct(productId: string): Promise<string[]> {
-    if (USE_MOCK_API) {
       const next = [
         productId,
         ...readSavedProducts().filter((id) => id !== productId),
@@ -58,7 +56,6 @@ export const savedService = {
   },
 
   async removeSavedProduct(productId: string): Promise<string[]> {
-    if (USE_MOCK_API) {
       const next = readSavedProducts().filter((id) => id !== productId);
       writeSavedProducts(next);
       return fakeResolve(next);
@@ -72,14 +69,12 @@ export const savedService = {
 
   /* ---------------- Creators ---------------- */
   async listSavedCreators(): Promise<string[]> {
-    if (USE_MOCK_API) return fakeResolve(readSavedCreators());
     const res = await api.get<string[]>("/users/me/saved/creators");
     writeSavedCreators(res);
     return res;
   },
 
   async addSavedCreator(creatorId: string): Promise<string[]> {
-    if (USE_MOCK_API) {
       const next = [
         creatorId,
         ...readSavedCreators().filter((id) => id !== creatorId),
@@ -96,7 +91,6 @@ export const savedService = {
   },
 
   async removeSavedCreator(creatorId: string): Promise<string[]> {
-    if (USE_MOCK_API) {
       const next = readSavedCreators().filter((id) => id !== creatorId);
       writeSavedCreators(next);
       return fakeResolve(next);
@@ -117,7 +111,6 @@ export const savedService = {
     const localProducts = readSavedProducts();
     const localCreators = readSavedCreators();
 
-    if (USE_MOCK_API) {
       // No server in mock mode — just keep what's already there.
       const merged: SavedCollections = {
         products: localProducts,

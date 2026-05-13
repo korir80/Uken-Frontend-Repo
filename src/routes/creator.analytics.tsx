@@ -45,8 +45,12 @@ function CreatorAnalytics() {
   const { user } = useAuth();
   const creatorId = user?.creatorId ?? "wanjiru";
   const { data: profile } = useCreator(creatorId);
-  const { data: products = [], isLoading: loadingProducts } =
-    useProductsByCreator(creatorId);
+  const { data: rawProducts, isLoading: loadingProducts } = useQuery({
+    queryKey: ["products", "creator", "me"],
+    queryFn: () => productService.getMyProducts(),
+    enabled: !!creatorId,
+  });
+  const products = Array.isArray(rawProducts) ? rawProducts : [];
   const { data: allOrders = [], isLoading: loadingOrders } = useCreatorOrders();
 
   const myOrders = useMemo(

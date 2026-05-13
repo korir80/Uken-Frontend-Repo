@@ -33,7 +33,7 @@ export function CreatorAttribution({
   variant = "prominent",
   className,
 }: CreatorAttributionProps) {
-  const portrait = "portrait" in creator ? creator.portrait : undefined;
+  const portrait = safeImg("portrait" in creator ? creator.portrait : undefined);
 
   if (variant === "inline") {
     return (

@@ -29,11 +29,12 @@ export function CreatorStory({ creator }: CreatorStoryProps) {
               <figure className="rounded-2xl border border-border/60 bg-cream p-3 shadow-[var(--shadow-card)]">
               <div className="relative overflow-hidden rounded-xl bg-sand-soft">
                 <img
-                  src={creator.portraitImage}
+                  src={safeImg(creator.portraitImage)}
                   alt={`Portrait of ${creator.fullName}`}
                   width={1024}
                   height={1280}
                   loading="lazy"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   className="aspect-[4/3] w-full object-cover"
                 />
               </div>

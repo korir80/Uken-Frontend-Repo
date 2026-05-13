@@ -142,13 +142,7 @@ export function useProduct(id: string, extra?: { initialData?: ProductDto }) {
   });
 }
 
-export function useProductsByCreator(creatorId: string) {
-  return useQuery<ProductDto[]>({
-    queryKey: queryKeys.productsByCreator(creatorId),
-    queryFn: () => productService.getProductsByCreator(creatorId),
-    enabled: !!creatorId,
-  });
-}
+// useProductsByCreator removed — backend exposes products via /creators/{id} (in detail) and /creators/me/products only.
 
 /* ---------------- Orders ---------------- */
 

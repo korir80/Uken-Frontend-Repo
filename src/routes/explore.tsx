@@ -189,7 +189,21 @@ function ExplorePage() {
         {/* Grid — single column on mobile, masonry from md */}
         <section className="bg-warm-white pb-10 pt-6 md:pb-20 md:pt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10">
-            {isLoading && shown.length === 0 ? (
+            {isError ? (
+              <div className="py-20 text-center">
+                <p className="font-display text-2xl italic text-charcoal md:text-3xl">
+                  We couldn't load the makers.
+                </p>
+                <p className="mt-4 text-base text-ink-muted">{error?.message ?? "Please try again."}</p>
+                <button
+                  type="button"
+                  onClick={() => refetch()}
+                  className="mt-6 inline-flex min-h-[48px] items-center gap-3 rounded-full border border-charcoal/30 px-7 py-3 text-[12px] font-medium uppercase tracking-[0.22em] text-charcoal transition-colors hover:border-clay hover:bg-clay hover:text-warm-white"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : isLoading && shown.length === 0 ? (
               <div className="columns-1 gap-8 md:columns-2 md:gap-10 lg:columns-3">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="mb-8 md:mb-12">
@@ -198,6 +212,15 @@ function ExplorePage() {
                     <div className="mt-2 h-4 w-1/2 animate-pulse rounded bg-cream" />
                   </div>
                 ))}
+              </div>
+            ) : creators.length === 0 ? (
+              <div className="py-20 text-center">
+                <p className="font-display text-2xl italic text-charcoal md:text-3xl">
+                  No makers in the index yet.
+                </p>
+                <p className="mt-4 text-base text-ink-muted">
+                  We're still onboarding the first cohort. Check back soon.
+                </p>
               </div>
             ) : shown.length === 0 ? (
               <div className="py-20 text-center">

@@ -18,6 +18,7 @@ import { useCart, formatGBP } from "@/lib/cart";
 import { pushRecentProduct } from "@/lib/ukena-mode";
 import { cn } from "@/lib/utils";
 import { productQueryOptions, productsQueryOptions, useProduct, useAllProducts } from "@/lib/queries";
+import { safeImg } from "@/lib/safeImage";
 import type { ProductDto } from "@/services";
 import { ApiError } from "@/services/api";
 
@@ -157,15 +158,27 @@ function ProductPage() {
 
   // 3 thumbnails — first three gallery entries
   //gallery
+  const heroSafe = safeImg(product.heroImage);
+  const galleryRaw =
+    Array.isArray((product as any).images) && (product as any).images.length > 0
+      ? (product as any).images
+          .map((img: any) => ({
+            src: safeImg(img?.url),
+            alt: img?.altText || product.name,
+            kind: "product" as const,
+          }))
+          .filter((g: any) => !!g.src)
+      : [];
   const gallery =
-    (product as any).images?.map((img: any) => ({
-      src: img.url,
-      alt: img.altText || product.name,
-      kind: "product",
-    })) ?? (product.heroImage ? [{ src: product.heroImage, alt: product.name, kind: "product" }] : []);
+    galleryRaw.length > 0
+      ? galleryRaw
+      : heroSafe
+        ? [{ src: heroSafe, alt: product.name, kind: "product" as const }]
+        : [];
 
   const thumbs = gallery.slice(0, 4);
   const active = gallery[selected] ?? gallery[0] ?? { src: "", alt: product.name, kind: "product" as const };
+  const portraitSafe = safeImg(product.creator?.portrait);
 
   // ── Related products: same creator first, then same craft ──────────────
   const related = useMemo<Product[]>(() => {
@@ -252,14 +265,19 @@ function ProductPage() {
                   params={{ creatorId: product.creator.id }}
                   className="group inline-flex items-center gap-2.5 text-[12px] text-clay transition-colors hover:text-clay-deep"
                 >
-                  <img
-                    src={product.creator.portrait}
-                    alt=""
-                    width={32}
-                    height={32}
-                    loading="lazy"
-                    className="h-8 w-8 rounded-full object-cover ring-1 ring-border/70"
-                  />
+                  {portraitSafe ? (
+                    <img
+                      src={portraitSafe}
+                      alt=""
+                      width={32}
+                      height={32}
+                      loading="lazy"
+                      onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
+                      className="h-8 w-8 rounded-full object-cover ring-1 ring-border/70"
+                    />
+                  ) : (
+                    <span className="h-8 w-8 rounded-full bg-cream ring-1 ring-border/70" aria-hidden />
+                  )}
                   <span>
                     by{" "}
                     <span className="font-medium underline-offset-4 group-hover:underline">
@@ -290,7 +308,7 @@ function ProductPage() {
                 <div className="mt-5">
                   {/* Desktop */}
                   <dl className="hidden space-y-2.5 border-t border-border/70 pt-4 text-[13px] md:block">
-                    <SpecRow label="Materials" value={product.materials.join(" · ")} />
+                    <SpecRow label="Materials" value={(Array.isArray(product.materials) ? product.materials.join(" · ") : "—")} />
                     <SpecRow label="Dimensions" value={product.dimensions} />
                     <SpecRow label="Care" value={product.care} />
                   </dl>
@@ -303,7 +321,7 @@ function ProductPage() {
                         </AccordionTrigger>
                         <AccordionContent>
                           <dl className="space-y-3 pt-2 text-[13px]">
-                            <SpecRow label="Materials" value={product.materials.join(" · ")} />
+                            <SpecRow label="Materials" value={(Array.isArray(product.materials) ? product.materials.join(" · ") : "—")} />
                             <SpecRow label="Dimensions" value={product.dimensions} />
                             <SpecRow label="Care" value={product.care} />
                           </dl>
@@ -350,14 +368,19 @@ function ProductPage() {
                     params={{ creatorId: product.creator.id }}
                     className="group flex items-start gap-3 rounded-xl bg-cream/70 p-4 transition-all duration-500 hover:bg-cream"
                   >
-                    <img
-                      src={product.creator.portrait}
-                      alt={product.creator.fullName}
-                      width={96}
-                      height={96}
-                      loading="lazy"
-                      className="h-12 w-12 shrink-0 rounded-full object-cover ring-1 ring-border/70"
-                    />
+                    {portraitSafe ? (
+                      <img
+                        src={portraitSafe}
+                        alt={product.creator.fullName}
+                        width={96}
+                        height={96}
+                        loading="lazy"
+                        onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
+                        className="h-12 w-12 shrink-0 rounded-full object-cover ring-1 ring-border/70"
+                      />
+                    ) : (
+                      <span className="h-12 w-12 shrink-0 rounded-full bg-cream ring-1 ring-border/70" aria-hidden />
+                    )}
                     <div className="min-w-0 flex-1">
                       <p className="text-[10px] uppercase tracking-[0.22em] text-terracotta">The maker</p>
                       <p className="mt-1 font-display text-[20px] leading-tight text-charcoal">

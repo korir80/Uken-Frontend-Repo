@@ -42,7 +42,9 @@ export const creatorService = {
     if (filters.page != null) params.set("page", String(filters.page));
     if (filters.pageSize != null) params.set("pageSize", String(filters.pageSize));
     const qs = params.toString();
-    return api.get<CreatorSummary[]>(`/creators${qs ? `?${qs}` : ""}`);
+    const result = await api.get<any>(`/creators${qs ? `?${qs}` : ""}`);
+    const arr = result?.content ?? result;
+    return Array.isArray(arr) ? (arr as CreatorSummary[]) : [];
   },
 
   async getCreatorById(id: string): Promise<CreatorDetail> {

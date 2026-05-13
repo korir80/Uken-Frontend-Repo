@@ -66,8 +66,9 @@ export const productService = {
   },
 
   async getMyProducts(): Promise<ProductSummaryDto[]> {
-    const result = await api.get<ProductSummaryDto[]>("/creators/me/products");
-    return Array.isArray(result) ? result : [];
+    const result = await api.get<any>("/creators/me/products");
+    const arr = result?.content ?? result;
+    return Array.isArray(arr) ? (arr as ProductSummaryDto[]) : [];
   },
 
   async createMyProduct(payload: ProductCreatePayload): Promise<ProductDto> {

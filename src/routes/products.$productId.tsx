@@ -131,6 +131,16 @@ function ProductPage() {
   const { data: live } = useProduct(productId, { initialData: initialProduct });
   const product = live ?? initialProduct;
 
+  // Defensive view of the creator — backend may omit fields.
+  const creator = {
+    id: product.creator?.id ?? "",
+    firstName: product.creator?.firstName ?? "the maker",
+    fullName: product.creator?.fullName ?? "Unknown maker",
+    region: product.creator?.region ?? "",
+    craft: product.creator?.craft ?? "",
+    portrait: product.creator?.portrait ?? "",
+  };
+
   const { data: catalogue } = useAllProducts();
   const { addItem } = useCart();
   const [selected, setSelected] = useState(0);

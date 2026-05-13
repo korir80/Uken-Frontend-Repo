@@ -157,6 +157,7 @@ export function LazyImage({
         <div className="absolute inset-0 bg-[linear-gradient(110deg,oklch(0.95_0.012_78)_8%,oklch(0.88_0.025_70)_18%,oklch(0.95_0.012_78)_33%)] bg-[length:200%_100%] animate-[ukena-shimmer_1.6s_ease-in-out_infinite]" />
       </div>
 
+      {inView && isUsableSrc && !loaded === false ? null : null}
       {inView && isUsableSrc && (
         <img
           src={cloud.src}
@@ -166,6 +167,11 @@ export function LazyImage({
           loading={loading ?? (eager ? "eager" : "lazy")}
           decoding="async"
           onLoad={() => setLoaded(true)}
+          onError={(e) => {
+            // Hide broken images instead of showing the browser's broken-image icon.
+            e.currentTarget.style.visibility = "hidden";
+            setLoaded(true);
+          }}
           className={cn(
             "h-full w-full object-cover transition-[opacity,transform] duration-700 ease-out",
             loaded ? "opacity-100 scale-100" : "opacity-0 scale-[1.02]",

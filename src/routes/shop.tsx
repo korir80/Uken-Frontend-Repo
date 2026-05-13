@@ -214,7 +214,7 @@ function ShopPage() {
             {/* Desktop: craft chips + more filters */}
             <div className="hidden flex-1 items-center gap-2 md:flex">
               <div className="flex flex-1 flex-wrap items-center gap-1.5">
-                {(["All", ...CRAFTS] as CraftFilterValue[]).map((opt) => {
+                {craftOptions.map((opt) => {
                   const active = opt === search.craft;
                   const count = craftCounts[opt];
                   return (

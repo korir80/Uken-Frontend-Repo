@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
-import { useCreator, useCreatorOrders, useProductsByCreator } from "@/lib/queries";
+import { useCreator, useCreatorOrders } from "@/lib/queries";
+import { useQuery } from "@tanstack/react-query";
+import { productService } from "@/services/productService";
 import { PageHeader, StatCard, EmptyState } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
 

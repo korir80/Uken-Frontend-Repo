@@ -368,14 +368,19 @@ function ProductPage() {
                     params={{ creatorId: product.creator.id }}
                     className="group flex items-start gap-3 rounded-xl bg-cream/70 p-4 transition-all duration-500 hover:bg-cream"
                   >
-                    <img
-                      src={product.creator.portrait}
-                      alt={product.creator.fullName}
-                      width={96}
-                      height={96}
-                      loading="lazy"
-                      className="h-12 w-12 shrink-0 rounded-full object-cover ring-1 ring-border/70"
-                    />
+                    {portraitSafe ? (
+                      <img
+                        src={portraitSafe}
+                        alt={product.creator.fullName}
+                        width={96}
+                        height={96}
+                        loading="lazy"
+                        onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
+                        className="h-12 w-12 shrink-0 rounded-full object-cover ring-1 ring-border/70"
+                      />
+                    ) : (
+                      <span className="h-12 w-12 shrink-0 rounded-full bg-cream ring-1 ring-border/70" aria-hidden />
+                    )}
                     <div className="min-w-0 flex-1">
                       <p className="text-[10px] uppercase tracking-[0.22em] text-terracotta">The maker</p>
                       <p className="mt-1 font-display text-[20px] leading-tight text-charcoal">

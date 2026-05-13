@@ -1,8 +1,23 @@
-import { api } from "./api";
-import type { OrderDto, DeliveryDto } from "../types/api";
-// UKENA-ORDERS-SERVICE-V2 - buyerId added 2026-05-10
+/**
+ * Back-compat shim — prefer importing `orderService` from "@/services".
+ * Kept for the checkout flow which still uses these helpers.
+ */
+import { orderService, type CreateOrderPayload, type OrderDto } from "./orderService";
+
 export const ordersService = {
-  create: (items: { productId: string; quantity: number }[], delivery: DeliveryDto, buyerId: string) =>
-    api.post<OrderDto>("/orders", { items, delivery, buyerId }),
-  getMyOrders: () => api.get<OrderDto[]>("/orders/me"),
+  /**
+   * Create an order. For guests, pass `guestEmail` + `guestFullName`.
+   * For logged-in buyers, omit them (the JWT identifies the buyer).
+   */
+  create: (
+    items: CreateOrderPayload["items"],
+    delivery: CreateOrderPayload["delivery"],
+    guest?: { guestEmail: string; guestFullName: string },
+  ): Promise<OrderDto> =>
+    orderService.createOrder({
+      items,
+      delivery,
+      ...(guest ?? {}),
+    }),
+  getMyOrders: () => orderService.getOrdersByBuyer(),
 };

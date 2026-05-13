@@ -10,7 +10,7 @@ export const Route = createFileRoute("/admin/creators")({
 });
 
 function AdminCreators() {
-  const { data, isLoading } = useQuery<CreatorSummary[]>({
+  const { data, isLoading, isError, refetch } = useQuery<CreatorSummary[]>({
     queryKey: ["admin", "creators", "real"],
     queryFn: () => api.get<CreatorSummary[]>("/creators"),
   });

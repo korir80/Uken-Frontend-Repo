@@ -150,20 +150,15 @@ export function ShopProductCard({ product, index, onQuickView }: ShopProductCard
           </p>
         )}
 
-        {creatorId && (
-          <Link
-            to="/creators/$creatorId"
-            params={{ creatorId }}
-            onClick={(e) => e.stopPropagation()}
-            className={cn(
-              "mt-auto hidden items-center gap-1.5 pt-3 text-[11px] font-medium uppercase tracking-[0.22em] text-clay opacity-0",
-              "transition-opacity duration-300 md:inline-flex md:group-hover:opacity-100",
-            )}
-          >
-            Learn the story
-            <span aria-hidden className="h-px w-5 bg-clay" />
-          </Link>
-        )}
+        <Link
+          to="/products/$productId"
+          params={{ productId: product.id }}
+          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-charcoal px-5 py-3 font-sans text-[12px] font-medium uppercase tracking-[0.2em] text-warm-white transition-colors hover:bg-clay focus:outline-none focus:ring-2 focus:ring-clay/40"
+          aria-label={`View ${product.name}`}
+        >
+          View piece
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
       </div>
     </article>
   );

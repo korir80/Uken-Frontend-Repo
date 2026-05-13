@@ -21,8 +21,8 @@ import { productQueryOptions, productsQueryOptions, useProduct, useAllProducts }
 import type { ProductDto } from "@/services";
 import { ApiError } from "@/services/api";
 
-/** ProductDto ⊂ Product for what cards render. Cast at the boundary. */
-function asProduct(p: ProductDto): Product {
+/** ProductDto/Summary ⊂ Product for what cards render. Cast at the boundary. */
+function asProduct(p: any): Product {
   return p as unknown as Product;
 }
 

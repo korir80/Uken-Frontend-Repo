@@ -141,14 +141,19 @@ function buildFieldScore(field: string | undefined, tokens: string[], weight: nu
   };
 }
 
-function scoreProduct(p: ProductDto, tokens: string[]): number {
+function scoreProduct(p: any, tokens: string[]): number {
+  const creatorName = p.creator?.fullName ?? p.creatorName ?? "";
+  const craft = p.creator?.craft ?? p.craft ?? "";
+  const region = p.creator?.region ?? "";
+  const materials: string[] = p.materials ?? [];
+  const story: string = p.pieceStory ?? "";
   const fields: FieldScore[] = [
     buildFieldScore(p.name, tokens, 1.0),
-    buildFieldScore(p.creator.fullName, tokens, 0.9),
-    buildFieldScore(p.creator.craft, tokens, 0.85),
-    buildFieldScore(p.creator.region, tokens, 0.8),
-    buildFieldScore(p.materials.join(" "), tokens, 0.7),
-    buildFieldScore(p.pieceStory, tokens, 0.4),
+    buildFieldScore(creatorName, tokens, 0.9),
+    buildFieldScore(craft, tokens, 0.85),
+    buildFieldScore(region, tokens, 0.8),
+    buildFieldScore(materials.join(" "), tokens, 0.7),
+    buildFieldScore(story, tokens, 0.4),
   ];
   return aggregate(fields, tokens);
 }

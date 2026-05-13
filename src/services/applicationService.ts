@@ -1,7 +1,7 @@
 /**
  * Application service — backed by /api/applications and /api/admin/applications.
  */
-import { api } from "./api";
+import { api, unwrapList } from "./api";
 import type { ApplicationStatus, ArtisanApplication } from "@/components/admin/admin-data";
 
 export type { ApplicationStatus, ArtisanApplication } from "@/components/admin/admin-data";

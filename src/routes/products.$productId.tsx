@@ -18,6 +18,7 @@ import { useCart, formatGBP } from "@/lib/cart";
 import { pushRecentProduct } from "@/lib/ukena-mode";
 import { cn } from "@/lib/utils";
 import { productQueryOptions, productsQueryOptions, useProduct, useAllProducts } from "@/lib/queries";
+import { safeImg } from "@/lib/safeImage";
 import type { ProductDto } from "@/services";
 import { ApiError } from "@/services/api";
 

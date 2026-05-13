@@ -128,12 +128,17 @@ export function QuickViewDrawer({ product, onClose }: QuickViewDrawerProps) {
               params={{ creatorId: product.creator.id }}
               className="group mt-7 flex items-center gap-4 rounded-2xl border border-border/70 bg-cream/40 p-4 transition-colors hover:border-clay/50"
             >
-              <img
-                src={product.creator.portrait}
-                alt=""
-                aria-hidden
-                className="h-14 w-14 rounded-full object-cover"
-              />
+              {product.creator?.portrait && !product.creator.portrait.startsWith("blob:") ? (
+                <img
+                  src={product.creator.portrait}
+                  alt=""
+                  aria-hidden
+                  onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
+                  className="h-14 w-14 rounded-full object-cover"
+                />
+              ) : (
+                <span className="h-14 w-14 rounded-full bg-cream" aria-hidden />
+              )}
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
                   Made by

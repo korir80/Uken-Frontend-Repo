@@ -157,15 +157,27 @@ function ProductPage() {
 
   // 3 thumbnails — first three gallery entries
   //gallery
+  const heroSafe = safeImg(product.heroImage);
+  const galleryRaw =
+    Array.isArray((product as any).images) && (product as any).images.length > 0
+      ? (product as any).images
+          .map((img: any) => ({
+            src: safeImg(img?.url),
+            alt: img?.altText || product.name,
+            kind: "product" as const,
+          }))
+          .filter((g: any) => !!g.src)
+      : [];
   const gallery =
-    (product as any).images?.map((img: any) => ({
-      src: img.url,
-      alt: img.altText || product.name,
-      kind: "product",
-    })) ?? (product.heroImage ? [{ src: product.heroImage, alt: product.name, kind: "product" }] : []);
+    galleryRaw.length > 0
+      ? galleryRaw
+      : heroSafe
+        ? [{ src: heroSafe, alt: product.name, kind: "product" as const }]
+        : [];
 
   const thumbs = gallery.slice(0, 4);
   const active = gallery[selected] ?? gallery[0] ?? { src: "", alt: product.name, kind: "product" as const };
+  const portraitSafe = safeImg(product.creator?.portrait);
 
   // ── Related products: same creator first, then same craft ──────────────
   const related = useMemo<Product[]>(() => {

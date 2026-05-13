@@ -62,7 +62,7 @@ function AdminProducts() {
                       </div>
                     </td>
                     <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">
-                      {p.creator.fullName}
+                      {(p as any).creatorName ?? (p as any).creator?.fullName ?? ""}
                     </td>
                     <td className="px-4 py-3 text-right font-sans text-[13px] text-charcoal">
                       {formatGBP(p.pricePence)}

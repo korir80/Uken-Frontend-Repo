@@ -84,6 +84,23 @@ function AdminCreators() {
                 </td>
               </tr>
             )}
+            {isError && !isLoading && (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="px-4 py-10 text-center font-sans text-[13px] text-destructive"
+                >
+                  Couldn't load creators.{" "}
+                  <button
+                    type="button"
+                    onClick={() => refetch()}
+                    className="underline hover:text-clay"
+                  >
+                    Retry
+                  </button>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

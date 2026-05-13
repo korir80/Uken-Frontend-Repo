@@ -14,16 +14,17 @@ import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { QuickViewDrawer } from "@/components/shop/QuickViewDrawer";
 import { useAllProducts, productsQueryOptions } from "@/lib/queries";
 import type { ProductDto } from "@/services";
+import type { ProductSummaryDto } from "@/services/productService";
 
-/** ProductDto ⊂ Product for the fields we render. Cast at the boundary so
+/** API DTO ⊂ Product for the fields we render. Cast at the boundary so
  *  the existing card components keep their seed-shaped types. */
-function asProduct(p: ProductDto): Product {
+function asProduct(p: ProductSummaryDto | ProductDto): Product {
   return p as unknown as Product;
 }
 
-/* ── URL search-param schema ─────────────────────────────────────────── */
+/* ── URL search-param schema — craft is a free string driven by backend ── */
 const shopSearchSchema = z.object({
-  craft: fallback(z.enum(["All", ...CRAFTS] as [CraftFilterValue, ...CraftFilterValue[]]), "All").default("All"),
+  craft: fallback(z.string(), "All").default("All"),
   region: fallback(z.string(), "All").default("All"),
   minPrice: fallback(z.number().int().nonnegative().optional(), undefined),
   maxPrice: fallback(z.number().int().nonnegative().optional(), undefined),

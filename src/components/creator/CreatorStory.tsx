@@ -2,6 +2,7 @@ import type { CreatorProfile } from "./creator-profile-data";
 import { Reveal } from "./Reveal";
 import { SectionLabel } from "@/components/ukena";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { safeImg } from "@/lib/safeImage";
 
 interface CreatorStoryProps {
   creator: CreatorProfile;

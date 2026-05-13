@@ -68,7 +68,7 @@ export const queryKeys = {
   adminReviews: () => ["admin", "reviews"] as const,
   adminFeatured: () => ["admin", "featured"] as const,
   adminBuyers: () => ["admin", "buyers"] as const,
-  adminProductStatuses: () => ["admin", "products", "statuses"] as const,
+  
 };
 
 /* ---------------- Query options factories (for use in route loaders) ---------------- */

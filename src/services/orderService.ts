@@ -4,7 +4,7 @@
  * Note: getAllOrders and refund have been removed because the corresponding
  * admin backend endpoints do not exist.
  */
-import { api } from "./api";
+import { api, unwrapList } from "./api";
 
 export interface OrderLinePayload {
   productId: string;
@@ -55,10 +55,10 @@ export const orderService = {
     return api.get<OrderDto>(`/orders/${encodeURIComponent(id)}`);
   },
   async getOrdersByBuyer(): Promise<OrderDto[]> {
-    return api.get<OrderDto[]>("/orders/me");
+    return unwrapList<OrderDto>(await api.get<unknown>("/orders/me"));
   },
   async getOrdersByCreator(): Promise<OrderDto[]> {
-    return api.get<OrderDto[]>("/creators/me/orders");
+    return unwrapList<OrderDto>(await api.get<unknown>("/creators/me/orders"));
   },
   async updateStatus(orderId: string, status: OrderStatus): Promise<OrderDto> {
     return api.patch<OrderDto>(

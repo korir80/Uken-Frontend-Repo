@@ -1,7 +1,7 @@
 /**
  * Application service — backed by /api/applications and /api/admin/applications.
  */
-import { api } from "./api";
+import { api, unwrapList } from "./api";
 import type { ApplicationStatus, ArtisanApplication } from "@/components/admin/admin-data";
 
 export type { ApplicationStatus, ArtisanApplication } from "@/components/admin/admin-data";
@@ -26,7 +26,7 @@ export const applicationService = {
     return api.post<ArtisanApplication>("/applications", payload);
   },
   async list(): Promise<ArtisanApplication[]> {
-    return api.get<ArtisanApplication[]>("/admin/applications");
+    return unwrapList<ArtisanApplication>(await api.get<unknown>("/admin/applications"));
   },
   async get(id: string): Promise<ArtisanApplication> {
     return api.get<ArtisanApplication>(`/admin/applications/${encodeURIComponent(id)}`);

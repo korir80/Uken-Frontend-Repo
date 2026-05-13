@@ -93,12 +93,23 @@ function ShopPage() {
   /** Counts ignore the craft facet itself so the user can see how many
    *  pieces wait behind each chip even after they've narrowed by craft. */
   const craftCounts = useMemo(() => {
-    const c: Partial<Record<CraftFilterValue, number>> = { All: all.length };
+    const c: Record<string, number> = { All: all.length };
     for (const p of all) {
-      const k = p.creator.craft as CraftFilterValue;
+      const k = (p.creator?.craft ?? (p as any).craft ?? "") as string;
+      if (!k) continue;
       c[k] = (c[k] ?? 0) + 1;
     }
     return c;
+  }, [all]);
+
+  /** Craft taxonomy derived from backend products — no hardcoded list. */
+  const craftOptions = useMemo<string[]>(() => {
+    const set = new Set<string>();
+    for (const p of all) {
+      const k = (p.creator?.craft ?? (p as any).craft ?? "") as string;
+      if (k) set.add(k);
+    }
+    return ["All", ...[...set].sort((a, b) => a.localeCompare(b))];
   }, [all]);
 
   const shown = filtered.slice(0, visible);

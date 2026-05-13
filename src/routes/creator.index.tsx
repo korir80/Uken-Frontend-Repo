@@ -14,7 +14,12 @@ function CreatorOverview() {
   const { user } = useAuth();
   const creatorId = user?.creatorId ?? "wanjiru";
   const { data: profile } = useCreator(creatorId);
-  const { data: products = [] } = useProductsByCreator(creatorId);
+  const { data: rawProducts } = useQuery({
+    queryKey: ["products", "creator", "me"],
+    queryFn: () => productService.getMyProducts(),
+    enabled: !!creatorId,
+  });
+  const products = Array.isArray(rawProducts) ? rawProducts : [];
   const { data: orders = [] } = useCreatorOrders();
 
   const myOrders = orders.filter((o) =>

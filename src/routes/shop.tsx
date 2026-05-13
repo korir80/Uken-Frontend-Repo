@@ -10,7 +10,6 @@ import { SectionLabel } from "@/components/ukena";
 import type { Product } from "@/components/product/product-data";
 import { ShopProductCard } from "@/components/shop/ShopProductCard";
 import { ShopFilterPanel, type CraftFilterValue, type ShopSortValue } from "@/components/shop/ShopFilterPanel";
-import { CRAFTS } from "@/components/explore/creators-data";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { QuickViewDrawer } from "@/components/shop/QuickViewDrawer";
 import { useAllProducts, productsQueryOptions } from "@/lib/queries";

@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
-import { useCreator, useCreatorOrders, useProductsByCreator } from "@/lib/queries";
+import { useCreator, useCreatorOrders } from "@/lib/queries";
+import { useQuery } from "@tanstack/react-query";
+import { productService } from "@/services/productService";
 import { PageHeader, StatCard, EmptyState } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
 
@@ -12,7 +14,12 @@ function CreatorOverview() {
   const { user } = useAuth();
   const creatorId = user?.creatorId ?? "wanjiru";
   const { data: profile } = useCreator(creatorId);
-  const { data: products = [] } = useProductsByCreator(creatorId);
+  const { data: rawProducts } = useQuery({
+    queryKey: ["products", "creator", "me"],
+    queryFn: () => productService.getMyProducts(),
+    enabled: !!creatorId,
+  });
+  const products = Array.isArray(rawProducts) ? rawProducts : [];
   const { data: orders = [] } = useCreatorOrders();
 
   const myOrders = orders.filter((o) =>

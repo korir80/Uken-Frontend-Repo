@@ -1,22 +1,24 @@
 import { Link } from "@tanstack/react-router";
+import { useMemo } from "react";
+import { ArrowRight } from "lucide-react";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { useAllProducts } from "@/lib/queries";
 import { formatGBP } from "@/lib/cart";
-import type { Craft } from "@/components/explore/creators-data";
-
-const CATEGORY_TILES: { craft?: Craft; label: string; tagline: string }[] = [
-  { craft: "Weaving", label: "Weaving", tagline: "Sisal, coiled by hand." },
-  { craft: "Beadwork", label: "Beadwork", tagline: "Stories told in glass." },
-  { craft: "Pottery", label: "Pottery", tagline: "Earth, fire, water." },
-  { craft: "Leatherwork", label: "Leatherwork", tagline: "Saddle-stitched, never glued." },
-  { label: "Coffee & Tea", tagline: "Single-origin, farm to cup." },
-  { label: "Foods & Harvest", tagline: "Honey, spices, and grains." },
-  { label: "Fresh Produce", tagline: "What UK visitors still think about." },
-];
 
 export function FeaturedShop() {
   const { data: all, isLoading } = useAllProducts();
-  const featured = Array.isArray(all) ? all.slice(0, 6) : [];
+  const products = Array.isArray(all) ? all : [];
+  const featured = products.slice(0, 6);
+
+  // Categories derived live from backend products — no hardcoded list.
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of products) {
+      const c = (p as any).craft ?? (p as any).creator?.craft;
+      if (c) set.add(c);
+    }
+    return [...set].sort((a, b) => a.localeCompare(b));
+  }, [products]);
 
   return (
     <section className="bg-warm-white py-12 md:py-16">
@@ -56,51 +58,57 @@ export function FeaturedShop() {
           </p>
         ) : (
           <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((p) => (
-              <Link
-                key={p.id}
-                to="/products/$productId"
-                params={{ productId: p.id }}
-                className="group block rounded-2xl border border-border/60 bg-cream/85 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
-              >
-                <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sand-soft">
-                  <LazyImage
-                    src={p.heroImage}
-                    alt={p.name}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                  />
-                </div>
-                <div className="mt-3 flex items-baseline justify-between gap-3 px-1 pb-1">
-                  <div>
-                    <h3 className="font-display text-xl text-charcoal">{p.name}</h3>
-                    {p.creator?.firstName && (
-                      <p className="mt-0.5 font-sans text-[12px] text-clay">by {p.creator.firstName}</p>
-                    )}
+            {featured.map((p) => {
+              const creatorName = (p as any).creatorName ?? (p as any).creator?.fullName ?? "";
+              return (
+                <Link
+                  key={p.id}
+                  to="/products/$productId"
+                  params={{ productId: p.id }}
+                  className="group block rounded-2xl border border-border/60 bg-cream/85 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
+                >
+                  <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sand-soft">
+                    <LazyImage
+                      src={p.heroImage}
+                      alt={p.name}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    />
                   </div>
-                  <span className="font-sans text-base text-charcoal">{formatGBP(p.pricePence)}</span>
-                </div>
-              </Link>
-            ))}
+                  <div className="mt-3 flex items-baseline justify-between gap-3 px-1">
+                    <div>
+                      <h3 className="font-display text-xl text-charcoal">{p.name}</h3>
+                      {creatorName && (
+                        <p className="mt-0.5 font-sans text-[12px] text-clay">by {creatorName}</p>
+                      )}
+                    </div>
+                    <span className="font-sans text-base text-charcoal">{formatGBP(p.pricePence)}</span>
+                  </div>
+                  <span className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-charcoal px-4 py-2.5 font-sans text-[12px] font-medium uppercase tracking-[0.2em] text-warm-white transition-colors group-hover:bg-clay">
+                    View piece <ArrowRight className="h-3.5 w-3.5" />
+                  </span>
+                </Link>
+              );
+            })}
           </div>
         )}
 
-        <div className="mt-10 md:mt-12">
-          <p className="section-label">Shop by category</p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {CATEGORY_TILES.map((tile) => (
-              <Link
-                key={tile.label}
-                to="/shop"
-                search={tile.craft ? { craft: tile.craft } : undefined}
-                className="group block rounded-2xl border border-border/60 bg-cream/85 p-4 transition hover:-translate-y-0.5 hover:border-clay hover:shadow-soft md:p-5"
-              >
-                <p className="font-display text-2xl text-charcoal">{tile.label}</p>
-                <p className="mt-2 font-sans text-[13px] text-charcoal/65">{tile.tagline}</p>
-                <p className="mt-4 font-sans text-[12px] text-clay">See products →</p>
-              </Link>
-            ))}
+        {categories.length > 0 && (
+          <div className="mt-10 md:mt-12">
+            <p className="section-label">Shop by category</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {categories.map((c) => (
+                <Link
+                  key={c}
+                  to="/shop"
+                  search={{ craft: c }}
+                  className="inline-flex min-h-[40px] items-center gap-2 rounded-full border border-border/70 bg-warm-white px-4 py-2 font-sans text-[13px] font-medium text-charcoal transition-colors hover:border-clay hover:bg-clay hover:text-warm-white"
+                >
+                  {c}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

@@ -10,21 +10,21 @@ import { SectionLabel } from "@/components/ukena";
 import type { Product } from "@/components/product/product-data";
 import { ShopProductCard } from "@/components/shop/ShopProductCard";
 import { ShopFilterPanel, type CraftFilterValue, type ShopSortValue } from "@/components/shop/ShopFilterPanel";
-import { CRAFTS } from "@/components/explore/creators-data";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { QuickViewDrawer } from "@/components/shop/QuickViewDrawer";
 import { useAllProducts, productsQueryOptions } from "@/lib/queries";
 import type { ProductDto } from "@/services";
+import type { ProductSummaryDto } from "@/services/productService";
 
-/** ProductDto ⊂ Product for the fields we render. Cast at the boundary so
+/** API DTO ⊂ Product for the fields we render. Cast at the boundary so
  *  the existing card components keep their seed-shaped types. */
-function asProduct(p: ProductDto): Product {
+function asProduct(p: ProductSummaryDto | ProductDto): Product {
   return p as unknown as Product;
 }
 
-/* ── URL search-param schema ─────────────────────────────────────────── */
+/* ── URL search-param schema — craft is a free string driven by backend ── */
 const shopSearchSchema = z.object({
-  craft: fallback(z.enum(["All", ...CRAFTS] as [CraftFilterValue, ...CraftFilterValue[]]), "All").default("All"),
+  craft: fallback(z.string(), "All").default("All"),
   region: fallback(z.string(), "All").default("All"),
   minPrice: fallback(z.number().int().nonnegative().optional(), undefined),
   maxPrice: fallback(z.number().int().nonnegative().optional(), undefined),
@@ -93,12 +93,23 @@ function ShopPage() {
   /** Counts ignore the craft facet itself so the user can see how many
    *  pieces wait behind each chip even after they've narrowed by craft. */
   const craftCounts = useMemo(() => {
-    const c: Partial<Record<CraftFilterValue, number>> = { All: all.length };
+    const c: Record<string, number> = { All: all.length };
     for (const p of all) {
-      const k = p.creator.craft as CraftFilterValue;
+      const k = (p.creator?.craft ?? (p as any).craft ?? "") as string;
+      if (!k) continue;
       c[k] = (c[k] ?? 0) + 1;
     }
     return c;
+  }, [all]);
+
+  /** Craft taxonomy derived from backend products — no hardcoded list. */
+  const craftOptions = useMemo<string[]>(() => {
+    const set = new Set<string>();
+    for (const p of all) {
+      const k = (p.creator?.craft ?? (p as any).craft ?? "") as string;
+      if (k) set.add(k);
+    }
+    return ["All", ...[...set].sort((a, b) => a.localeCompare(b))];
   }, [all]);
 
   const shown = filtered.slice(0, visible);
@@ -203,7 +214,7 @@ function ShopPage() {
             {/* Desktop: craft chips + more filters */}
             <div className="hidden flex-1 items-center gap-2 md:flex">
               <div className="flex flex-1 flex-wrap items-center gap-1.5">
-                {(["All", ...CRAFTS] as CraftFilterValue[]).map((opt) => {
+                {craftOptions.map((opt) => {
                   const active = opt === search.craft;
                   const count = craftCounts[opt];
                   return (

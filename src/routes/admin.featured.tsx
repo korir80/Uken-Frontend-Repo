@@ -101,7 +101,7 @@ function AdminFeatured() {
                   <option value="">— None —</option>
                   {products.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.name} · {p.creator.firstName}
+                      {p.name} · {(p as any).creatorName ?? (p as any).creator?.firstName ?? ""}
                     </option>
                   ))}
                 </select>

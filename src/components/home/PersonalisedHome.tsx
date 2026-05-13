@@ -189,7 +189,7 @@ export function PersonalisedHome({ user }: PersonalisedHomeProps) {
                     <div className="mt-3">
                       <p className="font-display text-lg leading-tight text-charcoal">{p.name}</p>
                       <p className="mt-1 text-sm text-charcoal/65">
-                        {formatGBP(p.pricePence)} · by {p.creator.firstName}
+                        {formatGBP(p.pricePence)} · by {(p as any).creatorName ?? (p as any).creator?.firstName ?? ""}
                       </p>
                     </div>
                   </Link>

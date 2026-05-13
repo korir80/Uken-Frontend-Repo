@@ -56,7 +56,7 @@ function ShopPage() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [quickProduct, setQuickProduct] = useState<Product | null>(null);
 
-  const { data: products, isLoading } = useAllProducts();
+  const { data: products, isLoading, isError, error, refetch } = useAllProducts();
 
   // Guard against the API returning a non-array (e.g. { data: [...] }),
   // which causes "(N ?? []).map is not a function" at runtime.

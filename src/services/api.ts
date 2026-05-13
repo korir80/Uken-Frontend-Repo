@@ -224,6 +224,19 @@ export function unwrap<T>(value: T | { data: T }): T {
   return value as T;
 }
 
+/**
+ * Many backend list endpoints return Spring-style pagination
+ * (`{ content: [...], totalElements, ... }`). Use this to coerce either
+ * shape down to a plain array, or `[]` if the response is malformed.
+ */
+export function unwrapList<T>(value: unknown): T[] {
+  if (Array.isArray(value)) return value as T[];
+  if (value && typeof value === "object" && Array.isArray((value as { content?: unknown }).content)) {
+    return (value as { content: T[] }).content;
+  }
+  return [];
+}
+
 export function fakeResolve<T>(value: T, delayMs = 0): Promise<T> {
   if (delayMs <= 0) return Promise.resolve(value);
   return new Promise((res) => setTimeout(() => res(value), delayMs));

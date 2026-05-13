@@ -51,6 +51,7 @@ interface CartState {
 export interface DeliveryDetails {
   fullName: string;
   email: string;
+  phone?: string;
   addressLine1: string;
   addressLine2?: string;
   city: string;

@@ -69,10 +69,7 @@ function DeliveryStep() {
     const next = validate(form);
     setErrors(next);
     if (Object.keys(next).length > 0) return;
-    // Strip optional phone before persisting — DeliveryDetails type does not
-    // know about it yet; backend contract will add it later.
-    const { phone: _phone, ...delivery } = form;
-    setDelivery(delivery);
+    setDelivery(form);
     navigate({ to: "/checkout/payment" });
   };
 

@@ -124,6 +124,9 @@ export function LazyImage({
 
   const isUsableSrc =
     !!src &&
+    typeof src === "string" &&
+    src.trim() !== "" &&
+    !src.startsWith("blob:") &&
     !src.includes("cloudinary.com/demo") &&
     !src.includes("/demo/") &&
     !src.includes("sample") &&

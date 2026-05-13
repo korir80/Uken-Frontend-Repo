@@ -51,7 +51,7 @@ function ExplorePage() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [draftFilter, setDraftFilter] = useState<CraftFilterValue>("All");
 
-  const { data: rawCreators = [], isLoading } = useCreators();
+  const { data: rawCreators = [], isLoading, isError, error, refetch } = useCreators();
 
   const creators = useMemo(
     () => rawCreators.map((c, i) => toCreator(c, i)),

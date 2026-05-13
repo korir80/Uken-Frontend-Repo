@@ -157,7 +157,7 @@ export function LazyImage({
         <div className="absolute inset-0 bg-[linear-gradient(110deg,oklch(0.95_0.012_78)_8%,oklch(0.88_0.025_70)_18%,oklch(0.95_0.012_78)_33%)] bg-[length:200%_100%] animate-[ukena-shimmer_1.6s_ease-in-out_infinite]" />
       </div>
 
-      {inView && isUsableSrc && !loaded === false ? null : null}
+      
       {inView && isUsableSrc && (
         <img
           src={cloud.src}

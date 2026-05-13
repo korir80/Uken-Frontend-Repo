@@ -53,6 +53,7 @@ export function CreatorAttribution({
             width={20}
             height={20}
             loading="lazy"
+            onError={hideOnError}
           />
         )}
         <span>
@@ -85,6 +86,7 @@ export function CreatorAttribution({
             width={120}
             height={120}
             loading="lazy"
+            onError={hideOnError}
             className="h-20 w-20 shrink-0 rounded-full object-cover md:h-24 md:w-24"
           />
         )}
@@ -128,6 +130,7 @@ export function CreatorAttribution({
           width={48}
           height={48}
           loading="lazy"
+            onError={hideOnError}
           className="h-10 w-10 rounded-full object-cover ring-1 ring-border/70"
         />
       )}

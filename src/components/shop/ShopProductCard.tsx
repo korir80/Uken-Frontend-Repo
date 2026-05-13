@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Eye } from "lucide-react";
+import { ArrowRight, Eye } from "lucide-react";
 import { formatGBP } from "@/lib/cart";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { SaveHeart } from "@/components/product/SaveHeart";

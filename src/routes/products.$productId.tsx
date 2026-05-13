@@ -50,17 +50,19 @@ export const Route = createFileRoute("/products/$productId")({
         meta: [{ title: "Piece — UKEN" }],
         links: [{ rel: "canonical", href: url }],
       };
-    const title = `${p.name} by ${p.creator.fullName} · UKEN`;
-    const description = `${p.pieceStory.slice(0, 150)}…`;
+    const makerName = p.creator?.fullName ?? "an independent maker";
+    const craft = p.creator?.craft ?? "";
+    const title = `${p.name} by ${makerName} · UKEN`;
+    const description = `${(p.pieceStory ?? "").slice(0, 150)}…`;
     const productJsonLd = {
       "@context": "https://schema.org",
       "@type": "Product",
       name: p.name,
       description,
-      image: p.heroImage,
+      image: p.heroImage ?? "",
       url,
       brand: { "@type": "Brand", name: "UKEN" },
-      category: p.creator.craft,
+      category: craft,
       offers: {
         "@type": "Offer",
         priceCurrency: "GBP",

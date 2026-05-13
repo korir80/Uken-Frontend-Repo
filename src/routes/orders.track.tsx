@@ -45,8 +45,8 @@ function TrackOrderPage() {
       if (!raw) return;
       const last = JSON.parse(raw) as { displayId?: string; email?: string };
       if (last.displayId && last.email) {
-        setDisplayId((v) => v || last.displayId!);
-        setEmail((v) => v || last.email!);
+        setDisplayId((v: string) => v || last.displayId!);
+        setEmail((v: string) => v || last.email!);
         navigate({
           search: { displayId: last.displayId, email: last.email },
           replace: true,

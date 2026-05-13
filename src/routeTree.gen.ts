@@ -34,6 +34,7 @@ import { Route as CreatorIndexRouteImport } from './routes/creator.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
+import { Route as OrdersTrackRouteImport } from './routes/orders.track'
 import { Route as JoinApplyRouteImport } from './routes/join.apply'
 import { Route as CreatorsCreatorIdRouteImport } from './routes/creators.$creatorId'
 import { Route as CreatorProfileRouteImport } from './routes/creator.profile'
@@ -183,6 +184,11 @@ const AccountIndexRoute = AccountIndexRouteImport.update({
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
   path: '/products/$productId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersTrackRoute = OrdersTrackRouteImport.update({
+  id: '/orders/track',
+  path: '/orders/track',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JoinApplyRoute = JoinApplyRouteImport.update({
@@ -356,6 +362,7 @@ export interface FileRoutesByFullPath {
   '/creator/profile': typeof CreatorProfileRoute
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
+  '/orders/track': typeof OrdersTrackRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -405,6 +412,7 @@ export interface FileRoutesByTo {
   '/creator/profile': typeof CreatorProfileRoute
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
+  '/orders/track': typeof OrdersTrackRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/account': typeof AccountIndexRoute
   '/admin': typeof AdminIndexRoute
@@ -458,6 +466,7 @@ export interface FileRoutesById {
   '/creator/profile': typeof CreatorProfileRoute
   '/creators/$creatorId': typeof CreatorsCreatorIdRoute
   '/join/apply': typeof JoinApplyRoute
+  '/orders/track': typeof OrdersTrackRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/account/': typeof AccountIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -512,6 +521,7 @@ export interface FileRouteTypes {
     | '/creator/profile'
     | '/creators/$creatorId'
     | '/join/apply'
+    | '/orders/track'
     | '/products/$productId'
     | '/account/'
     | '/admin/'
@@ -561,6 +571,7 @@ export interface FileRouteTypes {
     | '/creator/profile'
     | '/creators/$creatorId'
     | '/join/apply'
+    | '/orders/track'
     | '/products/$productId'
     | '/account'
     | '/admin'
@@ -613,6 +624,7 @@ export interface FileRouteTypes {
     | '/creator/profile'
     | '/creators/$creatorId'
     | '/join/apply'
+    | '/orders/track'
     | '/products/$productId'
     | '/account/'
     | '/admin/'
@@ -644,6 +656,7 @@ export interface RootRouteChildren {
   TransparencyRoute: typeof TransparencyRoute
   CreatorsCreatorIdRoute: typeof CreatorsCreatorIdRoute
   JoinApplyRoute: typeof JoinApplyRoute
+  OrdersTrackRoute: typeof OrdersTrackRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   JoinIndexRoute: typeof JoinIndexRoute
 }
@@ -823,6 +836,13 @@ declare module '@tanstack/react-router' {
       path: '/products/$productId'
       fullPath: '/products/$productId'
       preLoaderRoute: typeof ProductsProductIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/track': {
+      id: '/orders/track'
+      path: '/orders/track'
+      fullPath: '/orders/track'
+      preLoaderRoute: typeof OrdersTrackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/join/apply': {
@@ -1124,6 +1144,7 @@ const rootRouteChildren: RootRouteChildren = {
   TransparencyRoute: TransparencyRoute,
   CreatorsCreatorIdRoute: CreatorsCreatorIdRoute,
   JoinApplyRoute: JoinApplyRoute,
+  OrdersTrackRoute: OrdersTrackRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   JoinIndexRoute: JoinIndexRoute,
 }

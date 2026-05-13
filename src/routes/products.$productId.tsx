@@ -165,7 +165,7 @@ function ProductPage() {
     })) ?? (product.heroImage ? [{ src: product.heroImage, alt: product.name, kind: "product" }] : []);
 
   const thumbs = gallery.slice(0, 4);
-  const active = gallery[selected] ?? gallery[0];
+  const active = gallery[selected] ?? gallery[0] ?? { src: "", alt: product.name, kind: "product" as const };
 
   // ── Related products: same creator first, then same craft ──────────────
   const related = useMemo<Product[]>(() => {

@@ -15,10 +15,11 @@ import {
   CartesianGrid,
 } from "recharts";
 import { useAuth } from "@/lib/auth";
+import { useQuery } from "@tanstack/react-query";
+import { productService } from "@/services/productService";
 import {
   useCreator,
   useCreatorOrders,
-  useProductsByCreator,
 } from "@/lib/queries";
 import {
   PageHeader,

@@ -95,7 +95,7 @@ export const adminService = {
     );
   },
   async deleteCreator(creatorId: string): Promise<void> {
-    await api.del<void>(`/admin/creators/${encodeURIComponent(creatorId)}`);
+    await api.delete<void>(`/admin/creators/${encodeURIComponent(creatorId)}`);
   },
   async setProductStatus(
     productId: string,
@@ -107,7 +107,7 @@ export const adminService = {
     );
   },
   async deleteProduct(productId: string): Promise<void> {
-    await api.del<void>(`/admin/products/${encodeURIComponent(productId)}`);
+    await api.delete<void>(`/admin/products/${encodeURIComponent(productId)}`);
   },
   async listOrders(): Promise<OrderDto[]> {
     const list = unwrapList<any>(await api.get<unknown>("/admin/orders"));

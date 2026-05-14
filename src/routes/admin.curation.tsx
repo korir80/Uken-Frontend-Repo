@@ -11,7 +11,7 @@ import {
   useSetFeatured,
 } from "@/lib/queries";
 
-export const Route = createFileRoute("/admin/featured")({
+export const Route = createFileRoute("/admin/curation")({
   component: AdminFeatured,
 });
 

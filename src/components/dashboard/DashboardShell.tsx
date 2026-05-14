@@ -54,26 +54,62 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
     }
   }, [drawerOpen]);
 
+  const isAdmin = variant === "admin";
+
   const navContent = (
     <NavList
       links={links}
       currentPath={location.pathname}
       onNavigate={() => setDrawerOpen(false)}
+      dark={isAdmin}
     />
   );
 
   const userFooter = user && (
-    <div className="border-t border-border/60 px-6 py-5">
-      <p className="font-sans text-[12px] text-charcoal/60">Signed in as</p>
-      <p className="mt-1 font-display text-base text-charcoal">{user.fullName}</p>
-      <p className="truncate font-sans text-[11px] text-charcoal/50">{user.email}</p>
+    <div
+      className={cn(
+        "px-6 py-5",
+        isAdmin
+          ? "border-t border-white/10"
+          : "border-t border-border/60",
+      )}
+    >
+      <p
+        className={cn(
+          "font-sans text-[12px]",
+          isAdmin ? "text-white/55" : "text-charcoal/60",
+        )}
+      >
+        Signed in as
+      </p>
+      <p
+        className={cn(
+          "mt-1 font-display text-base",
+          isAdmin ? "text-white" : "text-charcoal",
+        )}
+      >
+        {user.fullName}
+      </p>
+      <p
+        className={cn(
+          "truncate font-sans text-[11px]",
+          isAdmin ? "text-white/45" : "text-charcoal/50",
+        )}
+      >
+        {user.email}
+      </p>
       <button
         type="button"
         onClick={() => {
           setDrawerOpen(false);
           void signOutWithToast(logout);
         }}
-        className="mt-4 inline-flex items-center gap-2 rounded-full border border-clay/40 px-4 py-2 font-sans text-[12px] font-medium text-clay transition-colors hover:bg-clay hover:text-warm-white"
+        className={cn(
+          "mt-4 inline-flex items-center gap-2 rounded-full px-4 py-2 font-sans text-[12px] font-medium transition-colors",
+          isAdmin
+            ? "border border-[#D4A96A]/50 text-[#D4A96A] hover:bg-[#D4A96A] hover:text-[#1a0f07]"
+            : "border border-clay/40 text-clay hover:bg-clay hover:text-warm-white",
+        )}
       >
         <LogoutIcon />
         Sign out
@@ -116,12 +152,26 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
 
       <div className="mx-auto flex max-w-[1400px] lg:flex-row">
         {/* Desktop sidebar — sticky column, internally scrollable */}
-        <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:flex-shrink-0 lg:flex-col lg:border-r lg:border-border/60 lg:bg-cream/40">
+        <aside
+          className={cn(
+            "hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:flex-shrink-0 lg:flex-col lg:border-r",
+            isAdmin
+              ? "lg:border-white/10 lg:bg-[#1a0f07]"
+              : "lg:border-border/60 lg:bg-cream/40",
+          )}
+        >
           <div className="flex-shrink-0 px-6 py-7">
             <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
-              <Logo className="h-10" />
+              <Logo
+                className={cn("h-10", isAdmin && "text-[#D4A96A]")}
+              />
             </Link>
-            <p className="mt-2 font-sans text-[11px] uppercase tracking-[0.24em] text-clay">
+            <p
+              className={cn(
+                "mt-2 font-sans text-[11px] uppercase tracking-[0.24em]",
+                isAdmin ? "text-[#D4A96A]" : "text-clay",
+              )}
+            >
               {eyebrow}
             </p>
           </div>
@@ -189,10 +239,12 @@ function NavList({
   links,
   currentPath,
   onNavigate,
+  dark = false,
 }: {
   links: { to: string; label: string; description?: string }[];
   currentPath: string;
   onNavigate: () => void;
+  dark?: boolean;
 }) {
   return (
     <ul className="flex flex-col gap-1">
@@ -206,9 +258,13 @@ function NavList({
               onClick={onNavigate}
               className={cn(
                 "block rounded-lg px-4 py-2.5 font-sans text-[13px] font-medium transition-colors",
-                active
-                  ? "bg-clay text-warm-white"
-                  : "text-charcoal/70 hover:bg-sand-soft/50 hover:text-charcoal",
+                dark
+                  ? active
+                    ? "border-l-2 border-[#C1694F] bg-white/[0.06] text-white"
+                    : "border-l-2 border-transparent text-white/75 hover:bg-white/[0.04] hover:text-white"
+                  : active
+                    ? "bg-clay text-warm-white"
+                    : "text-charcoal/70 hover:bg-sand-soft/50 hover:text-charcoal",
               )}
             >
               <span>{link.label}</span>
@@ -216,7 +272,13 @@ function NavList({
                 <span
                   className={cn(
                     "mt-0.5 block text-[11px] font-normal",
-                    active ? "text-warm-white/75" : "text-charcoal/50",
+                    dark
+                      ? active
+                        ? "text-white/65"
+                        : "text-white/45"
+                      : active
+                        ? "text-warm-white/75"
+                        : "text-charcoal/50",
                   )}
                 >
                   {link.description}

@@ -10,8 +10,10 @@ const ADMIN_LINKS = [
   { to: "/admin/products", label: "Products", description: "Listing moderation" },
   { to: "/admin/orders", label: "Orders", description: "Oversight & disputes" },
   { to: "/admin/payouts", label: "Payouts", description: "Creator earnings" },
-  { to: "/admin/featured", label: "Curation", description: "Home page features" },
-  { to: "/admin/content", label: "Content", description: "Reviews & stories" },
+  { to: "/admin/reviews", label: "Reviews", description: "Moderate buyer reviews" },
+  { to: "/admin/curation", label: "Curation", description: "Featured slots" },
+  { to: "/admin/delivery-zones", label: "Delivery Zones", description: "Shipping fees" },
+  { to: "/admin/staff", label: "Staff", description: "Admin & support" },
 ];
 
 export const Route = createFileRoute("/admin")({

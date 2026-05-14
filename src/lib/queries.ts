@@ -404,9 +404,57 @@ export function useAdminPayouts() {
 
 export function usePayCreator() {
   const qc = useQueryClient();
-  return useMutation<CreatorPayout, Error, string>({
-    mutationFn: (creatorId) => adminService.payCreator(creatorId),
+  return useMutation<
+    CreatorPayout,
+    Error,
+    { creatorId: string; accountNumber: string; accountName: string }
+  >({
+    mutationFn: ({ creatorId, accountNumber, accountName }) =>
+      adminService.payCreator(creatorId, { accountNumber, accountName }),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminPayouts() }),
+  });
+}
+
+export function useAdminOrders() {
+  return useQuery<OrderDto[]>({
+    queryKey: ["admin", "orders"],
+    queryFn: () => adminService.listOrders(),
+  });
+}
+
+export function useRefundOrder() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => adminService.refundOrder(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "orders"] }),
+  });
+}
+
+export function useDeleteCreator() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => adminService.deleteCreator(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "creators", "real"] }),
+  });
+}
+
+export function useSetProductStatus() {
+  const qc = useQueryClient();
+  return useMutation<
+    void,
+    Error,
+    { id: string; status: "ACTIVE" | "SUSPENDED_BY_ADMIN" }
+  >({
+    mutationFn: ({ id, status }) => adminService.setProductStatus(id, status),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.products() }),
+  });
+}
+
+export function useDeleteProductAdmin() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => adminService.deleteProduct(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.products() }),
   });
 }
 

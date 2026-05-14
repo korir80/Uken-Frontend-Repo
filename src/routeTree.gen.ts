@@ -47,13 +47,13 @@ import { Route as CheckoutPaymentRouteImport } from './routes/checkout.payment'
 import { Route as CheckoutDeliveryRouteImport } from './routes/checkout.delivery'
 import { Route as CheckoutConfirmationRouteImport } from './routes/checkout.confirmation'
 import { Route as AdminStaffRouteImport } from './routes/admin.staff'
+import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminPayoutsRouteImport } from './routes/admin.payouts'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminDeliveryZonesRouteImport } from './routes/admin.delivery-zones'
 import { Route as AdminCreatorsRouteImport } from './routes/admin.creators'
-import { Route as AdminContentRouteImport } from './routes/admin.content'
 import { Route as AdminBuyersRouteImport } from './routes/admin.buyers'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as AccountSavedRouteImport } from './routes/account.saved'
@@ -253,6 +253,11 @@ const AdminStaffRoute = AdminStaffRouteImport.update({
   path: '/staff',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminReviewsRoute = AdminReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProductsRoute = AdminProductsRouteImport.update({
   id: '/products',
   path: '/products',
@@ -281,11 +286,6 @@ const AdminDeliveryZonesRoute = AdminDeliveryZonesRouteImport.update({
 const AdminCreatorsRoute = AdminCreatorsRouteImport.update({
   id: '/creators',
   path: '/creators',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminContentRoute = AdminContentRouteImport.update({
-  id: '/content',
-  path: '/content',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBuyersRoute = AdminBuyersRouteImport.update({
@@ -357,13 +357,13 @@ export interface FileRoutesByFullPath {
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
-  '/admin/content': typeof AdminContentRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
@@ -409,13 +409,13 @@ export interface FileRoutesByTo {
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
-  '/admin/content': typeof AdminContentRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
@@ -465,13 +465,13 @@ export interface FileRoutesById {
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
-  '/admin/content': typeof AdminContentRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
@@ -522,13 +522,13 @@ export interface FileRouteTypes {
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
-    | '/admin/content'
     | '/admin/creators'
     | '/admin/delivery-zones'
     | '/admin/featured'
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
+    | '/admin/reviews'
     | '/admin/staff'
     | '/checkout/confirmation'
     | '/checkout/delivery'
@@ -574,13 +574,13 @@ export interface FileRouteTypes {
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
-    | '/admin/content'
     | '/admin/creators'
     | '/admin/delivery-zones'
     | '/admin/featured'
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
+    | '/admin/reviews'
     | '/admin/staff'
     | '/checkout/confirmation'
     | '/checkout/delivery'
@@ -629,13 +629,13 @@ export interface FileRouteTypes {
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
-    | '/admin/content'
     | '/admin/creators'
     | '/admin/delivery-zones'
     | '/admin/featured'
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
+    | '/admin/reviews'
     | '/admin/staff'
     | '/checkout/confirmation'
     | '/checkout/delivery'
@@ -953,6 +953,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStaffRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/reviews': {
+      id: '/admin/reviews'
+      path: '/reviews'
+      fullPath: '/admin/reviews'
+      preLoaderRoute: typeof AdminReviewsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/products': {
       id: '/admin/products'
       path: '/products'
@@ -993,13 +1000,6 @@ declare module '@tanstack/react-router' {
       path: '/creators'
       fullPath: '/admin/creators'
       preLoaderRoute: typeof AdminCreatorsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/content': {
-      id: '/admin/content'
-      path: '/content'
-      fullPath: '/admin/content'
-      preLoaderRoute: typeof AdminContentRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/buyers': {
@@ -1097,13 +1097,13 @@ const AccountRouteWithChildren =
 interface AdminRouteChildren {
   AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminBuyersRoute: typeof AdminBuyersRoute
-  AdminContentRoute: typeof AdminContentRoute
   AdminCreatorsRoute: typeof AdminCreatorsRoute
   AdminDeliveryZonesRoute: typeof AdminDeliveryZonesRoute
   AdminFeaturedRoute: typeof AdminFeaturedRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPayoutsRoute: typeof AdminPayoutsRoute
   AdminProductsRoute: typeof AdminProductsRoute
+  AdminReviewsRoute: typeof AdminReviewsRoute
   AdminStaffRoute: typeof AdminStaffRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -1111,13 +1111,13 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminApplicationsRoute: AdminApplicationsRoute,
   AdminBuyersRoute: AdminBuyersRoute,
-  AdminContentRoute: AdminContentRoute,
   AdminCreatorsRoute: AdminCreatorsRoute,
   AdminDeliveryZonesRoute: AdminDeliveryZonesRoute,
   AdminFeaturedRoute: AdminFeaturedRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPayoutsRoute: AdminPayoutsRoute,
   AdminProductsRoute: AdminProductsRoute,
+  AdminReviewsRoute: AdminReviewsRoute,
   AdminStaffRoute: AdminStaffRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
@@ -1193,3 +1193,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

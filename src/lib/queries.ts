@@ -208,7 +208,7 @@ export function useUpdateCreatorProfile(creatorId: string) {
 }
 
 export function useUploadImage() {
-  return useMutation
+  return useMutation<
     UploadedMedia,
     Error,
     { file: File; folder?: string; onProgress?: (pct: number) => void }
@@ -357,7 +357,7 @@ export function useAdminApplications() {
 
 export function useUpdateApplicationStatus() {
   const qc = useQueryClient();
-  return useMutation
+  return useMutation<
     ArtisanApplication,
     Error,
     { id: string; status: ApplicationStatus; notes?: string }
@@ -377,7 +377,7 @@ export function useAdminPayouts() {
 
 export function usePayCreator() {
   const qc = useQueryClient();
-  return useMutation
+  return useMutation<
     CreatorPayout,
     Error,
     { creatorId: string; accountNumber: string; accountName: string }
@@ -468,7 +468,7 @@ export function useAdminReviews() {
 
 export function useUpdateReviewStatus() {
   const qc = useQueryClient();
-  return useMutation
+  return useMutation<
     ProductReview,
     Error,
     { id: string; status: ProductReview["status"] }

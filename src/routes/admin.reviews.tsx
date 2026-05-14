@@ -23,7 +23,7 @@ const FILTERS: { key: ProductReview["status"] | "ALL"; label: string }[] = [
   { key: "REMOVED", label: "Removed" },
 ];
 
-export const Route = createFileRoute("/admin/content")({
+export const Route = createFileRoute("/admin/reviews")({
   component: AdminContent,
 });
 

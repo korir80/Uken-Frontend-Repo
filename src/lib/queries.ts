@@ -438,6 +438,22 @@ export function useDeleteCreator() {
   });
 }
 
+export function useSuspendCreator() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => adminService.suspendCreator(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "creators", "real"] }),
+  });
+}
+
+export function useUnsuspendCreator() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => adminService.unsuspendCreator(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "creators", "real"] }),
+  });
+}
+
 export function useSetProductStatus() {
   const qc = useQueryClient();
   return useMutation<

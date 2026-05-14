@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { formatGBP } from "@/lib/cart";
-import { useAdminOrders, useRefundOrder } from "@/lib/queries";
+import { useAdminOrders, useRefundOrder, useAdminUpdateOrderStatus, useAdminBulkUpdateStatus } from "@/lib/queries";
 import type { OrderStatus } from "@/services";
 
 export const Route = createFileRoute("/admin/orders")({
@@ -20,16 +20,66 @@ const TONE: Record<OrderStatus, "neutral" | "good" | "warn" | "bad" | "info"> = 
   CANCELLED: "bad",
 };
 
+const NEXT_STATUSES: Record<OrderStatus, OrderStatus[]> = {
+  PENDING: ["PAID", "PREPARING", "CANCELLED"],
+  PAID: ["PREPARING", "CANCELLED"],
+  PREPARING: ["SHIPPED", "CANCELLED"],
+  SHIPPED: ["DELIVERED", "CANCELLED"],
+  DELIVERED: [],
+  CANCELLED: [],
+};
+
 function AdminOrders() {
   const { data, isLoading, isError, refetch } = useAdminOrders();
   const orders = Array.isArray(data) ? data : [];
   const refund = useRefundOrder();
+  const updateStatus = useAdminUpdateOrderStatus();
+  const bulkUpdate = useAdminBulkUpdateStatus();
+
   const [open, setOpen] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkStatus, setBulkStatus] = useState<OrderStatus>("PREPARING");
+
+  function toggleSelect(id: string, e: React.MouseEvent) {
+    e.stopPropagation();
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+
+  function toggleAll() {
+    setSelected((prev) =>
+      prev.size === orders.length && orders.length > 0 ? new Set() : new Set(orders.map((o) => o.displayId)),
+    );
+  }
+
+  async function handleBulkUpdate() {
+    if (!selected.size) return;
+    if (!window.confirm(`Mark ${selected.size} order(s) as ${bulkStatus}? Buyers will be emailed.`)) return;
+    try {
+      await bulkUpdate.mutateAsync({ displayIds: [...selected], status: bulkStatus });
+      toast.success(`${selected.size} order(s) updated — buyers notified`);
+      setSelected(new Set());
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Bulk update failed");
+    }
+  }
+
+  async function handleStatusChange(displayId: string, status: OrderStatus) {
+    try {
+      await updateStatus.mutateAsync({ displayId, status });
+      toast.success(`Order marked ${status.toLowerCase()} — buyer notified`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Update failed");
+    }
+  }
 
   function handleRefund(displayId: string) {
     if (
       !window.confirm(
-        "This will cancel the order. Stripe refund must be processed manually in the Stripe dashboard for now. Continue?",
+        "This will cancel the order. Stripe refund must be processed manually in the Stripe dashboard. Continue?",
       )
     )
       return;
@@ -40,26 +90,67 @@ function AdminOrders() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
         eyebrow="Orders"
         title="Order moderation."
-        description="Oversee buyer orders, expand any row for detail, or cancel & refund."
+        description="Oversee buyer orders, update status, or cancel & refund. Buyers are emailed on every status change."
         refreshKeys={[]}
       />
 
+      {/* Bulk toolbar — only visible when rows are selected */}
+      {selected.size > 0 && (
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-clay/30 bg-clay/5 px-4 py-3">
+          <span className="font-sans text-[13px] font-medium text-charcoal">{selected.size} selected</span>
+          <select
+            value={bulkStatus}
+            onChange={(e) => setBulkStatus(e.target.value as OrderStatus)}
+            className="rounded-md border border-border bg-warm-white px-3 py-1.5 font-sans text-[12px] text-charcoal focus:border-clay focus:outline-none"
+          >
+            {(["PAID", "PREPARING", "SHIPPED", "DELIVERED", "CANCELLED"] as OrderStatus[]).map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={handleBulkUpdate}
+            disabled={bulkUpdate.isPending}
+            className="rounded-full bg-clay px-4 py-1.5 font-sans text-[12px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-50"
+          >
+            {bulkUpdate.isPending ? "Updating…" : "Apply to all"}
+          </button>
+          <button
+            onClick={() => setSelected(new Set())}
+            className="ml-auto font-sans text-[12px] text-charcoal/55 hover:text-charcoal"
+          >
+            Clear selection
+          </button>
+        </div>
+      )}
+
       {isLoading ? (
-        <Skeleton />
+        <TableSkeleton />
       ) : isError ? (
         <p className="rounded-2xl border border-destructive/30 bg-destructive/5 px-5 py-6 text-center font-sans text-[13px] text-destructive">
           Couldn't load orders.{" "}
-          <button onClick={() => refetch()} className="underline">Retry</button>
+          <button onClick={() => refetch()} className="underline">
+            Retry
+          </button>
         </p>
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-border/60">
-          <table className="min-w-[860px] divide-y divide-border/60 sm:min-w-full">
+          <table className="min-w-[960px] divide-y divide-border/60 sm:min-w-full">
             <thead className="bg-cream/60 text-left">
               <tr>
+                <Th>
+                  <input
+                    type="checkbox"
+                    checked={selected.size === orders.length && orders.length > 0}
+                    onChange={toggleAll}
+                    className="rounded border-border accent-clay"
+                  />
+                </Th>
                 <Th>Order</Th>
                 <Th>Date</Th>
                 <Th>Buyer</Th>
@@ -77,56 +168,94 @@ function AdminOrders() {
                     ? "—"
                     : o.items.length === 1
                       ? o.items[0].name
-                      : `${o.items[0].name} and ${o.items.length - 1} more`;
+                      : `${o.items[0].name} +${o.items.length - 1} more`;
+                const nextStatuses = NEXT_STATUSES[o.status] ?? [];
+                const forwardStatuses = nextStatuses.filter((s) => s !== "CANCELLED");
+
                 return (
                   <Fragment key={o.displayId}>
                     <tr
                       className="cursor-pointer hover:bg-cream/30"
                       onClick={() => setOpen(expanded ? null : o.displayId)}
                     >
+                      {/* Checkbox */}
+                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={selected.has(o.displayId)}
+                          onChange={() => {}}
+                          onClick={(e) => toggleSelect(o.displayId, e)}
+                          className="rounded border-border accent-clay"
+                        />
+                      </td>
+
                       <td className="px-4 py-3 font-mono text-[12px] text-charcoal">{o.displayId}</td>
+
                       <td className="px-4 py-3 font-sans text-[12px] text-charcoal/70">
                         {new Date(o.createdAt).toLocaleDateString()}
                       </td>
+
                       <td className="px-4 py-3 font-sans text-[13px] text-charcoal">
                         <p>{o.buyer?.fullName ?? "—"}</p>
                         <p className="text-[11px] text-charcoal/55">{o.buyer?.email}</p>
                       </td>
+
                       <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">{itemSummary}</td>
+
                       <td className="px-4 py-3 text-right font-sans text-[13px] text-charcoal">
                         {formatGBP(o.totalPence)}
                       </td>
+
                       <td className="px-4 py-3">
                         <StatusPill label={o.status.toLowerCase()} tone={TONE[o.status] ?? "neutral"} />
                       </td>
-                      <td className="px-4 py-3 text-right font-sans text-[12px]">
-                        {o.status !== "CANCELLED" && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRefund(o.displayId);
-                            }}
-                            disabled={refund.isPending}
-                            className="text-destructive hover:underline disabled:opacity-50"
-                          >
-                            Cancel & refund
-                          </button>
-                        )}
+
+                      {/* Actions */}
+                      <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-2">
+                          {forwardStatuses.length > 0 && (
+                            <select
+                              defaultValue=""
+                              disabled={updateStatus.isPending}
+                              onChange={(e) => {
+                                if (e.target.value) handleStatusChange(o.displayId, e.target.value as OrderStatus);
+                                e.target.value = "";
+                              }}
+                              className="rounded border border-border bg-warm-white px-2 py-1 font-sans text-[11px] text-charcoal focus:border-clay focus:outline-none disabled:opacity-50"
+                            >
+                              <option value="" disabled>
+                                Update…
+                              </option>
+                              {forwardStatuses.map((s) => (
+                                <option key={s} value={s}>
+                                  {s}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                          {o.status !== "CANCELLED" && o.status !== "DELIVERED" && (
+                            <button
+                              onClick={() => handleRefund(o.displayId)}
+                              disabled={refund.isPending}
+                              className="font-sans text-[12px] text-destructive hover:underline disabled:opacity-50"
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
+
+                    {/* Expanded detail row */}
                     {expanded && (
                       <tr key={o.displayId + "-detail"} className="bg-cream/30">
-                        <td colSpan={7} className="px-6 py-5">
+                        <td colSpan={8} className="px-6 py-5">
                           <div className="grid gap-6 md:grid-cols-[1fr_280px]">
                             <div className="space-y-3">
                               <h4 className="section-label">Items</h4>
                               {o.items.map((it, i) => (
                                 <div key={i} className="flex items-center gap-3">
-                                  <LazyImage
-                                    src={it.image}
-                                    alt=""
-                                    className="h-12 w-12 rounded-lg object-cover"
-                                  />
+                                  <LazyImage src={it.image} alt="" className="h-12 w-12 rounded-lg object-cover" />
                                   <div className="flex-1">
                                     <p className="font-display text-[14px] text-charcoal">{it.name}</p>
                                     <p className="font-sans text-[12px] text-charcoal/60">
@@ -145,7 +274,9 @@ function AdminOrders() {
                                 <div className="mt-1 font-sans text-[12px] text-charcoal/75">
                                   <p>{o.delivery?.fullName}</p>
                                   <p>{o.delivery?.addressLine1}</p>
-                                  <p>{o.delivery?.city} {o.delivery?.postcode}</p>
+                                  <p>
+                                    {o.delivery?.city} {o.delivery?.postcode}
+                                  </p>
                                   <p>{o.delivery?.country}</p>
                                   {o.delivery?.phone && <p>{o.delivery.phone}</p>}
                                 </div>
@@ -163,9 +294,10 @@ function AdminOrders() {
                   </Fragment>
                 );
               })}
+
               {orders.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center font-sans text-[13px] text-charcoal/60">
+                  <td colSpan={8} className="px-4 py-10 text-center font-sans text-[13px] text-charcoal/60">
                     No orders yet.
                   </td>
                 </tr>
@@ -187,10 +319,10 @@ function Row({ label, value, bold }: { label: string; value: string; bold?: bool
   );
 }
 
-function Skeleton() {
+function TableSkeleton() {
   return (
     <div className="space-y-2 rounded-2xl border border-border/60 p-4">
-      {Array.from({ length: 4 }).map((_, i) => (
+      {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className="h-10 animate-pulse rounded bg-charcoal/[0.06]" />
       ))}
     </div>

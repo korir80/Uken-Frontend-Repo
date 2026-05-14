@@ -1,9 +1,5 @@
 /**
  * React Query hooks layered on top of the service modules.
- *
- * Components import these instead of the bare service functions so that
- * loading / empty / error states, cache invalidation, and background
- * refetching all flow through one place.
  */
 import {
   queryOptions,
@@ -53,12 +49,12 @@ export const queryKeys = {
   creator: (id: string) => ["creators", id] as const,
   products: () => ["products", "all"] as const,
   product: (id: string) => ["products", id] as const,
-  productsByCreator: (creatorId: string) =>
-    ["products", "creator", creatorId] as const,
+  productsByCreator: (creatorId: string) => ["products", "creator", creatorId] as const,
   ordersBuyer: () => ["orders", "buyer"] as const,
   ordersCreator: () => ["orders", "creator"] as const,
   ordersAll: () => ["orders", "all"] as const,
   order: (id: string) => ["orders", "detail", id] as const,
+  adminOrders: () => ["admin", "orders"] as const,
   myProfile: () => ["profile", "me"] as const,
   addresses: () => ["addresses", "me"] as const,
   savedProducts: () => ["saved", "products"] as const,
@@ -68,10 +64,9 @@ export const queryKeys = {
   adminReviews: () => ["admin", "reviews"] as const,
   adminFeatured: () => ["admin", "featured"] as const,
   adminBuyers: () => ["admin", "buyers"] as const,
-  
 };
 
-/* ---------------- Query options factories (for use in route loaders) ---------------- */
+/* ---------------- Query options factories ---------------- */
 
 export const creatorsQueryOptions = (filters: CreatorFilters = {}) =>
   queryOptions({
@@ -142,8 +137,6 @@ export function useProduct(id: string, extra?: { initialData?: ProductDto }) {
   });
 }
 
-// useProductsByCreator removed — backend exposes products via /creators/{id} (in detail) and /creators/me/products only.
-
 /* ---------------- Orders ---------------- */
 
 export function useBuyerOrders() {
@@ -193,7 +186,6 @@ export function useUpdateOrderStatus() {
   });
 }
 
-// useAdminOrders / useRefundOrder removed — backend endpoints do not exist.
 /* ---------------- Profile ---------------- */
 
 export function useMyCreatorProfile(creatorId: string) {
@@ -216,7 +208,7 @@ export function useUpdateCreatorProfile(creatorId: string) {
 }
 
 export function useUploadImage() {
-  return useMutation<
+  return useMutation
     UploadedMedia,
     Error,
     { file: File; folder?: string; onProgress?: (pct: number) => void }
@@ -235,28 +227,20 @@ export function useCreateMyProduct(creatorId?: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.products() });
       if (creatorId)
-        qc.invalidateQueries({
-          queryKey: queryKeys.productsByCreator(creatorId),
-        });
+        qc.invalidateQueries({ queryKey: queryKeys.productsByCreator(creatorId) });
     },
   });
 }
 
 export function useUpdateMyProduct(creatorId?: string) {
   const qc = useQueryClient();
-  return useMutation<
-    ProductDto,
-    Error,
-    { id: string; payload: ProductUpdatePayload }
-  >({
+  return useMutation<ProductDto, Error, { id: string; payload: ProductUpdatePayload }>({
     mutationFn: ({ id, payload }) => productService.updateMyProduct(id, payload),
     onSuccess: (data) => {
       qc.setQueryData(queryKeys.product(data.id), data);
       qc.invalidateQueries({ queryKey: queryKeys.products() });
       if (creatorId)
-        qc.invalidateQueries({
-          queryKey: queryKeys.productsByCreator(creatorId),
-        });
+        qc.invalidateQueries({ queryKey: queryKeys.productsByCreator(creatorId) });
     },
   });
 }
@@ -268,9 +252,7 @@ export function useDeleteMyProduct(creatorId?: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.products() });
       if (creatorId)
-        qc.invalidateQueries({
-          queryKey: queryKeys.productsByCreator(creatorId),
-        });
+        qc.invalidateQueries({ queryKey: queryKeys.productsByCreator(creatorId) });
     },
   });
 }
@@ -296,22 +278,15 @@ export function useCreateAddress() {
   const qc = useQueryClient();
   return useMutation<BuyerAddress, Error, BuyerAddressInput>({
     mutationFn: (payload) => profileService.createAddress(payload),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: queryKeys.addresses() }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.addresses() }),
   });
 }
 
 export function useUpdateAddress() {
   const qc = useQueryClient();
-  return useMutation<
-    BuyerAddress,
-    Error,
-    { id: string; payload: BuyerAddressInput }
-  >({
-    mutationFn: ({ id, payload }) =>
-      profileService.updateAddress(id, payload),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: queryKeys.addresses() }),
+  return useMutation<BuyerAddress, Error, { id: string; payload: BuyerAddressInput }>({
+    mutationFn: ({ id, payload }) => profileService.updateAddress(id, payload),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.addresses() }),
   });
 }
 
@@ -319,8 +294,7 @@ export function useDeleteAddress() {
   const qc = useQueryClient();
   return useMutation<void, Error, string>({
     mutationFn: (id) => profileService.deleteAddress(id),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: queryKeys.addresses() }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.addresses() }),
   });
 }
 
@@ -383,15 +357,14 @@ export function useAdminApplications() {
 
 export function useUpdateApplicationStatus() {
   const qc = useQueryClient();
-  return useMutation<
+  return useMutation
     ArtisanApplication,
     Error,
     { id: string; status: ApplicationStatus; notes?: string }
   >({
     mutationFn: ({ id, status, notes }) =>
       applicationService.updateStatus(id, { status, notes }),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: queryKeys.applications() }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.applications() }),
   });
 }
 
@@ -404,7 +377,7 @@ export function useAdminPayouts() {
 
 export function usePayCreator() {
   const qc = useQueryClient();
-  return useMutation<
+  return useMutation
     CreatorPayout,
     Error,
     { creatorId: string; accountNumber: string; accountName: string }
@@ -417,7 +390,7 @@ export function usePayCreator() {
 
 export function useAdminOrders() {
   return useQuery<OrderDto[]>({
-    queryKey: ["admin", "orders"],
+    queryKey: queryKeys.adminOrders(),
     queryFn: () => adminService.listOrders(),
   });
 }
@@ -426,7 +399,23 @@ export function useRefundOrder() {
   const qc = useQueryClient();
   return useMutation<void, Error, string>({
     mutationFn: (id) => adminService.refundOrder(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "orders"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminOrders() }),
+  });
+}
+
+export function useAdminUpdateOrderStatus() {
+  const qc = useQueryClient();
+  return useMutation<OrderDto, Error, { displayId: string; status: OrderStatus }>({
+    mutationFn: ({ displayId, status }) => orderService.adminUpdateStatus(displayId, status),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminOrders() }),
+  });
+}
+
+export function useAdminBulkUpdateStatus() {
+  const qc = useQueryClient();
+  return useMutation<OrderDto[], Error, { displayIds: string[]; status: OrderStatus }>({
+    mutationFn: ({ displayIds, status }) => orderService.adminBulkUpdateStatus(displayIds, status),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminOrders() }),
   });
 }
 
@@ -456,11 +445,7 @@ export function useUnsuspendCreator() {
 
 export function useSetProductStatus() {
   const qc = useQueryClient();
-  return useMutation<
-    void,
-    Error,
-    { id: string; status: "ACTIVE" | "SUSPENDED_BY_ADMIN" }
-  >({
+  return useMutation<void, Error, { id: string; status: "ACTIVE" | "SUSPENDED_BY_ADMIN" }>({
     mutationFn: ({ id, status }) => adminService.setProductStatus(id, status),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.products() }),
   });
@@ -474,8 +459,6 @@ export function useDeleteProductAdmin() {
   });
 }
 
-// useRunPayoutCycle removed — backend endpoint does not exist.
-
 export function useAdminReviews() {
   return useQuery<ProductReview[]>({
     queryKey: queryKeys.adminReviews(),
@@ -485,15 +468,13 @@ export function useAdminReviews() {
 
 export function useUpdateReviewStatus() {
   const qc = useQueryClient();
-  return useMutation<
+  return useMutation
     ProductReview,
     Error,
     { id: string; status: ProductReview["status"] }
   >({
-    mutationFn: ({ id, status }) =>
-      adminService.updateReviewStatus(id, { status }),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: queryKeys.adminReviews() }),
+    mutationFn: ({ id, status }) => adminService.updateReviewStatus(id, { status }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminReviews() }),
   });
 }
 
@@ -523,8 +504,7 @@ export function useSuspendBuyer() {
   const qc = useQueryClient();
   return useMutation<void, Error, string>({
     mutationFn: (buyerId) => adminService.suspendBuyer(buyerId),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: queryKeys.adminBuyers() }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminBuyers() }),
   });
 }
 
@@ -532,12 +512,6 @@ export function useUnsuspendBuyer() {
   const qc = useQueryClient();
   return useMutation<void, Error, string>({
     mutationFn: (buyerId) => adminService.unsuspendBuyer(buyerId),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: queryKeys.adminBuyers() }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminBuyers() }),
   });
 }
-
-// useSuspendCreator / useAdminProductStatuses / useSetProductStatus removed —
-// backend endpoints do not exist.
-
-

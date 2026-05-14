@@ -46,6 +46,7 @@ import { Route as CreatorAnalyticsRouteImport } from './routes/creator.analytics
 import { Route as CheckoutPaymentRouteImport } from './routes/checkout.payment'
 import { Route as CheckoutDeliveryRouteImport } from './routes/checkout.delivery'
 import { Route as CheckoutConfirmationRouteImport } from './routes/checkout.confirmation'
+import { Route as AdminStaffRouteImport } from './routes/admin.staff'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminPayoutsRouteImport } from './routes/admin.payouts'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
@@ -247,6 +248,11 @@ const CheckoutConfirmationRoute = CheckoutConfirmationRouteImport.update({
   path: '/confirmation',
   getParentRoute: () => CheckoutRoute,
 } as any)
+const AdminStaffRoute = AdminStaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProductsRoute = AdminProductsRouteImport.update({
   id: '/products',
   path: '/products',
@@ -358,6 +364,7 @@ export interface FileRoutesByFullPath {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/staff': typeof AdminStaffRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
@@ -409,6 +416,7 @@ export interface FileRoutesByTo {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/staff': typeof AdminStaffRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
@@ -464,6 +472,7 @@ export interface FileRoutesById {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/staff': typeof AdminStaffRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
   '/checkout/delivery': typeof CheckoutDeliveryRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
@@ -520,6 +529,7 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
+    | '/admin/staff'
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
@@ -571,6 +581,7 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
+    | '/admin/staff'
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
@@ -625,6 +636,7 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
+    | '/admin/staff'
     | '/checkout/confirmation'
     | '/checkout/delivery'
     | '/checkout/payment'
@@ -934,6 +946,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutConfirmationRouteImport
       parentRoute: typeof CheckoutRoute
     }
+    '/admin/staff': {
+      id: '/admin/staff'
+      path: '/staff'
+      fullPath: '/admin/staff'
+      preLoaderRoute: typeof AdminStaffRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/products': {
       id: '/admin/products'
       path: '/products'
@@ -1085,6 +1104,7 @@ interface AdminRouteChildren {
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPayoutsRoute: typeof AdminPayoutsRoute
   AdminProductsRoute: typeof AdminProductsRoute
+  AdminStaffRoute: typeof AdminStaffRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -1098,6 +1118,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPayoutsRoute: AdminPayoutsRoute,
   AdminProductsRoute: AdminProductsRoute,
+  AdminStaffRoute: AdminStaffRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

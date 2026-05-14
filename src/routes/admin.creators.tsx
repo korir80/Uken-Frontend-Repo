@@ -5,29 +5,69 @@ import { api } from "@/services/api";
 import type { CreatorSummary } from "@/services";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
-import { useDeleteCreator } from "@/lib/queries";
+import { useSuspendCreator, useUnsuspendCreator } from "@/lib/queries";
 
 export const Route = createFileRoute("/admin/creators")({
   component: AdminCreators,
 });
 
+type AdminCreatorRow = CreatorSummary & {
+  deletedAt?: string | null;
+  status?: string;
+};
+
+function isSuspended(c: AdminCreatorRow): boolean {
+  if (c.deletedAt != null) return true;
+  if (typeof c.status === "string" && c.status.toUpperCase() === "SUSPENDED")
+    return true;
+  return false;
+}
+
+async function fetchAdminCreators(): Promise<AdminCreatorRow[]> {
+  // Try admin-scoped endpoint first (includes suspended); fall back to public.
+  try {
+    const r = await api.get<any>("/admin/creators");
+    const arr = r?.content ?? r;
+    if (Array.isArray(arr)) return arr as AdminCreatorRow[];
+  } catch {
+    /* fall through */
+  }
+  const r = await api.get<any>("/creators");
+  const arr = r?.content ?? r;
+  return Array.isArray(arr) ? (arr as AdminCreatorRow[]) : [];
+}
+
 function AdminCreators() {
-  const { data, isLoading, isError, refetch } = useQuery<CreatorSummary[]>({
+  const { data, isLoading, isError, refetch } = useQuery<AdminCreatorRow[]>({
     queryKey: ["admin", "creators", "real"],
-    queryFn: () => api.get<CreatorSummary[]>("/creators"),
+    queryFn: fetchAdminCreators,
   });
   const creators = Array.isArray(data) ? data : [];
-  const remove = useDeleteCreator();
+  const suspend = useSuspendCreator();
+  const unsuspend = useUnsuspendCreator();
 
-  function handleDelete(id: string, name: string) {
+  function handleSuspend(id: string, name: string) {
     if (
       !window.confirm(
-        `This will hide ${name} and all their products. Are you sure?`,
+        "This will hide this creator, block their login, and suspend all their products. You can unsuspend them at any time.",
       )
     )
       return;
-    remove.mutate(id, {
-      onSuccess: () => toast.success(`${name} removed.`),
+    suspend.mutate(id, {
+      onSuccess: () => {
+        toast.success("Creator suspended");
+        refetch();
+      },
+      onError: (e) => toast.error(e.message),
+    });
+  }
+
+  function handleUnsuspend(id: string) {
+    unsuspend.mutate(id, {
+      onSuccess: () => {
+        toast.success("Creator reinstated");
+        refetch();
+      },
       onError: (e) => toast.error(e.message),
     });
   }
@@ -37,7 +77,7 @@ function AdminCreators() {
       <PageHeader
         eyebrow="Creators"
         title="Active makers on UKEN."
-        description="Open a maker's public page or remove them from the marketplace."
+        description="Open a maker's public page, suspend, or reinstate them."
       />
 
       <div className="overflow-x-auto rounded-2xl border border-border/60">
@@ -52,43 +92,61 @@ function AdminCreators() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border/40 bg-warm-white">
-            {creators.map((c) => (
-              <tr key={c.id}>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <LazyImage src={c.image} alt="" className="h-10 w-10 rounded-full object-cover" />
-                    <div>
-                      <p className="font-display text-base text-charcoal">{c.fullName}</p>
-                      <p className="font-sans text-[12px] text-charcoal/55">{c.id}</p>
+            {creators.map((c) => {
+              const suspended = isSuspended(c);
+              const busy = suspend.isPending || unsuspend.isPending;
+              return (
+                <tr key={c.id}>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <LazyImage src={c.image} alt="" className="h-10 w-10 rounded-full object-cover" />
+                      <div>
+                        <p className="font-display text-base text-charcoal">{c.fullName}</p>
+                        <p className="font-sans text-[12px] text-charcoal/55">{c.id}</p>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">{c.craft}</td>
-                <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">{c.region}</td>
-                <td className="px-4 py-3">
-                  <StatusPill label="active" tone="good" />
-                </td>
-                <td className="px-4 py-3 text-right font-sans text-[12px]">
-                  <div className="inline-flex items-center gap-3">
-                    <Link
-                      to="/creators/$creatorId"
-                      params={{ creatorId: c.id }}
-                      target="_blank"
-                      className="text-clay hover:underline"
-                    >
-                      View
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(c.id, c.fullName)}
-                      disabled={remove.isPending}
-                      className="text-destructive hover:underline disabled:opacity-50"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">{c.craft}</td>
+                  <td className="px-4 py-3 font-sans text-[13px] text-charcoal/70">{c.region}</td>
+                  <td className="px-4 py-3">
+                    {suspended ? (
+                      <StatusPill label="suspended" tone="bad" />
+                    ) : (
+                      <StatusPill label="active" tone="good" />
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-right font-sans text-[12px]">
+                    <div className="inline-flex items-center gap-3">
+                      <Link
+                        to="/creators/$creatorId"
+                        params={{ creatorId: c.id }}
+                        target="_blank"
+                        className="text-clay hover:underline"
+                      >
+                        View
+                      </Link>
+                      {suspended ? (
+                        <button
+                          onClick={() => handleUnsuspend(c.id)}
+                          disabled={busy}
+                          className="text-emerald-600 hover:underline disabled:opacity-50"
+                        >
+                          Unsuspend
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleSuspend(c.id, c.fullName)}
+                          disabled={busy}
+                          className="text-amber-600 hover:underline disabled:opacity-50"
+                        >
+                          Suspend
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
             {isLoading &&
               Array.from({ length: 4 }).map((_, i) => (
                 <tr key={i}>

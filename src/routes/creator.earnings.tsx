@@ -23,6 +23,7 @@ function CreatorEarnings() {
         eyebrow="Earnings"
         title="Fair work, paid fairly."
         description="UKEN pays creators monthly. Pending earnings move to paid on the 1st of each month."
+        refreshKeys={[]}
       />
 
       <div className="grid gap-4 sm:grid-cols-3">

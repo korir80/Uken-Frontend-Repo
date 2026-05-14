@@ -65,6 +65,7 @@ function AdminProducts() {
         eyebrow="Products"
         title="Listing moderation."
         description="Suspend listings that breach guidelines, or restore them when resolved."
+        refreshKeys={[]}
       />
 
       {isError ? (

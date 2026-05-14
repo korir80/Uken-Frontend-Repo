@@ -39,6 +39,7 @@ function AdminOverview() {
         eyebrow="Admin overview"
         title="UKEN, today."
         description="The platform at a glance — what's live, what's waiting, and what needs your attention."
+        refreshKeys={[]}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

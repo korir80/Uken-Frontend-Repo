@@ -65,6 +65,7 @@ function AdminApplications() {
         eyebrow="Applications"
         title="The next generation of UKEN makers."
         description="Move artisans through the curation pipeline. Each decision should be based on the work and the story together."
+        refreshKeys={[]}
       />
 
       <div className="flex flex-wrap gap-2">

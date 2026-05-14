@@ -43,6 +43,7 @@ function CreatorOverview() {
         eyebrow="Welcome back"
         title={`Karibu, ${profile?.firstName ?? user?.fullName ?? "maker"}.`}
         description="Your studio at a glance — what needs your attention today, and what's already in motion."
+        refreshKeys={[]}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

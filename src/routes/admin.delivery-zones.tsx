@@ -95,6 +95,7 @@ function AdminDeliveryZones() {
             + Add zone
           </button>
         }
+        refreshKeys={[]}
       />
 
       {isLoading ? (

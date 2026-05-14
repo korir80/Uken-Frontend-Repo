@@ -57,6 +57,7 @@ function CreatorOrders() {
         eyebrow="Orders"
         title="Hands waiting for your work."
         description="Mark orders as preparing or shipped so the buyer knows where their piece is on its journey."
+        refreshKeys={[]}
       />
 
       <div className="flex flex-wrap gap-2">

@@ -45,6 +45,7 @@ function AdminOrders() {
         eyebrow="Orders"
         title="Order moderation."
         description="Oversee buyer orders, expand any row for detail, or cancel & refund."
+        refreshKeys={[]}
       />
 
       {isLoading ? (

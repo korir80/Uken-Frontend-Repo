@@ -107,6 +107,7 @@ function CreatorProfile() {
         eyebrow="Your story"
         title="The page buyers meet you on."
         description="Edit how your work is introduced. Every change appears immediately on your public profile."
+        refreshKeys={[]}
       />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">

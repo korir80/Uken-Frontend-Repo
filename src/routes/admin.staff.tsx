@@ -65,6 +65,7 @@ function AdminStaff() {
             + Add staff
           </button>
         }
+        refreshKeys={[]}
       />
 
       {isLoading ? (

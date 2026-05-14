@@ -136,6 +136,7 @@ function CreatorProducts() {
             + New piece
           </button>
         }
+        refreshKeys={[]}
       />
 
       {isLoading ? (

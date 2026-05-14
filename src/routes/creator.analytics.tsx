@@ -79,6 +79,7 @@ function CreatorAnalytics() {
             View orders
           </Link>
         }
+        refreshKeys={[]}
       />
 
       {isLoading ? (

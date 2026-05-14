@@ -51,8 +51,8 @@ import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminPayoutsRouteImport } from './routes/admin.payouts'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
-import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminDeliveryZonesRouteImport } from './routes/admin.delivery-zones'
+import { Route as AdminCurationRouteImport } from './routes/admin.curation'
 import { Route as AdminCreatorsRouteImport } from './routes/admin.creators'
 import { Route as AdminBuyersRouteImport } from './routes/admin.buyers'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
@@ -273,14 +273,14 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminFeaturedRoute = AdminFeaturedRouteImport.update({
-  id: '/featured',
-  path: '/featured',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminDeliveryZonesRoute = AdminDeliveryZonesRouteImport.update({
   id: '/delivery-zones',
   path: '/delivery-zones',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCurationRoute = AdminCurationRouteImport.update({
+  id: '/curation',
+  path: '/curation',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCreatorsRoute = AdminCreatorsRouteImport.update({
@@ -358,8 +358,8 @@ export interface FileRoutesByFullPath {
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/curation': typeof AdminCurationRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
-  '/admin/featured': typeof AdminFeaturedRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
@@ -410,8 +410,8 @@ export interface FileRoutesByTo {
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/curation': typeof AdminCurationRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
-  '/admin/featured': typeof AdminFeaturedRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
@@ -466,8 +466,8 @@ export interface FileRoutesById {
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/curation': typeof AdminCurationRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
-  '/admin/featured': typeof AdminFeaturedRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
@@ -523,8 +523,8 @@ export interface FileRouteTypes {
     | '/admin/applications'
     | '/admin/buyers'
     | '/admin/creators'
+    | '/admin/curation'
     | '/admin/delivery-zones'
-    | '/admin/featured'
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
@@ -575,8 +575,8 @@ export interface FileRouteTypes {
     | '/admin/applications'
     | '/admin/buyers'
     | '/admin/creators'
+    | '/admin/curation'
     | '/admin/delivery-zones'
-    | '/admin/featured'
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
@@ -630,8 +630,8 @@ export interface FileRouteTypes {
     | '/admin/applications'
     | '/admin/buyers'
     | '/admin/creators'
+    | '/admin/curation'
     | '/admin/delivery-zones'
-    | '/admin/featured'
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
@@ -981,18 +981,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/featured': {
-      id: '/admin/featured'
-      path: '/featured'
-      fullPath: '/admin/featured'
-      preLoaderRoute: typeof AdminFeaturedRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/delivery-zones': {
       id: '/admin/delivery-zones'
       path: '/delivery-zones'
       fullPath: '/admin/delivery-zones'
       preLoaderRoute: typeof AdminDeliveryZonesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/curation': {
+      id: '/admin/curation'
+      path: '/curation'
+      fullPath: '/admin/curation'
+      preLoaderRoute: typeof AdminCurationRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/creators': {
@@ -1098,8 +1098,8 @@ interface AdminRouteChildren {
   AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminBuyersRoute: typeof AdminBuyersRoute
   AdminCreatorsRoute: typeof AdminCreatorsRoute
+  AdminCurationRoute: typeof AdminCurationRoute
   AdminDeliveryZonesRoute: typeof AdminDeliveryZonesRoute
-  AdminFeaturedRoute: typeof AdminFeaturedRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPayoutsRoute: typeof AdminPayoutsRoute
   AdminProductsRoute: typeof AdminProductsRoute
@@ -1112,8 +1112,8 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminApplicationsRoute: AdminApplicationsRoute,
   AdminBuyersRoute: AdminBuyersRoute,
   AdminCreatorsRoute: AdminCreatorsRoute,
+  AdminCurationRoute: AdminCurationRoute,
   AdminDeliveryZonesRoute: AdminDeliveryZonesRoute,
-  AdminFeaturedRoute: AdminFeaturedRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPayoutsRoute: AdminPayoutsRoute,
   AdminProductsRoute: AdminProductsRoute,

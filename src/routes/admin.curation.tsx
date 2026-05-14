@@ -50,6 +50,7 @@ function AdminFeatured() {
         eyebrow="Curation"
         title="The home page, in your hands."
         description="Choose four creators and four pieces to feature on the public home page. Changes go live immediately."
+        refreshKeys={[]}
       />
 
       <div className="grid gap-5 md:grid-cols-2">

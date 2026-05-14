@@ -58,6 +58,7 @@ function AdminPayouts() {
         eyebrow="Payouts"
         title="What we owe the makers."
         description="Approve a payout to push pending earnings to the maker's account."
+        refreshKeys={[]}
       />
 
       <div className="grid gap-4 sm:grid-cols-3">

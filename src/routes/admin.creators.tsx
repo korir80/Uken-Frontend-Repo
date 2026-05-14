@@ -78,6 +78,7 @@ function AdminCreators() {
         eyebrow="Creators"
         title="Active makers on UKEN."
         description="Open a maker's public page, suspend, or reinstate them."
+        refreshKeys={[]}
       />
 
       <div className="overflow-x-auto rounded-2xl border border-border/60">

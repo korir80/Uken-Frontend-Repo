@@ -12,6 +12,7 @@ function CreatorApplication() {
         eyebrow="Application"
         title="Your story to UKEN."
         description="The application you sent us, and where it sits with the curation team."
+        refreshKeys={[]}
       />
 
       <div className="rounded-2xl border border-border/60 bg-cream/40 p-6">

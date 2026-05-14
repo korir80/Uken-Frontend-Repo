@@ -34,6 +34,7 @@ function AdminBuyers() {
         eyebrow="Buyers"
         title="People bringing the work home."
         description="Suspend a buyer or reset their access if abuse is reported."
+        refreshKeys={[]}
       />
 
       <div className="overflow-x-auto rounded-2xl border border-border/60">

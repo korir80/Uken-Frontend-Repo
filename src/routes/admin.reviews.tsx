@@ -52,6 +52,7 @@ function AdminContent() {
         eyebrow="Content moderation"
         title="Reviews & buyer stories."
         description="Approve, remove, or flag any review or story published on UKEN."
+        refreshKeys={[]}
       />
 
       <div className="flex flex-wrap gap-2">

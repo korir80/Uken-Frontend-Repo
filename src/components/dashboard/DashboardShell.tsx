@@ -239,10 +239,12 @@ function NavList({
   links,
   currentPath,
   onNavigate,
+  dark = false,
 }: {
   links: { to: string; label: string; description?: string }[];
   currentPath: string;
   onNavigate: () => void;
+  dark?: boolean;
 }) {
   return (
     <ul className="flex flex-col gap-1">
@@ -256,9 +258,13 @@ function NavList({
               onClick={onNavigate}
               className={cn(
                 "block rounded-lg px-4 py-2.5 font-sans text-[13px] font-medium transition-colors",
-                active
-                  ? "bg-clay text-warm-white"
-                  : "text-charcoal/70 hover:bg-sand-soft/50 hover:text-charcoal",
+                dark
+                  ? active
+                    ? "border-l-2 border-[#C1694F] bg-white/[0.06] text-white"
+                    : "border-l-2 border-transparent text-white/75 hover:bg-white/[0.04] hover:text-white"
+                  : active
+                    ? "bg-clay text-warm-white"
+                    : "text-charcoal/70 hover:bg-sand-soft/50 hover:text-charcoal",
               )}
             >
               <span>{link.label}</span>
@@ -266,7 +272,13 @@ function NavList({
                 <span
                   className={cn(
                     "mt-0.5 block text-[11px] font-normal",
-                    active ? "text-warm-white/75" : "text-charcoal/50",
+                    dark
+                      ? active
+                        ? "text-white/65"
+                        : "text-white/45"
+                      : active
+                        ? "text-warm-white/75"
+                        : "text-charcoal/50",
                   )}
                 >
                   {link.description}

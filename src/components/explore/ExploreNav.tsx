@@ -73,9 +73,63 @@ export function ExploreNav() {
           >
             <Search className="h-[18px] w-[18px]" strokeWidth={1.75} />
           </Link>
+          <ExploreAuthItem />
           <BagIndicator tone="light" />
         </div>
       </div>
     </header>
+  );
+}
+
+function getInitials(name: string | undefined, email: string | undefined): string {
+  const src = (name && name.trim()) || email || "";
+  if (!src) return "U";
+  const parts = src.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return src.slice(0, 2).toUpperCase();
+}
+
+function ExploreAuthItem() {
+  const { isAuthenticated, isLoading, role, user, logout } = useAuth();
+  if (isLoading) return null;
+
+  if (!isAuthenticated || !role || !user) {
+    return (
+      <Link
+        to="/signin"
+        className="rounded-full px-3.5 py-1.5 font-sans text-[12px] font-medium text-charcoal/80 transition-colors hover:bg-cream hover:text-clay"
+      >
+        Sign in
+      </Link>
+    );
+  }
+
+  const dashPath = defaultPathForRole(role);
+  const dashLabel =
+    role === "ROLE_ADMIN"
+      ? "Admin Studio"
+      : role === "ROLE_CREATOR"
+        ? "Maker Studio"
+        : "Your Account";
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        aria-label="Account menu"
+        className="grid h-9 w-9 place-items-center rounded-full bg-clay font-sans text-[11px] font-semibold tracking-wide text-warm-white transition-colors outline-none hover:bg-clay-deep"
+      >
+        {getInitials(user.fullName, user.email)}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-52">
+        <DropdownMenuItem asChild>
+          <Link to={dashPath}>{dashLabel}</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => logout()}>
+          <LogOut className="mr-2 h-4 w-4" />
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

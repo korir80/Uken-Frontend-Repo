@@ -111,9 +111,9 @@ function CheckoutLayout() {
                 <Row
                   label="Shipping"
                   value={
-                    shippingPence === 0
-                      ? "Free"
-                      : formatGBP(shippingPence)
+                    shippingPence > 0
+                      ? formatGBP(shippingPence)
+                      : "Select delivery zone at checkout"
                   }
                 />
               </dl>

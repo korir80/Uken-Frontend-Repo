@@ -11,7 +11,10 @@ import {
   Mail,
   Menu,
   X,
+  Sparkles,
+  LogIn,
 } from "lucide-react";
+import { useAuth, defaultPathForRole } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 /**
@@ -24,21 +27,29 @@ import { cn } from "@/lib/utils";
  *
  * No hamburger drawer, no bottom tab bar — just the trigger + radial menu.
  */
-const items = [
+const baseItems = [
   { label: "Home",    to: "/" as const,        icon: Home },
   { label: "Shop",    to: "/shop" as const,    icon: ShoppingBag },
   { label: "Explore", to: "/explore" as const, icon: Compass },
   { label: "Mission", to: "/story" as const,   icon: BookOpen },
   { label: "Values",  to: "/sustainability" as const, icon: HeartHandshake },
   { label: "Contact", to: "/contact" as const, icon: Mail },
+  { label: "Join UKEN", to: "/join" as const,  icon: Sparkles },
   { label: "Saved",   to: "/saved" as const,   icon: Bookmark },
-  { label: "Account", to: "/account" as const, icon: User },
 ] as const;
 
 export function MobileNavFab() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const { isAuthenticated, role } = useAuth();
+
+  const items = [
+    ...baseItems,
+    isAuthenticated && role
+      ? { label: "Account", to: defaultPathForRole(role) as "/account", icon: User }
+      : { label: "Sign in", to: "/signin" as const, icon: LogIn },
+  ];
 
   // Close when route changes
   useEffect(() => {

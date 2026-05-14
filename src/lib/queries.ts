@@ -377,7 +377,7 @@ export function useAdminPayouts() {
 
 export function usePayCreator() {
   const qc = useQueryClient();
-  return useMutation
+  return useMutation<
     CreatorPayout,
     Error,
     { creatorId: string; accountNumber: string; accountName: string }

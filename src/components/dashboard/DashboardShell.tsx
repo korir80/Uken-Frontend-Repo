@@ -152,12 +152,26 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
 
       <div className="mx-auto flex max-w-[1400px] lg:flex-row">
         {/* Desktop sidebar — sticky column, internally scrollable */}
-        <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:flex-shrink-0 lg:flex-col lg:border-r lg:border-border/60 lg:bg-cream/40">
+        <aside
+          className={cn(
+            "hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:flex-shrink-0 lg:flex-col lg:border-r",
+            isAdmin
+              ? "lg:border-white/10 lg:bg-[#1a0f07]"
+              : "lg:border-border/60 lg:bg-cream/40",
+          )}
+        >
           <div className="flex-shrink-0 px-6 py-7">
             <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
-              <Logo className="h-10" />
+              <Logo
+                className={cn("h-10", isAdmin && "text-[#D4A96A]")}
+              />
             </Link>
-            <p className="mt-2 font-sans text-[11px] uppercase tracking-[0.24em] text-clay">
+            <p
+              className={cn(
+                "mt-2 font-sans text-[11px] uppercase tracking-[0.24em]",
+                isAdmin ? "text-[#D4A96A]" : "text-clay",
+              )}
+            >
               {eyebrow}
             </p>
           </div>

@@ -9,4 +9,5 @@ export * from "./adminService";
 export * from "./savedService";
 export * from "./cartService";
 export * from "./deliveryZoneService";
+export * from "./staffService";
 

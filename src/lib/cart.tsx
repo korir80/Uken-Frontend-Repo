@@ -44,8 +44,17 @@ interface CartState {
   items: CartItem[];
   /** Order details captured during checkout. UI-only for now. */
   delivery: DeliveryDetails | null;
+  /** Selected delivery zone — drives shipping cost in the summary. */
+  selectedZone: SelectedZone | null;
   /** Last placed order, kept until the buyer leaves the confirmation. */
   lastOrder: PlacedOrder | null;
+}
+
+export interface SelectedZone {
+  id: string;
+  name: string;
+  country: string;
+  shippingPence: number;
 }
 
 export interface DeliveryDetails {
@@ -75,14 +84,16 @@ type CartAction =
   | { type: "setQty"; productId: string; quantity: number }
   | { type: "clear" }
   | { type: "setDelivery"; delivery: DeliveryDetails }
+  | { type: "setZone"; zone: SelectedZone | null }
   | { type: "placeOrder"; order: PlacedOrder }
   | { type: "hydrate"; state: CartState };
 
-const STORAGE_KEY = "ukena.cart.v1";
+const STORAGE_KEY = "ukena.cart.v2";
 
 const initialState: CartState = {
   items: [],
   delivery: null,
+  selectedZone: null,
   lastOrder: null,
 };
 

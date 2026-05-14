@@ -208,7 +208,7 @@ export function useUpdateCreatorProfile(creatorId: string) {
 }
 
 export function useUploadImage() {
-  return useMutation
+  return useMutation<
     UploadedMedia,
     Error,
     { file: File; folder?: string; onProgress?: (pct: number) => void }

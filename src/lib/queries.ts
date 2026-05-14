@@ -468,7 +468,7 @@ export function useAdminReviews() {
 
 export function useUpdateReviewStatus() {
   const qc = useQueryClient();
-  return useMutation
+  return useMutation<
     ProductReview,
     Error,
     { id: string; status: ProductReview["status"] }

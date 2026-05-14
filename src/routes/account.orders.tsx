@@ -21,6 +21,7 @@ const STATUS_TONE: Record<
   "neutral" | "good" | "warn" | "bad" | "info"
 > = {
   PENDING: "warn",
+  PAID: "info",
   PREPARING: "info",
   SHIPPED: "info",
   DELIVERED: "good",

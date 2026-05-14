@@ -499,6 +499,7 @@ function isoDate(d: Date): string {
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
   PENDING: "oklch(0.78 0.10 78)",
+  PAID: "oklch(0.68 0.10 145)",
   PREPARING: "oklch(0.68 0.13 50)",
   SHIPPED: "oklch(0.55 0.13 38)",
   DELIVERED: "oklch(0.50 0.10 145)",

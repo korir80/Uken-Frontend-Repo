@@ -71,6 +71,7 @@ const STATUS_TONE: Record<
   "neutral" | "good" | "warn" | "bad" | "info"
 > = {
   PENDING: "warn",
+  PAID: "info",
   PREPARING: "info",
   SHIPPED: "info",
   DELIVERED: "good",
@@ -80,6 +81,7 @@ const STATUS_TONE: Record<
 // Index of each status in the tracking timeline.
 const STATUS_INDEX: Record<OrderStatus, number> = {
   PENDING: 0,
+  PAID: 0,
   PREPARING: 1,
   SHIPPED: 2,
   DELIVERED: 3,

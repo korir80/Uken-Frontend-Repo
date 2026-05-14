@@ -50,6 +50,7 @@ import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminPayoutsRouteImport } from './routes/admin.payouts'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
+import { Route as AdminDeliveryZonesRouteImport } from './routes/admin.delivery-zones'
 import { Route as AdminCreatorsRouteImport } from './routes/admin.creators'
 import { Route as AdminContentRouteImport } from './routes/admin.content'
 import { Route as AdminBuyersRouteImport } from './routes/admin.buyers'
@@ -266,6 +267,11 @@ const AdminFeaturedRoute = AdminFeaturedRouteImport.update({
   path: '/featured',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminDeliveryZonesRoute = AdminDeliveryZonesRouteImport.update({
+  id: '/delivery-zones',
+  path: '/delivery-zones',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCreatorsRoute = AdminCreatorsRouteImport.update({
   id: '/creators',
   path: '/creators',
@@ -347,6 +353,7 @@ export interface FileRoutesByFullPath {
   '/admin/buyers': typeof AdminBuyersRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
@@ -397,6 +404,7 @@ export interface FileRoutesByTo {
   '/admin/buyers': typeof AdminBuyersRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
@@ -451,6 +459,7 @@ export interface FileRoutesById {
   '/admin/buyers': typeof AdminBuyersRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/creators': typeof AdminCreatorsRoute
+  '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
@@ -506,6 +515,7 @@ export interface FileRouteTypes {
     | '/admin/buyers'
     | '/admin/content'
     | '/admin/creators'
+    | '/admin/delivery-zones'
     | '/admin/featured'
     | '/admin/orders'
     | '/admin/payouts'
@@ -556,6 +566,7 @@ export interface FileRouteTypes {
     | '/admin/buyers'
     | '/admin/content'
     | '/admin/creators'
+    | '/admin/delivery-zones'
     | '/admin/featured'
     | '/admin/orders'
     | '/admin/payouts'
@@ -609,6 +620,7 @@ export interface FileRouteTypes {
     | '/admin/buyers'
     | '/admin/content'
     | '/admin/creators'
+    | '/admin/delivery-zones'
     | '/admin/featured'
     | '/admin/orders'
     | '/admin/payouts'
@@ -950,6 +962,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFeaturedRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/delivery-zones': {
+      id: '/admin/delivery-zones'
+      path: '/delivery-zones'
+      fullPath: '/admin/delivery-zones'
+      preLoaderRoute: typeof AdminDeliveryZonesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/creators': {
       id: '/admin/creators'
       path: '/creators'
@@ -1061,6 +1080,7 @@ interface AdminRouteChildren {
   AdminBuyersRoute: typeof AdminBuyersRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminCreatorsRoute: typeof AdminCreatorsRoute
+  AdminDeliveryZonesRoute: typeof AdminDeliveryZonesRoute
   AdminFeaturedRoute: typeof AdminFeaturedRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPayoutsRoute: typeof AdminPayoutsRoute
@@ -1073,6 +1093,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBuyersRoute: AdminBuyersRoute,
   AdminContentRoute: AdminContentRoute,
   AdminCreatorsRoute: AdminCreatorsRoute,
+  AdminDeliveryZonesRoute: AdminDeliveryZonesRoute,
   AdminFeaturedRoute: AdminFeaturedRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPayoutsRoute: AdminPayoutsRoute,

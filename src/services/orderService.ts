@@ -1,13 +1,12 @@
 /**
  * Order service — backed by /api/orders.
  *
- * Endpoints:
- *   POST /orders                — public; supports both guest + buyer
- *   GET  /orders/{id}           — buyer/admin
- *   GET  /orders/track          — public; { displayId, email }
- *   GET  /orders/me             — buyer
- *   GET  /creators/me/orders    — creator
- *   PATCH /creators/me/orders/{id}/status — creator
+ *   POST  /orders                    public; supports both guest + buyer
+ *   GET   /orders/{id}               buyer/admin
+ *   GET   /orders/track              public; { displayId, email }
+ *   GET   /orders/me                 buyer
+ *   GET   /creators/me/orders        creator
+ *   PATCH /creators/me/orders/{id}/status  creator
  */
 import { api, unwrapList } from "./api";
 
@@ -30,13 +29,21 @@ export interface DeliveryPayload {
 export interface CreateOrderPayload {
   items: OrderLinePayload[];
   delivery: DeliveryPayload;
-  /** Required when buyer is unauthenticated. Omit for logged-in buyers. */
+  /** Required — id from GET /api/delivery-zones. */
+  deliveryZoneId: string;
+  /** Required when buyer is unauthenticated. */
   guestEmail?: string;
-  /** Required when buyer is unauthenticated. Omit for logged-in buyers. */
+  /** Required when buyer is unauthenticated. */
   guestFullName?: string;
 }
 
-export type OrderStatus = "PENDING" | "PREPARING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+export type OrderStatus =
+  | "PENDING"
+  | "PAID"
+  | "PREPARING"
+  | "SHIPPED"
+  | "DELIVERED"
+  | "CANCELLED";
 
 export interface OrderItem {
   productId: string;
@@ -52,6 +59,8 @@ interface RawOrderDto {
   displayId?: string;
   createdAt?: string;
   status: OrderStatus;
+  productsTotalPence?: number;
+  shippingPence?: number;
   totalPence: number;
   buyer: { fullName: string; email: string };
   items: OrderItem[];
@@ -59,11 +68,13 @@ interface RawOrderDto {
 }
 
 export interface OrderDto {
-  /** Display id (e.g. "UKN-202501-1234"). Mapped from `displayId` when present. */
+  /** Display id (e.g. "UKN-202501-1234"). */
   id: string;
   displayId: string;
   createdAt: string;
   status: OrderStatus;
+  productsTotalPence: number;
+  shippingPence: number;
   totalPence: number;
   buyer: { fullName: string; email: string };
   items: OrderItem[];
@@ -72,11 +83,19 @@ export interface OrderDto {
 
 function normalize(raw: RawOrderDto): OrderDto {
   const displayId = raw.displayId ?? raw.id ?? "";
+  const productsTotalPence =
+    typeof raw.productsTotalPence === "number"
+      ? raw.productsTotalPence
+      : Math.max(0, raw.totalPence - (raw.shippingPence ?? 0));
+  const shippingPence = raw.shippingPence ?? 0;
   return {
     ...raw,
     id: displayId,
     displayId,
     createdAt: raw.createdAt ?? new Date().toISOString(),
+    productsTotalPence,
+    shippingPence,
+    items: Array.isArray(raw.items) ? raw.items : [],
   };
 }
 

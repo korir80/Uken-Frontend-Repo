@@ -1,10 +1,13 @@
 /**
- * Saved (wishlist) service — buyer-scoped collections of saved product IDs
- * and creator IDs.
+ * Saved (wishlist) service.
  *
- *   GET    /api/users/me/saved/products       → string[]
- *   POST   /api/users/me/saved/products/{id}  → string[]
- *   DELETE /api/users/me/saved/products/{id}  → string[]
+ * Per buyer-journey spec, products use the simpler /api/saved/{productId}
+ * endpoints. Creators retain the older /users/me/saved/creators namespace.
+ *
+ *   GET    /api/saved                         → string[] (productIds)
+ *   POST   /api/saved/{productId}             → string[]
+ *   DELETE /api/saved/{productId}             → string[]
+ *
  *   GET    /api/users/me/saved/creators       → string[]
  *   POST   /api/users/me/saved/creators/{id}  → string[]
  *   DELETE /api/users/me/saved/creators/{id}  → string[]
@@ -28,17 +31,14 @@ const asArray = (v: unknown): string[] => (Array.isArray(v) ? (v as string[]) : 
 export const savedService = {
   /* ---------------- Products ---------------- */
   async listSavedProducts(): Promise<string[]> {
-    const res = asArray(await api.get<string[]>("/users/me/saved/products"));
+    const res = asArray(await api.get<string[]>("/saved"));
     writeSavedProducts(res);
     return res;
   },
 
   async addSavedProduct(productId: string): Promise<string[]> {
     const res = asArray(
-      await api.post<string[]>(
-        `/users/me/saved/products/${encodeURIComponent(productId)}`,
-        {},
-      ),
+      await api.post<string[]>(`/saved/${encodeURIComponent(productId)}`, {}),
     );
     writeSavedProducts(res);
     return res;
@@ -46,9 +46,7 @@ export const savedService = {
 
   async removeSavedProduct(productId: string): Promise<string[]> {
     const res = asArray(
-      await api.delete<string[]>(
-        `/users/me/saved/products/${encodeURIComponent(productId)}`,
-      ),
+      await api.delete<string[]>(`/saved/${encodeURIComponent(productId)}`),
     );
     writeSavedProducts(res);
     return res;

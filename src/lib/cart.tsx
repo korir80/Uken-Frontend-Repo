@@ -44,8 +44,17 @@ interface CartState {
   items: CartItem[];
   /** Order details captured during checkout. UI-only for now. */
   delivery: DeliveryDetails | null;
+  /** Selected delivery zone — drives shipping cost in the summary. */
+  selectedZone: SelectedZone | null;
   /** Last placed order, kept until the buyer leaves the confirmation. */
   lastOrder: PlacedOrder | null;
+}
+
+export interface SelectedZone {
+  id: string;
+  name: string;
+  country: string;
+  shippingPence: number;
 }
 
 export interface DeliveryDetails {
@@ -75,14 +84,16 @@ type CartAction =
   | { type: "setQty"; productId: string; quantity: number }
   | { type: "clear" }
   | { type: "setDelivery"; delivery: DeliveryDetails }
+  | { type: "setZone"; zone: SelectedZone | null }
   | { type: "placeOrder"; order: PlacedOrder }
   | { type: "hydrate"; state: CartState };
 
-const STORAGE_KEY = "ukena.cart.v1";
+const STORAGE_KEY = "ukena.cart.v2";
 
 const initialState: CartState = {
   items: [],
   delivery: null,
+  selectedZone: null,
   lastOrder: null,
 };
 
@@ -134,11 +145,14 @@ function reducer(state: CartState, action: CartAction): CartState {
       return { ...state, items: [] };
     case "setDelivery":
       return { ...state, delivery: action.delivery };
+    case "setZone":
+      return { ...state, selectedZone: action.zone };
     case "placeOrder":
       return {
         ...state,
         items: [],
         delivery: null,
+        selectedZone: null,
         lastOrder: action.order,
       };
     default:
@@ -170,6 +184,7 @@ interface CartContextValue extends CartState {
   /** @deprecated use clearCart() — kept for back-compat with older call sites. */
   clearBag: () => void;
   setDelivery: (delivery: DeliveryDetails) => void;
+  setZone: (zone: SelectedZone | null) => void;
   placeOrder: (override?: { id?: string }) => PlacedOrder | null;
   /** Aggregated read-only view. Prefer this over per-component calculations. */
   cartSummary: CartSummary;
@@ -183,6 +198,7 @@ interface CartContextValue extends CartState {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
+
 const SHIPPING_FREE_THRESHOLD_PENCE = 15000; // Free over £150
 const SHIPPING_FLAT_PENCE = 895; // £8.95
 
@@ -195,8 +211,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const parsed = JSON.parse(raw) as CartState;
-        dispatch({ type: "hydrate", state: parsed });
+        const parsed = JSON.parse(raw) as Partial<CartState>;
+        dispatch({
+          type: "hydrate",
+          state: { ...initialState, ...parsed },
+        });
       }
     } catch {
       // Corrupted cart — start fresh, never block the UI.
@@ -227,10 +246,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [],
   );
   const clearCart = useCallback(() => dispatch({ type: "clear" }), []);
-  // Back-compat alias — same action.
   const clearBag = clearCart;
   const setDelivery = useCallback(
     (delivery: DeliveryDetails) => dispatch({ type: "setDelivery", delivery }),
+    [],
+  );
+  const setZone = useCallback(
+    (zone: SelectedZone | null) => dispatch({ type: "setZone", zone }),
     [],
   );
 
@@ -239,12 +261,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [state.items],
   );
 
-  const shippingPence = useMemo(() => {
-    if (state.items.length === 0) return 0;
-    return subtotalPence >= SHIPPING_FREE_THRESHOLD_PENCE
-      ? 0
-      : SHIPPING_FLAT_PENCE;
-  }, [state.items.length, subtotalPence]);
+  // Shipping is server-priced via the selected delivery zone. Until the
+  // buyer picks one, shipping reads as zero in the summary and the UI
+  // surfaces a "Select delivery zone at checkout" hint instead of a £.
+  const shippingPence = state.selectedZone?.shippingPence ?? 0;
 
   const totalPence = subtotalPence + shippingPence;
 
@@ -303,6 +323,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     clearCart,
     clearBag,
     setDelivery,
+    setZone,
     placeOrder,
     cartSummary,
     itemCount,
@@ -311,6 +332,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     totalPence,
     uniqueCreators,
   };
+
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

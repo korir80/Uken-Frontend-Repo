@@ -9,6 +9,7 @@ import type { OrderStatus } from "@/services";
 
 const STATUS_TONE: Record<OrderStatus, "neutral" | "good" | "warn" | "bad" | "info"> = {
   PENDING: "warn",
+  PAID: "info",
   PREPARING: "info",
   SHIPPED: "good",
   DELIVERED: "good",

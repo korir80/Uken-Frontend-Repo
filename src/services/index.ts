@@ -8,3 +8,5 @@ export * from "./applicationService";
 export * from "./adminService";
 export * from "./savedService";
 export * from "./cartService";
+export * from "./deliveryZoneService";
+

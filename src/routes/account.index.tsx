@@ -23,6 +23,7 @@ export const Route = createFileRoute("/account/")({
 
 const STATUS_TONE: Record<OrderStatus, "neutral" | "good" | "warn" | "bad" | "info"> = {
   PENDING: "warn",
+  PAID: "info",
   PREPARING: "info",
   SHIPPED: "info",
   DELIVERED: "good",

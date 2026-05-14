@@ -1,9 +1,17 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BagIndicator } from "@/components/product/BagIndicator";
 import { Logo } from "@/components/ukena";
+import { useAuth, defaultPathForRole } from "@/lib/auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { label: "Shop", to: "/shop" as const },

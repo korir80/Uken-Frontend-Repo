@@ -11,7 +11,10 @@ import {
   Mail,
   Menu,
   X,
+  Sparkles,
+  LogIn,
 } from "lucide-react";
+import { useAuth, defaultPathForRole } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 /**

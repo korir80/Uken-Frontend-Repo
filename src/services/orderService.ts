@@ -1,12 +1,14 @@
 /**
  * Order service — backed by /api/orders.
  *
- *   POST  /orders                    public; supports both guest + buyer
- *   GET   /orders/{id}               buyer/admin
- *   GET   /orders/track              public; { displayId, email }
- *   GET   /orders/me                 buyer
- *   GET   /creators/me/orders        creator
+ *   POST  /orders                          public; supports both guest + buyer
+ *   GET   /orders/{id}                     buyer/admin
+ *   GET   /orders/track                    public; { displayId, email }
+ *   GET   /orders/me                       buyer
+ *   GET   /creators/me/orders              creator
  *   PATCH /creators/me/orders/{id}/status  creator
+ *   PATCH /admin/orders/{id}/status        admin
+ *   PATCH /admin/orders/bulk-status        admin
  */
 import { api, unwrapList } from "./api";
 
@@ -37,13 +39,7 @@ export interface CreateOrderPayload {
   guestFullName?: string;
 }
 
-export type OrderStatus =
-  | "PENDING"
-  | "PAID"
-  | "PREPARING"
-  | "SHIPPED"
-  | "DELIVERED"
-  | "CANCELLED";
+export type OrderStatus = "PENDING" | "PAID" | "PREPARING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
 
 export interface OrderItem {
   productId: string;
@@ -104,28 +100,40 @@ export const orderService = {
     const raw = await api.post<RawOrderDto>("/orders", payload);
     return normalize(raw);
   },
+
   async getOrderById(id: string): Promise<OrderDto> {
     const raw = await api.get<RawOrderDto>(`/orders/${encodeURIComponent(id)}`);
     return normalize(raw);
   },
+
   async trackOrder(displayId: string, email: string): Promise<OrderDto> {
     const params = new URLSearchParams({ displayId, email });
     const raw = await api.get<RawOrderDto>(`/orders/track?${params.toString()}`);
     return normalize(raw);
   },
+
   async getOrdersByBuyer(): Promise<OrderDto[]> {
     const list = unwrapList<RawOrderDto>(await api.get<unknown>("/orders/me"));
     return list.map(normalize);
   },
+
   async getOrdersByCreator(): Promise<OrderDto[]> {
     const list = unwrapList<RawOrderDto>(await api.get<unknown>("/creators/me/orders"));
     return list.map(normalize);
   },
+
   async updateStatus(orderId: string, status: OrderStatus): Promise<OrderDto> {
-    const raw = await api.patch<RawOrderDto>(
-      `/creators/me/orders/${encodeURIComponent(orderId)}/status`,
-      { status },
-    );
+    const raw = await api.patch<RawOrderDto>(`/creators/me/orders/${encodeURIComponent(orderId)}/status`, { status });
     return normalize(raw);
+  },
+
+  async adminUpdateStatus(displayId: string, status: OrderStatus): Promise<OrderDto> {
+    const raw = await api.patch<RawOrderDto>(`/admin/orders/${encodeURIComponent(displayId)}/status`, { status });
+    return normalize(raw);
+  },
+
+  async adminBulkUpdateStatus(displayIds: string[], status: OrderStatus): Promise<OrderDto[]> {
+    const list = unwrapList<RawOrderDto>(await api.patch<unknown>("/admin/orders/bulk-status", { displayIds, status }));
+    return list.map(normalize);
   },
 };

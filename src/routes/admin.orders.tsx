@@ -78,12 +78,11 @@ function AdminOrders() {
                       ? o.items[0].name
                       : `${o.items[0].name} and ${o.items.length - 1} more`;
                 return (
-                  <>
-                    <tr
-                      key={o.displayId}
-                      className="cursor-pointer hover:bg-cream/30"
-                      onClick={() => setOpen(expanded ? null : o.displayId)}
-                    >
+                  <FragmentRow
+                    key={o.displayId}
+                    expanded={expanded}
+                    onToggle={() => setOpen(expanded ? null : o.displayId)}
+                  >
                       <td className="px-4 py-3 font-mono text-[12px] text-charcoal">{o.displayId}</td>
                       <td className="px-4 py-3 font-sans text-[12px] text-charcoal/70">
                         {new Date(o.createdAt).toLocaleDateString()}

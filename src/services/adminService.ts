@@ -97,6 +97,18 @@ export const adminService = {
   async deleteCreator(creatorId: string): Promise<void> {
     await api.delete<void>(`/admin/creators/${encodeURIComponent(creatorId)}`);
   },
+  async suspendCreator(creatorId: string): Promise<void> {
+    await api.patch<void>(
+      `/admin/creators/${encodeURIComponent(creatorId)}/suspend`,
+      {},
+    );
+  },
+  async unsuspendCreator(creatorId: string): Promise<void> {
+    await api.patch<void>(
+      `/admin/creators/${encodeURIComponent(creatorId)}/unsuspend`,
+      {},
+    );
+  },
   async setProductStatus(
     productId: string,
     status: "ACTIVE" | "SUSPENDED_BY_ADMIN",

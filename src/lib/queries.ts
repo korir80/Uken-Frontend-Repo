@@ -357,7 +357,7 @@ export function useAdminApplications() {
 
 export function useUpdateApplicationStatus() {
   const qc = useQueryClient();
-  return useMutation
+  return useMutation<
     ArtisanApplication,
     Error,
     { id: string; status: ApplicationStatus; notes?: string }

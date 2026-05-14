@@ -159,7 +159,7 @@ function AdminOrders() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
               {orders.length === 0 && (

@@ -1,9 +1,11 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
+import type { QueryKey } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ukena";
+import { RefreshButton } from "@/components/dashboard/RefreshButton";
 
 async function signOutWithToast(logout: () => void | Promise<void>) {
   await logout();
@@ -351,11 +353,18 @@ export function PageHeader({
   title,
   description,
   action,
+  refreshKeys,
 }: {
   eyebrow: string;
   title: string;
   description?: string;
   action?: ReactNode;
+  /**
+   * If provided, renders a "Refresh" button that invalidates these query
+   * keys and forces a fresh fetch from the backend. Pass `[]` to refetch
+   * every active query on the page.
+   */
+  refreshKeys?: QueryKey[];
 }) {
   return (
     <header className="flex flex-col gap-4 border-b border-border/60 pb-6 md:flex-row md:items-end md:justify-between">
@@ -370,7 +379,12 @@ export function PageHeader({
           </p>
         )}
       </div>
-      {action && <div className="flex-shrink-0">{action}</div>}
+      {(action || refreshKeys) && (
+        <div className="flex flex-shrink-0 flex-wrap items-center gap-2">
+          {refreshKeys && <RefreshButton queryKeys={refreshKeys} />}
+          {action}
+        </div>
+      )}
     </header>
   );
 }

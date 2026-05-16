@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import savanna from "@/assets/montage-savanna-dusk.jpg";
-import hands from "@/assets/montage-hands-weaving.jpg";
-import coffee from "@/assets/montage-coffee-cherries.jpg";
-import beadwork from "@/assets/montage-beadwork.jpg";
+import workshop from "@/assets/uken-weavers-wide.jpg";
+import baskets from "@/assets/uken-baskets-row.jpg";
+import hands from "@/assets/uken-weavers-hands.jpg";
+import detail from "@/assets/uken-baskets-detail.jpg";
 
 const SLIDES = [
-  { src: savanna, alt: "Kenyan savanna at dusk with acacia silhouettes" },
-  { src: hands, alt: "Artisan hands weaving sisal basket" },
-  { src: coffee, alt: "Ripe coffee cherries at golden hour" },
-  { src: beadwork, alt: "Maasai beadwork in progress by a sunlit window" },
+  { src: workshop, alt: "Kenyan weavers seated together coiling sisal baskets under banana trees" },
+  { src: baskets,  alt: "A row of finished handwoven sisal baskets in indigo, terracotta and natural fibre" },
+  { src: hands,    alt: "Hands at work on a half-finished sisal basket, fibres fanning outward" },
+  { src: detail,   alt: "Close-up of a stacked, striped sisal basket — the maker's signature pattern" },
 ];
 
 const INTERVAL = 5200;

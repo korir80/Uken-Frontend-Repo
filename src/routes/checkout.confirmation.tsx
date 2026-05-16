@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
@@ -25,249 +24,217 @@ export const Route = createFileRoute("/checkout/confirmation")({
   component: ConfirmationPage,
 });
 
+type PageState =
+  | { phase: "hydrating" }
+  | { phase: "needs-email"; ref: string }
+  | { phase: "polling"; ref: string; email: string }
+  | { phase: "paid"; order: OrderDto }
+  | { phase: "pending"; order: OrderDto }
+  | { phase: "not-found" }
+  | { phase: "error"; message: string };
+
 function ConfirmationPage() {
   const { ref: refFromUrl, email: emailFromUrl } = Route.useSearch();
   const navigate = Route.useNavigate();
   const { isAuthenticated, user } = useAuth();
   const { clearCart } = useCart();
 
-  const [ref, setRef] = useState(refFromUrl);
-  const [email, setEmail] = useState(emailFromUrl || user?.email || "");
   const [emailDraft, setEmailDraft] = useState("");
-  const [polledOrder, setPolledOrder] = useState<OrderDto | null>(null);
-  const [polling, setPolling] = useState(false);
+  const [state, setState] = useState<PageState>({ phase: "hydrating" });
+  const clearedRef = useRef(false);
 
-  // Hydrate from sessionStorage if URL is missing email.
+  // ── Step 1: Hydrate ref + email from URL or sessionStorage ──
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!ref || email) return;
+    const ref = refFromUrl || "";
+    const email = emailFromUrl || user?.email || "";
+
+    if (ref && email) {
+      setState({ phase: "polling", ref, email });
+      return;
+    }
+
+    // Try sessionStorage
     try {
       const raw = sessionStorage.getItem("ukena.lastOrder");
-      if (!raw) return;
-      const last = JSON.parse(raw) as { displayId?: string; email?: string };
-      if (last.email && (!ref || last.displayId === ref)) {
-        setEmail(last.email);
+      if (raw) {
+        const last = JSON.parse(raw) as { displayId?: string; email?: string };
+        const resolvedRef = ref || last.displayId || "";
+        const resolvedEmail = email || last.email || "";
+        if (resolvedRef && resolvedEmail) {
+          setState({ phase: "polling", ref: resolvedRef, email: resolvedEmail });
+          return;
+        }
+        if (resolvedRef) {
+          setState({ phase: "needs-email", ref: resolvedRef });
+          return;
+        }
       }
     } catch {
       /* ignore */
     }
-  }, [ref, email]);
 
-  // Also hydrate ref+email from sessionStorage when both are missing from URL
-  // (Stripe return URL may strip all query params).
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (ref) return;
-    try {
-      const raw = sessionStorage.getItem("ukena.lastOrder");
-      if (!raw) return;
-      const last = JSON.parse(raw) as { displayId?: string; email?: string };
-      if (last.displayId && last.email) {
-        setRef(last.displayId);
-        setEmail(last.email);
-        navigate({ search: { ref: last.displayId, email: last.email }, replace: true });
-      }
-    } catch {
-      /* ignore */
+    if (ref) {
+      setState({ phase: "needs-email", ref });
+    } else {
+      navigate({ to: "/checkout/delivery", replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const enabled = Boolean(ref && email);
-
-  const query = useQuery({
-    queryKey: ["orders", "confirmation", ref, email],
-    queryFn: () => orderService.trackOrder(ref, email),
-    enabled,
-    retry: false,
-  });
-
-  // Clear cart once order is confirmed.
+  // ── Step 2: Poll for PAID status once we have ref + email ──
   useEffect(() => {
-    if (query.data) clearCart();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query.data?.displayId]);
+    if (state.phase !== "polling") return;
+    const { ref, email } = state;
 
-  // Poll for PAID status — Stripe webhook may arrive a second or two after redirect.
-  useEffect(() => {
-    if (!query.data) return;
-    if (query.data.status === "PAID") {
-      setPolledOrder(query.data);
-      return;
-    }
-    setPolling(true);
+    let cancelled = false;
     let attempts = 0;
-    const interval = setInterval(async () => {
-      attempts++;
-      try {
-        const fresh = await orderService.trackOrder(ref, email);
-        if (fresh.status === "PAID" || attempts >= 6) {
-          setPolledOrder(fresh);
-          setPolling(false);
-          clearInterval(interval);
+    const MAX = 8;
+    const INTERVAL = 1500;
+
+    async function poll() {
+      while (attempts < MAX && !cancelled) {
+        attempts++;
+        try {
+          const order = await orderService.trackOrder(ref, email);
+          if (cancelled) return;
+          if (order.status === "PAID") {
+            if (!clearedRef.current) {
+              clearCart();
+              clearedRef.current = true;
+            }
+            setState({ phase: "paid", order });
+            return;
+          }
+          if (attempts >= MAX) {
+            setState({ phase: "pending", order });
+            return;
+          }
+        } catch (err) {
+          if (cancelled) return;
+          if (err instanceof ApiError && err.status === 404) {
+            setState({ phase: "not-found" });
+            return;
+          }
+          setState({ phase: "error", message: err instanceof Error ? err.message : "Unknown error" });
+          return;
         }
-      } catch {
-        setPolledOrder(query.data);
-        setPolling(false);
-        clearInterval(interval);
+        await new Promise((r) => setTimeout(r, INTERVAL));
       }
-    }, 1500);
-    return () => clearInterval(interval);
+    }
+
+    poll();
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query.data?.displayId]);
+  }, [state.phase === "polling" ? state.ref + state.email : null]);
 
-  const order = polledOrder ?? query.data ?? null;
-  const notFound = query.isError && query.error instanceof ApiError && query.error.status === 404;
+  // ── Render ──
 
-  // ── No ref in URL ──
-  if (!ref) {
+  if (state.phase === "hydrating") {
     return (
-      <div className="min-h-screen bg-warm-white">
-        <SlimHeader />
-        <main className="mx-auto max-w-xl px-6 py-24 text-center">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">Nothing to confirm</p>
-          <h1 className="mt-4 font-display text-3xl text-charcoal">No order reference</h1>
-          <p className="mt-3 text-[14px] text-ink-muted">If you've just paid, you can look up your order anytime.</p>
-          <Link
-            to="/orders/track"
-            className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
-          >
-            Track an order →
-          </Link>
-        </main>
-        <Footer />
-      </div>
+      <Shell>
+        <Spinner label="Loading…" />
+      </Shell>
     );
   }
 
-  // ── Have ref but missing email ──
-  if (ref && !email) {
+  if (state.phase === "needs-email") {
+    const { ref } = state;
     const onSubmit = (e: FormEvent) => {
       e.preventDefault();
       const v = emailDraft.trim();
       if (!v) return;
-      setEmail(v);
-      navigate({ search: { ref, email: v }, replace: true });
+      setState({ phase: "polling", ref, email: v });
     };
     return (
-      <div className="min-h-screen bg-warm-white">
-        <SlimHeader />
-        <main className="mx-auto max-w-xl px-6 py-24">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">Almost there</p>
-          <h1 className="mt-4 font-display text-3xl text-charcoal">Confirm your email</h1>
-          <p className="mt-3 text-[14px] text-ink-muted">
-            Enter the email you used at checkout so we can show order <span className="font-mono">{ref}</span>.
-          </p>
-          <form onSubmit={onSubmit} className="mt-6 flex gap-3">
-            <input
-              type="email"
-              value={emailDraft}
-              onChange={(e) => setEmailDraft(e.target.value)}
-              placeholder="you@example.com"
-              required
-              className="h-11 flex-1 rounded-md border border-border bg-warm-white px-4 text-[14px] focus:border-clay focus:outline-none focus:ring-2 focus:ring-clay/20"
-            />
-            <button
-              type="submit"
-              className="h-11 rounded-md bg-terracotta px-6 text-[14px] font-medium text-warm-white hover:bg-[oklch(0.52_0.13_38)]"
-            >
-              Show order
-            </button>
-          </form>
-        </main>
-        <Footer />
-      </div>
+      <Shell>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-terracotta">Almost there</p>
+        <h1 className="mt-4 font-display text-3xl text-charcoal">Confirm your email</h1>
+        <p className="mt-3 text-[14px] text-ink-muted">
+          Enter the email you used at checkout so we can show order <span className="font-mono">{ref}</span>.
+        </p>
+        <form onSubmit={onSubmit} className="mt-6 flex gap-3">
+          <input
+            type="email"
+            value={emailDraft}
+            onChange={(e) => setEmailDraft(e.target.value)}
+            placeholder="you@example.com"
+            required
+            className="h-11 flex-1 rounded-md border border-border bg-warm-white px-4 text-[14px] focus:border-clay focus:outline-none focus:ring-2 focus:ring-clay/20"
+          />
+          <button
+            type="submit"
+            className="h-11 rounded-md bg-terracotta px-6 text-[14px] font-medium text-warm-white hover:bg-[oklch(0.52_0.13_38)]"
+          >
+            Show order
+          </button>
+        </form>
+      </Shell>
     );
   }
 
-  // ── Loading initial fetch ──
-  if (query.isLoading) {
+  if (state.phase === "polling") {
     return (
-      <div className="min-h-screen bg-warm-white">
-        <SlimHeader />
-        <main className="mx-auto max-w-xl px-6 py-24 text-center">
-          <Loader2 className="mx-auto h-6 w-6 animate-spin text-clay" />
-          <p className="mt-4 text-[14px] text-ink-muted">Looking up your order…</p>
-        </main>
-        <Footer />
-      </div>
+      <Shell>
+        <Spinner label="Confirming your payment…" />
+      </Shell>
     );
   }
 
-  // ── Not found ──
-  if (notFound) {
+  if (state.phase === "not-found") {
     return (
-      <div className="min-h-screen bg-warm-white">
-        <SlimHeader />
-        <main className="mx-auto max-w-xl px-6 py-24 text-center">
-          <h1 className="font-display text-3xl text-charcoal">Order not found</h1>
-          <p className="mt-3 text-[14px] text-ink-muted">Check your order ID and email address.</p>
+      <Shell>
+        <h1 className="font-display text-3xl text-charcoal">Order not found</h1>
+        <p className="mt-3 text-[14px] text-ink-muted">Check your order ID and email address.</p>
+        <Link
+          to="/orders/track"
+          className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
+        >
+          Try the tracking page →
+        </Link>
+      </Shell>
+    );
+  }
+
+  if (state.phase === "error") {
+    return (
+      <Shell>
+        <h1 className="font-display text-3xl text-charcoal">Something went wrong</h1>
+        <p className="mt-3 text-[14px] text-ink-muted">{state.message}</p>
+        <Link
+          to="/orders/track"
+          className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
+        >
+          Track your order →
+        </Link>
+      </Shell>
+    );
+  }
+
+  // ── pending: paid but webhook delayed ──
+  if (state.phase === "pending") {
+    const { order } = state;
+    return (
+      <Shell>
+        <Spinner label="Payment processing…" />
+        <p className="mt-4 text-[14px] text-ink-muted text-center">
+          Your order <span className="font-mono">{order.displayId}</span> is being confirmed. Check your email or{" "}
           <Link
             to="/orders/track"
-            className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
+            search={{ displayId: order.displayId, email: order.buyer.email }}
+            className="text-clay underline-offset-4 hover:underline"
           >
-            Try the tracking page →
+            track it here
           </Link>
-        </main>
-        <Footer />
-      </div>
+          .
+        </p>
+      </Shell>
     );
   }
 
-  // ── Other error ──
-  if (query.isError || (!order && !polling)) {
-    return (
-      <div className="min-h-screen bg-warm-white">
-        <SlimHeader />
-        <main className="mx-auto max-w-xl px-6 py-24 text-center">
-          <h1 className="font-display text-3xl text-charcoal">Something went wrong</h1>
-          <p className="mt-3 text-[14px] text-ink-muted">{query.error?.message ?? "Please try again."}</p>
-          <button
-            onClick={() => query.refetch()}
-            className="mt-6 text-[12px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
-          >
-            Retry
-          </button>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  // ── Polling — order found but not yet PAID ──
-  if (polling || (order && order.status !== "PAID")) {
-    return (
-      <div className="min-h-screen bg-warm-white">
-        <SlimHeader />
-        <main className="mx-auto max-w-xl px-6 py-24 text-center">
-          <Loader2 className="mx-auto h-6 w-6 animate-spin text-clay" />
-          <h1 className="mt-6 font-display text-3xl text-charcoal">Confirming your payment…</h1>
-          <p className="mt-3 text-[14px] text-ink-muted">
-            This usually takes a few seconds.
-            {order && (
-              <>
-                {" "}
-                Your order reference is <span className="font-mono">{order.displayId}</span>.
-              </>
-            )}
-          </p>
-          {order && (
-            <Link
-              to="/orders/track"
-              search={{ displayId: order.displayId, email: order.buyer.email }}
-              className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] text-clay hover:text-clay-deep"
-            >
-              Check order status →
-            </Link>
-          )}
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  // ── Confirmed ──
-  if (!order) return null;
+  // ── paid ──
+  const { order } = state;
   const buyerFirstName = order.buyer.fullName.split(" ")[0] ?? order.buyer.fullName;
 
   return (
@@ -301,7 +268,8 @@ function ConfirmationPage() {
             Thank you, {buyerFirstName}.
           </h1>
           <p className="mt-3 text-[13px] text-ink-muted">
-            Order reference <span className="font-mono">{order.displayId}</span>
+            Order <span className="font-mono">{order.displayId}</span> — confirmation sent to{" "}
+            <span className="font-medium text-charcoal">{order.buyer.email}</span>
           </p>
         </div>
 
@@ -382,6 +350,25 @@ function ConfirmationPage() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-warm-white">
+      <SlimHeader />
+      <main className="mx-auto max-w-xl px-6 py-24 flex flex-col items-center justify-center">{children}</main>
+      <Footer />
+    </div>
+  );
+}
+
+function Spinner({ label }: { label: string }) {
+  return (
+    <>
+      <Loader2 className="h-6 w-6 animate-spin text-clay" />
+      <p className="mt-4 text-[14px] text-ink-muted">{label}</p>
+    </>
   );
 }
 

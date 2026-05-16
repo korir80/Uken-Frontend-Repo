@@ -14,8 +14,8 @@ import {
   Layers,
 } from "lucide-react";
 import { LazyImage } from "@/components/ui/lazy-image";
-import workshopImage from "@/assets/creator-workshop-wanjiru.jpg";
-import marketImage from "@/assets/authentic-craft-market.jpg";
+import workshopImage from "@/assets/uken-weavers-workshop.jpg";
+import marketImage from "@/assets/uken-baskets-array.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () =>
@@ -119,13 +119,13 @@ function AboutPage() {
         <section className="mx-auto grid max-w-7xl gap-4 px-5 pb-12 md:grid-cols-2 md:gap-5 md:px-10 md:pb-16">
           <LazyImage
             src={workshopImage}
-            alt="A Kenyan artisan at work in her highland workshop"
+            alt="Kenyan women weaving sisal baskets together under banana trees, with a finished red-and-yellow striped basket in the foreground"
             ratio="4/5"
             wrapperClassName="rounded-2xl"
           />
           <LazyImage
             src={marketImage}
-            alt="A bustling Kenyan craft market at dawn"
+            alt="A spread of handwoven sisal baskets in indigo, terracotta, green and natural fibre — laid out by the makers"
             ratio="4/5"
             wrapperClassName="rounded-2xl"
           />

@@ -37,6 +37,7 @@ const baseItems = [
   { label: "Contact", to: "/contact" as const, icon: Mail },
   { label: "Join UKEN", to: "/join" as const,  icon: Sparkles },
   { label: "Saved",   to: "/saved" as const,   icon: Bookmark },
+  { label: "Track order", to: "/orders/track" as const, icon: PackageSearch },
 ] as const;
 
 export function MobileNavFab() {

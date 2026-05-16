@@ -33,6 +33,7 @@ const baseItems = [
   { label: "Home",    to: "/" as const,        icon: Home },
   { label: "Shop",    to: "/shop" as const,    icon: ShoppingBag },
   { label: "Explore", to: "/explore" as const, icon: Compass },
+  { label: "About",   to: "/about" as const,   icon: Info },
   { label: "Mission", to: "/story" as const,   icon: BookOpen },
   { label: "Values",  to: "/sustainability" as const, icon: HeartHandshake },
   { label: "Contact", to: "/contact" as const, icon: Mail },

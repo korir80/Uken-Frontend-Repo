@@ -14,6 +14,7 @@ import {
   Sparkles,
   LogIn,
   PackageSearch,
+  Info,
 } from "lucide-react";
 import { useAuth, defaultPathForRole } from "@/lib/auth";
 import { cn } from "@/lib/utils";

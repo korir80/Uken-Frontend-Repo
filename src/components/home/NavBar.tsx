@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Search, LogOut } from "lucide-react";
+import { Search, LogOut, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BagIndicator } from "@/components/product/BagIndicator";
 import { Logo } from "@/components/ukena";
@@ -13,15 +13,41 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const navLinks = [
-  { label: "Shop", to: "/shop" as const },
-  { label: "Explore Creators", to: "/explore" as const },
-  { label: "About", to: "/about" as const },
-  { label: "Mission", to: "/story" as const },
-  { label: "Values", to: "/sustainability" as const },
-  { label: "Contact", to: "/contact" as const },
-  { label: "Join UKEN", to: "/join" as const },
-  { label: "Track order", to: "/orders/track" as const },
+type NavTo =
+  | "/shop"
+  | "/explore"
+  | "/about"
+  | "/story"
+  | "/sustainability"
+  | "/contact"
+  | "/join"
+  | "/orders/track";
+
+type NavItem =
+  | { kind: "link"; label: string; to: NavTo }
+  | { kind: "group"; label: string; items: { label: string; to: NavTo; hint?: string }[] };
+
+const navItems: NavItem[] = [
+  { kind: "link", label: "Shop", to: "/shop" },
+  {
+    kind: "group",
+    label: "About",
+    items: [
+      { label: "About UKEN", to: "/about", hint: "Who we are & what we do" },
+      { label: "Our mission", to: "/story", hint: "Why this exists" },
+      { label: "Values", to: "/sustainability", hint: "How we trade" },
+      { label: "Contact", to: "/contact", hint: "Talk to the team" },
+    ],
+  },
+  {
+    kind: "group",
+    label: "Community",
+    items: [
+      { label: "Explore creators", to: "/explore", hint: "Meet the makers" },
+      { label: "Join UKEN", to: "/join", hint: "Apply as a creator" },
+    ],
+  },
+  { kind: "link", label: "Track order", to: "/orders/track" },
 ];
 
 /**

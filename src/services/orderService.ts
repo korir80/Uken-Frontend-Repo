@@ -112,6 +112,14 @@ export const orderService = {
     return normalize(raw);
   },
 
+  async trackOrdersByEmail(email: string): Promise<OrderDto[]> {
+    const params = new URLSearchParams({ email });
+    const list = unwrapList<RawOrderDto>(
+      await api.get<unknown>(`/orders/track-by-email?${params.toString()}`),
+    );
+    return list.map(normalize);
+  },
+
   async getOrdersByBuyer(): Promise<OrderDto[]> {
     const list = unwrapList<RawOrderDto>(await api.get<unknown>("/orders/me"));
     return list.map(normalize);

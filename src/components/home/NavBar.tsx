@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Search, LogOut } from "lucide-react";
+import { Search, LogOut, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BagIndicator } from "@/components/product/BagIndicator";
 import { Logo } from "@/components/ukena";
@@ -13,15 +13,41 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const navLinks = [
-  { label: "Shop", to: "/shop" as const },
-  { label: "Explore Creators", to: "/explore" as const },
-  { label: "About", to: "/about" as const },
-  { label: "Mission", to: "/story" as const },
-  { label: "Values", to: "/sustainability" as const },
-  { label: "Contact", to: "/contact" as const },
-  { label: "Join UKEN", to: "/join" as const },
-  { label: "Track order", to: "/orders/track" as const },
+type NavTo =
+  | "/shop"
+  | "/explore"
+  | "/about"
+  | "/story"
+  | "/sustainability"
+  | "/contact"
+  | "/join"
+  | "/orders/track";
+
+type NavItem =
+  | { kind: "link"; label: string; to: NavTo }
+  | { kind: "group"; label: string; items: { label: string; to: NavTo; hint?: string }[] };
+
+const navItems: NavItem[] = [
+  { kind: "link", label: "Shop", to: "/shop" },
+  {
+    kind: "group",
+    label: "About",
+    items: [
+      { label: "About UKEN", to: "/about", hint: "Who we are & what we do" },
+      { label: "Our mission", to: "/story", hint: "Why this exists" },
+      { label: "Values", to: "/sustainability", hint: "How we trade" },
+      { label: "Contact", to: "/contact", hint: "Talk to the team" },
+    ],
+  },
+  {
+    kind: "group",
+    label: "Community",
+    items: [
+      { label: "Explore creators", to: "/explore", hint: "Meet the makers" },
+      { label: "Join UKEN", to: "/join", hint: "Apply as a creator" },
+    ],
+  },
+  { kind: "link", label: "Track order", to: "/orders/track" },
 ];
 
 /**
@@ -56,21 +82,46 @@ export function NavBar() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-5 md:flex lg:gap-8">
-          {navLinks.map((l) => (
-            <Link
-              key={l.label}
-              to={l.to}
-              className={cn(
-                "text-[13px] font-medium tracking-wide transition-colors lg:text-[14px]",
-                scrolled
-                  ? "text-charcoal/80 hover:text-clay"
-                  : "text-warm-white/85 hover:text-warm-white",
-              )}
-            >
-              {l.label}
-            </Link>
-          ))}
+        <nav className="hidden items-center gap-5 md:flex lg:gap-7">
+          {navItems.map((item) => {
+            const linkCls = cn(
+              "text-[13px] font-medium tracking-wide transition-colors lg:text-[14px]",
+              scrolled
+                ? "text-charcoal/80 hover:text-clay"
+                : "text-warm-white/85 hover:text-warm-white",
+            );
+
+            if (item.kind === "link") {
+              return (
+                <Link key={item.label} to={item.to} className={linkCls}>
+                  {item.label}
+                </Link>
+              );
+            }
+
+            return (
+              <DropdownMenu key={item.label}>
+                <DropdownMenuTrigger
+                  className={cn(linkCls, "inline-flex items-center gap-1 outline-none")}
+                >
+                  {item.label}
+                  <ChevronDown className="h-3.5 w-3.5 opacity-70" strokeWidth={2} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" sideOffset={10} className="w-60 p-1">
+                  {item.items.map((sub) => (
+                    <DropdownMenuItem key={sub.to} asChild className="cursor-pointer">
+                      <Link to={sub.to} className="flex flex-col items-start gap-0.5 px-3 py-2">
+                        <span className="text-[13px] font-medium text-charcoal">{sub.label}</span>
+                        {sub.hint && (
+                          <span className="text-[11px] text-ink-muted">{sub.hint}</span>
+                        )}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3 md:gap-4">

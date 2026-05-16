@@ -16,6 +16,12 @@ import {
 import { LazyImage } from "@/components/ui/lazy-image";
 import workshopImage from "@/assets/uken-weavers-workshop.jpg";
 import marketImage from "@/assets/uken-baskets-array.jpg";
+import gPortrait from "@/assets/uken-weavers-portrait.jpg";
+import gHands from "@/assets/uken-weavers-hands.jpg";
+import gSquare from "@/assets/uken-baskets-square.jpg";
+import gRow from "@/assets/uken-baskets-row.jpg";
+import gDetail from "@/assets/uken-baskets-detail.jpg";
+import gWide from "@/assets/uken-weavers-wide.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () =>
@@ -161,6 +167,50 @@ function AboutPage() {
               value stays in Kenya, with the maker. We don't broker the work,
               we walk alongside it.
             </p>
+          </div>
+        </section>
+
+        {/* Editorial gallery — masonry */}
+        <section className="mx-auto max-w-7xl px-5 pt-14 pb-4 md:px-10 md:pt-20 md:pb-8">
+          <div className="mb-6 flex items-end justify-between gap-4 md:mb-8">
+            <div className="max-w-2xl">
+              <SectionLabel tone="terracotta">From the workshop</SectionLabel>
+              <h2 className="mt-3 font-display text-[26px] leading-tight text-charcoal md:text-[34px]">
+                Real hands. Real fibre. Real photographs.
+              </h2>
+              <p className="mt-3 text-[14px] leading-relaxed text-ink-muted md:text-[15px]">
+                Every image below was taken in Machakos, Kenya — no stock, no
+                stand-ins. This is the work, the colour, and the company that
+                makes it.
+              </p>
+            </div>
+            <span className="hidden shrink-0 text-[11px] uppercase tracking-[0.28em] text-ink-muted md:block">
+              Machakos · Kenya
+            </span>
+          </div>
+
+          <div className="columns-2 gap-3 [column-fill:_balance] md:columns-3 md:gap-4">
+            {[
+              { src: gPortrait, alt: "A weaver coiling sisal fibre, photographed in soft daylight", h: "h-[260px] md:h-[420px]" },
+              { src: gSquare,   alt: "Four finished sisal baskets in indigo, terracotta, green and natural fibre", h: "h-[200px] md:h-[300px]" },
+              { src: gHands,    alt: "Hands working a half-finished basket, fibres fanning outward", h: "h-[240px] md:h-[360px]" },
+              { src: gRow,      alt: "A long row of completed baskets laid out by the makers", h: "h-[180px] md:h-[260px]" },
+              { src: gDetail,   alt: "Close-up of a stacked, striped basket — the maker's signature pattern", h: "h-[280px] md:h-[400px]" },
+              { src: gWide,     alt: "The workshop circle — weavers seated together under banana trees", h: "h-[200px] md:h-[280px]" },
+            ].map((img, i) => (
+              <figure
+                key={i}
+                className="group relative mb-3 break-inside-avoid overflow-hidden rounded-xl bg-sand-soft md:mb-4"
+              >
+                <LazyImage
+                  src={img.src}
+                  alt={img.alt}
+                  wrapperClassName={`w-full ${img.h}`}
+                  className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal/35 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              </figure>
+            ))}
           </div>
         </section>
 

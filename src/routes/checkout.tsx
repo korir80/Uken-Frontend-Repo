@@ -21,15 +21,17 @@ function CheckoutLayout() {
   const location = useLocation();
 
   const onConfirmation = location.pathname.includes("/confirmation");
+  const inCheckout = location.pathname.startsWith("/checkout");
 
   useEffect(() => {
+    if (!inCheckout) return; // we've navigated away from /checkout/* — don't intercept
     if (onConfirmation) return; // confirmation page manages itself
     if (items.length === 0 && !lastOrder && typeof window !== "undefined") {
       if (!location.pathname.endsWith("/bag")) {
         window.location.replace("/bag");
       }
     }
-  }, [items.length, lastOrder, location.pathname, onConfirmation]);
+  }, [items.length, lastOrder, location.pathname, onConfirmation, inCheckout]);
 
   const step = location.pathname.includes("/payment") ? 2 : 1;
 

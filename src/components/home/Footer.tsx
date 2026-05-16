@@ -14,6 +14,7 @@ const navColumns = [
   {
     heading: "UKEN",
     links: [
+      { label: "About UKEN", href: "/about" },
       { label: "Mission & Vision", href: "/story" },
       { label: "Core Values", href: "/sustainability" },
       { label: "For Artisans", href: "/artisans" },

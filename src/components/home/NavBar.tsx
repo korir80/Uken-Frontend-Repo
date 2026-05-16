@@ -20,6 +20,7 @@ const navLinks = [
   { label: "Values", to: "/sustainability" as const },
   { label: "Contact", to: "/contact" as const },
   { label: "Join UKEN", to: "/join" as const },
+  { label: "Track order", to: "/orders/track" as const },
 ];
 
 /**

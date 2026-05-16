@@ -16,6 +16,12 @@ import {
 import { LazyImage } from "@/components/ui/lazy-image";
 import workshopImage from "@/assets/uken-weavers-workshop.jpg";
 import marketImage from "@/assets/uken-baskets-array.jpg";
+import gPortrait from "@/assets/uken-weavers-portrait.jpg";
+import gHands from "@/assets/uken-weavers-hands.jpg";
+import gSquare from "@/assets/uken-baskets-square.jpg";
+import gRow from "@/assets/uken-baskets-row.jpg";
+import gDetail from "@/assets/uken-baskets-detail.jpg";
+import gWide from "@/assets/uken-weavers-wide.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () =>

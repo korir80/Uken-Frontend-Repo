@@ -14,8 +14,8 @@ import {
   Layers,
 } from "lucide-react";
 import { LazyImage } from "@/components/ui/lazy-image";
-import workshopImage from "@/assets/creator-workshop-wanjiru.jpg";
-import marketImage from "@/assets/authentic-craft-market.jpg";
+import workshopImage from "@/assets/uken-weavers-workshop.jpg";
+import marketImage from "@/assets/uken-baskets-array.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () =>

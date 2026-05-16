@@ -88,9 +88,9 @@ function ContactPage() {
             <Card tone="cream" elevation="soft" className="p-5 md:p-6">
               <h2 className="font-display text-[26px] leading-tight text-charcoal md:text-[30px]">Nairobi Office</h2>
               <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
-                Nairobi Garage – Karen<br />
-                Cove Court, Watermark Business Park<br />
-                Ndege Rd. Off Langata Rd., Nairobi<br />
+                8th Floor, Pinetree Plaza<br />
+                Kaburu Drive, Off Ngong Road<br />
+                Nairobi, Kenya<br />
                 Edwin Agasa: +254 720 848 695
               </p>
             </Card>

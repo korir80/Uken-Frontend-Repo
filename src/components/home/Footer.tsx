@@ -132,7 +132,7 @@ export function Footer() {
               </p>
               <p>
                 <span className="block font-medium text-warm-white/90">Nairobi Office</span>
-                Nairobi Garage – Karen, Watermark Business Park, Ndege Rd. Off Langata Rd. | Edwin Agasa: +254 720 848 695
+                8th Floor, Pinetree Plaza, Kaburu Drive, Off Ngong Road, Nairobi, Kenya | Edwin Agasa: +254 720 848 695
               </p>
               <p>Email: hello@ukena.co.uk</p>
             </div>

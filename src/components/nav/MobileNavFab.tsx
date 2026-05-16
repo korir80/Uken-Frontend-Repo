@@ -13,6 +13,7 @@ import {
   X,
   Sparkles,
   LogIn,
+  PackageSearch,
 } from "lucide-react";
 import { useAuth, defaultPathForRole } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -36,6 +37,7 @@ const baseItems = [
   { label: "Contact", to: "/contact" as const, icon: Mail },
   { label: "Join UKEN", to: "/join" as const,  icon: Sparkles },
   { label: "Saved",   to: "/saved" as const,   icon: Bookmark },
+  { label: "Track order", to: "/orders/track" as const, icon: PackageSearch },
 ] as const;
 
 export function MobileNavFab() {

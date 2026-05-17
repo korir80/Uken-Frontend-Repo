@@ -87,7 +87,7 @@ export function CreatorHeader({ creator }: CreatorHeaderProps) {
             className="mt-10 hidden items-center gap-2 text-charcoal/55 md:flex"
           >
             <span className="text-[10px] uppercase tracking-[0.3em]">
-              Her story
+              The story
             </span>
             <motion.div
               animate={{ y: [0, 4, 0] }}

@@ -42,6 +42,10 @@ export const Route = createFileRoute("/shop")({
       title: "Shop the UKEN collection — Kenyan goods",
       description:
         "Browse the UKEN catalogue — specialty coffee, tea, foods, textiles, beadwork, pottery and more, traced from maker to UK door.",
+      breadcrumbs: [
+        { name: "Home", path: "/" },
+        { name: "Shop", path: "/shop" },
+      ],
     }),
   component: ShopPage,
 });

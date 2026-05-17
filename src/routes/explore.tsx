@@ -24,6 +24,10 @@ export const Route = createFileRoute("/explore")({
     title: "Meet the makers of Kenya — UKEN",
     description:
       "Browse the Kenyan farmers, artisans, and makers behind every UKEN product. Discover the people behind the work.",
+    breadcrumbs: [
+      { name: "Home", path: "/" },
+      { name: "Explore", path: "/explore" },
+    ],
   }),
   component: ExplorePage,
 });

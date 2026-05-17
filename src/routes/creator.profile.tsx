@@ -148,6 +148,18 @@ function CreatorProfile() {
             />
           </label>
 
+          <div className="rounded-2xl border border-border bg-warm-white p-4 md:p-5">
+            <CloudinaryImagePicker
+              label="Workshop gallery"
+              helper="Up to 12 photographs of your space, tools, hands and process. The first image leads the gallery on your public page."
+              value={workshopImages}
+              onChange={setWorkshopImages}
+              max={12}
+              folder="ukena/creators/workshop"
+              aspect="square"
+            />
+          </div>
+
           <div className="flex items-center gap-4">
             <button
               type="submit"

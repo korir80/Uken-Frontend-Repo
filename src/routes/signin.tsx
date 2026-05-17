@@ -13,6 +13,7 @@ export const Route = createFileRoute("/signin")({
         name: "description",
         content: "Sign in to your UKEN account.",
       },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: SignInPage,

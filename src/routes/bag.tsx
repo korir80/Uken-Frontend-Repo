@@ -19,6 +19,7 @@ export const Route = createFileRoute("/bag")({
         name: "description",
         content: "Review the pieces in your bag and the makers behind them.",
       },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: BagPage,

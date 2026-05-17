@@ -90,6 +90,10 @@ function CreatorProfile() {
         craft,
         pullQuote,
         storyParagraphs: storyText.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean),
+        processSteps: workshopImages.map((image, i) => ({
+          image,
+          caption: profile?.processSteps?.[i]?.caption ?? "",
+        })),
       },
       {
         onSuccess: () => {

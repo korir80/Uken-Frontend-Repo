@@ -25,8 +25,8 @@ export function CreatorProcess({ creator }: CreatorProcessProps) {
             <em className="italic text-clay">works</em>.
           </h2>
           <p className="mt-3 max-w-xl text-[14px] leading-relaxed text-ink-muted md:text-[15px]">
-            Four moments from a single basket — start to finish, the way
-            she would walk a visitor through the workshop on a quiet afternoon.
+            A few moments from the workshop — start to finish, the way
+            {" "}{creator.firstName} would walk a visitor through on a quiet afternoon.
           </p>
         </Reveal>
 

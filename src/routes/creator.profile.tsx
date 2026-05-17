@@ -77,6 +77,7 @@ function CreatorProfile() {
     setCraft(profile.craft);
     setPullQuote(profile.pullQuote);
     setStoryText((profile.storyParagraphs ?? []).join("\n\n"));
+    setWorkshopImages((profile.processSteps ?? []).map((s) => s.image).filter(Boolean));
   }, [profile]);
 
   const handleSave = (e: React.FormEvent) => {

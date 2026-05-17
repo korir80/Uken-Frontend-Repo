@@ -31,6 +31,7 @@ function CreatorProfile() {
   const [craft, setCraft] = useState("");
   const [pullQuote, setPullQuote] = useState("");
   const [storyText, setStoryText] = useState("");
+  const [workshopImages, setWorkshopImages] = useState<string[]>([]);
   const [saved, setSaved] = useState(false);
 
   const portraitInputRef = useRef<HTMLInputElement>(null);

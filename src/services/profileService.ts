@@ -23,6 +23,7 @@ export interface CreatorProfileUpdate {
   pullQuote?: string;
   portraitImage?: string;
   headerImage?: string;
+  processSteps?: { image: string; caption: string }[];
 }
 
 export interface UploadedMedia {

@@ -160,6 +160,7 @@ function CreatorProfilePage() {
       <main>
         <CreatorHeader creator={creator} />
         <CreatorStory creator={creator} />
+        <CreatorGallery creator={creator} />
         <CreatorProcess creator={creator} />
         <CreatorMeaning creator={creator} />
         <CreatorProducts creator={creator} />

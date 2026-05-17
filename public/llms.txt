@@ -1,0 +1,29 @@
+# UKEN
+
+> UKEN is a direct-trade marketplace connecting UK buyers with Kenyan farmers, artisans, and makers. Every product is traceable from maker to door.
+
+UKEN sells specialty Kenyan coffee, tea, foods, textiles, beadwork, pottery, and craft. The platform pairs each product with the person who made it — their region, craft, and story — and ships directly from Kenya to the UK.
+
+## Pages
+
+- [Home](/): Shop authentic Kenyan goods, traced from maker to UK door.
+- [Shop](/shop): Full catalogue — coffee, tea, foods, textiles, beadwork, pottery.
+- [Explore makers](/explore): Browse the farmers, artisans, and makers behind every UKEN product.
+- [About UKEN](/about): Who we are, what we do, and how UKEN works.
+- [Our story, mission and vision](/story): The bridge between Kenyan producers and UK buyers.
+- [Sustainability](/sustainability): How UKEN trades fairly and traces every chain.
+- [Transparency](/transparency): Pricing, payouts, and producer relationships.
+- [Press and partners](/press): Media information and academic partners.
+- [Contact](/contact): Nottingham and Nairobi offices, plus general enquiries.
+- [Join UKEN](/join): For Kenyan producers who want to sell through UKEN.
+- [Track an order](/orders/track): Look up the status of a UKEN order.
+
+## Example creators
+
+- [Wanjiru](/creators/wanjiru): A weaver from the Kenyan highlands.
+- [Naserian](/creators/naserian): Maasai beadwork from the Rift Valley.
+
+## Optional
+
+- [Collections](/collections): Curated edits across the catalogue.
+- [Artisans index](/artisans): A flat list of every UKEN maker.

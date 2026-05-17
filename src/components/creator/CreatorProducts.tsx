@@ -20,7 +20,7 @@ export function CreatorProducts({ creator }: CreatorProductsProps) {
         <Reveal>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-8">
             <div>
-              <SectionLabel>From her hands</SectionLabel>
+              <SectionLabel>From the workshop</SectionLabel>
               <h2 className="mt-3 font-display text-[32px] leading-[1.05] tracking-tight text-charcoal md:text-[42px]">
                 From {creator.firstName}'s{" "}
                 <em className="italic text-clay">hands</em>.

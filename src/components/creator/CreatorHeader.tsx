@@ -48,7 +48,7 @@ export function CreatorHeader({ creator }: CreatorHeaderProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.95, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-5 font-display text-[64px] leading-[0.92] tracking-tight text-charcoal sm:text-[88px] md:text-[104px] lg:text-[128px]"
+            className="mt-4 font-display text-[44px] leading-[0.95] tracking-tight text-charcoal sm:text-[64px] md:text-[88px] lg:text-[112px]"
           >
             {creator.firstName}
           </motion.h1>
@@ -87,7 +87,7 @@ export function CreatorHeader({ creator }: CreatorHeaderProps) {
             className="mt-10 hidden items-center gap-2 text-charcoal/55 md:flex"
           >
             <span className="text-[10px] uppercase tracking-[0.3em]">
-              Her story
+              The story
             </span>
             <motion.div
               animate={{ y: [0, 4, 0] }}

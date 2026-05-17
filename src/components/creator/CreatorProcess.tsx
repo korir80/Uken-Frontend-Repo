@@ -14,6 +14,7 @@ interface CreatorProcessProps {
  * contact sheet rather than a product gallery. Still no product mention.
  */
 export function CreatorProcess({ creator }: CreatorProcessProps) {
+  if (!creator.processSteps || creator.processSteps.length === 0) return null;
   return (
     <section className="bg-cream py-12 md:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-5 md:px-10">

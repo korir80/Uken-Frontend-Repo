@@ -80,6 +80,7 @@ export const profileService = {
         pullQuote: o.pullQuote ?? base.pullQuote,
         portraitImage: o.portraitImage ?? base.portraitImage,
         headerImage: o.headerImage ?? base.headerImage,
+        processSteps: o.processSteps ?? base.processSteps,
       };
     }
     const res = await api.get<CreatorDetail>("/creators/me");

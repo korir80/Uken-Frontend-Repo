@@ -9,6 +9,7 @@ import {
 } from "@/lib/queries";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicker";
 import {
   cloudinaryService,
   validateUploadFile,
@@ -30,6 +31,7 @@ function CreatorProfile() {
   const [craft, setCraft] = useState("");
   const [pullQuote, setPullQuote] = useState("");
   const [storyText, setStoryText] = useState("");
+  const [workshopImages, setWorkshopImages] = useState<string[]>([]);
   const [saved, setSaved] = useState(false);
 
   const portraitInputRef = useRef<HTMLInputElement>(null);
@@ -75,6 +77,7 @@ function CreatorProfile() {
     setCraft(profile.craft);
     setPullQuote(profile.pullQuote);
     setStoryText((profile.storyParagraphs ?? []).join("\n\n"));
+    setWorkshopImages((profile.processSteps ?? []).map((s) => s.image).filter(Boolean));
   }, [profile]);
 
   const handleSave = (e: React.FormEvent) => {
@@ -87,6 +90,10 @@ function CreatorProfile() {
         craft,
         pullQuote,
         storyParagraphs: storyText.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean),
+        processSteps: workshopImages.map((image, i) => ({
+          image,
+          caption: profile?.processSteps?.[i]?.caption ?? "",
+        })),
       },
       {
         onSuccess: () => {
@@ -140,6 +147,18 @@ function CreatorProfile() {
               className="mt-2 w-full rounded-lg border border-border bg-warm-white px-4 py-3 font-sans text-[14px] leading-relaxed text-charcoal outline-none focus:border-clay focus:ring-2 focus:ring-clay/15"
             />
           </label>
+
+          <div className="rounded-2xl border border-border bg-warm-white p-4 md:p-5">
+            <CloudinaryImagePicker
+              label="Workshop gallery"
+              helper="Up to 12 photographs of your space, tools, hands and process. The first image leads the gallery on your public page."
+              value={workshopImages}
+              onChange={setWorkshopImages}
+              max={12}
+              folder="ukena/creators/workshop"
+              aspect="square"
+            />
+          </div>
 
           <div className="flex items-center gap-4">
             <button

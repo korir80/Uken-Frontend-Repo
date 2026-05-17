@@ -71,6 +71,15 @@ export const Route = createFileRoute("/products/$productId")({
         url,
       },
     };
+    const breadcrumbJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://ukena.co.uk/" },
+        { "@type": "ListItem", position: 2, name: "Shop", item: "https://ukena.co.uk/shop" },
+        { "@type": "ListItem", position: 3, name: p.name, item: url },
+      ],
+    };
     return {
       meta: [
         { title },
@@ -87,10 +96,8 @@ export const Route = createFileRoute("/products/$productId")({
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(productJsonLd),
-        },
+        { type: "application/ld+json", children: JSON.stringify(productJsonLd) },
+        { type: "application/ld+json", children: JSON.stringify(breadcrumbJsonLd) },
       ],
     };
   },

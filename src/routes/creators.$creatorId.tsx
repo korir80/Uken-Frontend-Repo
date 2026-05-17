@@ -89,6 +89,18 @@ export const Route = createFileRoute("/creators/$creatorId")({
             url,
           }),
         },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://ukena.co.uk/" },
+              { "@type": "ListItem", position: 2, name: "Explore", item: "https://ukena.co.uk/explore" },
+              { "@type": "ListItem", position: 3, name: c.fullName, item: url },
+            ],
+          }),
+        },
       ],
     };
   },

@@ -10,12 +10,69 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/contact")({
-  head: () => routeSeo({
-    path: "/contact",
-    title: "Contact UKEN — Nottingham and Nairobi",
-    description:
-      "Find UKEN in Nottingham and Nairobi, or contact the team for buyer, producer, press, and general enquiries.",
-  }),
+  head: () => {
+    const seo = routeSeo({
+      path: "/contact",
+      title: "Contact UKEN — Nottingham and Nairobi",
+      description:
+        "Find UKEN in Nottingham and Nairobi, or contact the team for buyer, producer, press, and general enquiries.",
+      breadcrumbs: [
+        { name: "Home", path: "/" },
+        { name: "Contact", path: "/contact" },
+      ],
+    });
+    return {
+      ...seo,
+      scripts: [
+        ...seo.scripts,
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "UKEN",
+            url: "https://ukena.co.uk",
+            email: "hello@ukena.co.uk",
+            location: [
+              {
+                "@type": "Place",
+                name: "UKEN — UK Head Office",
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: "Osmaston 10",
+                  postalCode: "NG7 1SD",
+                  addressLocality: "Nottingham",
+                  addressCountry: "GB",
+                },
+                contactPoint: {
+                  "@type": "ContactPoint",
+                  contactType: "customer service",
+                  name: "Andrew Soi",
+                  telephone: "+44 7425 241649",
+                },
+              },
+              {
+                "@type": "Place",
+                name: "UKEN — Nairobi Office",
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: "8th Floor, Pinetree Plaza, Kaburu Drive, Off Ngong Road",
+                  addressLocality: "Nairobi",
+                  addressCountry: "KE",
+                },
+                contactPoint: {
+                  "@type": "ContactPoint",
+                  contactType: "customer service",
+                  name: "Edwin Agasa",
+                  telephone: "+254 720 848 695",
+                },
+              },
+            ],
+          }),
+        },
+      ],
+    };
+  },
   component: ContactPage,
 });
 

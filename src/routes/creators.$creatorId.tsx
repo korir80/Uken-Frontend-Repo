@@ -4,6 +4,7 @@ import { Footer } from "@/components/home/Footer";
 import { CreatorHeader } from "@/components/creator/CreatorHeader";
 import { CreatorStory } from "@/components/creator/CreatorStory";
 import { CreatorProcess } from "@/components/creator/CreatorProcess";
+import { CreatorGallery } from "@/components/creator/CreatorGallery";
 import { CreatorMeaning } from "@/components/creator/CreatorMeaning";
 import { CreatorProducts } from "@/components/creator/CreatorProducts";
 import { RelatedCreators } from "@/components/creator/RelatedCreators";

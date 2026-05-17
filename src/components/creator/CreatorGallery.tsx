@@ -30,7 +30,7 @@ export function CreatorGallery({ creator }: CreatorGalleryProps) {
     const push = (src?: string) => {
       if (!src) return;
       const safe = safeImg(src);
-      if (seen.has(safe)) return;
+      if (!safe || seen.has(safe)) return;
       seen.add(safe);
       out.push(safe);
     };

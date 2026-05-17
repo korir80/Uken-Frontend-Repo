@@ -9,6 +9,7 @@ import {
 } from "@/lib/queries";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicker";
 import {
   cloudinaryService,
   validateUploadFile,

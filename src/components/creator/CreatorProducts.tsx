@@ -13,6 +13,7 @@ interface CreatorProductsProps {
  * minimal chrome. Cards are an invitation, not a sales pitch.
  */
 export function CreatorProducts({ creator }: CreatorProductsProps) {
+  if (!creator.products || creator.products.length === 0) return null;
   return (
     <section className="bg-cream py-12 md:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 md:px-10">

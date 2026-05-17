@@ -15,14 +15,25 @@ import { PersonalisedHome } from "@/components/home/PersonalisedHome";
 import { useAuth } from "@/lib/auth";
 
 import { routeSeo } from "@/lib/seo";
+import savanna from "@/assets/authentic-savanna.jpg";
 
 export const Route = createFileRoute("/")({
-  head: () => routeSeo({
-    path: "/",
-    title: "UKEN — Kenya, brought home",
-    description:
-      "Shop authentic Kenyan coffee, food, crafts, and artisan goods. Every product traced from maker to your UK door.",
-  }),
+  head: () => {
+    const seo = routeSeo({
+      path: "/",
+      title: "UKEN — Authentic Kenyan Coffee, Crafts & Artisan Goods",
+      description:
+        "Shop direct from Kenyan farmers and artisans. Specialty coffee, tea, textiles, beadwork and craft — every piece traced from maker to your UK door.",
+      image: savanna,
+    });
+    return {
+      ...seo,
+      links: [
+        ...seo.links,
+        { rel: "preload", as: "image", href: savanna, fetchpriority: "high" },
+      ],
+    };
+  },
   component: HomePage,
 });
 

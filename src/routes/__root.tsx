@@ -92,11 +92,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "UKEN — Kenya, brought home" },
+      { title: "UKEN" },
       {
         name: "description",
         content:
-          "UKEN connects UK buyers directly with traceable Kenyan coffee, tea, foods, textiles, beadwork, and craft — straight from the maker.",
+          "UKEN — a direct trade marketplace bridging Kenyan farmers, artisans, and makers with UK homes.",
       },
       { name: "author", content: "UKEN" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
@@ -105,11 +105,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       { httpEquiv: "Content-Language", content: "en-GB" },
       { property: "og:site_name", content: "UKEN" },
       { property: "og:locale", content: "en_GB" },
-      { property: "og:title", content: "UKEN — Kenya, brought home" },
+      { property: "og:title", content: "UKEN" },
       {
         property: "og:description",
         content:
-          "UKEN connects UK buyers directly with traceable Kenyan coffee, tea, foods, textiles, beadwork, and craft — straight from the maker.",
+          "UKEN — a direct trade marketplace bridging Kenyan farmers, artisans, and makers with UK homes.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: SITE_URL },
@@ -126,7 +126,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "canonical", href: SITE_URL },
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
       { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },

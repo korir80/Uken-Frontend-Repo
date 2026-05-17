@@ -35,6 +35,7 @@ export const Route = createFileRoute("/saved")({
         property: "og:description",
         content: "Your saved Kenyan makers and pieces.",
       },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: SavedPage,

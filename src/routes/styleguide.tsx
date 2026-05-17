@@ -22,8 +22,15 @@ export const Route = createFileRoute("/styleguide")({
       {
         name: "description",
         content:
-          "The design system for UKEN: a story-driven marketplace connecting Kenyan artisans with UK buyers.",
+          "The UKEN design system — tokens, typography, components and patterns used across the marketplace.",
       },
+      { property: "og:title", content: "UKEN Style Guide — Design System" },
+      {
+        property: "og:description",
+        content:
+          "Tokens, typography, and components powering UKEN's editorial marketplace UI.",
+      },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: DesignSystemShowcase,

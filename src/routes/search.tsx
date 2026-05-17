@@ -43,6 +43,7 @@ export const Route = createFileRoute("/search")({
         content:
           "Search the UKEN marketplace for products, materials, regions, and makers.",
       },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: SearchPage,

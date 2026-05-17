@@ -55,7 +55,7 @@ function DecorativeKenyaMap({ label }: { label: string }) {
   return (
     <figure className="rounded-2xl border border-border/70 bg-cream p-5 md:p-6">
       <p className="text-[11px] uppercase tracking-[0.22em] text-ink-muted">
-        Where she works
+        Where the work happens
       </p>
 
       <div className="relative mt-4 aspect-[4/5] max-h-[360px] overflow-hidden rounded-lg bg-sand-soft/60">

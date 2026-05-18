@@ -28,9 +28,10 @@ export const cloudinaryService = {
 
     const signData = await api.post<SignData>("/cloudinary/sign", { folder });
 
-    // Only timestamp and public_id are signed on the backend.
-    // Do NOT add folder as a separate param — it is already embedded
-    // inside public_id and adding it separately breaks the signature.
+    // The backend signs only { timestamp, public_id }.
+    // public_id already contains the folder prefix (e.g. "ukena/creators/workshop/uuid").
+    // Do NOT send folder as a separate FormData field — it is not in the
+    // signature and Cloudinary rejects requests with unsigned extra params.
     const formData = new FormData();
     formData.append("file", file);
     formData.append("signature", signData.signature);

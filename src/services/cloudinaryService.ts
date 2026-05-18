@@ -6,7 +6,7 @@ interface SignData {
   apiKey: string;
   cloudName: string;
   folder: string;
-  publicId: string | null;
+  publicId: string;
   uploadUrl: string;
 }
 
@@ -25,19 +25,24 @@ export function validateUploadFile(file: File): void {
 export const cloudinaryService = {
   async upload(file: File, folder: string): Promise<string> {
     validateUploadFile(file);
+
     const signData = await api.post<SignData>("/cloudinary/sign", { folder });
+
+    // Only timestamp and public_id are signed on the backend.
+    // Do NOT add folder as a separate param — it is already embedded
+    // inside public_id and adding it separately breaks the signature.
     const formData = new FormData();
     formData.append("file", file);
     formData.append("signature", signData.signature);
     formData.append("timestamp", String(signData.timestamp));
     formData.append("api_key", signData.apiKey);
-    formData.append("folder", signData.folder);
-    if (signData.publicId) formData.append("public_id", signData.publicId);
+    formData.append("public_id", signData.publicId);
 
     const res = await fetch(signData.uploadUrl, {
       method: "POST",
       body: formData,
     });
+
     const json = await res.json();
     if (!res.ok) {
       throw new Error(json?.error?.message ?? "Upload failed");

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransparencyRouteImport } from './routes/transparency'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SustainabilityRouteImport } from './routes/sustainability'
 import { Route as StyleguideRouteImport } from './routes/styleguide'
 import { Route as StoryRouteImport } from './routes/story'
@@ -18,6 +19,7 @@ import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PressRouteImport } from './routes/press'
 import { Route as ExploreRouteImport } from './routes/explore'
@@ -70,6 +72,11 @@ const TransparencyRoute = TransparencyRouteImport.update({
   path: '/transparency',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SustainabilityRoute = SustainabilityRouteImport.update({
   id: '/sustainability',
   path: '/sustainability',
@@ -108,6 +115,11 @@ const SearchRoute = SearchRouteImport.update({
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundsRoute = RefundsRouteImport.update({
+  id: '/refunds',
+  path: '/refunds',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -355,6 +367,7 @@ export interface FileRoutesByFullPath {
   '/explore': typeof ExploreRoute
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -363,6 +376,7 @@ export interface FileRoutesByFullPath {
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
   '/sustainability': typeof SustainabilityRoute
+  '/terms': typeof TermsRoute
   '/transparency': typeof TransparencyRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
@@ -409,6 +423,7 @@ export interface FileRoutesByTo {
   '/explore': typeof ExploreRoute
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -417,6 +432,7 @@ export interface FileRoutesByTo {
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
   '/sustainability': typeof SustainabilityRoute
+  '/terms': typeof TermsRoute
   '/transparency': typeof TransparencyRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
@@ -467,6 +483,7 @@ export interface FileRoutesById {
   '/explore': typeof ExploreRoute
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -475,6 +492,7 @@ export interface FileRoutesById {
   '/story': typeof StoryRoute
   '/styleguide': typeof StyleguideRoute
   '/sustainability': typeof SustainabilityRoute
+  '/terms': typeof TermsRoute
   '/transparency': typeof TransparencyRoute
   '/account/activity': typeof AccountActivityRoute
   '/account/addresses': typeof AccountAddressesRoute
@@ -526,6 +544,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/press'
     | '/privacy'
+    | '/refunds'
     | '/saved'
     | '/search'
     | '/shop'
@@ -534,6 +553,7 @@ export interface FileRouteTypes {
     | '/story'
     | '/styleguide'
     | '/sustainability'
+    | '/terms'
     | '/transparency'
     | '/account/activity'
     | '/account/addresses'
@@ -580,6 +600,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/press'
     | '/privacy'
+    | '/refunds'
     | '/saved'
     | '/search'
     | '/shop'
@@ -588,6 +609,7 @@ export interface FileRouteTypes {
     | '/story'
     | '/styleguide'
     | '/sustainability'
+    | '/terms'
     | '/transparency'
     | '/account/activity'
     | '/account/addresses'
@@ -637,6 +659,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/press'
     | '/privacy'
+    | '/refunds'
     | '/saved'
     | '/search'
     | '/shop'
@@ -645,6 +668,7 @@ export interface FileRouteTypes {
     | '/story'
     | '/styleguide'
     | '/sustainability'
+    | '/terms'
     | '/transparency'
     | '/account/activity'
     | '/account/addresses'
@@ -695,6 +719,7 @@ export interface RootRouteChildren {
   ExploreRoute: typeof ExploreRoute
   PressRoute: typeof PressRoute
   PrivacyRoute: typeof PrivacyRoute
+  RefundsRoute: typeof RefundsRoute
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
   ShopRoute: typeof ShopRoute
@@ -703,6 +728,7 @@ export interface RootRouteChildren {
   StoryRoute: typeof StoryRoute
   StyleguideRoute: typeof StyleguideRoute
   SustainabilityRoute: typeof SustainabilityRoute
+  TermsRoute: typeof TermsRoute
   TransparencyRoute: typeof TransparencyRoute
   CreatorsCreatorIdRoute: typeof CreatorsCreatorIdRoute
   JoinApplyRoute: typeof JoinApplyRoute
@@ -718,6 +744,13 @@ declare module '@tanstack/react-router' {
       path: '/transparency'
       fullPath: '/transparency'
       preLoaderRoute: typeof TransparencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sustainability': {
@@ -774,6 +807,13 @@ declare module '@tanstack/react-router' {
       path: '/saved'
       fullPath: '/saved'
       preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refunds': {
+      id: '/refunds'
+      path: '/refunds'
+      fullPath: '/refunds'
+      preLoaderRoute: typeof RefundsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -1217,6 +1257,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRoute: ExploreRoute,
   PressRoute: PressRoute,
   PrivacyRoute: PrivacyRoute,
+  RefundsRoute: RefundsRoute,
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,
   ShopRoute: ShopRoute,
@@ -1225,6 +1266,7 @@ const rootRouteChildren: RootRouteChildren = {
   StoryRoute: StoryRoute,
   StyleguideRoute: StyleguideRoute,
   SustainabilityRoute: SustainabilityRoute,
+  TermsRoute: TermsRoute,
   TransparencyRoute: TransparencyRoute,
   CreatorsCreatorIdRoute: CreatorsCreatorIdRoute,
   JoinApplyRoute: JoinApplyRoute,
@@ -1235,3 +1277,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

@@ -18,6 +18,7 @@ import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PressRouteImport } from './routes/press'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CreatorRouteImport } from './routes/creator'
@@ -107,6 +108,11 @@ const SearchRoute = SearchRouteImport.update({
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PressRoute = PressRouteImport.update({
@@ -348,6 +354,7 @@ export interface FileRoutesByFullPath {
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
   '/press': typeof PressRoute
+  '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -401,6 +408,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/explore': typeof ExploreRoute
   '/press': typeof PressRoute
+  '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -458,6 +466,7 @@ export interface FileRoutesById {
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
   '/press': typeof PressRoute
+  '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
@@ -516,6 +525,7 @@ export interface FileRouteTypes {
     | '/creator'
     | '/explore'
     | '/press'
+    | '/privacy'
     | '/saved'
     | '/search'
     | '/shop'
@@ -569,6 +579,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/explore'
     | '/press'
+    | '/privacy'
     | '/saved'
     | '/search'
     | '/shop'
@@ -625,6 +636,7 @@ export interface FileRouteTypes {
     | '/creator'
     | '/explore'
     | '/press'
+    | '/privacy'
     | '/saved'
     | '/search'
     | '/shop'
@@ -682,6 +694,7 @@ export interface RootRouteChildren {
   CreatorRoute: typeof CreatorRouteWithChildren
   ExploreRoute: typeof ExploreRoute
   PressRoute: typeof PressRoute
+  PrivacyRoute: typeof PrivacyRoute
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
   ShopRoute: typeof ShopRoute
@@ -761,6 +774,13 @@ declare module '@tanstack/react-router' {
       path: '/saved'
       fullPath: '/saved'
       preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/press': {
@@ -1196,6 +1216,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreatorRoute: CreatorRouteWithChildren,
   ExploreRoute: ExploreRoute,
   PressRoute: PressRoute,
+  PrivacyRoute: PrivacyRoute,
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,
   ShopRoute: ShopRoute,
@@ -1214,12 +1235,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

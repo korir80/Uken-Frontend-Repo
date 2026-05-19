@@ -145,8 +145,9 @@ export function Footer() {
           <Logo variant="light" className="h-10" />
 
           <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <a href="/privacy" className="hover:text-warm-white">Privacy</a>
-            <a href="/terms" className="hover:text-warm-white">Terms</a>
+            <Link to="/privacy" className="hover:text-warm-white">Privacy</Link>
+            <Link to="/terms" className="hover:text-warm-white">Terms</Link>
+            <Link to="/refunds" className="hover:text-warm-white">Refunds</Link>
             <Link to="/styleguide" className="hover:text-warm-white">Style Guide</Link>
           </div>
           <span>© {new Date().getFullYear()} UKEN · Nottingham &amp; Nairobi</span>

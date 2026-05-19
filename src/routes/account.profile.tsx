@@ -133,14 +133,8 @@ function BuyerProfile() {
           <div className="rounded-2xl border border-border/60 bg-warm-white p-5">
             <p className="font-display text-base text-charcoal">Need to delete your account?</p>
             <p className="mt-1 font-sans text-[12px] text-charcoal/60">
-              Get in touch and we'll help you remove your data.
+              Call Andrew Soi on +44 7425 241649 (UK) or Edwin Agasa on +254 720 848 695 (Kenya) and we'll help you remove your data.
             </p>
-            <a
-              href="mailto:hello@ukena.studio"
-              className="mt-3 inline-flex font-sans text-[12px] text-clay hover:underline"
-            >
-              hello@ukena.studio
-            </a>
           </div>
         </aside>
       </form>

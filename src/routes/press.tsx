@@ -35,7 +35,7 @@ function PressPage() {
           <Card tone="warm-white" elevation="soft" className="p-5 md:p-7">
             <h2 className="font-display text-[28px] leading-tight text-charcoal md:text-[34px]">Press contact</h2>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-muted md:text-base">
-              For media enquiries contact Andrew Soi at hello@ukena.co.uk or +44 7425 241649
+              For media enquiries contact Andrew Soi on +44 7425 241649.
             </p>
           </Card>
 

@@ -32,7 +32,7 @@ export const Route = createFileRoute("/contact")({
             "@type": "Organization",
             name: "UKEN",
             url: "https://ukena.co.uk",
-            email: "hello@ukena.co.uk",
+            
             location: [
               {
                 "@type": "Place",
@@ -153,7 +153,7 @@ function ContactPage() {
             </Card>
 
             <p className="text-base leading-relaxed text-ink-muted">
-              <span className="font-medium text-charcoal">General enquiries:</span> hello@ukena.co.uk
+              <span className="font-medium text-charcoal">General enquiries:</span> call either office above.
             </p>
           </div>
 

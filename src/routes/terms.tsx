@@ -82,7 +82,7 @@ function TermsPage() {
           <li>You must be 18 or over (or have parental consent) to create an account.</li>
           <li>Provide accurate name, email, delivery address and contact details.</li>
           <li>Keep your password confidential — you are responsible for activity on your account.</li>
-          <li>Tell us promptly at hello@ukena.co.uk if you suspect unauthorised use.</li>
+          <li>Tell us promptly (UK: +44 7425 241649 / Kenya: +254 720 848 695) if you suspect unauthorised use.</li>
           <li>Guest checkout is available for one-off purchases; an account is required for order history and saved items.</li>
         </UL>
 
@@ -161,7 +161,7 @@ function TermsPage() {
           quickly:
         </P>
         <UL>
-          <li>Email: <a className="underline" href="mailto:hello@ukena.co.uk">hello@ukena.co.uk</a></li>
+          
           <li>UK Head Office: Osmaston 10, NG7 1SD, Nottingham — Andrew Soi, +44 7425 241649</li>
           <li>Nairobi Office: 8th Floor, Pinetree Plaza, Kaburu Drive, Off Ngong Road — Edwin Agasa, +254 720 848 695</li>
         </UL>

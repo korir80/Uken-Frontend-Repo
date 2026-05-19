@@ -73,17 +73,12 @@ function RefundsPage() {
 
         <H2>2. How to start a refund request</H2>
         <P>
-          All refund requests must be initiated by emailing the UKEN admin
-          team:
+          All refund requests must be initiated by calling the UKEN admin team:
         </P>
         <UL>
-          <li>
-            Email:{" "}
-            <a className="underline" href="mailto:hello@ukena.co.uk">
-              hello@ukena.co.uk
-            </a>
-          </li>
-          <li>Subject line: "Refund request — [your order number]"</li>
+          <li>UK — Andrew Soi: +44 7425 241649</li>
+          <li>Kenya — Edwin Agasa: +254 720 848 695</li>
+          <li>Have your order number ready when you call.</li>
         </UL>
         <P>Please include the following so we can review quickly:</P>
         <UL>
@@ -136,13 +131,10 @@ function RefundsPage() {
 
         <H2>8. Questions</H2>
         <P>
-          Anything unclear? Email{" "}
-          <a className="underline" href="mailto:hello@ukena.co.uk">
-            hello@ukena.co.uk
-          </a>{" "}
-          or call the relevant office: Andrew Soi on +44 7425 241649 (UK) or
-          Edwin Agasa on +254 720 848 695 (Kenya). We would rather hear from
-          you early than have you sit with a piece that isn't right.
+          Anything unclear? Call the relevant office: Andrew Soi on
+          +44 7425 241649 (UK) or Edwin Agasa on +254 720 848 695 (Kenya).
+          We would rather hear from you early than have you sit with a piece
+          that isn't right.
         </P>
       </main>
       <Footer />

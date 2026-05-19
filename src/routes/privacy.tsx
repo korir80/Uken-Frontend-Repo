@@ -79,11 +79,7 @@ function PrivacyPage() {
         </P>
         <P>
           For any privacy-related question, request, or complaint, contact our
-          data team at{" "}
-          <a className="underline" href="mailto:hello@ukena.co.uk">
-            hello@ukena.co.uk
-          </a>
-          , or by phone on +44 7425 241649 (UK) or +254 720 848 695 (Kenya).
+          data team by phone on +44 7425 241649 (UK) or +254 720 848 695 (Kenya).
         </P>
 
         <H2>2. Personal data we collect</H2>
@@ -239,13 +235,11 @@ function PrivacyPage() {
           <li>Request that your data be transferred to you or another controller (data portability).</li>
         </UL>
         <P>
-          To exercise any of these rights, email{" "}
-          <a className="underline" href="mailto:hello@ukena.co.uk">
-            hello@ukena.co.uk
-          </a>
-          {" "}with the subject line "Data request". We will respond within 30
-          days. If you are not satisfied, you may lodge a complaint with the
-          Office of the Data Protection Commissioner (ODPC), Kenya, at{" "}
+          To exercise any of these rights, call Andrew Soi on +44 7425 241649
+          (UK) or Edwin Agasa on +254 720 848 695 (Kenya) and quote "Data
+          request". We will respond within 30 days. If you are not satisfied,
+          you may lodge a complaint with the Office of the Data Protection
+          Commissioner (ODPC), Kenya, at{" "}
           <a className="underline" href="https://www.odpc.go.ke">www.odpc.go.ke</a>.
         </P>
 

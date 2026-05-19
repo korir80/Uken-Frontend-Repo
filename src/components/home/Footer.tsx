@@ -116,9 +116,6 @@ export function Footer() {
               ))}
             </div>
 
-            <p className="mt-4 text-[13px] text-warm-white/60 md:ml-auto">
-              hello@ukena.co.uk
-            </p>
           </div>
 
           <div>
@@ -134,7 +131,7 @@ export function Footer() {
                 <span className="block font-medium text-warm-white/90">Nairobi Office</span>
                 8th Floor, Pinetree Plaza, Kaburu Drive, Off Ngong Road, Nairobi, Kenya | Edwin Agasa: +254 720 848 695
               </p>
-              <p>Email: hello@ukena.co.uk</p>
+              
             </div>
           </div>
         </div>

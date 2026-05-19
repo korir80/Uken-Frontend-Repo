@@ -55,7 +55,7 @@ const ORGANIZATION_JSONLD = {
   logo: `${SITE_URL}/og-image.jpg`,
   description:
     "UKEN connects UK buyers directly with traceable Kenyan coffee, tea, foods, textiles, craft, and more.",
-  email: "hello@ukena.co.uk",
+  
   telephone: "+44 7425 241649",
   sameAs: [] as string[],
   address: [

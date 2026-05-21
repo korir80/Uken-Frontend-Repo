@@ -57,6 +57,10 @@ const navItems: NavItem[] = [
  */
 export function NavBar() {
   const [scrolled, setScrolled] = useState(false);
+  const { pathname } = useLocation();
+  // Only the home page has a dark cinematic hero behind a transparent nav.
+  const hasDarkHero = pathname === "/";
+  const onLight = scrolled || !hasDarkHero;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -69,18 +73,19 @@ export function NavBar() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-        scrolled
-          ? "bg-warm-white shadow-[0_1px_0_0_var(--border)]"
+        onLight
+          ? "bg-warm-white/95 shadow-[0_1px_0_0_var(--border)] backdrop-blur"
           : "bg-transparent border-b border-transparent",
       )}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 md:px-10 md:py-5">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 md:px-10 md:py-4">
         <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
           <Logo
-            variant={scrolled ? "dark" : "light"}
-            className="h-14 md:h-20"
+            variant={onLight ? "dark" : "light"}
+            className="h-11 w-auto md:h-14"
           />
         </Link>
+
 
         <nav className="hidden items-center gap-5 md:flex lg:gap-7">
           {navItems.map((item) => {

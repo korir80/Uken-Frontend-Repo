@@ -133,7 +133,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
             <MenuIcon />
           </button>
           <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
-            <Logo className="h-8" />
+            <Logo className="h-12" />
           </Link>
           <span className="hidden font-sans text-[10px] uppercase tracking-[0.22em] text-clay sm:inline">
             {eyebrow}
@@ -166,7 +166,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
             <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
               <Logo
                 variant={isAdmin ? "light" : "dark"}
-                className={cn("h-12 drop-shadow-sm", isAdmin && "drop-shadow-[0_0_18px_rgba(212,169,106,0.25)]")}
+                className={cn("h-20 drop-shadow-sm", isAdmin && "drop-shadow-[0_0_18px_rgba(212,169,106,0.25)]")}
               />
             </Link>
             <p
@@ -206,7 +206,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
                     className="inline-flex items-center"
                     onClick={() => setDrawerOpen(false)}
                   >
-                    <Logo className="h-9" />
+                    <Logo className="h-14" />
                   </Link>
                   <p className="mt-1 font-sans text-[11px] uppercase tracking-[0.24em] text-clay">
                     {eyebrow}

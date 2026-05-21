@@ -122,16 +122,19 @@ export function Footer() {
             <h4 className="text-[11px] uppercase tracking-[0.22em] text-warm-white/50">
               Contact
             </h4>
-            <div className="mt-4 space-y-3 text-[13px] leading-relaxed text-warm-white/72 md:text-[14px]">
-              <p>
+            <div className="mt-4 space-y-5 text-[13px] leading-relaxed text-warm-white/72 md:text-[14px]">
+              <div>
                 <span className="block font-medium text-warm-white/90">Head Office</span>
-                Osmaston 10, NG7 1SD, Nottingham, UK | Andrew Soi: +44 7425 241649
-              </p>
-              <p>
+                <p className="mt-1.5">Osmaston 10, NG7 1SD, Nottingham, UK</p>
+                <p className="mt-0.5">Andrew Soi</p>
+                <p className="mt-1">+44 7425 241649</p>
+              </div>
+              <div>
                 <span className="block font-medium text-warm-white/90">Nairobi Office</span>
-                8th Floor, Pinetree Plaza, Kaburu Drive, Off Ngong Road, Nairobi, Kenya | Edwin Agasa: +254 720 848 695
-              </p>
-              
+                <p className="mt-1.5">8th Floor, Pinetree Plaza, Kaburu Drive, Off Ngong Road, Nairobi, Kenya</p>
+                <p className="mt-0.5">Edwin Agasa</p>
+                <p className="mt-1">+254 720 848 695</p>
+              </div>
             </div>
           </div>
         </div>

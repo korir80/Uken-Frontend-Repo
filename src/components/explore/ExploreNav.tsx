@@ -50,7 +50,7 @@ export function ExploreNav() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 md:px-10 md:py-5">
         <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
-          <Logo className="h-10 md:h-12" />
+          <Logo className="h-[60px] md:h-[72px]" />
         </Link>
 
         <nav className="hidden items-center gap-5 md:flex lg:gap-8">

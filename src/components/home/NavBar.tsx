@@ -82,7 +82,7 @@ export function NavBar() {
         <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
           <Logo
             variant={onLight ? "dark" : "light"}
-            className="h-11 w-auto md:h-14"
+            className="h-[66px] w-auto md:h-[84px]"
           />
         </Link>
 

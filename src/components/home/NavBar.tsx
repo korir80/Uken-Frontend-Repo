@@ -56,7 +56,7 @@ const navItems: NavItem[] = [
  * on small screens and shows the full link set ≥md.
  */
 export function NavBar() {
-  const [scrolled, setScrolled] = useState(false);
+  const [onLight, setScrolled] = useState(false);
   const { pathname } = useLocation();
   // Only the home page has a dark cinematic hero behind a transparent nav.
   const hasDarkHero = pathname === "/";
@@ -91,7 +91,7 @@ export function NavBar() {
           {navItems.map((item) => {
             const linkCls = cn(
               "text-[13px] font-medium tracking-wide transition-colors lg:text-[14px]",
-              scrolled
+              onLight
                 ? "text-charcoal/80 hover:text-clay"
                 : "text-warm-white/85 hover:text-warm-white",
             );
@@ -135,15 +135,15 @@ export function NavBar() {
             aria-label="Search"
             className={cn(
               "grid h-9 w-9 place-items-center rounded-full transition-colors",
-              scrolled
+              onLight
                 ? "text-charcoal/70 hover:bg-cream hover:text-clay"
                 : "text-warm-white/85 hover:bg-warm-white/15 hover:text-warm-white",
             )}
           >
             <Search className="h-[18px] w-[18px]" strokeWidth={1.75} />
           </Link>
-          <AuthNavItem scrolled={scrolled} />
-          <BagIndicator tone={scrolled ? "light" : "dark"} />
+          <AuthNavItem onLight={onLight} />
+          <BagIndicator tone={onLight ? "light" : "dark"} />
         </div>
       </div>
     </header>
@@ -158,7 +158,7 @@ function getInitials(name: string | undefined, email: string | undefined): strin
   return src.slice(0, 2).toUpperCase();
 }
 
-function AuthNavItem({ scrolled }: { scrolled: boolean }) {
+function AuthNavItem({ onLight }: { onLight: boolean }) {
   const { isAuthenticated, isLoading, role, user, logout } = useAuth();
   if (isLoading) return null;
 
@@ -168,7 +168,7 @@ function AuthNavItem({ scrolled }: { scrolled: boolean }) {
         to="/signin"
         className={cn(
           "rounded-full px-3.5 py-1.5 font-sans text-[12px] font-medium transition-colors",
-          scrolled
+          onLight
             ? "text-charcoal/80 hover:bg-cream hover:text-clay"
             : "text-warm-white/85 hover:bg-warm-white/15 hover:text-warm-white",
         )}
@@ -192,7 +192,7 @@ function AuthNavItem({ scrolled }: { scrolled: boolean }) {
         aria-label="Account menu"
         className={cn(
           "grid h-9 w-9 place-items-center rounded-full font-sans text-[11px] font-semibold tracking-wide transition-colors outline-none",
-          scrolled
+          onLight
             ? "bg-clay text-warm-white hover:bg-clay-deep"
             : "bg-warm-white/15 text-warm-white ring-1 ring-warm-white/30 hover:bg-warm-white/25",
         )}

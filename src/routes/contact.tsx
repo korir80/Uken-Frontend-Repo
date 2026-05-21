@@ -135,26 +135,24 @@ function ContactPage() {
           <div className="space-y-4">
             <Card tone="cream" elevation="soft" className="p-5 md:p-6">
               <h2 className="font-display text-[26px] leading-tight text-charcoal md:text-[30px]">Head Office (UK)</h2>
-              <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
-                Osmaston 10, NG7 1SD<br />
-                Nottingham, United Kingdom<br />
-                Andrew Soi: +44 7425 241649
-              </p>
+              <div className="mt-3 space-y-1 text-[15px] leading-relaxed text-ink-muted">
+                <p>Osmaston 10, NG7 1SD</p>
+                <p>Nottingham, United Kingdom</p>
+                <p className="pt-1">Andrew Soi</p>
+                <p>+44 7425 241649</p>
+              </div>
             </Card>
 
             <Card tone="cream" elevation="soft" className="p-5 md:p-6">
               <h2 className="font-display text-[26px] leading-tight text-charcoal md:text-[30px]">Nairobi Office</h2>
-              <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
-                8th Floor, Pinetree Plaza<br />
-                Kaburu Drive, Off Ngong Road<br />
-                Nairobi, Kenya<br />
-                Edwin Agasa: +254 720 848 695
-              </p>
+              <div className="mt-3 space-y-1 text-[15px] leading-relaxed text-ink-muted">
+                <p>8th Floor, Pinetree Plaza</p>
+                <p>Kaburu Drive, Off Ngong Road</p>
+                <p>Nairobi, Kenya</p>
+                <p className="pt-1">Edwin Agasa</p>
+                <p>+254 720 848 695</p>
+              </div>
             </Card>
-
-            <p className="text-base leading-relaxed text-ink-muted">
-              <span className="font-medium text-charcoal">General enquiries:</span> call either office above.
-            </p>
           </div>
 
           <Card tone="warm-white" elevation="lift" className="p-5 md:p-7">

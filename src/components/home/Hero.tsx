@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import savanna from "@/assets/authentic-savanna.jpg";
+import { Logo } from "@/components/ukena";
 
 /**
  * Hero — dark cinematic, editorial.

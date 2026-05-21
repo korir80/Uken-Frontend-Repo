@@ -108,6 +108,7 @@ export function JoinPillSelect({
   value,
   onChange,
 }: JoinPillSelectProps) {
+  const isCustom = value.length > 0 && !options.includes(value);
   return (
     <FieldShell label={label} helper={helper}>
       <div className="flex flex-wrap gap-2 pt-2">
@@ -130,6 +131,23 @@ export function JoinPillSelect({
             </button>
           );
         })}
+      </div>
+      <div className="pt-4">
+        <label className="block text-[12px] uppercase tracking-[0.18em] text-ink-muted">
+          Or tell us in your own words
+        </label>
+        <input
+          type="text"
+          value={isCustom ? value : ""}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="e.g. Gourd carving, natural dyeing, basket repair…"
+          className={cn(
+            "mt-2 block w-full min-h-[44px] border-0 border-b border-border bg-transparent px-0 py-2",
+            "font-sans text-[16px] text-charcoal placeholder:text-ink-muted/55",
+            "transition-colors duration-300 ease-out",
+            "focus:border-terracotta focus:outline-none focus:ring-0",
+          )}
+        />
       </div>
     </FieldShell>
   );

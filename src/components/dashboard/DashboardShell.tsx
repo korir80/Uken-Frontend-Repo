@@ -206,7 +206,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
                     className="inline-flex items-center"
                     onClick={() => setDrawerOpen(false)}
                   >
-                    <Logo className="h-9" />
+                    <Logo className="h-14" />
                   </Link>
                   <p className="mt-1 font-sans text-[11px] uppercase tracking-[0.24em] text-clay">
                     {eyebrow}

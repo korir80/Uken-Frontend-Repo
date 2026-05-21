@@ -56,7 +56,7 @@ const navItems: NavItem[] = [
  * on small screens and shows the full link set ≥md.
  */
 export function NavBar() {
-  const [onLight, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
   // Only the home page has a dark cinematic hero behind a transparent nav.
   const hasDarkHero = pathname === "/";

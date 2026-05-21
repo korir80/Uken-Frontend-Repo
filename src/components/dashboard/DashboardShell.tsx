@@ -166,7 +166,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
             <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
               <Logo
                 variant={isAdmin ? "light" : "dark"}
-                className={cn("h-12 drop-shadow-sm", isAdmin && "drop-shadow-[0_0_18px_rgba(212,169,106,0.25)]")}
+                className={cn("h-20 drop-shadow-sm", isAdmin && "drop-shadow-[0_0_18px_rgba(212,169,106,0.25)]")}
               />
             </Link>
             <p

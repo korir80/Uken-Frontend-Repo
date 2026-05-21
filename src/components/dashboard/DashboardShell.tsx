@@ -133,7 +133,7 @@ export function DashboardShell({ variant, links, children }: DashboardShellProps
             <MenuIcon />
           </button>
           <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
-            <Logo className="h-8" />
+            <Logo className="h-12" />
           </Link>
           <span className="hidden font-sans text-[10px] uppercase tracking-[0.22em] text-clay sm:inline">
             {eyebrow}

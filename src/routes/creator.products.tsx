@@ -10,6 +10,7 @@ import { PageHeader, EmptyState, StatusPill } from "@/components/dashboard/Dashb
 import { formatGBP } from "@/lib/cart";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicker";
+import { ConsentCheckbox } from "@/components/ukena";
 
 export const Route = createFileRoute("/creator/products")({
   component: CreatorProducts,
@@ -216,6 +217,9 @@ function ProductEditor({
   onSave: (d: DraftProduct) => void;
 }) {
   const [draft, setDraft] = useState(value);
+  // Per-submission consent — resets each time the editor opens (because the
+  // component remounts) so the maker re-affirms publishing rights every save.
+  const [consent, setConsent] = useState(false);
   function set<K extends keyof DraftProduct>(k: K, v: DraftProduct[K]) {
     setDraft((p) => ({ ...p, [k]: v }));
   }

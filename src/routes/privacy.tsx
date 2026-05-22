@@ -4,7 +4,7 @@ import { Footer } from "@/components/home/Footer";
 import { SectionLabel } from "@/components/ukena";
 import { routeSeo } from "@/lib/seo";
 
-const LAST_UPDATED = "19 May 2026";
+const LAST_UPDATED = "22 May 2026";
 
 export const Route = createFileRoute("/privacy")({
   head: () =>

@@ -12,6 +12,8 @@ import {
   useAdminApplications,
   useUpdateApplicationStatus,
 } from "@/lib/queries";
+import { ExportMenu } from "@/components/ukena";
+import { downloadCsv, downloadTableReportPdf } from "@/lib/exports";
 
 const STATUS_TONE: Record<
   ApplicationStatus,
@@ -66,6 +68,29 @@ function AdminApplications() {
         title="The next generation of UKEN makers."
         description="Move artisans through the curation pipeline. Each decision should be based on the work and the story together."
         refreshKeys={[]}
+        action={
+          <ExportMenu
+            disabled={filtered.length === 0}
+            onCsv={() => {
+              const cols = ["ID", "Name", "Email", "Craft", "Region", "Years", "Status"];
+              const rows = filtered.map((a) => [
+                a.id, a.fullName, a.email, a.craft, a.region, a.yearsOfPractice, a.status,
+              ]);
+              downloadCsv("ukena-applications", cols, rows);
+            }}
+            onPdf={() => {
+              const cols = ["Name", "Craft", "Region", "Years", "Status"];
+              const rows = filtered.map((a) => [a.fullName, a.craft, a.region, a.yearsOfPractice, a.status]);
+              downloadTableReportPdf({
+                filename: "ukena-applications",
+                eyebrow: "Admin",
+                title: "Applications report",
+                columns: cols,
+                rows,
+              });
+            }}
+          />
+        }
       />
 
       <div className="flex flex-wrap gap-2">

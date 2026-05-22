@@ -3,6 +3,8 @@ import { useAuth } from "@/lib/auth";
 import { useCreatorOrders, useAdminPayouts } from "@/lib/queries";
 import { PageHeader, StatCard } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
+import { ExportMenu } from "@/components/ukena";
+import { downloadCsv, downloadTableReportPdf } from "@/lib/exports";
 
 export const Route = createFileRoute("/creator/earnings")({
   component: CreatorEarnings,
@@ -16,6 +18,13 @@ function CreatorEarnings() {
   const summary = payouts.find((p) => p.creatorId === creatorId);
 
   const myOrders = orders.filter((o) => o.items.some((i) => i.creator.id === creatorId));
+  const cols = ["Order", "Date", "Status", "Your share (GBP)"];
+  const rows = myOrders.map((o) => {
+    const share = o.items
+      .filter((i) => i.creator.id === creatorId)
+      .reduce((s, i) => s + i.pricePence * i.quantity, 0);
+    return [o.id, new Date(o.createdAt).toLocaleDateString("en-GB"), o.status, (share / 100).toFixed(2)];
+  });
 
   return (
     <div className="space-y-8">
@@ -24,6 +33,21 @@ function CreatorEarnings() {
         title="Fair work, paid fairly."
         description="UKEN pays creators monthly. Pending earnings move to paid on the 1st of each month."
         refreshKeys={[]}
+        action={
+          <ExportMenu
+            disabled={rows.length === 0}
+            onCsv={() => downloadCsv("ukena-earnings", cols, rows)}
+            onPdf={() =>
+              downloadTableReportPdf({
+                filename: "ukena-earnings",
+                eyebrow: "Earnings",
+                title: "Earnings statement",
+                columns: cols,
+                rows,
+              })
+            }
+          />
+        }
       />
 
       <div className="grid gap-4 sm:grid-cols-3">

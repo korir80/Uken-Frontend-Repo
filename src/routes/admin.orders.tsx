@@ -6,6 +6,8 @@ import { LazyImage } from "@/components/ui/lazy-image";
 import { formatGBP } from "@/lib/cart";
 import { useAdminOrders, useRefundOrder, useAdminUpdateOrderStatus, useAdminBulkUpdateStatus } from "@/lib/queries";
 import type { OrderStatus } from "@/services";
+import { ExportMenu } from "@/components/ukena";
+import { downloadCsv, downloadTableReportPdf } from "@/lib/exports";
 
 export const Route = createFileRoute("/admin/orders")({
   component: AdminOrders,
@@ -96,6 +98,42 @@ function AdminOrders() {
         title="Order moderation."
         description="Oversee buyer orders, update status, or cancel & refund. Buyers are emailed on every status change."
         refreshKeys={[]}
+        action={
+          <ExportMenu
+            disabled={orders.length === 0}
+            onCsv={() => {
+              const cols = ["Order", "Date", "Buyer", "Email", "Items", "Status", "Total (GBP)"];
+              const rows = orders.map((o) => [
+                o.displayId,
+                new Date(o.createdAt).toLocaleDateString("en-GB"),
+                o.buyer?.fullName ?? "",
+                o.buyer?.email ?? "",
+                o.items.length,
+                o.status,
+                (o.totalPence / 100).toFixed(2),
+              ]);
+              downloadCsv("ukena-admin-orders", cols, rows);
+            }}
+            onPdf={() => {
+              const cols = ["Order", "Date", "Buyer", "Items", "Status", "Total (GBP)"];
+              const rows = orders.map((o) => [
+                o.displayId,
+                new Date(o.createdAt).toLocaleDateString("en-GB"),
+                o.buyer?.fullName ?? "",
+                o.items.length,
+                o.status,
+                (o.totalPence / 100).toFixed(2),
+              ]);
+              downloadTableReportPdf({
+                filename: "ukena-admin-orders",
+                eyebrow: "Admin",
+                title: "Orders report",
+                columns: cols,
+                rows,
+              });
+            }}
+          />
+        }
       />
 
       {/* Bulk toolbar — only visible when rows are selected */}

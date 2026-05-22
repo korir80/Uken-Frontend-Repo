@@ -10,7 +10,7 @@ import {
   JoinPillSelect,
 } from "@/components/join/JoinField";
 import { PhotoUploader } from "@/components/join/PhotoUploader";
-import { Button, SectionLabel } from "@/components/ukena";
+import { Button, SectionLabel, ConsentCheckbox } from "@/components/ukena";
 import { CRAFTS } from "@/components/explore/creators-data";
 import { useSubmitApplication } from "@/lib/queries";
 

@@ -241,6 +241,22 @@ function DeliveryStep() {
         <Field label="Country" name="country" value={form.country} onChange={(v) => update("country", v)} error={errors.country} required autoComplete="country-name" />
       </fieldset>
 
+      <ConsentCheckbox
+        checked={consent}
+        onChange={(v) => {
+          setConsent(v);
+          if (v) setConsentError(null);
+        }}
+        error={consentError}
+        label={
+          <>
+            I agree to UKEN sharing my delivery details with our courier and
+            payment partner to fulfil this order, handled under our Privacy
+            Notice and the Kenya Data Protection Act (2019).
+          </>
+        }
+      />
+
       <div className="pt-2">
         <button
           type="submit"

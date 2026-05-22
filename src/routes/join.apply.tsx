@@ -345,9 +345,13 @@ function Step2({
 function Step3({
   data,
   update,
+  consent,
+  setConsent,
 }: {
   data: ApplicationData;
   update: <K extends keyof ApplicationData>(k: K, v: ApplicationData[K]) => void;
+  consent: boolean;
+  setConsent: (v: boolean) => void;
 }) {
   return (
     <div className="space-y-14">
@@ -368,6 +372,19 @@ function Step3({
         helper="At least one of you at work. The rest, your favourite finished pieces."
         value={data.photos}
         onChange={(next) => update("photos", next)}
+      />
+
+      <ConsentCheckbox
+        checked={consent}
+        onChange={setConsent}
+        label={
+          <>
+            I agree to UKEN holding the details and photos I've shared to
+            review my application, and — if I'm approved — to feature my
+            story and work on UKEN. Handled under our Privacy Notice and the
+            Kenya Data Protection Act (2019).
+          </>
+        }
       />
     </div>
   );

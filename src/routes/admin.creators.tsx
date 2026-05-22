@@ -48,6 +48,18 @@ function AdminCreators() {
   const creators = Array.isArray(data) ? data : [];
   const suspend = useSuspendCreator();
   const unsuspend = useUnsuspendCreator();
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+
+  const counts = useMemo(() => {
+    const suspended = creators.filter(isSuspended).length;
+    return { all: creators.length, suspended, active: creators.length - suspended };
+  }, [creators]);
+
+  const visibleCreators = useMemo(() => {
+    if (statusFilter === "all") return creators;
+    if (statusFilter === "suspended") return creators.filter(isSuspended);
+    return creators.filter((c) => !isSuspended(c));
+  }, [creators, statusFilter]);
 
   function handleSuspend(id: string, name: string) {
     if (

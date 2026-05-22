@@ -11,6 +11,8 @@ import { type OrderStatus } from "@/services";
 import { formatGBP } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ExportMenu } from "@/components/ukena";
+import { downloadCsv, downloadTableReportPdf } from "@/lib/exports";
 
 export const Route = createFileRoute("/account/orders")({
   component: BuyerOrders,
@@ -46,6 +48,15 @@ function BuyerOrders() {
     [filter, orders],
   );
 
+  const exportCols = ["Order", "Date", "Items", "Status", "Total (GBP)"];
+  const exportRows = filtered.map((o) => [
+    o.id,
+    new Date(o.createdAt).toLocaleDateString("en-GB"),
+    o.items.length,
+    o.status,
+    (o.totalPence / 100).toFixed(2),
+  ]);
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -54,23 +65,39 @@ function BuyerOrders() {
         description="Track what's on its way and revisit pieces you've collected."
       />
 
-      <div className="flex flex-wrap gap-2">
-        {FILTERS.map((f) => (
-          <button
-            key={f.value}
-            type="button"
-            onClick={() => setFilter(f.value)}
-            className={cn(
-              "rounded-full px-4 py-1.5 font-sans text-[12px] font-medium transition-colors",
-              filter === f.value
-                ? "bg-clay text-warm-white"
-                : "border border-border/60 text-charcoal/70 hover:border-clay/60 hover:text-charcoal",
-            )}
-          >
-            {f.label}
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((f) => (
+            <button
+              key={f.value}
+              type="button"
+              onClick={() => setFilter(f.value)}
+              className={cn(
+                "rounded-full px-4 py-1.5 font-sans text-[12px] font-medium transition-colors",
+                filter === f.value
+                  ? "bg-clay text-warm-white"
+                  : "border border-border/60 text-charcoal/70 hover:border-clay/60 hover:text-charcoal",
+              )}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+        <ExportMenu
+          disabled={filtered.length === 0}
+          onCsv={() => downloadCsv("ukena-my-orders", exportCols, exportRows)}
+          onPdf={() =>
+            downloadTableReportPdf({
+              filename: "ukena-my-orders",
+              eyebrow: "My orders",
+              title: "Order history",
+              columns: exportCols,
+              rows: exportRows,
+            })
+          }
+        />
       </div>
+
 
       {isLoading ? (
         <ul className="space-y-3">

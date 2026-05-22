@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronLeft, Package, Truck, Home, Sparkles, X } from "lucide-react";
+import { ChevronLeft, Package, Truck, Home, Sparkles, X, Download } from "lucide-react";
 import { toast } from "sonner";
 import {
   PageHeader,
@@ -12,6 +12,7 @@ import { orderService, type OrderDto, type OrderStatus, type OrderItem } from "@
 import { ApiError } from "@/services/api";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
+import { downloadOrderReceiptPdf } from "@/lib/exports";
 
 export const Route = createFileRoute("/account/orders/$orderId")({
   loader: async ({ params, context: { queryClient } }) => {
@@ -150,10 +151,22 @@ function OrderDetailPage() {
             order.items.length === 1 ? "piece" : "pieces"
           } · ${formatGBP(order.totalPence)}`}
         />
-        <StatusPill
-          label={order.status.toLowerCase()}
-          tone={STATUS_TONE[order.status]}
-        />
+        <div className="flex items-center gap-3">
+          <StatusPill
+            label={order.status.toLowerCase()}
+            tone={STATUS_TONE[order.status]}
+          />
+          {order.status !== "PENDING" && order.status !== "CANCELLED" && (
+            <button
+              type="button"
+              onClick={() => downloadOrderReceiptPdf(order)}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] font-medium text-charcoal transition-colors hover:border-clay/60 hover:text-clay"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Receipt
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Tracking timeline */}

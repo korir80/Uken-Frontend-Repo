@@ -7,3 +7,4 @@ export { Card, StoryCard, ProductCard } from "./Card";
 export { Logo } from "./Logo";
 export { ConsentCheckbox } from "./ConsentCheckbox";
 export { CookieBanner } from "./CookieBanner";
+export { ExportMenu } from "./ExportMenu";

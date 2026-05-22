@@ -7,6 +7,7 @@ import { useMyCreatorProfile, useUpdateCreatorProfile } from "@/lib/queries";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicker";
+import { ConsentCheckbox } from "@/components/ukena";
 import { cloudinaryService, validateUploadFile } from "@/services/cloudinaryService";
 
 export const Route = createFileRoute("/creator/profile")({
@@ -43,6 +44,9 @@ function CreatorProfile() {
   // Single source of truth for workshop gallery — both URL and caption live
   // here so captions are never dropped when images are added or removed.
   const [processSteps, setProcessSteps] = useState<ProcessStepDraft[]>([]);
+  // DPA 2019: explicit consent per save so the maker actively re-affirms
+  // their rights to publish photos & text on every change.
+  const [consent, setConsent] = useState(false);
 
   const portraitInputRef = useRef<HTMLInputElement>(null);
   const headerInputRef = useRef<HTMLInputElement>(null);
@@ -85,6 +89,10 @@ function CreatorProfile() {
   // public page updates without waiting for the main form save.
   async function handleImageReplace(kind: "portrait" | "header", file: File | undefined) {
     if (!file) return;
+    if (!consent) {
+      toast.error("Please tick the consent box before uploading a new image.");
+      return;
+    }
     try {
       validateUploadFile(file);
     } catch (err) {
@@ -107,6 +115,10 @@ function CreatorProfile() {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!consent) {
+      toast.error("Please tick the consent box before saving your changes.");
+      return;
+    }
     update.mutate(
       {
         firstName,
@@ -127,6 +139,7 @@ function CreatorProfile() {
       {
         onSuccess: () => {
           setSaved(true);
+          setConsent(false);
           setTimeout(() => setSaved(false), 1800);
         },
         onError: (err) => {
@@ -233,10 +246,24 @@ function CreatorProfile() {
             )}
           </div>
 
+          <ConsentCheckbox
+            id="profile-consent"
+            checked={consent}
+            onChange={setConsent}
+            label={
+              <>
+                I confirm I own (or have permission to share) the photos and
+                words above, and I'm happy for UKEN to publish them on my
+                public maker page. Handled under our Privacy Notice and the
+                Kenya Data Protection Act (2019).
+              </>
+            }
+          />
+
           <div className="flex items-center gap-4">
             <button
               type="submit"
-              disabled={update.isPending}
+              disabled={update.isPending || !consent}
               className="rounded-full bg-clay px-6 py-2.5 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
             >
               {saved ? "Saved ✓" : update.isPending ? "Saving…" : "Save changes"}

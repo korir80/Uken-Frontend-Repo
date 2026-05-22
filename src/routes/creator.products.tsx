@@ -10,6 +10,7 @@ import { PageHeader, EmptyState, StatusPill } from "@/components/dashboard/Dashb
 import { formatGBP } from "@/lib/cart";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicker";
+import { ConsentCheckbox } from "@/components/ukena";
 
 export const Route = createFileRoute("/creator/products")({
   component: CreatorProducts,
@@ -216,6 +217,9 @@ function ProductEditor({
   onSave: (d: DraftProduct) => void;
 }) {
   const [draft, setDraft] = useState(value);
+  // Per-submission consent — resets each time the editor opens (because the
+  // component remounts) so the maker re-affirms publishing rights every save.
+  const [consent, setConsent] = useState(false);
   function set<K extends keyof DraftProduct>(k: K, v: DraftProduct[K]) {
     setDraft((p) => ({ ...p, [k]: v }));
   }
@@ -228,6 +232,10 @@ function ProductEditor({
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          if (!consent) {
+            toast.error("Please tick the consent box to publish this piece.");
+            return;
+          }
           onSave(draft);
         }}
         onClick={(e) => e.stopPropagation()}
@@ -281,6 +289,19 @@ function ProductEditor({
             textarea
           />
           <Field label="Care instructions" value={draft.care} onChange={(v) => set("care", v)} textarea />
+
+          <ConsentCheckbox
+            id="product-consent"
+            checked={consent}
+            onChange={setConsent}
+            label={
+              <>
+                I own these photos and the words above (or have permission to
+                use them), and I'm happy for UKEN to list this piece for sale
+                on my behalf under our standard maker terms.
+              </>
+            }
+          />
         </div>
 
         <footer className="flex flex-shrink-0 justify-end gap-3 border-t border-border/40 px-6 py-4">
@@ -293,7 +314,7 @@ function ProductEditor({
           </button>
           <button
             type="submit"
-            disabled={saving}
+            disabled={saving || !consent}
             className="rounded-full bg-clay px-5 py-2 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
           >
             {saving ? "Saving…" : draft.id ? "Save changes" : "Publish piece"}

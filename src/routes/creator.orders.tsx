@@ -6,6 +6,8 @@ import { useCreatorOrders, useUpdateOrderStatus } from "@/lib/queries";
 import { PageHeader, StatusPill, EmptyState } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
 import type { OrderStatus } from "@/services";
+import { ExportMenu } from "@/components/ukena";
+import { downloadCsv, downloadTableReportPdf } from "@/lib/exports";
 
 const STATUS_TONE: Record<OrderStatus, "neutral" | "good" | "warn" | "bad" | "info"> = {
   PENDING: "warn",
@@ -51,6 +53,21 @@ function CreatorOrders() {
   );
   const filtered = filter === "ALL" ? mine : mine.filter((o) => o.status === filter);
 
+  const exportCols = ["Order", "Date", "Buyer", "City", "Status", "Your share (GBP)"];
+  const exportRows = filtered.map((o) => {
+    const share = o.items
+      .filter((i) => i.creator.id === creatorId)
+      .reduce((s, i) => s + i.pricePence * i.quantity, 0);
+    return [
+      o.id,
+      new Date(o.createdAt).toLocaleDateString("en-GB"),
+      o.buyer.fullName,
+      o.delivery.city,
+      o.status,
+      (share / 100).toFixed(2),
+    ];
+  });
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -58,6 +75,21 @@ function CreatorOrders() {
         title="Hands waiting for your work."
         description="Mark orders as preparing or shipped so the buyer knows where their piece is on its journey."
         refreshKeys={[]}
+        action={
+          <ExportMenu
+            disabled={filtered.length === 0}
+            onCsv={() => downloadCsv("ukena-creator-orders", exportCols, exportRows)}
+            onPdf={() =>
+              downloadTableReportPdf({
+                filename: "ukena-creator-orders",
+                eyebrow: "Maker orders",
+                title: "My orders",
+                columns: exportCols,
+                rows: exportRows,
+              })
+            }
+          />
+        }
       />
 
       <div className="flex flex-wrap gap-2">

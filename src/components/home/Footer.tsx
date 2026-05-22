@@ -87,11 +87,21 @@ export function Footer() {
 
             <form
               className="mt-4 flex max-w-sm flex-col gap-2 min-[360px]:flex-row"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const consent = (form.elements.namedItem("nl-consent") as HTMLInputElement | null)?.checked;
+                if (!consent) {
+                  alert("Please tick the consent box to subscribe.");
+                  return;
+                }
+                form.reset();
+              }}
             >
               <input
                 type="email"
                 placeholder="your@email.co.uk"
+                required
                 className="h-11 min-w-0 flex-1 rounded-md border border-warm-white/20 bg-transparent px-4 text-sm text-warm-white placeholder:text-warm-white/40 focus:border-[oklch(0.85_0.08_55)] focus:outline-none"
               />
               <button
@@ -101,6 +111,22 @@ export function Footer() {
                 Subscribe
               </button>
             </form>
+
+            <label className="mt-3 flex max-w-sm cursor-pointer items-start gap-2 text-[11px] leading-relaxed text-warm-white/65">
+              <input
+                name="nl-consent"
+                type="checkbox"
+                className="mt-0.5 h-3.5 w-3.5 shrink-0 cursor-pointer accent-terracotta"
+              />
+              <span>
+                I'd like UKEN's monthly letter and agree my email may be kept
+                for that purpose. I can unsubscribe anytime. (
+                <Link to="/privacy" className="underline hover:text-warm-white">
+                  Privacy
+                </Link>
+                )
+              </span>
+            </label>
 
             <div className="mt-6 flex flex-wrap gap-4">
               {socials.map((s) => (

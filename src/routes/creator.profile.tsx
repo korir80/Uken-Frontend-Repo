@@ -139,6 +139,7 @@ function CreatorProfile() {
       {
         onSuccess: () => {
           setSaved(true);
+          setConsent(false);
           setTimeout(() => setSaved(false), 1800);
         },
         onError: (err) => {

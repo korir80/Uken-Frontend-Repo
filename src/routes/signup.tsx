@@ -64,6 +64,7 @@ function SignUpPage() {
     setEmailError(null);
     setPasswordError(null);
     setConfirmError(null);
+    setConsentError(null);
     setFormError(null);
 
     if (!fullName.trim()) return setFullNameError("Your name is required");
@@ -71,6 +72,8 @@ function SignUpPage() {
     if (password.length < 6)
       return setPasswordError("Password must be at least 6 characters");
     if (password !== confirm) return setConfirmError("Passwords don't match");
+    if (!consent)
+      return setConsentError("Please tick the box so we can create your account.");
 
     // Creator signup currently goes through the application flow; redirect them.
     if (role === "ROLE_CREATOR") {

@@ -84,7 +84,7 @@ function ComingSoonStyleguide() {
                 className="group rounded-2xl border border-border/60 bg-warm-white/80 p-5 shadow-soft transition-all hover:-translate-y-0.5 hover:border-terracotta/50 hover:shadow-card"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-terracotta/10 text-terracotta">
-                  <Icon className="h-4.5 w-4.5" strokeWidth={1.75} />
+                  <Icon className="h-4 w-4" strokeWidth={1.75} />
                 </div>
                 <p className="mt-4 font-display text-[20px] leading-tight text-charcoal">
                   {label}

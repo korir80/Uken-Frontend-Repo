@@ -49,11 +49,13 @@ function SignUpPage() {
   const [confirm, setConfirm] = useState("");
   const [role, setRole] = useState<SignupRole>("ROLE_BUYER");
   const [submitting, setSubmitting] = useState(false);
+  const [consent, setConsent] = useState(false);
 
   const [fullNameError, setFullNameError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [confirmError, setConfirmError] = useState<string | null>(null);
+  const [consentError, setConsentError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {

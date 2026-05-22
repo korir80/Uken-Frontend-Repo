@@ -59,6 +59,8 @@ function DeliveryStep() {
   }));
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [consent, setConsent] = useState(false);
+  const [consentError, setConsentError] = useState<string | null>(null);
 
   // Pre-fill from logged-in user once it loads.
   useEffect(() => {

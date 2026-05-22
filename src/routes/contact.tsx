@@ -96,6 +96,8 @@ const initialForm: ContactFormState = {
 function ContactPage() {
   const [form, setForm] = useState<ContactFormState>(initialForm);
   const [errors, setErrors] = useState<ContactErrors>({});
+  const [consent, setConsent] = useState(false);
+  const [consentError, setConsentError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
   function updateField<K extends keyof ContactFormState>(key: K, value: ContactFormState[K]) {

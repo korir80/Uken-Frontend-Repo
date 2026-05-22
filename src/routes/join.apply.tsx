@@ -70,6 +70,7 @@ function parseYears(input: string): number {
 function ApplyPage() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<ApplicationData>(initial);
+  const [consent, setConsent] = useState(false);
   const submit = useSubmitApplication();
 
   const update = <K extends keyof ApplicationData>(

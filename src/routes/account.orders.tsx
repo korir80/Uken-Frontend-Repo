@@ -97,22 +97,7 @@ function BuyerOrders() {
           }
         />
       </div>
-        {FILTERS.map((f) => (
-          <button
-            key={f.value}
-            type="button"
-            onClick={() => setFilter(f.value)}
-            className={cn(
-              "rounded-full px-4 py-1.5 font-sans text-[12px] font-medium transition-colors",
-              filter === f.value
-                ? "bg-clay text-warm-white"
-                : "border border-border/60 text-charcoal/70 hover:border-clay/60 hover:text-charcoal",
-            )}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
+
 
       {isLoading ? (
         <ul className="space-y-3">

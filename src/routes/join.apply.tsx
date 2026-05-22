@@ -144,7 +144,14 @@ function ApplyPage() {
                   />
                 )}
                 {step === 2 && <Step2 data={data} update={update} />}
-                {step === 3 && <Step3 data={data} update={update} />}
+                {step === 3 && (
+                  <Step3
+                    data={data}
+                    update={update}
+                    consent={consent}
+                    setConsent={setConsent}
+                  />
+                )}
               </div>
 
               <div className="mt-16 flex items-center justify-between border-t border-border/70 pt-8">

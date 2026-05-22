@@ -215,6 +215,22 @@ function ContactPage() {
                 {errors.message && <p className="text-sm text-destructive">{errors.message}</p>}
               </div>
 
+              <ConsentCheckbox
+                checked={consent}
+                onChange={(v) => {
+                  setConsent(v);
+                  if (v) setConsentError(null);
+                }}
+                error={consentError}
+                label={
+                  <>
+                    I'm happy for UKEN to keep my name and email to reply to
+                    this message, handled as set out in our Privacy Notice
+                    (Kenya DPA 2019).
+                  </>
+                }
+              />
+
               {submitted && (
                 <p className="rounded-xl bg-cream px-4 py-3 text-sm leading-relaxed text-ink-muted">
                   Thank you. Your message is ready for the UKEN team.

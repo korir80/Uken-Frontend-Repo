@@ -232,6 +232,10 @@ function ProductEditor({
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          if (!consent) {
+            toast.error("Please tick the consent box to publish this piece.");
+            return;
+          }
           onSave(draft);
         }}
         onClick={(e) => e.stopPropagation()}

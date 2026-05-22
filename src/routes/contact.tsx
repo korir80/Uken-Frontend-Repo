@@ -118,6 +118,11 @@ function ContactPage() {
       setErrors(nextErrors);
       return;
     }
+    if (!consent) {
+      setConsentError("Please tick the box so we can reply to you.");
+      return;
+    }
+    setConsentError(null);
     setErrors({});
     setSubmitted(true);
   }

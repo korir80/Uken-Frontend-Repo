@@ -101,6 +101,11 @@ function DeliveryStep() {
     setErrors(next);
     if (Object.keys(next).length > 0) return;
     if (items.length === 0) return;
+    if (!consent) {
+      setConsentError("Please tick the box so we can ship and confirm your order.");
+      return;
+    }
+    setConsentError(null);
 
     const deliveryDetails: DeliveryDetails = {
       fullName: form.fullName.trim(),

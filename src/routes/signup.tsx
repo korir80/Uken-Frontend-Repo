@@ -250,6 +250,8 @@ function SignUpPage() {
 
             {formError && (
               <p className="font-sans text-[13px] text-destructive">{formError}</p>
+            )}
+
 
             <button
               type="submit"

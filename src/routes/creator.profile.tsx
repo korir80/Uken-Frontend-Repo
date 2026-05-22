@@ -246,10 +246,24 @@ function CreatorProfile() {
             )}
           </div>
 
+          <ConsentCheckbox
+            id="profile-consent"
+            checked={consent}
+            onChange={setConsent}
+            label={
+              <>
+                I confirm I own (or have permission to share) the photos and
+                words above, and I'm happy for UKEN to publish them on my
+                public maker page. Handled under our Privacy Notice and the
+                Kenya Data Protection Act (2019).
+              </>
+            }
+          />
+
           <div className="flex items-center gap-4">
             <button
               type="submit"
-              disabled={update.isPending}
+              disabled={update.isPending || !consent}
               className="rounded-full bg-clay px-6 py-2.5 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
             >
               {saved ? "Saved ✓" : update.isPending ? "Saving…" : "Save changes"}

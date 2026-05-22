@@ -9,6 +9,7 @@ import { orderService } from "@/services/orderService";
 import { paymentService } from "@/services/payment";
 import { handleApiError } from "@/lib/handleApiError";
 import { formatGBP } from "@/lib/cart";
+import { ConsentCheckbox } from "@/components/ukena";
 
 export const Route = createFileRoute("/checkout/delivery")({
   component: DeliveryStep,

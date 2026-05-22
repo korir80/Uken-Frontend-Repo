@@ -235,9 +235,21 @@ function SignUpPage() {
               </label>
             </div>
 
+            <ConsentCheckbox
+              checked={consent}
+              onChange={setConsent}
+              error={consentError}
+              label={
+                <>
+                  I agree to UKEN keeping my name, email and account activity
+                  to run my account, in line with the Kenya Data Protection
+                  Act (2019) and our Privacy Notice.
+                </>
+              }
+            />
+
             {formError && (
               <p className="font-sans text-[13px] text-destructive">{formError}</p>
-            )}
 
             <button
               type="submit"

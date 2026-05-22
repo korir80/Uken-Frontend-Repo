@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { Loader2, Download } from "lucide-react";
 import { z } from "zod";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { Footer } from "@/components/home/Footer";
@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth";
 import { orderService, type OrderDto } from "@/services/orderService";
 import { ApiError } from "@/services/api";
 import { safeImg } from "@/lib/safeImage";
+import { downloadOrderReceiptPdf } from "@/lib/exports";
 
 const confirmationSchema = z.object({
   ref: fallback(z.string(), "").default(""),
@@ -322,6 +323,14 @@ function ConfirmationPage() {
         </section>
 
         <section className="mt-10 space-y-3">
+          <button
+            type="button"
+            onClick={() => downloadOrderReceiptPdf(order)}
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-clay/40 bg-warm-white px-6 py-3 font-sans text-[13px] font-medium uppercase tracking-[0.18em] text-clay hover:bg-clay/5"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Download receipt (PDF)
+          </button>
           <Link
             to="/orders/track"
             search={{ displayId: order.displayId, email: order.buyer.email }}

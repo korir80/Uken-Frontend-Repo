@@ -176,6 +176,7 @@ function RootComponent() {
           <Outlet />
           <MobileNavFab />
           <Toaster richColors position="top-center" />
+          <CookieBanner />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

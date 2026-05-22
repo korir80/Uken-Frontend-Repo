@@ -127,7 +127,7 @@ function ApplyPage() {
     data.intro.trim().length > 10;
   const canAdvanceStep2 =
     data.yearsPracticing.trim() && data.whoTaught.trim() && data.meaning.trim();
-  const canAdvanceStep3 = data.photos.length >= 1 && !submit.isPending;
+  const canAdvanceStep3 = data.photos.length >= 1 && consent && !submit.isPending;
 
   return (
     <JoinShell>

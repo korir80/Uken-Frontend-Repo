@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth, defaultPathForRole } from "@/lib/auth";
 import { handleApiError } from "@/lib/handleApiError";
+import { ConsentCheckbox } from "@/components/ukena";
 
 type SignupRole = "ROLE_BUYER" | "ROLE_CREATOR";
 

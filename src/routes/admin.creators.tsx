@@ -1,11 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { api } from "@/services/api";
 import type { CreatorSummary } from "@/services";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { useSuspendCreator, useUnsuspendCreator } from "@/lib/queries";
+
+type StatusFilter = "all" | "active" | "suspended";
 
 export const Route = createFileRoute("/admin/creators")({
   component: AdminCreators,
@@ -45,6 +48,18 @@ function AdminCreators() {
   const creators = Array.isArray(data) ? data : [];
   const suspend = useSuspendCreator();
   const unsuspend = useUnsuspendCreator();
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+
+  const counts = useMemo(() => {
+    const suspended = creators.filter(isSuspended).length;
+    return { all: creators.length, suspended, active: creators.length - suspended };
+  }, [creators]);
+
+  const visibleCreators = useMemo(() => {
+    if (statusFilter === "all") return creators;
+    if (statusFilter === "suspended") return creators.filter(isSuspended);
+    return creators.filter((c) => !isSuspended(c));
+  }, [creators, statusFilter]);
 
   function handleSuspend(id: string, name: string) {
     if (
@@ -76,10 +91,33 @@ function AdminCreators() {
     <div className="space-y-8">
       <PageHeader
         eyebrow="Creators"
-        title="Active makers on UKEN."
-        description="Open a maker's public page, suspend, or reinstate them."
+        title="All makers on UKEN."
+        description="Filter by status, open a maker's public page, suspend, or reinstate them."
         refreshKeys={[]}
       />
+
+      <div className="flex flex-wrap items-center gap-2">
+        {([
+          { key: "all", label: "All", count: counts.all },
+          { key: "active", label: "Active", count: counts.active },
+          { key: "suspended", label: "Suspended", count: counts.suspended },
+        ] as { key: StatusFilter; label: string; count: number }[]).map((f) => {
+          const active = statusFilter === f.key;
+          return (
+            <button
+              key={f.key}
+              onClick={() => setStatusFilter(f.key)}
+              className={`rounded-full border px-4 py-1.5 font-sans text-[12px] transition-colors ${
+                active
+                  ? "border-clay bg-clay text-warm-white"
+                  : "border-border bg-warm-white text-charcoal/70 hover:border-clay/60 hover:text-clay"
+              }`}
+            >
+              {f.label} <span className="opacity-70">({f.count})</span>
+            </button>
+          );
+        })}
+      </div>
 
       <div className="overflow-x-auto rounded-2xl border border-border/60">
         <table className="min-w-[720px] divide-y divide-border/60 sm:min-w-full">
@@ -93,7 +131,7 @@ function AdminCreators() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border/40 bg-warm-white">
-            {creators.map((c) => {
+            {visibleCreators.map((c) => {
               const suspended = isSuspended(c);
               const busy = suspend.isPending || unsuspend.isPending;
               return (
@@ -156,6 +194,13 @@ function AdminCreators() {
                   </td>
                 </tr>
               ))}
+            {!isLoading && !isError && visibleCreators.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-4 py-10 text-center font-sans text-[13px] text-charcoal/55">
+                  No creators match this filter.
+                </td>
+              </tr>
+            )}
             {isError && !isLoading && (
               <tr>
                 <td colSpan={5} className="px-4 py-10 text-center font-sans text-[13px] text-destructive">

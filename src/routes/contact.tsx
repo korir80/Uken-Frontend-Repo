@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
-import { Button, Card, SectionLabel } from "@/components/ukena";
+import { Button, Card, SectionLabel, ConsentCheckbox } from "@/components/ukena";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";

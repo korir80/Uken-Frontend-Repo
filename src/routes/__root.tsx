@@ -14,6 +14,7 @@ import { RouteProgress } from "@/components/ui/route-progress";
 import { MobileNavFab } from "@/components/nav/MobileNavFab";
 import { NavBar } from "@/components/home/NavBar";
 import { Toaster } from "@/components/ui/sonner";
+import { CookieBanner } from "@/components/ukena";
 
 import appCss from "../styles.css?url";
 

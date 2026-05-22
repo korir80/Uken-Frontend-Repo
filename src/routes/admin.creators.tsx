@@ -1,11 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { api } from "@/services/api";
 import type { CreatorSummary } from "@/services";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { useSuspendCreator, useUnsuspendCreator } from "@/lib/queries";
+
+type StatusFilter = "all" | "active" | "suspended";
 
 export const Route = createFileRoute("/admin/creators")({
   component: AdminCreators,

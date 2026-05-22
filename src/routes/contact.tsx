@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
-import { Button, Card, SectionLabel } from "@/components/ukena";
+import { Button, Card, SectionLabel, ConsentCheckbox } from "@/components/ukena";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -96,6 +96,8 @@ const initialForm: ContactFormState = {
 function ContactPage() {
   const [form, setForm] = useState<ContactFormState>(initialForm);
   const [errors, setErrors] = useState<ContactErrors>({});
+  const [consent, setConsent] = useState(false);
+  const [consentError, setConsentError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
   function updateField<K extends keyof ContactFormState>(key: K, value: ContactFormState[K]) {
@@ -116,6 +118,11 @@ function ContactPage() {
       setErrors(nextErrors);
       return;
     }
+    if (!consent) {
+      setConsentError("Please tick the box so we can reply to you.");
+      return;
+    }
+    setConsentError(null);
     setErrors({});
     setSubmitted(true);
   }
@@ -207,6 +214,22 @@ function ContactPage() {
                 />
                 {errors.message && <p className="text-sm text-destructive">{errors.message}</p>}
               </div>
+
+              <ConsentCheckbox
+                checked={consent}
+                onChange={(v) => {
+                  setConsent(v);
+                  if (v) setConsentError(null);
+                }}
+                error={consentError}
+                label={
+                  <>
+                    I'm happy for UKEN to keep my name and email to reply to
+                    this message, handled as set out in our Privacy Notice
+                    (Kenya DPA 2019).
+                  </>
+                }
+              />
 
               {submitted && (
                 <p className="rounded-xl bg-cream px-4 py-3 text-sm leading-relaxed text-ink-muted">

@@ -9,6 +9,7 @@ import { orderService } from "@/services/orderService";
 import { paymentService } from "@/services/payment";
 import { handleApiError } from "@/lib/handleApiError";
 import { formatGBP } from "@/lib/cart";
+import { ConsentCheckbox } from "@/components/ukena";
 
 export const Route = createFileRoute("/checkout/delivery")({
   component: DeliveryStep,
@@ -58,6 +59,8 @@ function DeliveryStep() {
   }));
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [consent, setConsent] = useState(false);
+  const [consentError, setConsentError] = useState<string | null>(null);
 
   // Pre-fill from logged-in user once it loads.
   useEffect(() => {
@@ -98,6 +101,11 @@ function DeliveryStep() {
     setErrors(next);
     if (Object.keys(next).length > 0) return;
     if (items.length === 0) return;
+    if (!consent) {
+      setConsentError("Please tick the box so we can ship and confirm your order.");
+      return;
+    }
+    setConsentError(null);
 
     const deliveryDetails: DeliveryDetails = {
       fullName: form.fullName.trim(),
@@ -232,6 +240,22 @@ function DeliveryStep() {
         </div>
         <Field label="Country" name="country" value={form.country} onChange={(v) => update("country", v)} error={errors.country} required autoComplete="country-name" />
       </fieldset>
+
+      <ConsentCheckbox
+        checked={consent}
+        onChange={(v) => {
+          setConsent(v);
+          if (v) setConsentError(null);
+        }}
+        error={consentError}
+        label={
+          <>
+            I agree to UKEN sharing my delivery details with our courier and
+            payment partner to fulfil this order, handled under our Privacy
+            Notice and the Kenya Data Protection Act (2019).
+          </>
+        }
+      />
 
       <div className="pt-2">
         <button

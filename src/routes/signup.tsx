@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth, defaultPathForRole } from "@/lib/auth";
 import { handleApiError } from "@/lib/handleApiError";
+import { ConsentCheckbox } from "@/components/ukena";
 
 type SignupRole = "ROLE_BUYER" | "ROLE_CREATOR";
 
@@ -48,11 +49,13 @@ function SignUpPage() {
   const [confirm, setConfirm] = useState("");
   const [role, setRole] = useState<SignupRole>("ROLE_BUYER");
   const [submitting, setSubmitting] = useState(false);
+  const [consent, setConsent] = useState(false);
 
   const [fullNameError, setFullNameError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [confirmError, setConfirmError] = useState<string | null>(null);
+  const [consentError, setConsentError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -61,6 +64,7 @@ function SignUpPage() {
     setEmailError(null);
     setPasswordError(null);
     setConfirmError(null);
+    setConsentError(null);
     setFormError(null);
 
     if (!fullName.trim()) return setFullNameError("Your name is required");
@@ -68,6 +72,8 @@ function SignUpPage() {
     if (password.length < 6)
       return setPasswordError("Password must be at least 6 characters");
     if (password !== confirm) return setConfirmError("Passwords don't match");
+    if (!consent)
+      return setConsentError("Please tick the box so we can create your account.");
 
     // Creator signup currently goes through the application flow; redirect them.
     if (role === "ROLE_CREATOR") {
@@ -229,9 +235,23 @@ function SignUpPage() {
               </label>
             </div>
 
+            <ConsentCheckbox
+              checked={consent}
+              onChange={setConsent}
+              error={consentError}
+              label={
+                <>
+                  I agree to UKEN keeping my name, email and account activity
+                  to run my account, in line with the Kenya Data Protection
+                  Act (2019) and our Privacy Notice.
+                </>
+              }
+            />
+
             {formError && (
               <p className="font-sans text-[13px] text-destructive">{formError}</p>
             )}
+
 
             <button
               type="submit"

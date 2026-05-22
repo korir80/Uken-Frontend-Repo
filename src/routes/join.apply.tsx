@@ -10,7 +10,7 @@ import {
   JoinPillSelect,
 } from "@/components/join/JoinField";
 import { PhotoUploader } from "@/components/join/PhotoUploader";
-import { Button, SectionLabel } from "@/components/ukena";
+import { Button, SectionLabel, ConsentCheckbox } from "@/components/ukena";
 import { CRAFTS } from "@/components/explore/creators-data";
 import { useSubmitApplication } from "@/lib/queries";
 
@@ -70,6 +70,7 @@ function parseYears(input: string): number {
 function ApplyPage() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<ApplicationData>(initial);
+  const [consent, setConsent] = useState(false);
   const submit = useSubmitApplication();
 
   const update = <K extends keyof ApplicationData>(
@@ -126,7 +127,7 @@ function ApplyPage() {
     data.intro.trim().length > 10;
   const canAdvanceStep2 =
     data.yearsPracticing.trim() && data.whoTaught.trim() && data.meaning.trim();
-  const canAdvanceStep3 = data.photos.length >= 1 && !submit.isPending;
+  const canAdvanceStep3 = data.photos.length >= 1 && consent && !submit.isPending;
 
   return (
     <JoinShell>
@@ -143,7 +144,14 @@ function ApplyPage() {
                   />
                 )}
                 {step === 2 && <Step2 data={data} update={update} />}
-                {step === 3 && <Step3 data={data} update={update} />}
+                {step === 3 && (
+                  <Step3
+                    data={data}
+                    update={update}
+                    consent={consent}
+                    setConsent={setConsent}
+                  />
+                )}
               </div>
 
               <div className="mt-16 flex items-center justify-between border-t border-border/70 pt-8">
@@ -337,9 +345,13 @@ function Step2({
 function Step3({
   data,
   update,
+  consent,
+  setConsent,
 }: {
   data: ApplicationData;
   update: <K extends keyof ApplicationData>(k: K, v: ApplicationData[K]) => void;
+  consent: boolean;
+  setConsent: (v: boolean) => void;
 }) {
   return (
     <div className="space-y-14">
@@ -360,6 +372,19 @@ function Step3({
         helper="At least one of you at work. The rest, your favourite finished pieces."
         value={data.photos}
         onChange={(next) => update("photos", next)}
+      />
+
+      <ConsentCheckbox
+        checked={consent}
+        onChange={setConsent}
+        label={
+          <>
+            I agree to UKEN holding the details and photos I've shared to
+            review my application, and — if I'm approved — to feature my
+            story and work on UKEN. Handled under our Privacy Notice and the
+            Kenya Data Protection Act (2019).
+          </>
+        }
       />
     </div>
   );

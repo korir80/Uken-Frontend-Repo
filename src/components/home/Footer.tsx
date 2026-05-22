@@ -86,20 +86,48 @@ export function Footer() {
             </p>
 
             <form
-              className="mt-4 flex max-w-sm flex-col gap-2 min-[360px]:flex-row"
-              onSubmit={(e) => e.preventDefault()}
+              className="mt-4 max-w-sm"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const consent = (form.elements.namedItem("nl-consent") as HTMLInputElement | null)?.checked;
+                if (!consent) {
+                  alert("Please tick the consent box to subscribe.");
+                  return;
+                }
+                form.reset();
+              }}
             >
-              <input
-                type="email"
-                placeholder="your@email.co.uk"
-                className="h-11 min-w-0 flex-1 rounded-md border border-warm-white/20 bg-transparent px-4 text-sm text-warm-white placeholder:text-warm-white/40 focus:border-[oklch(0.85_0.08_55)] focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="h-11 rounded-md bg-terracotta px-5 text-[13px] font-medium text-warm-white transition-colors hover:bg-[oklch(0.52_0.13_38)]"
-              >
-                Subscribe
-              </button>
+              <div className="flex flex-col gap-2 min-[360px]:flex-row">
+                <input
+                  type="email"
+                  placeholder="your@email.co.uk"
+                  required
+                  className="h-11 min-w-0 flex-1 rounded-md border border-warm-white/20 bg-transparent px-4 text-sm text-warm-white placeholder:text-warm-white/40 focus:border-[oklch(0.85_0.08_55)] focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="h-11 rounded-md bg-terracotta px-5 text-[13px] font-medium text-warm-white transition-colors hover:bg-[oklch(0.52_0.13_38)]"
+                >
+                  Subscribe
+                </button>
+              </div>
+
+              <label className="mt-3 flex cursor-pointer items-start gap-2 text-[11px] leading-relaxed text-warm-white/65">
+                <input
+                  name="nl-consent"
+                  type="checkbox"
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 cursor-pointer accent-terracotta"
+                />
+                <span>
+                  I'd like UKEN's monthly letter and agree my email may be kept
+                  for that purpose. I can unsubscribe anytime. (
+                  <Link to="/privacy" className="underline hover:text-warm-white">
+                    Privacy
+                  </Link>
+                  )
+                </span>
+              </label>
             </form>
 
             <div className="mt-6 flex flex-wrap gap-4">

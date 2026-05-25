@@ -5,10 +5,10 @@ import p3 from "@/assets/hero-product-3.jpg";
 import p4 from "@/assets/hero-product-4.jpg";
 
 /**
- * Hero product carousel — stepped, forward-only, infinite.
- * Every 3s the next image becomes the active one (large, centered, opaque);
- * neighbours shrink hard and dim. Inactive slots use negative margins so the
- * visual gap stays minimal regardless of scale.
+ * Hero product carousel.
+ * 3 visible slides at all times: previous (small) · active (large) · next (small).
+ * Every 3s the next image becomes active and slides smoothly to centre.
+ * Forward-only, infinite, very tight spacing, fades on all four sides.
  */
 export const heroProducts: { src: string; alt: string; tag: string }[] = [
   { src: p1, alt: "Maasai beaded fringe earrings", tag: "Beadwork · Kajiado" },
@@ -18,22 +18,23 @@ export const heroProducts: { src: string; alt: string; tag: string }[] = [
 ];
 
 const FOUR_SIDE_MASK =
-  "linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%), " +
-  "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)";
+  "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), " +
+  "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)";
 
 const STEP_MS = 3000;
 const TRANSITION_MS = 1100;
-const INACTIVE_SCALE = 0.45; // strong size difference vs active (1.0)
 const EASING = "cubic-bezier(0.65, 0, 0.35, 1)";
 
 type Size = {
-  slide: number; // px — width/height of an active slide
-  gap: number;   // px — visible gap between slides
-  height: number;
+  base: number;        // base slide width (inactive baseline) in px
+  gap: number;         // visual gap between neighbouring slides in px
+  activeScale: number; // scale applied to the active slide
+  inactiveScale: number; // scale applied to all other slides
+  height: number;      // container height in px
 };
 
-function Carousel({ size }: { size: Size }) {
-  const [active, setActive] = useState(0);
+function Carousel({ size }: Size extends never ? never : { size: Size }) {
+  const [tick, setTick] = useState(0);
   const n = heroProducts.length;
 
   useEffect(() => {
@@ -41,27 +42,19 @@ function Carousel({ size }: { size: Size }) {
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
-    const id = window.setInterval(() => setActive((i) => i + 1), STEP_MS);
+    const id = window.setInterval(() => setTick((t) => t + 1), STEP_MS);
     return () => window.clearInterval(id);
   }, []);
 
-  // Render enough repeats so we never run off the edge while always advancing
-  // forward. We use modulo on `active` only for the highlight calculation.
-  const REPEATS = 12;
-  const list = Array.from({ length: REPEATS }, () => heroProducts).flat();
-  // Keep the highlight pointer roughly centred in the rendered list.
-  const centerIndex = Math.floor(REPEATS / 2) * n + (active % n);
-  // But translate based on the *true* monotonically increasing active count,
-  // so the strip keeps sliding forward forever.
-  const monotonicIndex = Math.floor(REPEATS / 2) * n + active;
+  // Render a long ribbon so we never run out of slides while moving forward.
+  const REPEATS = 40;
+  const list = Array.from({ length: REPEATS }, (_, k) => heroProducts[k % n]);
+  // Active index keeps marching forward (no jumps -> no visual seams).
+  const activeIndex = Math.floor(REPEATS / 4) + tick;
 
-  // Layout: each figure reserves `slide` px. Inactive ones get a negative
-  // horizontal margin equal to half the scaled-away space, so visually the
-  // neighbours hug the active slide with only `gap` px between them.
-  const shrinkPx = (size.slide * (1 - INACTIVE_SCALE)) / 2;
-
-  const step = size.slide + size.gap;
-  const translate = `calc(50% - ${size.slide / 2}px - ${monotonicIndex * step}px)`;
+  const step = size.base + size.gap;
+  // Centre the active slide: shift ribbon so activeIndex sits at 50% of container.
+  const translate = `calc(50% - ${size.base / 2}px - ${activeIndex * step}px)`;
 
   return (
     <div
@@ -85,27 +78,25 @@ function Carousel({ size }: { size: Size }) {
         }}
       >
         {list.map((item, i) => {
-          const isActive = i === centerIndex;
+          const isActive = i === activeIndex;
+          const scale = isActive ? size.activeScale : size.inactiveScale;
           return (
             <figure
               key={i}
               className={[
-                "relative flex-none overflow-hidden rounded-sm border bg-charcoal/40 backdrop-blur-sm",
+                "relative flex-none overflow-hidden rounded-sm border bg-charcoal/40",
                 isActive
-                  ? "z-10 border-gold-soft/70 shadow-[0_24px_55px_-14px_rgba(0,0,0,0.65)]"
-                  : "border-warm-white/10",
+                  ? "z-10 border-gold-soft/70 shadow-[0_28px_60px_-18px_rgba(0,0,0,0.7)]"
+                  : "border-warm-white/15",
               ].join(" ")}
               style={{
-                width: size.slide,
+                width: size.base,
                 height: size.height,
-                transform: isActive ? "scale(1)" : `scale(${INACTIVE_SCALE})`,
-                opacity: isActive ? 1 : 0.42,
-                marginLeft: isActive ? 0 : -shrinkPx,
-                marginRight: isActive ? 0 : -shrinkPx,
+                transform: `scale(${scale})`,
+                opacity: isActive ? 1 : 0.5,
                 transition:
                   `transform ${TRANSITION_MS}ms ${EASING}, ` +
-                  `opacity ${TRANSITION_MS}ms ease, ` +
-                  `margin ${TRANSITION_MS}ms ${EASING}`,
+                  `opacity ${TRANSITION_MS}ms ease`,
                 transformOrigin: "center center",
               }}
             >
@@ -113,6 +104,7 @@ function Carousel({ size }: { size: Size }) {
                 src={item.src}
                 alt={item.alt}
                 loading="lazy"
+                draggable={false}
                 className="h-full w-full object-cover"
               />
               {isActive && (
@@ -135,9 +127,17 @@ export function HeroProductMarquee() {
   return (
     <aside
       aria-label="Featured artisan pieces"
-      className="pointer-events-none absolute right-6 top-1/2 hidden w-[520px] -translate-y-1/2 lg:block xl:right-10 xl:w-[560px]"
+      className="pointer-events-none absolute right-6 top-1/2 hidden w-[560px] -translate-y-1/2 lg:block xl:right-10 xl:w-[620px]"
     >
-      <Carousel size={{ slide: 260, gap: 4, height: 330 }} />
+      <Carousel
+        size={{
+          base: 170,
+          gap: 6,
+          activeScale: 1.35,
+          inactiveScale: 0.62,
+          height: 230,
+        }}
+      />
     </aside>
   );
 }
@@ -146,7 +146,15 @@ export function HeroProductMarquee() {
 export function HeroProductStripMobile() {
   return (
     <div className="mt-10 -mx-2 lg:hidden">
-      <Carousel size={{ slide: 200, gap: 3, height: 250 }} />
+      <Carousel
+        size={{
+          base: 130,
+          gap: 5,
+          activeScale: 1.3,
+          inactiveScale: 0.62,
+          height: 180,
+        }}
+      />
     </div>
   );
 }

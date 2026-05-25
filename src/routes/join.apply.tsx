@@ -86,7 +86,7 @@ function ApplyPage() {
       await submit.mutateAsync({
         fullName: data.fullName.trim(),
         email: data.email.trim(),
-        region: data.region.trim(),
+        region: [data.region.trim(), data.country.trim()].filter(Boolean).join(", "),
         craft: data.craft,
         yearsOfPractice: parseYears(data.yearsPracticing),
         story: [data.intro, data.whoTaught, data.meaning]

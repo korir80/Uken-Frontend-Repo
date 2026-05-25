@@ -34,6 +34,7 @@ export const Route = createFileRoute("/join/apply")({
 interface ApplicationData {
   fullName: string;
   email: string;
+  country: string;
   region: string;
   craft: string;
   intro: string;
@@ -53,6 +54,7 @@ const STEP_LABELS = [
 const initial: ApplicationData = {
   fullName: "",
   email: "",
+  country: "",
   region: "",
   craft: "",
   intro: "",

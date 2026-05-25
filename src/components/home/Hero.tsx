@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import savanna from "@/assets/authentic-savanna.jpg";
 import { Logo } from "@/components/ukena/Logo";
+import { HeroProductMarquee, HeroProductStripMobile } from "./HeroProductMarquee";
 
 
 /**
@@ -85,33 +86,13 @@ export function Hero() {
               </div>
             ))}
           </dl>
+
+          {/* Mobile-only product strip — desktop sees the vertical marquee instead */}
+          <HeroProductStripMobile />
         </div>
 
-        {/* RIGHT — floating editorial card (desktop only) */}
-        <aside
-          aria-hidden
-          className="pointer-events-none absolute right-10 top-1/2 hidden w-[260px] -translate-y-1/2 lg:block"
-        >
-          <div className="relative rounded-sm border border-warm-white/15 bg-charcoal/40 p-6 backdrop-blur-md">
-            <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-gold-soft/80">
-              This week
-            </span>
-            <p className="mt-3 font-display text-[20px] leading-snug text-warm-white">
-              "Every bean carries a name, a hand, a hill."
-            </p>
-            <div className="mt-5 flex items-center gap-3 border-t border-warm-white/10 pt-4">
-              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-gold-soft to-terracotta" />
-              <div>
-                <p className="font-sans text-[11px] font-medium text-warm-white">
-                  Wanjiru K.
-                </p>
-                <p className="font-sans text-[10px] uppercase tracking-[0.12em] text-warm-white/50">
-                  Nyeri · Coffee
-                </p>
-              </div>
-            </div>
-          </div>
-        </aside>
+        {/* RIGHT — vertical auto-scroll product marquee (desktop only) */}
+        <HeroProductMarquee />
       </div>
 
 

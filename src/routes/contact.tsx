@@ -197,7 +197,7 @@ function ContactPage() {
                   className="flex h-11 w-full rounded-md border border-input bg-cream/30 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
                   <option>UK Buyer</option>
-                  <option>Kenyan Producer</option>
+                  <option>East African Producer</option>
                   <option>Press</option>
                   <option>Other</option>
                 </select>

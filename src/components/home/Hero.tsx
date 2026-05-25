@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import savanna from "@/assets/authentic-savanna.jpg";
+import { Logo } from "@/components/ukena/Logo";
 
 
 /**
@@ -30,6 +31,11 @@ export function Hero() {
       >
         {/* LEFT — copy block, tight grouping */}
         <div className="max-w-[600px] md:pl-[44px]">
+          <Logo
+            variant="light"
+            className="mb-5 h-20 w-auto drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)] sm:h-24 md:h-28"
+            alt="UKEN — From Heart to Hands"
+          />
           <h1 className="m-1 max-w-[680px] font-display text-[46px] font-light leading-[1.02] text-warm-white sm:text-5xl md:text-6xl">
             Kenya,
             <span className="block italic text-gold-soft">brought home.</span>
@@ -61,8 +67,53 @@ export function Hero() {
               Meet the makers
             </Link>
           </div>
+
+          {/* Trust strip — fills negative space with credibility */}
+          <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-warm-white/15 pt-6">
+            {[
+              { k: "120+", v: "Verified makers" },
+              { k: "14", v: "Kenyan counties" },
+              { k: "100%", v: "Traceable origin" },
+            ].map((s) => (
+              <div key={s.v}>
+                <dt className="font-display text-2xl font-light text-gold-soft sm:text-3xl">
+                  {s.k}
+                </dt>
+                <dd className="mt-1 font-sans text-[10px] uppercase leading-snug tracking-[0.12em] text-warm-white/55">
+                  {s.v}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
+
+        {/* RIGHT — floating editorial card (desktop only) */}
+        <aside
+          aria-hidden
+          className="pointer-events-none absolute right-10 top-1/2 hidden w-[260px] -translate-y-1/2 lg:block"
+        >
+          <div className="relative rounded-sm border border-warm-white/15 bg-charcoal/40 p-6 backdrop-blur-md">
+            <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-gold-soft/80">
+              This week
+            </span>
+            <p className="mt-3 font-display text-[20px] leading-snug text-warm-white">
+              "Every bean carries a name, a hand, a hill."
+            </p>
+            <div className="mt-5 flex items-center gap-3 border-t border-warm-white/10 pt-4">
+              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-gold-soft to-terracotta" />
+              <div>
+                <p className="font-sans text-[11px] font-medium text-warm-white">
+                  Wanjiru K.
+                </p>
+                <p className="font-sans text-[10px] uppercase tracking-[0.12em] text-warm-white/50">
+                  Nyeri · Coffee
+                </p>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
+
 
       {/* Wavy bottom border — sits above bg, below text/card */}
       <svg

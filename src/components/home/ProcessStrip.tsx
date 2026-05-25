@@ -67,7 +67,7 @@ export function ProcessStrip() {
             <em className="italic text-terracotta">One thread between them.</em>
           </h2>
           <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-ink-muted md:text-[14px]">
-            UKEN exists for the buyer who wants to know, and the Kenyan farmer,
+            UKEN exists for the buyer who wants to know, and the East African farmer,
             artisan, and maker who deserves to be known.
           </p>
         </div>

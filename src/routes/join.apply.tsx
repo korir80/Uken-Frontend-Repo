@@ -125,6 +125,7 @@ function ApplyPage() {
   const canAdvanceStep1 =
     data.fullName.trim() &&
     emailValid &&
+    data.country.trim() &&
     data.region.trim() &&
     data.craft &&
     data.intro.trim().length > 10;

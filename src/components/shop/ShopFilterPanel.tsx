@@ -110,7 +110,7 @@ export function ShopFilterPanel({
       </Group>
 
       {/* Region */}
-      <Group label="Region of Kenya">
+      <Group label="Region of East Africa">
         <PillRow>
           <Pill
             active={region === "All"}

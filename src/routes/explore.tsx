@@ -91,10 +91,10 @@ function ExplorePage() {
                 <SectionLabel>An ongoing index</SectionLabel>
                 <h1 className="mt-3 font-display text-[30px] leading-[1.05] tracking-tight text-charcoal sm:text-[34px] md:mt-3 md:text-[42px]">
                   The makers{" "}
-                  <em className="italic text-terracotta">of Kenya</em>.
+                  <em className="italic text-terracotta">of East Africa</em>.
                 </h1>
                 <p className="mt-2.5 text-[13px] leading-relaxed text-ink-muted md:text-sm">
-                  Seven regions. Farms, studios, and workshops. Begin with whoever holds your eye — the products will follow.
+                  Across Kenya, Uganda, Tanzania, Rwanda and beyond. Farms, studios, and workshops — begin with whoever holds your eye; the products will follow.
                 </p>
               </div>
               <div className="flex shrink-0 items-end gap-8 md:gap-10">

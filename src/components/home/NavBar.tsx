@@ -79,7 +79,16 @@ export function NavBar() {
       )}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 md:px-10 md:py-4">
-        <Link to="/" aria-label="UKEN home" className="inline-flex items-center">
+        <Link
+          to="/"
+          aria-label="UKEN home"
+          className={cn(
+            "inline-flex items-center",
+            // On the home route the logo lives above the "Kenya" hero heading;
+            // hide it in the nav so it isn't duplicated.
+            hasDarkHero && "invisible pointer-events-none",
+          )}
+        >
           <Logo
             variant={onLight ? "dark" : "light"}
             className="h-[66px] w-auto md:h-[84px]"

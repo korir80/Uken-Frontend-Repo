@@ -21,9 +21,9 @@ export const Route = createFileRoute("/explore")({
   },
   head: () => routeSeo({
     path: "/explore",
-    title: "Meet the makers of Kenya — UKEN",
+    title: "Meet the makers of East Africa — UKEN",
     description:
-      "Browse the Kenyan farmers, artisans, and makers behind every UKEN product. Discover the people behind the work.",
+      "Browse the East African farmers, artisans, and makers behind every UKEN product — from Kenya, Uganda, Tanzania, Rwanda and beyond.",
     breadcrumbs: [
       { name: "Home", path: "/" },
       { name: "Explore", path: "/explore" },

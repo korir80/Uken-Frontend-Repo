@@ -392,8 +392,8 @@ function Step3({
           <>
             I agree to UKEN holding the details and photos I've shared to
             review my application, and — if I'm approved — to feature my
-            story and work on UKEN. Handled under our Privacy Notice and the
-            Kenya Data Protection Act (2019).
+            story and work on UKEN. Handled under our Privacy Notice and
+            applicable East African and UK data protection law.
           </>
         }
       />

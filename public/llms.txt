@@ -1,21 +1,21 @@
 # UKEN
 
-> UKEN is a direct-trade marketplace connecting UK buyers with Kenyan farmers, artisans, and makers. Every product is traceable from maker to door.
+> UKEN is a direct-trade marketplace connecting UK buyers with East African farmers, artisans, and makers — across Kenya, Uganda, Tanzania, Rwanda and the wider EAC. Every product is traceable from maker to door.
 
-UKEN sells specialty Kenyan coffee, tea, foods, textiles, beadwork, pottery, and craft. The platform pairs each product with the person who made it — their region, craft, and story — and ships directly from Kenya to the UK.
+UKEN sells specialty East African coffee, tea, foods, textiles, beadwork, pottery, and craft. The platform pairs each product with the person who made it — their country, region, craft, and story — and ships directly from East Africa to the UK. Kenya is the flagship origin; Uganda, Tanzania, Rwanda, Burundi, South Sudan and DR Congo are featured partner countries.
 
 ## Pages
 
-- [Home](/): Shop authentic Kenyan goods, traced from maker to UK door.
+- [Home](/): Shop authentic East African goods, traced from maker to UK door.
 - [Shop](/shop): Full catalogue — coffee, tea, foods, textiles, beadwork, pottery.
 - [Explore makers](/explore): Browse the farmers, artisans, and makers behind every UKEN product.
 - [About UKEN](/about): Who we are, what we do, and how UKEN works.
-- [Our story, mission and vision](/story): The bridge between Kenyan producers and UK buyers.
+- [Our story, mission and vision](/story): The bridge between East African producers and UK buyers.
 - [Sustainability](/sustainability): How UKEN trades fairly and traces every chain.
 - [Transparency](/transparency): Pricing, payouts, and producer relationships.
 - [Press and partners](/press): Media information and academic partners.
 - [Contact](/contact): Nottingham and Nairobi offices, plus general enquiries.
-- [Join UKEN](/join): For Kenyan producers who want to sell through UKEN.
+- [Join UKEN](/join): For East African producers who want to sell through UKEN.
 - [Track an order](/orders/track): Look up the status of a UKEN order.
 
 ## Example creators

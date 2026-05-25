@@ -5,11 +5,10 @@ import p3 from "@/assets/hero-product-3.jpg";
 import p4 from "@/assets/hero-product-4.jpg";
 
 /**
- * Hero product carousel — stepped, 3s per slide.
- * One image is "active" (large, centered, fully opaque). Its neighbours peek
- * on either side, smaller and dimmer. Every 3 seconds the next image slides
- * in and becomes active. All four edges fade into the hero background.
- * Honors `prefers-reduced-motion` (animation paused on the active slide).
+ * Hero product carousel — stepped, forward-only, infinite.
+ * Every 3s the next image becomes the active one (large, centered, opaque);
+ * neighbours shrink hard and dim. Inactive slots use negative margins so the
+ * visual gap stays minimal regardless of scale.
  */
 export const heroProducts: { src: string; alt: string; tag: string }[] = [
   { src: p1, alt: "Maasai beaded fringe earrings", tag: "Beadwork · Kajiado" },
@@ -23,14 +22,13 @@ const FOUR_SIDE_MASK =
   "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)";
 
 const STEP_MS = 3000;
-const TRANSITION_MS = 900;
+const TRANSITION_MS = 1100;
+const INACTIVE_SCALE = 0.45; // strong size difference vs active (1.0)
+const EASING = "cubic-bezier(0.65, 0, 0.35, 1)";
 
 type Size = {
-  /** width of each slide in px */
-  slide: number;
-  /** gap between slides in px */
-  gap: number;
-  /** total track height in px */
+  slide: number; // px — width/height of an active slide
+  gap: number;   // px — visible gap between slides
   height: number;
 };
 
@@ -43,20 +41,27 @@ function Carousel({ size }: { size: Size }) {
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
-    const id = window.setInterval(() => setActive((i) => (i + 1) % n), STEP_MS);
+    const id = window.setInterval(() => setActive((i) => i + 1), STEP_MS);
     return () => window.clearInterval(id);
-  }, [n]);
+  }, []);
 
-  // Render a wide strip with repeats so neighbours are always present.
-  // We render 3 copies and keep `active` pointing into the middle copy.
-  const REPEATS = 3;
+  // Render enough repeats so we never run off the edge while always advancing
+  // forward. We use modulo on `active` only for the highlight calculation.
+  const REPEATS = 12;
   const list = Array.from({ length: REPEATS }, () => heroProducts).flat();
-  const middleOffset = n; // index into `list` corresponding to original[0] in middle copy
-  const centerIndex = middleOffset + active;
+  // Keep the highlight pointer roughly centred in the rendered list.
+  const centerIndex = Math.floor(REPEATS / 2) * n + (active % n);
+  // But translate based on the *true* monotonically increasing active count,
+  // so the strip keeps sliding forward forever.
+  const monotonicIndex = Math.floor(REPEATS / 2) * n + active;
+
+  // Layout: each figure reserves `slide` px. Inactive ones get a negative
+  // horizontal margin equal to half the scaled-away space, so visually the
+  // neighbours hug the active slide with only `gap` px between them.
+  const shrinkPx = (size.slide * (1 - INACTIVE_SCALE)) / 2;
 
   const step = size.slide + size.gap;
-  // translate so that `centerIndex` slide is centred in the container.
-  const translate = `calc(50% - ${size.slide / 2}px - ${centerIndex * step}px)`;
+  const translate = `calc(50% - ${size.slide / 2}px - ${monotonicIndex * step}px)`;
 
   return (
     <div
@@ -75,7 +80,7 @@ function Carousel({ size }: { size: Size }) {
         style={{
           gap: size.gap,
           transform: `translateX(${translate})`,
-          transition: `transform ${TRANSITION_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`,
+          transition: `transform ${TRANSITION_MS}ms ${EASING}`,
           willChange: "transform",
         }}
       >
@@ -87,15 +92,20 @@ function Carousel({ size }: { size: Size }) {
               className={[
                 "relative flex-none overflow-hidden rounded-sm border bg-charcoal/40 backdrop-blur-sm",
                 isActive
-                  ? "border-gold-soft/70 shadow-[0_22px_50px_-14px_rgba(0,0,0,0.6)]"
+                  ? "z-10 border-gold-soft/70 shadow-[0_24px_55px_-14px_rgba(0,0,0,0.65)]"
                   : "border-warm-white/10",
               ].join(" ")}
               style={{
                 width: size.slide,
                 height: size.height,
-                transform: isActive ? "scale(1)" : "scale(0.58)",
-                opacity: isActive ? 1 : 0.5,
-                transition: `transform ${TRANSITION_MS}ms cubic-bezier(0.65, 0, 0.35, 1), opacity ${TRANSITION_MS}ms ease`,
+                transform: isActive ? "scale(1)" : `scale(${INACTIVE_SCALE})`,
+                opacity: isActive ? 1 : 0.42,
+                marginLeft: isActive ? 0 : -shrinkPx,
+                marginRight: isActive ? 0 : -shrinkPx,
+                transition:
+                  `transform ${TRANSITION_MS}ms ${EASING}, ` +
+                  `opacity ${TRANSITION_MS}ms ease, ` +
+                  `margin ${TRANSITION_MS}ms ${EASING}`,
                 transformOrigin: "center center",
               }}
             >
@@ -127,7 +137,7 @@ export function HeroProductMarquee() {
       aria-label="Featured artisan pieces"
       className="pointer-events-none absolute right-6 top-1/2 hidden w-[520px] -translate-y-1/2 lg:block xl:right-10 xl:w-[560px]"
     >
-      <Carousel size={{ slide: 240, gap: 6, height: 320 }} />
+      <Carousel size={{ slide: 260, gap: 4, height: 330 }} />
     </aside>
   );
 }
@@ -136,7 +146,7 @@ export function HeroProductMarquee() {
 export function HeroProductStripMobile() {
   return (
     <div className="mt-10 -mx-2 lg:hidden">
-      <Carousel size={{ slide: 180, gap: 4, height: 230 }} />
+      <Carousel size={{ slide: 200, gap: 3, height: 250 }} />
     </div>
   );
 }

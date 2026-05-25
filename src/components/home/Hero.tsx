@@ -31,6 +31,11 @@ export function Hero() {
       >
         {/* LEFT — copy block, tight grouping */}
         <div className="max-w-[600px] md:pl-[44px]">
+          <Logo
+            variant="light"
+            className="mb-5 h-20 w-auto drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)] sm:h-24 md:h-28"
+            alt="UKEN — From Heart to Hands"
+          />
           <h1 className="m-1 max-w-[680px] font-display text-[46px] font-light leading-[1.02] text-warm-white sm:text-5xl md:text-6xl">
             Kenya,
             <span className="block italic text-gold-soft">brought home.</span>

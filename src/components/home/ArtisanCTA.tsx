@@ -17,7 +17,7 @@ export function ArtisanCTA() {
       <div className="relative z-10 mx-auto grid max-w-7xl gap-7 px-6 md:grid-cols-12 md:gap-10 md:px-10">
         {/* Left: editorial mark */}
         <div className="md:col-span-4">
-          <SectionLabel tone="gold">Are you a Kenyan farmer or maker?</SectionLabel>
+          <SectionLabel tone="gold">Are you an East African farmer or maker?</SectionLabel>
           <div className="mt-5 hidden md:block">
             <span className="font-display text-[112px] leading-none italic text-terracotta/25">
               ❋

@@ -21,9 +21,9 @@ export function StoryTrustStrip() {
         </div>
 
         <div className="mt-7 grid gap-5 border-y border-border/70 py-5 text-[14px] leading-relaxed text-ink-muted sm:grid-cols-2 md:grid-cols-4 md:text-sm">
-          <p><span className="block font-medium text-charcoal">Mission</span>To empower Kenyan farmers, artisans, and craftsmen by bridging the gap to the UK market through direct, transparent, and sustainable trade — ensuring exceptional skill and quality are rewarded with equitable value.</p>
-          <p><span className="block font-medium text-charcoal">Vision</span>To be the premier gateway for Kenyan excellence in the United Kingdom, recognised for an unbroken chain of traceability connecting UK buyers directly to the farmers, artisans, and craftsmen behind the finest agricultural and hand-crafted goods.</p>
-          <p><span className="block font-medium text-charcoal">Core Values</span>Transparency, fair value for makers, traceable Kenyan excellence, and long-term stewardship.</p>
+          <p><span className="block font-medium text-charcoal">Mission</span>To empower East African farmers, artisans, and craftsmen — across Kenya, Uganda, Tanzania, Rwanda and beyond — by bridging the gap to the UK market through direct, transparent, and sustainable trade.</p>
+          <p><span className="block font-medium text-charcoal">Vision</span>To be the premier gateway for East African excellence in the United Kingdom, recognised for an unbroken chain of traceability connecting UK buyers directly to the farmers, artisans, and craftsmen behind the work.</p>
+          <p><span className="block font-medium text-charcoal">Core Values</span>Transparency, fair value for makers, traceable East African excellence, and long-term stewardship.</p>
           <p><span className="block font-medium text-charcoal">Contacts</span>Nottingham: Osmaston 10, NG7 1SD. Nairobi: Nairobi Garage – Karen, Watermark Business Park.</p>
         </div>
 

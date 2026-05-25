@@ -7,13 +7,13 @@ import joinHero from "@/assets/join-hero.jpg";
 export const Route = createFileRoute("/join/")({
   head: () => ({
     meta: [
-      { title: "Join UKEN — A home for Kenyan farmers and makers" },
+      { title: "Join UKEN — A home for East African farmers and makers" },
       {
         name: "description",
         content:
-          "UKEN is built for Kenyan farmers, artisans, and makers first. Fair margins, your name on every product, your story told the way you'd tell it.",
+          "UKEN is built for East African farmers, artisans, and makers — Kenya, Uganda, Tanzania, Rwanda and beyond. Fair margins, your name on every product, your story told the way you'd tell it.",
       },
-      { property: "og:title", content: "Join UKEN — A home for Kenyan farmers and makers" },
+      { property: "og:title", content: "Join UKEN — A home for East African farmers and makers" },
       {
         property: "og:description",
         content:

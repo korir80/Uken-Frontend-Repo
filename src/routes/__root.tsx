@@ -55,7 +55,7 @@ const ORGANIZATION_JSONLD = {
   url: SITE_URL,
   logo: `${SITE_URL}/og-image.jpg`,
   description:
-    "UKEN connects UK buyers directly with traceable Kenyan coffee, tea, foods, textiles, craft, and more.",
+    "UKEN connects UK buyers directly with traceable East African coffee, tea, foods, textiles, craft, and more — from Kenya, Uganda, Tanzania, Rwanda and beyond.",
   
   telephone: "+44 7425 241649",
   sameAs: [] as string[],
@@ -97,7 +97,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       {
         name: "description",
         content:
-          "UKEN — a direct trade marketplace bridging Kenyan farmers, artisans, and makers with UK homes.",
+          "UKEN — a direct trade marketplace bridging East African farmers, artisans, and makers with UK homes.",
       },
       { name: "author", content: "UKEN" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
@@ -110,18 +110,18 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       {
         property: "og:description",
         content:
-          "UKEN — a direct trade marketplace bridging Kenyan farmers, artisans, and makers with UK homes.",
+          "UKEN — a direct trade marketplace bridging East African farmers, artisans, and makers with UK homes.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: SITE_URL },
       { property: "og:image", content: OG_IMAGE },
-      { property: "og:image:alt", content: "UKEN — traceable Kenyan goods, brought home to the UK" },
+      { property: "og:image:alt", content: "UKEN — traceable East African goods, brought home to the UK" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "UKEN — Kenya, brought home" },
+      { name: "twitter:title", content: "UKEN — East Africa, brought home" },
       {
         name: "twitter:description",
         content:
-          "Traceable Kenyan coffee, tea, foods, textiles, beadwork, and craft — straight from the maker to UK doors.",
+          "Traceable East African coffee, tea, foods, textiles, beadwork, and craft — straight from the maker to UK doors.",
       },
       { name: "twitter:image", content: OG_IMAGE },
     ],

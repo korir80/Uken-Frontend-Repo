@@ -12,6 +12,7 @@ import {
 import { PhotoUploader } from "@/components/join/PhotoUploader";
 import { Button, SectionLabel, ConsentCheckbox } from "@/components/ukena";
 import { CRAFTS } from "@/components/explore/creators-data";
+import { EAC_COUNTRIES } from "@/lib/regions";
 import { useSubmitApplication } from "@/lib/queries";
 
 export const Route = createFileRoute("/join/apply")({
@@ -33,6 +34,7 @@ export const Route = createFileRoute("/join/apply")({
 interface ApplicationData {
   fullName: string;
   email: string;
+  country: string;
   region: string;
   craft: string;
   intro: string;
@@ -52,6 +54,7 @@ const STEP_LABELS = [
 const initial: ApplicationData = {
   fullName: "",
   email: "",
+  country: "",
   region: "",
   craft: "",
   intro: "",
@@ -83,7 +86,7 @@ function ApplyPage() {
       await submit.mutateAsync({
         fullName: data.fullName.trim(),
         email: data.email.trim(),
-        region: data.region.trim(),
+        region: [data.region.trim(), data.country.trim()].filter(Boolean).join(", "),
         craft: data.craft,
         yearsOfPractice: parseYears(data.yearsPracticing),
         story: [data.intro, data.whoTaught, data.meaning]
@@ -122,6 +125,7 @@ function ApplyPage() {
   const canAdvanceStep1 =
     data.fullName.trim() &&
     emailValid &&
+    data.country.trim() &&
     data.region.trim() &&
     data.craft &&
     data.intro.trim().length > 10;
@@ -256,11 +260,18 @@ function Step1({
           onChange={(e) => update("email", e.target.value)}
           autoComplete="email"
         />
+        <JoinPillSelect
+          label="Which country are you based in?"
+          helper="UKEN works across East Africa. Pick yours."
+          options={EAC_COUNTRIES}
+          value={data.country}
+          onChange={(v) => update("country", v)}
+        />
         <JoinInput
           id="region"
-          label="Where in Kenya are you based?"
-          helper="Town, county, or however you'd describe home."
-          placeholder="e.g. Maragua, Murang'a"
+          label="And where exactly?"
+          helper="Town, region, county — however you'd describe home."
+          placeholder="e.g. Maragua, Murang'a · Jinja · Arusha"
           value={data.region}
           onChange={(e) => update("region", e.target.value)}
         />
@@ -381,8 +392,8 @@ function Step3({
           <>
             I agree to UKEN holding the details and photos I've shared to
             review my application, and — if I'm approved — to feature my
-            story and work on UKEN. Handled under our Privacy Notice and the
-            Kenya Data Protection Act (2019).
+            story and work on UKEN. Handled under our Privacy Notice and
+            applicable East African and UK data protection law.
           </>
         }
       />

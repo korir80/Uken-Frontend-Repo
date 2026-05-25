@@ -33,8 +33,7 @@ export function ArtisanCTA() {
           </h2>
 
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-ink-muted md:text-[16px]">
-            We're building UKEN for farmers, artisans, and makers first. Fair
-            margins, your name on every product, your story told the way you'd tell it.
+            We're building UKEN for farmers, artisans, and makers across East Africa — Kenya, Uganda, Tanzania, Rwanda and beyond. Fair margins, your name on every product, your story told the way you'd tell it.
           </p>
 
           <div className="mt-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center">

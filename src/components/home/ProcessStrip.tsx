@@ -29,8 +29,8 @@ const buyerSteps: Step[] = [
   },
   {
     n: "III",
-    title: "Bring Kenya home",
-    copy: "Choose coffee, tea, foods, textiles, or craft, shipped from Kenya to your home in the UK.",
+    title: "Bring East Africa home",
+    copy: "Choose coffee, tea, foods, textiles, or craft, shipped from across East Africa to your home in the UK.",
     Icon: VesselIcon,
   },
 ];

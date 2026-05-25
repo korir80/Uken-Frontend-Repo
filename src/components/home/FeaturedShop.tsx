@@ -27,11 +27,10 @@ export function FeaturedShop() {
           <div>
             <p className="section-label">Shop the collection</p>
             <h2 className="mt-2 max-w-2xl font-display text-[30px] leading-tight text-charcoal sm:text-[34px] md:text-[42px]">
-              Kenyan goods leaving farms and studios this week.
+              East African goods leaving farms and studios this week.
             </h2>
             <p className="mt-2.5 max-w-xl font-sans text-[14px] leading-relaxed text-charcoal/70 md:text-[15px]">
-              Coffee, tea, foods, textiles, and craft fresh from Kenyan hands. Every product carries its source and a
-              fair share of every sale.
+              Coffee, tea, foods, textiles, and craft from across Kenya, Uganda, Tanzania, Rwanda and beyond. Every product carries its source and a fair share of every sale.
             </p>
           </div>
           <Link

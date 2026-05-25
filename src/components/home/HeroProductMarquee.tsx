@@ -1,15 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import p1 from "@/assets/hero-product-1.jpg";
 import p2 from "@/assets/hero-product-2.jpg";
 import p3 from "@/assets/hero-product-3.jpg";
 import p4 from "@/assets/hero-product-4.jpg";
 
-/**
- * Hero product carousel.
- * 3 visible slides at all times: previous (small) · active (large) · next (small).
- * Every 3s the next image becomes active and slides smoothly to centre.
- * Forward-only, infinite, very tight spacing, fades on all four sides.
- */
 export const heroProducts: { src: string; alt: string; tag: string }[] = [
   { src: p1, alt: "Maasai beaded fringe earrings", tag: "Beadwork · Kajiado" },
   { src: p2, alt: "Orange triple-disc beaded earrings", tag: "Beadwork · Narok" },
@@ -17,101 +11,71 @@ export const heroProducts: { src: string; alt: string; tag: string }[] = [
   { src: p4, alt: "Stacked Maasai bracelets", tag: "Bracelets · Magadi" },
 ];
 
-const FOUR_SIDE_MASK =
-  "linear-gradient(to right, transparent 0%, black 18%, black 82%, transparent 100%), " +
-  "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)";
+const INTERVAL = 3000;
+const TRANSITION_MS = 700;
 
-const STEP_MS = 3000;
-const TRANSITION_MS = 1100;
-const EASING = "cubic-bezier(0.65, 0, 0.35, 1)";
+function ProductCarousel({ heightClass }: { heightClass: string }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
-type Size = {
-  base: number;        // base slide width (inactive baseline) in px
-  gap: number;         // visual gap between neighbouring slides in px
-  activeScale: number; // scale applied to the active slide
-  inactiveScale: number; // scale applied to all other slides
-  height: number;      // container height in px
-};
-
-function Carousel({ size }: Size extends never ? never : { size: Size }) {
-  const [tick, setTick] = useState(0);
-  const n = heroProducts.length;
+  const count = heroProducts.length;
 
   useEffect(() => {
-    const reduce =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-    const id = window.setInterval(() => setTick((t) => t + 1), STEP_MS);
-    return () => window.clearInterval(id);
-  }, []);
+    timerRef.current = setInterval(() => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setActiveIndex((prev) => (prev + 1) % count);
+        setIsTransitioning(false);
+      }, TRANSITION_MS);
+    }, INTERVAL);
+    return () => clearInterval(timerRef.current);
+  }, [count]);
 
-  // Render a long ribbon so we never run out of slides while moving forward.
-  const REPEATS = 40;
-  const list = Array.from({ length: REPEATS }, (_, k) => heroProducts[k % n]);
-  // Active index keeps marching forward (no jumps -> no visual seams).
-  const activeIndex = Math.floor(REPEATS / 4) + tick;
+  // Build a window: [prev, active, next, next+1] — always show 4, centered on active
+  const getItem = (offset: number) => heroProducts[(activeIndex + offset + count * 10) % count];
 
-  const step = size.base + size.gap;
-  // Centre the active slide: shift ribbon so activeIndex sits at 50% of container.
-  const translate = `calc(50% - ${size.base / 2}px - ${activeIndex * step}px)`;
+  // Render items: one before active + active + two after
+  const slots = [
+    { item: getItem(-1), role: "prev" },
+    { item: getItem(0), role: "active" },
+    { item: getItem(1), role: "next" },
+    { item: getItem(2), role: "far" },
+  ];
 
   return (
     <div
       aria-label="Featured artisan pieces"
-      className="pointer-events-none relative w-full overflow-hidden"
+      className={`relative w-full overflow-hidden ${heightClass}`}
       style={{
-        height: size.height,
-        WebkitMaskImage: FOUR_SIDE_MASK,
-        maskImage: FOUR_SIDE_MASK,
-        WebkitMaskComposite: "source-in",
-        maskComposite: "intersect",
+        WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
+        maskImage: "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
       }}
     >
-      <div
-        className="absolute inset-y-0 left-0 flex items-center"
-        style={{
-          gap: size.gap,
-          transform: `translateX(${translate})`,
-          transition: `transform ${TRANSITION_MS}ms ${EASING}`,
-          willChange: "transform",
-        }}
-      >
-        {list.map((item, i) => {
-          const isActive = i === activeIndex;
-          const scale = isActive ? size.activeScale : size.inactiveScale;
+      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-center gap-1.5">
+        {slots.map(({ item, role }, i) => {
+          const isActive = role === "active";
+          const isAdjacent = role === "prev" || role === "next";
+
           return (
             <figure
-              key={i}
-              className={[
-                "relative flex-none overflow-hidden rounded-sm border bg-charcoal/40",
-                isActive
-                  ? "z-10 border-gold-soft/70 shadow-[0_28px_60px_-18px_rgba(0,0,0,0.7)]"
-                  : "border-warm-white/15",
-              ].join(" ")}
+              key={`${role}-${item.src}`}
+              className="relative flex-none overflow-hidden rounded-sm border bg-charcoal/40"
               style={{
-                width: size.base,
-                height: size.height,
-                transform: `scale(${scale})`,
-                opacity: isActive ? 1 : 0.5,
-                transition:
-                  `transform ${TRANSITION_MS}ms ${EASING}, ` +
-                  `opacity ${TRANSITION_MS}ms ease`,
-                transformOrigin: "center center",
+                aspectRatio: "4 / 5",
+                height: isActive ? "88%" : isAdjacent ? "66%" : "52%",
+                transition: `height ${TRANSITION_MS}ms cubic-bezier(0.4,0,0.2,1),
+                             opacity ${TRANSITION_MS}ms cubic-bezier(0.4,0,0.2,1),
+                             border-color ${TRANSITION_MS}ms ease`,
+                opacity: isActive ? 1 : isAdjacent ? 0.65 : 0.35,
+                borderColor: isActive ? "rgba(var(--gold-soft-rgb, 212,175,90), 0.6)" : "rgba(255,255,255,0.08)",
+                willChange: "height, opacity",
               }}
             >
-              <img
-                src={item.src}
-                alt={item.alt}
-                loading="lazy"
-                draggable={false}
-                className="h-full w-full object-cover"
-              />
+              <img src={item.src} alt={item.alt} className="h-full w-full object-cover" loading="lazy" />
               {isActive && (
                 <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-charcoal/85 via-charcoal/40 to-transparent px-3 py-2.5">
-                  <span className="font-sans text-[9px] uppercase tracking-[0.18em] text-gold-soft/90">
-                    {item.tag}
-                  </span>
+                  <span className="font-sans text-[9px] uppercase tracking-[0.18em] text-gold-soft/90">{item.tag}</span>
                 </figcaption>
               )}
             </figure>
@@ -122,39 +86,21 @@ function Carousel({ size }: Size extends never ? never : { size: Size }) {
   );
 }
 
-/** Desktop placement — inside the hero right column. */
 export function HeroProductMarquee() {
   return (
     <aside
       aria-label="Featured artisan pieces"
-      className="pointer-events-none absolute right-6 top-1/2 hidden w-[560px] -translate-y-1/2 lg:block xl:right-10 xl:w-[620px]"
+      className="pointer-events-none absolute right-6 top-1/2 hidden w-[520px] -translate-y-1/2 lg:block xl:right-10 xl:w-[560px]"
     >
-      <Carousel
-        size={{
-          base: 170,
-          gap: 6,
-          activeScale: 1.35,
-          inactiveScale: 0.62,
-          height: 230,
-        }}
-      />
+      <ProductCarousel heightClass="h-[300px] xl:h-[330px]" />
     </aside>
   );
 }
 
-/** Mobile placement — below CTAs, smaller. */
 export function HeroProductStripMobile() {
   return (
     <div className="mt-10 -mx-2 lg:hidden">
-      <Carousel
-        size={{
-          base: 130,
-          gap: 5,
-          activeScale: 1.3,
-          inactiveScale: 0.62,
-          height: 180,
-        }}
-      />
+      <ProductCarousel heightClass="h-[210px] sm:h-[240px]" />
     </div>
   );
 }

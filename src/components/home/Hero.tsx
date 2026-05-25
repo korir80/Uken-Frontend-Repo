@@ -73,7 +73,7 @@ export function Hero() {
           <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-warm-white/15 pt-6">
             {[
               { k: "120+", v: "Verified makers" },
-              { k: "14", v: "Kenyan counties" },
+              { k: "7", v: "East African countries" },
               { k: "100%", v: "Traceable origin" },
             ].map((s) => (
               <div key={s.v}>

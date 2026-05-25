@@ -260,11 +260,18 @@ function Step1({
           onChange={(e) => update("email", e.target.value)}
           autoComplete="email"
         />
+        <JoinPillSelect
+          label="Which country are you based in?"
+          helper="UKEN works across East Africa. Pick yours."
+          options={EAC_COUNTRIES}
+          value={data.country}
+          onChange={(v) => update("country", v)}
+        />
         <JoinInput
           id="region"
-          label="Where in Kenya are you based?"
-          helper="Town, county, or however you'd describe home."
-          placeholder="e.g. Maragua, Murang'a"
+          label="And where exactly?"
+          helper="Town, region, county — however you'd describe home."
+          placeholder="e.g. Maragua, Murang'a · Jinja · Arusha"
           value={data.region}
           onChange={(e) => update("region", e.target.value)}
         />

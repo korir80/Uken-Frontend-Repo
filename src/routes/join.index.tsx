@@ -51,7 +51,7 @@ function JoinLanding() {
       <section className="relative overflow-hidden">
         <div className="grid md:grid-cols-12">
           <div className="bg-warm-white px-5 pb-8 pt-6 md:col-span-7 md:px-10 md:pb-10 md:pt-10 lg:px-12">
-            <SectionLabel tone="gold">A note for Kenyan farmers and makers</SectionLabel>
+            <SectionLabel tone="gold">A note for East African farmers and makers</SectionLabel>
             <h1 className="mt-3 font-display text-[30px] leading-[1.05] tracking-tight text-charcoal sm:text-[34px] md:mt-3 md:text-[42px]">
               Your work deserves{" "}
               <em className="italic text-terracotta">a global stage.</em>
@@ -59,7 +59,8 @@ function JoinLanding() {
             <p className="mt-2.5 max-w-xl text-[13px] leading-relaxed text-ink-muted md:text-sm">
               UKEN was built for the makers first. We don't run a marketplace
               of products — we keep an index of people. If you grow, harvest,
-              or make something in Kenya, we'd like to hear from you.
+              or make something in Kenya, Uganda, Tanzania, Rwanda or anywhere
+              across East Africa, we'd like to hear from you.
             </p>
 
             <div className="mt-5 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-5">

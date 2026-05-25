@@ -38,13 +38,13 @@ export function Hero() {
             alt="UKEN — From Heart to Hands"
           />
           <h1 className="m-1 max-w-[680px] font-display text-[46px] font-light leading-[1.02] text-warm-white sm:text-5xl md:text-6xl">
-            Kenya,
+            East Africa,
             <span className="block italic text-gold-soft">brought home.</span>
           </h1>
 
           {/* Sub-copy */}
           <p className="mb-7 mt-5 max-w-[420px] font-sans text-[15px] font-light leading-relaxed text-warm-white/72 sm:text-base">
-            From the farmers, artisans, and makers of Kenya — to your home in the UK.
+            From the farmers, artisans, and makers of Kenya, Uganda, Tanzania, Rwanda and beyond — to your home in the UK.
           </p>
 
           {/* CTAs */}

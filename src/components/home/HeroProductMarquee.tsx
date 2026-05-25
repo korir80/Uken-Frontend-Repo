@@ -17,7 +17,7 @@ const TRANSITION_MS = 700;
 function ProductCarousel({ heightClass }: { heightClass: string }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const count = heroProducts.length;
 

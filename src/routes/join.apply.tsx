@@ -12,6 +12,7 @@ import {
 import { PhotoUploader } from "@/components/join/PhotoUploader";
 import { Button, SectionLabel, ConsentCheckbox } from "@/components/ukena";
 import { CRAFTS } from "@/components/explore/creators-data";
+import { EAC_COUNTRIES } from "@/lib/regions";
 import { useSubmitApplication } from "@/lib/queries";
 
 export const Route = createFileRoute("/join/apply")({

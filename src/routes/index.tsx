@@ -5,7 +5,7 @@ import { StoryTrustStrip } from "@/components/home/StoryTrustStrip";
 import { FeaturedShop } from "@/components/home/FeaturedShop";
 import { FeaturedCreators } from "@/components/home/FeaturedCreators";
 import { ProcessStrip } from "@/components/home/ProcessStrip";
-import { TraceabilityStrip } from "@/components/home/TraceabilityStrip";
+// import { TraceabilityStrip } from "@/components/home/TraceabilityStrip"; // disabled
 import { ParallaxBand } from "@/components/home/ParallaxBand";
 import { QuotePullout } from "@/components/home/QuotePullout";
 import { ArtisanCTA } from "@/components/home/ArtisanCTA";
@@ -51,7 +51,7 @@ function HomePage() {
         <FeaturedCreators />
         <ParallaxBand />
         <ProcessStrip />
-        <TraceabilityStrip />
+        {/* <TraceabilityStrip /> — disabled */}
         <QuotePullout />
         <ArtisanCTA />
       </main>

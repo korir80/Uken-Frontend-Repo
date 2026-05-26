@@ -92,31 +92,47 @@ function CreatorProfile() {
   // Portrait and header are replaced via direct file-input clicks.
   // Each saves immediately and independently via PUT /creators/me so the
   // public page updates without waiting for the main form save.
-  async function handleImageReplace(kind: "portrait" | "header", file: File | undefined) {
+  function stageImage(kind: "portrait" | "header", file: File | undefined) {
     if (!file) return;
-    if (!consent) {
-      toast.error("Please tick the consent box before uploading a new image.");
-      return;
-    }
     try {
       validateUploadFile(file);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Invalid image.");
       return;
     }
+    if (staged) URL.revokeObjectURL(staged.preview);
+    setStaged({ kind, file, preview: URL.createObjectURL(file) });
+    if (portraitInputRef.current) portraitInputRef.current.value = "";
+    if (headerInputRef.current) headerInputRef.current.value = "";
+  }
+
+  function cancelStaged() {
+    if (!staged) return;
+    URL.revokeObjectURL(staged.preview);
+    setStaged(null);
+  }
+
+  async function confirmStaged() {
+    if (!staged) return;
+    if (!consent) {
+      toast.error("Please tick the consent box before uploading a new image.");
+      return;
+    }
+    const { kind, file, preview } = staged;
     setUploadingKind(kind);
     try {
       const url = await cloudinaryService.upload(file, "ukena/creators");
       await update.mutateAsync(kind === "portrait" ? { portraitImage: url } : { headerImage: url });
-      toast.success(kind === "portrait" ? "Portrait updated." : "Cover image updated.");
+      toast.success(kind === "portrait" ? "Avatar updated." : "Cover banner updated.");
+      URL.revokeObjectURL(preview);
+      setStaged(null);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Upload failed.");
     } finally {
       setUploadingKind(null);
-      if (portraitInputRef.current) portraitInputRef.current.value = "";
-      if (headerInputRef.current) headerInputRef.current.value = "";
     }
   }
+
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();

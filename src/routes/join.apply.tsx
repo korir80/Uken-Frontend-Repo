@@ -97,10 +97,9 @@ function ApplyPage() {
           .map((s) => s.trim())
           .filter(Boolean)
           .join("\n\n"),
-        // Backend still accepts a flat `photos` array. We send portrait
-        // first so reviewers immediately see the maker's face, then the
-        // finished-work samples in upload order.
-        photos: [...data.portrait, ...data.workSamples],
+        // Photo uploads are disabled during application. Images will be
+        // collected once the maker is approved and we visit their workshop.
+        photos: [],
       });
       toast.success("Application received — we'll be in touch within 48 hours.");
       setStep(4);
@@ -138,11 +137,7 @@ function ApplyPage() {
     data.intro.trim().length > 10;
   const canAdvanceStep2 =
     data.yearsPracticing.trim() && data.whoTaught.trim() && data.meaning.trim();
-  const canAdvanceStep3 =
-    data.portrait.length === 1 &&
-    data.workSamples.length >= 2 &&
-    consent &&
-    !submit.isPending;
+  const canAdvanceStep3 = consent && !submit.isPending;
 
   return (
     <JoinShell>

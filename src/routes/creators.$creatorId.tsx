@@ -34,7 +34,15 @@ export const Route = createFileRoute("/creators/$creatorId")({
       const creator = await queryClient.ensureQueryData(
         profileQueryOptions(params.creatorId),
       );
+      // Suspended makers must not be reachable from public URLs.
+      if (isCreatorSuspended(creator as never)) throw notFound();
       return { creator };
+    } catch (err) {
+      if (err instanceof Error && /not in (the )?index/i.test(err.message))
+        throw notFound();
+      throw err;
+    }
+  },
     } catch (err) {
       if (err instanceof Error && /not in (the )?index/i.test(err.message))
         throw notFound();

@@ -98,7 +98,10 @@ function ApplyPage() {
           .map((s) => s.trim())
           .filter(Boolean)
           .join("\n\n"),
-        photos: data.photos,
+        // Backend still accepts a flat `photos` array. We send portrait
+        // first so reviewers immediately see the maker's face, then the
+        // finished-work samples in upload order.
+        photos: [...data.portrait, ...data.workSamples],
       });
       toast.success("Application received — we'll be in touch within 48 hours.");
       setStep(4);

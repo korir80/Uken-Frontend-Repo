@@ -133,19 +133,27 @@ export function CloudinaryImagePicker({
           </div>
         ))}
 
-        {Array.from({ length: busyCount }).map((_, i) => (
+        {pending.map((slot, i) => (
           <div
-            key={`busy-${i}`}
+            key={`pending-${i}`}
             className={cn(
-              "grid place-items-center rounded-xl border border-dashed border-border bg-cream/50",
+              "relative overflow-hidden rounded-xl border border-dashed border-border bg-cream/50",
               aspectCls,
             )}
           >
-            <Loader2 className="h-5 w-5 animate-spin text-clay" />
+            <img
+              src={slot.preview}
+              alt="Uploading…"
+              className="h-full w-full object-cover opacity-60"
+            />
+            <div className="absolute inset-0 grid place-items-center bg-charcoal/10">
+              <Loader2 className="h-5 w-5 animate-spin text-warm-white drop-shadow" />
+            </div>
           </div>
         ))}
 
-        {slotsLeft - busyCount > 0 && (
+        {slotsLeft > 0 && (
+
           <label
             className={cn(
               "group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-cream/40 text-center transition hover:border-clay/60 hover:bg-cream",

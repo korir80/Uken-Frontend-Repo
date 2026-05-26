@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { MapPin, Heart, MessageCircle, Share2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { MapPin, Heart, MessageCircle, Share2, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { CreatorProfile } from "./creator-profile-data";
 import { safeImg, hideBrokenImage } from "@/lib/safeImage";
 
@@ -27,23 +28,44 @@ export function CreatorSocialFeed({ creator, isPreview }: CreatorSocialFeedProps
   const cover = safeImg(creator.coverImage);
   const avatar = safeImg(creator.avatar);
 
+  // Build a single gallery (cover + workshop + product images) for the lightbox.
+  const gallery: { src: string; caption?: string }[] = [
+    ...(cover ? [{ src: cover, caption: `${creator.fullName} — cover` }] : []),
+    ...creator.processSteps.map((s) => ({ src: safeImg(s.image) || "", caption: s.caption })),
+    ...creator.products.map((p) => ({ src: safeImg(p.image) || "", caption: p.name })),
+  ].filter((g) => g.src);
+
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const openLightbox = (src: string) => {
+    const idx = gallery.findIndex((g) => g.src === src);
+    setLightboxIndex(idx >= 0 ? idx : 0);
+  };
+
   return (
     <div className="bg-warm-white">
       {/* ── Cover banner — native aspect, max-height bounded ─────────── */}
       <div className="relative w-full overflow-hidden bg-sand-soft">
         {cover ? (
-          <img
-            src={cover}
-            alt=""
-            loading="eager"
-            decoding="async"
-            onError={hideBrokenImage}
-            className="mx-auto block max-h-[48vh] w-full max-w-5xl object-cover"
-          />
+          <button
+            type="button"
+            onClick={() => openLightbox(cover)}
+            className="block w-full cursor-zoom-in"
+            aria-label="Open cover image"
+          >
+            <img
+              src={cover}
+              alt=""
+              loading="eager"
+              decoding="async"
+              onError={hideBrokenImage}
+              className="mx-auto block max-h-[38vh] w-full max-w-5xl object-cover"
+            />
+          </button>
         ) : (
           <div className="h-40 w-full bg-gradient-to-br from-cream via-sand-soft to-terracotta/20 sm:h-56" />
         )}
       </div>
+
 
       {/* ── Profile column ─────────────────────────────────────────── */}
       <div className="mx-auto max-w-xl px-4 sm:px-6">
@@ -147,36 +169,47 @@ export function CreatorSocialFeed({ creator, isPreview }: CreatorSocialFeedProps
             </Post>
           ))}
 
-          {/* Workshop gallery — each photo at its native aspect, stacked */}
+          {/* Workshop gallery — tight 2-col thumbnails, click to enlarge */}
           {creator.processSteps.length > 0 && (
             <Post author={creator} kind="In the workshop">
               <p className="mb-3 text-[14px] leading-relaxed text-charcoal/80">
-                A few moments from how I work — start to finish.
+                A few moments from how I work — tap any photo to view full size.
               </p>
-              <div className="-mx-4 space-y-3 sm:-mx-5">
-                {creator.processSteps.map((step, i) => (
-                  <figure key={`${step.image}-${i}`} className="bg-sand-soft">
-                    <img
-                      src={safeImg(step.image)}
-                      alt={step.caption}
-                      loading="lazy"
-                      decoding="async"
-                      onError={hideBrokenImage}
-                      className="block h-auto w-full"
-                    />
-                    {step.caption && (
-                      <figcaption className="bg-warm-white px-4 py-2.5 text-[13px] leading-snug text-charcoal/85 sm:px-5">
-                        <span className="mr-2 font-display text-[13px] text-terracotta/80">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        {step.caption}
-                      </figcaption>
-                    )}
-                  </figure>
-                ))}
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                {creator.processSteps.map((step, i) => {
+                  const src = safeImg(step.image) || "";
+                  return (
+                    <figure key={`${step.image}-${i}`} className="overflow-hidden rounded-lg bg-sand-soft">
+                      <button
+                        type="button"
+                        onClick={() => src && openLightbox(src)}
+                        className="block w-full cursor-zoom-in"
+                        aria-label={step.caption || `Workshop photo ${i + 1}`}
+                      >
+                        <img
+                          src={src}
+                          alt={step.caption}
+                          loading="lazy"
+                          decoding="async"
+                          onError={hideBrokenImage}
+                          className="block aspect-square h-auto w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+                        />
+                      </button>
+                      {step.caption && (
+                        <figcaption className="px-2 py-1.5 text-[11px] leading-snug text-charcoal/75">
+                          <span className="mr-1 font-display text-[11px] text-terracotta/80">
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          {step.caption}
+                        </figcaption>
+                      )}
+                    </figure>
+                  );
+                })}
               </div>
             </Post>
           )}
+
 
           {/* Cultural meaning */}
           {creator.culturalMeaning?.map((para, i) => (
@@ -295,9 +328,108 @@ export function CreatorSocialFeed({ creator, isPreview }: CreatorSocialFeedProps
           )}
         </div>
       </div>
+
+      <Lightbox
+        items={gallery}
+        index={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onIndex={setLightboxIndex}
+      />
     </div>
   );
 }
+
+function Lightbox({
+  items,
+  index,
+  onClose,
+  onIndex,
+}: {
+  items: { src: string; caption?: string }[];
+  index: number | null;
+  onClose: () => void;
+  onIndex: (i: number) => void;
+}) {
+  useEffect(() => {
+    if (index == null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") onIndex((index + 1) % items.length);
+      if (e.key === "ArrowLeft") onIndex((index - 1 + items.length) % items.length);
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [index, items.length, onClose, onIndex]);
+
+  return (
+    <AnimatePresence>
+      {index != null && items[index] && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-charcoal/92 p-4"
+          onClick={onClose}
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-4 top-4 rounded-full bg-warm-white/10 p-2 text-warm-white hover:bg-warm-white/20"
+            aria-label="Close"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          {items.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onIndex((index - 1 + items.length) % items.length); }}
+                className="absolute left-4 rounded-full bg-warm-white/10 p-2 text-warm-white hover:bg-warm-white/20"
+                aria-label="Previous"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onIndex((index + 1) % items.length); }}
+                className="absolute right-16 rounded-full bg-warm-white/10 p-2 text-warm-white hover:bg-warm-white/20"
+                aria-label="Next"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            </>
+          )}
+          <motion.figure
+            key={items[index].src}
+            initial={{ scale: 0.96, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.98, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="relative max-h-[92vh] max-w-[92vw]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={items[index].src}
+              alt={items[index].caption ?? ""}
+              className="max-h-[88vh] max-w-[92vw] object-contain"
+            />
+            {items[index].caption && (
+              <figcaption className="mt-3 text-center text-[13px] text-warm-white/85">
+                {items[index].caption}
+              </figcaption>
+            )}
+          </motion.figure>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 
 function EmptyHint() {
   return (
@@ -354,16 +486,19 @@ function Post({
 
       <div className="px-4 py-4 sm:px-5">{children}</div>
 
-      <footer className="flex items-center gap-4 border-t border-border/40 px-4 py-2.5 text-charcoal/55 sm:px-5">
-        <button type="button" className="flex items-center gap-1.5 text-[12px] hover:text-clay">
+      <footer
+        aria-hidden="true"
+        className="pointer-events-none flex items-center gap-4 border-t border-border/40 px-4 py-2.5 text-charcoal/30 opacity-40 sm:px-5"
+      >
+        <span className="flex items-center gap-1.5 text-[12px]">
           <Heart className="h-4 w-4" /> Like
-        </button>
-        <button type="button" className="flex items-center gap-1.5 text-[12px] hover:text-clay">
+        </span>
+        <span className="flex items-center gap-1.5 text-[12px]">
           <MessageCircle className="h-4 w-4" /> Reply
-        </button>
-        <button type="button" className="ml-auto flex items-center gap-1.5 text-[12px] hover:text-clay">
+        </span>
+        <span className="ml-auto flex items-center gap-1.5 text-[12px]">
           <Share2 className="h-4 w-4" /> Share
-        </button>
+        </span>
       </footer>
     </motion.article>
   );

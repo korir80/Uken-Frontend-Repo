@@ -51,6 +51,11 @@ function CreatorProfile() {
   const portraitInputRef = useRef<HTMLInputElement>(null);
   const headerInputRef = useRef<HTMLInputElement>(null);
   const [uploadingKind, setUploadingKind] = useState<"portrait" | "header" | null>(null);
+  // Staged file + preview blob so the maker confirms before the upload runs.
+  const [staged, setStaged] = useState<
+    | { kind: "portrait" | "header"; file: File; preview: string }
+    | null
+  >(null);
 
   // Hydrate all fields whenever profile data arrives or is updated by a save.
   // Because useUpdateCreatorProfile does qc.setQueryData(queryKeys.myProfile(), data)
@@ -87,31 +92,47 @@ function CreatorProfile() {
   // Portrait and header are replaced via direct file-input clicks.
   // Each saves immediately and independently via PUT /creators/me so the
   // public page updates without waiting for the main form save.
-  async function handleImageReplace(kind: "portrait" | "header", file: File | undefined) {
+  function stageImage(kind: "portrait" | "header", file: File | undefined) {
     if (!file) return;
-    if (!consent) {
-      toast.error("Please tick the consent box before uploading a new image.");
-      return;
-    }
     try {
       validateUploadFile(file);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Invalid image.");
       return;
     }
+    if (staged) URL.revokeObjectURL(staged.preview);
+    setStaged({ kind, file, preview: URL.createObjectURL(file) });
+    if (portraitInputRef.current) portraitInputRef.current.value = "";
+    if (headerInputRef.current) headerInputRef.current.value = "";
+  }
+
+  function cancelStaged() {
+    if (!staged) return;
+    URL.revokeObjectURL(staged.preview);
+    setStaged(null);
+  }
+
+  async function confirmStaged() {
+    if (!staged) return;
+    if (!consent) {
+      toast.error("Please tick the consent box before uploading a new image.");
+      return;
+    }
+    const { kind, file, preview } = staged;
     setUploadingKind(kind);
     try {
       const url = await cloudinaryService.upload(file, "ukena/creators");
       await update.mutateAsync(kind === "portrait" ? { portraitImage: url } : { headerImage: url });
-      toast.success(kind === "portrait" ? "Portrait updated." : "Cover image updated.");
+      toast.success(kind === "portrait" ? "Avatar updated." : "Cover banner updated.");
+      URL.revokeObjectURL(preview);
+      setStaged(null);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Upload failed.");
     } finally {
       setUploadingKind(null);
-      if (portraitInputRef.current) portraitInputRef.current.value = "";
-      if (headerInputRef.current) headerInputRef.current.value = "";
     }
   }
+
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -282,14 +303,16 @@ function CreatorProfile() {
         {/* ── Aside: avatar + cover (save immediately on upload) ── */}
         <aside className="space-y-4">
           {/* Avatar — round profile photo */}
-          <p className="section-label">Profile photo (avatar)</p>
+          <p className="font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-charcoal/55">
+            Profile photo (avatar)
+          </p>
           <p className="font-sans text-[11px] text-charcoal/50 -mt-2">
             Square crop, your face or hands. Shown as a round avatar on your
             public profile and next to every post.
           </p>
           <div className="relative mx-auto h-40 w-40 overflow-hidden rounded-full border border-border bg-cream">
             <LazyImage
-              src={profile.portraitImage}
+              src={staged?.kind === "portrait" ? staged.preview : profile.portraitImage}
               alt={profile.fullName}
               className="h-full w-full object-cover"
             />
@@ -299,31 +322,59 @@ function CreatorProfile() {
               </div>
             )}
           </div>
+          {staged?.kind === "portrait" && (
+            <p className="text-center font-sans text-[11px] uppercase tracking-[0.18em] text-clay">
+              Preview · not uploaded yet
+            </p>
+          )}
           <input
             ref={portraitInputRef}
             type="file"
             accept="image/jpeg,image/png,image/webp"
             className="sr-only"
-            onChange={(e) => handleImageReplace("portrait", e.target.files?.[0])}
+            onChange={(e) => stageImage("portrait", e.target.files?.[0])}
           />
-          <button
-            type="button"
-            disabled={uploadingKind !== null}
-            onClick={() => portraitInputRef.current?.click()}
-            className="w-full rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream disabled:opacity-60"
-          >
-            {uploadingKind === "portrait" ? "Uploading…" : "Replace avatar"}
-          </button>
+          {staged?.kind === "portrait" ? (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={uploadingKind !== null || !consent}
+                onClick={confirmStaged}
+                className="flex-1 rounded-full bg-clay px-4 py-2 font-sans text-[12px] text-warm-white hover:bg-clay-deep disabled:opacity-60"
+              >
+                {uploadingKind === "portrait" ? "Uploading…" : "Confirm upload"}
+              </button>
+              <button
+                type="button"
+                disabled={uploadingKind !== null}
+                onClick={cancelStaged}
+                className="rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream disabled:opacity-60"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              disabled={uploadingKind !== null}
+              onClick={() => portraitInputRef.current?.click()}
+              className="w-full rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream disabled:opacity-60"
+            >
+              Choose new avatar
+            </button>
+          )}
 
           {/* Cover banner — wide */}
-          <p className="section-label mt-6">Cover banner</p>
+          <p className="font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-charcoal/55 mt-6">
+            Cover banner
+          </p>
           <p className="font-sans text-[11px] text-charcoal/50 -mt-2">
             Wide image (3:1) — your workshop, hands at work, or finished
             pieces. Shown as the banner at the top of your profile.
           </p>
           <div className="relative aspect-[3/1] w-full overflow-hidden rounded-xl bg-cream">
             <LazyImage
-              src={profile.headerImage}
+              src={staged?.kind === "header" ? staged.preview : profile.headerImage}
               alt="Cover"
               className="h-full w-full object-cover"
             />
@@ -333,21 +384,48 @@ function CreatorProfile() {
               </div>
             )}
           </div>
+          {staged?.kind === "header" && (
+            <p className="text-center font-sans text-[11px] uppercase tracking-[0.18em] text-clay">
+              Preview · not uploaded yet
+            </p>
+          )}
           <input
             ref={headerInputRef}
             type="file"
             accept="image/jpeg,image/png,image/webp"
             className="sr-only"
-            onChange={(e) => handleImageReplace("header", e.target.files?.[0])}
+            onChange={(e) => stageImage("header", e.target.files?.[0])}
           />
-          <button
-            type="button"
-            disabled={uploadingKind !== null}
-            onClick={() => headerInputRef.current?.click()}
-            className="w-full rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream disabled:opacity-60"
-          >
-            {uploadingKind === "header" ? "Uploading…" : "Replace cover banner"}
-          </button>
+          {staged?.kind === "header" ? (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={uploadingKind !== null || !consent}
+                onClick={confirmStaged}
+                className="flex-1 rounded-full bg-clay px-4 py-2 font-sans text-[12px] text-warm-white hover:bg-clay-deep disabled:opacity-60"
+              >
+                {uploadingKind === "header" ? "Uploading…" : "Confirm upload"}
+              </button>
+              <button
+                type="button"
+                disabled={uploadingKind !== null}
+                onClick={cancelStaged}
+                className="rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream disabled:opacity-60"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              disabled={uploadingKind !== null}
+              onClick={() => headerInputRef.current?.click()}
+              className="w-full rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream disabled:opacity-60"
+            >
+              Choose new cover banner
+            </button>
+          )}
+
 
           {/* Guide so the maker knows exactly where each image appears */}
           <div className="rounded-xl border border-border/60 bg-cream/60 p-4 space-y-2 mt-2">

@@ -114,9 +114,14 @@ export function PhotoUploader({
   return (
     <div className="space-y-4">
       <div>
-        <p className="block font-display text-[24px] leading-tight text-charcoal md:text-[28px]">{label}</p>
-        {helper && <p className="mt-3 text-[14px] leading-relaxed text-ink-muted">{helper}</p>}
+        <p className="font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-charcoal/55">
+          {label}
+        </p>
+        {helper && (
+          <p className="mt-1 font-sans text-[12px] text-charcoal/55">{helper}</p>
+        )}
       </div>
+
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
         {/* Committed uploads */}

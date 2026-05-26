@@ -41,7 +41,11 @@ interface ApplicationData {
   yearsPracticing: string;
   whoTaught: string;
   meaning: string;
-  photos: string[];
+  // Split image fields so makers know exactly what each photo is for.
+  // `portrait` = one photo of the maker themselves (used as their avatar).
+  // `workSamples` = 2-5 photos of finished pieces / work in progress.
+  portrait: string[];
+  workSamples: string[];
 }
 
 const STEP_LABELS = [
@@ -61,7 +65,8 @@ const initial: ApplicationData = {
   yearsPracticing: "",
   whoTaught: "",
   meaning: "",
-  photos: [],
+  portrait: [],
+  workSamples: [],
 };
 
 /** Pull the first integer out of free-text like "thirty-two years" or "12+ yrs". */

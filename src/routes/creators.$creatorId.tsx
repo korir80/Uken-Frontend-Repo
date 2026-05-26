@@ -43,12 +43,6 @@ export const Route = createFileRoute("/creators/$creatorId")({
       throw err;
     }
   },
-    } catch (err) {
-      if (err instanceof Error && /not in (the )?index/i.test(err.message))
-        throw notFound();
-      throw err;
-    }
-  },
   head: ({ loaderData, params }) => {
     const c = loaderData?.creator;
     const url = `https://ukena.co.uk/creators/${params.creatorId}`;

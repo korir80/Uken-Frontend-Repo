@@ -7,6 +7,7 @@ import {
   type CreatorProfile,
 } from "@/components/creator/creator-profile-data";
 import { creatorQueryOptions, productsQueryOptions } from "@/lib/queries";
+import { isCreatorSuspended } from "@/lib/creatorStatus";
 
 /**
  * Query key for the rich /creators/:id profile (story + process + meaning).
@@ -33,6 +34,8 @@ export const Route = createFileRoute("/creators/$creatorId")({
       const creator = await queryClient.ensureQueryData(
         profileQueryOptions(params.creatorId),
       );
+      // Suspended makers must not be reachable from public URLs.
+      if (isCreatorSuspended(creator as never)) throw notFound();
       return { creator };
     } catch (err) {
       if (err instanceof Error && /not in (the )?index/i.test(err.message))

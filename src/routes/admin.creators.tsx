@@ -7,6 +7,7 @@ import type { CreatorSummary } from "@/services";
 import { PageHeader, StatusPill } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { useSuspendCreator, useUnsuspendCreator } from "@/lib/queries";
+import { isCreatorSuspended, type CreatorStatusLike } from "@/lib/creatorStatus";
 
 type StatusFilter = "all" | "active" | "suspended";
 
@@ -14,17 +15,12 @@ export const Route = createFileRoute("/admin/creators")({
   component: AdminCreators,
 });
 
-type AdminCreatorRow = CreatorSummary & {
-  deletedAt?: string | null;
-  status?: string;
-};
+type AdminCreatorRow = CreatorSummary & CreatorStatusLike;
 
 function isSuspended(c: AdminCreatorRow): boolean {
-  if (c.deletedAt != null) return true;
-  if (typeof c.status === "string" && c.status.toUpperCase() === "SUSPENDED")
-    return true;
-  return false;
+  return isCreatorSuspended(c);
 }
+
 
 async function fetchAdminCreators(): Promise<AdminCreatorRow[]> {
   // Try admin-scoped endpoint first (includes suspended); fall back to public.

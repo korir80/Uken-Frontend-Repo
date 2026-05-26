@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ImageOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { JoinShell } from "@/components/join/JoinShell";
 import { JoinProgress } from "@/components/join/JoinProgress";
@@ -9,7 +9,6 @@ import {
   JoinTextarea,
   JoinPillSelect,
 } from "@/components/join/JoinField";
-import { PhotoUploader } from "@/components/join/PhotoUploader";
 import { Button, SectionLabel, ConsentCheckbox } from "@/components/ukena";
 import { CRAFTS } from "@/components/explore/creators-data";
 import { EAC_COUNTRIES } from "@/lib/regions";

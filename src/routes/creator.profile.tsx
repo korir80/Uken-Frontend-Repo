@@ -1,14 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Loader2, Eye, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { useMyCreatorProfile, useUpdateCreatorProfile } from "@/lib/queries";
+import {
+  useMyCreatorProfile,
+  useUpdateCreatorProfile,
+  useAllProducts,
+  useCreators,
+} from "@/lib/queries";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicker";
 import { ConsentCheckbox } from "@/components/ukena";
 import { cloudinaryService, validateUploadFile } from "@/services/cloudinaryService";
+import { CreatorSocialFeed } from "@/components/creator/CreatorSocialFeed";
+import type { CreatorProfile as CreatorProfileShape } from "@/components/creator/creator-profile-data";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/creator/profile")({
   component: CreatorProfile,

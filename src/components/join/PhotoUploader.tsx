@@ -83,7 +83,7 @@ export function PhotoUploader({
       list.map(async (file, i) => {
         const preview = newSlots[i].preview;
         try {
-          const url = await cloudinaryService.upload(file, "applications");
+          const url = await cloudinaryService.upload(file, folder);
           updateSlot(preview, { url, uploading: false });
           // Promote to parent state.
           onChange([...value, url]);

@@ -379,11 +379,12 @@ function Step3({
       </header>
 
       <PhotoUploader
-        label="Up to five photographs."
-        helper="At least one of you at work. The rest, your favourite finished pieces."
+        label="Workshop & work photographs"
+        helper="Up to five images. At least one of you at work, the rest your favourite finished pieces. Previews appear instantly — they'll upload in the background."
         value={data.photos}
         onChange={(next) => update("photos", next)}
       />
+
 
       <ConsentCheckbox
         checked={consent}

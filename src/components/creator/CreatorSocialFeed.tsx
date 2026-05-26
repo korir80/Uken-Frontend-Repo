@@ -328,9 +328,108 @@ export function CreatorSocialFeed({ creator, isPreview }: CreatorSocialFeedProps
           )}
         </div>
       </div>
+
+      <Lightbox
+        items={gallery}
+        index={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onIndex={setLightboxIndex}
+      />
     </div>
   );
 }
+
+function Lightbox({
+  items,
+  index,
+  onClose,
+  onIndex,
+}: {
+  items: { src: string; caption?: string }[];
+  index: number | null;
+  onClose: () => void;
+  onIndex: (i: number) => void;
+}) {
+  useEffect(() => {
+    if (index == null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") onIndex((index + 1) % items.length);
+      if (e.key === "ArrowLeft") onIndex((index - 1 + items.length) % items.length);
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [index, items.length, onClose, onIndex]);
+
+  return (
+    <AnimatePresence>
+      {index != null && items[index] && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-charcoal/92 p-4"
+          onClick={onClose}
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-4 top-4 rounded-full bg-warm-white/10 p-2 text-warm-white hover:bg-warm-white/20"
+            aria-label="Close"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          {items.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onIndex((index - 1 + items.length) % items.length); }}
+                className="absolute left-4 rounded-full bg-warm-white/10 p-2 text-warm-white hover:bg-warm-white/20"
+                aria-label="Previous"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onIndex((index + 1) % items.length); }}
+                className="absolute right-16 rounded-full bg-warm-white/10 p-2 text-warm-white hover:bg-warm-white/20"
+                aria-label="Next"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            </>
+          )}
+          <motion.figure
+            key={items[index].src}
+            initial={{ scale: 0.96, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.98, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="relative max-h-[92vh] max-w-[92vw]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={items[index].src}
+              alt={items[index].caption ?? ""}
+              className="max-h-[88vh] max-w-[92vw] object-contain"
+            />
+            {items[index].caption && (
+              <figcaption className="mt-3 text-center text-[13px] text-warm-white/85">
+                {items[index].caption}
+              </figcaption>
+            )}
+          </motion.figure>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 
 function EmptyHint() {
   return (

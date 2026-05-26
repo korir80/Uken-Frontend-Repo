@@ -169,36 +169,47 @@ export function CreatorSocialFeed({ creator, isPreview }: CreatorSocialFeedProps
             </Post>
           ))}
 
-          {/* Workshop gallery — each photo at its native aspect, stacked */}
+          {/* Workshop gallery — tight 2-col thumbnails, click to enlarge */}
           {creator.processSteps.length > 0 && (
             <Post author={creator} kind="In the workshop">
               <p className="mb-3 text-[14px] leading-relaxed text-charcoal/80">
-                A few moments from how I work — start to finish.
+                A few moments from how I work — tap any photo to view full size.
               </p>
-              <div className="-mx-4 space-y-3 sm:-mx-5">
-                {creator.processSteps.map((step, i) => (
-                  <figure key={`${step.image}-${i}`} className="bg-sand-soft">
-                    <img
-                      src={safeImg(step.image)}
-                      alt={step.caption}
-                      loading="lazy"
-                      decoding="async"
-                      onError={hideBrokenImage}
-                      className="block h-auto w-full"
-                    />
-                    {step.caption && (
-                      <figcaption className="bg-warm-white px-4 py-2.5 text-[13px] leading-snug text-charcoal/85 sm:px-5">
-                        <span className="mr-2 font-display text-[13px] text-terracotta/80">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        {step.caption}
-                      </figcaption>
-                    )}
-                  </figure>
-                ))}
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                {creator.processSteps.map((step, i) => {
+                  const src = safeImg(step.image) || "";
+                  return (
+                    <figure key={`${step.image}-${i}`} className="overflow-hidden rounded-lg bg-sand-soft">
+                      <button
+                        type="button"
+                        onClick={() => src && openLightbox(src)}
+                        className="block w-full cursor-zoom-in"
+                        aria-label={step.caption || `Workshop photo ${i + 1}`}
+                      >
+                        <img
+                          src={src}
+                          alt={step.caption}
+                          loading="lazy"
+                          decoding="async"
+                          onError={hideBrokenImage}
+                          className="block aspect-square h-auto w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+                        />
+                      </button>
+                      {step.caption && (
+                        <figcaption className="px-2 py-1.5 text-[11px] leading-snug text-charcoal/75">
+                          <span className="mr-1 font-display text-[11px] text-terracotta/80">
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          {step.caption}
+                        </figcaption>
+                      )}
+                    </figure>
+                  );
+                })}
               </div>
             </Post>
           )}
+
 
           {/* Cultural meaning */}
           {creator.culturalMeaning?.map((para, i) => (

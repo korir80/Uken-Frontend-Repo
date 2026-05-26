@@ -4,8 +4,6 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { cloudinaryService, validateUploadFile } from "@/services/cloudinaryService";
 
-const MAX_PHOTOS = 5;
-
 /**
  * Each slot tracks its own state so multiple files can upload in parallel
  * with individual previews and spinners.
@@ -24,6 +22,8 @@ export function PhotoUploader({
   helper,
   value,
   onChange,
+  max = 5,
+  folder = "applications",
 }: {
   label: string;
   helper?: string;
@@ -31,7 +31,12 @@ export function PhotoUploader({
   value: string[];
   /** Called only with fully-uploaded Cloudinary URLs. */
   onChange: (next: string[]) => void;
+  /** Maximum number of photos accepted. */
+  max?: number;
+  /** Cloudinary folder to upload into. */
+  folder?: string;
 }) {
+  const MAX_PHOTOS = max;
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
   const [slots, setSlots] = useState<PhotoSlot[]>([]);

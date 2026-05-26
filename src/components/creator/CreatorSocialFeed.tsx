@@ -486,16 +486,19 @@ function Post({
 
       <div className="px-4 py-4 sm:px-5">{children}</div>
 
-      <footer className="flex items-center gap-4 border-t border-border/40 px-4 py-2.5 text-charcoal/55 sm:px-5">
-        <button type="button" className="flex items-center gap-1.5 text-[12px] hover:text-clay">
+      <footer
+        aria-hidden="true"
+        className="pointer-events-none flex items-center gap-4 border-t border-border/40 px-4 py-2.5 text-charcoal/30 opacity-40 sm:px-5"
+      >
+        <span className="flex items-center gap-1.5 text-[12px]">
           <Heart className="h-4 w-4" /> Like
-        </button>
-        <button type="button" className="flex items-center gap-1.5 text-[12px] hover:text-clay">
+        </span>
+        <span className="flex items-center gap-1.5 text-[12px]">
           <MessageCircle className="h-4 w-4" /> Reply
-        </button>
-        <button type="button" className="ml-auto flex items-center gap-1.5 text-[12px] hover:text-clay">
+        </span>
+        <span className="ml-auto flex items-center gap-1.5 text-[12px]">
           <Share2 className="h-4 w-4" /> Share
-        </button>
+        </span>
       </footer>
     </motion.article>
   );

@@ -7,6 +7,7 @@ import {
   type CreatorProfile,
 } from "@/components/creator/creator-profile-data";
 import { creatorQueryOptions, productsQueryOptions } from "@/lib/queries";
+import { isCreatorSuspended } from "@/lib/creatorStatus";
 
 /**
  * Query key for the rich /creators/:id profile (story + process + meaning).

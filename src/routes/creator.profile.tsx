@@ -188,15 +188,116 @@ function CreatorProfile() {
 
   const workshopImageUrls = processSteps.map((s) => s.image).filter(Boolean);
 
+  // Build a live CreatorProfile from the in-progress form state so the
+  // preview tab reflects unsaved edits — including the staged blob URLs
+  // for avatar / cover before they're uploaded.
+  const livePreview: CreatorProfileShape = useMemo(() => {
+    const cover = staged?.kind === "header" ? staged.preview : profile.headerImage;
+    const avatar = staged?.kind === "portrait" ? staged.preview : profile.portraitImage;
+    const ownProducts = allProducts
+      .filter((p) => p.creatorId === profile.id)
+      .slice(0, 8)
+      .map((p) => ({
+        id: p.id,
+        name: p.name,
+        price: `£${(p.pricePence / 100).toFixed(p.pricePence % 100 === 0 ? 0 : 2)}`,
+        image: p.heroImage,
+        description: p.craft,
+      }));
+    const sameCraft = allCreators.filter(
+      (c) => c.id !== profile.id && c.craft === craft,
+    );
+    const sameRegion = allCreators.filter(
+      (c) =>
+        c.id !== profile.id && c.region === region && c.craft !== craft,
+    );
+    const related = [...sameCraft, ...sameRegion].slice(0, 4).map((c) => ({
+      id: c.id,
+      firstName: c.firstName,
+      craft: c.craft,
+      region: c.region,
+      hook: "",
+      image: c.image,
+    }));
+    return {
+      id: profile.id,
+      firstName: firstName || profile.firstName,
+      fullName: fullName || profile.fullName,
+      region: region || profile.region,
+      craft: craft || profile.craft,
+      coverImage: cover,
+      avatar,
+      headerImage: cover,
+      portraitImage: avatar,
+      storyParagraphs: storyText
+        .split(/\n{2,}/)
+        .map((p) => p.trim())
+        .filter(Boolean),
+      pullQuote,
+      processSteps: processSteps.filter((s) => !!s.image),
+      culturalMeaning: profile.culturalMeaning ?? [],
+      products: ownProducts,
+      relatedCreators: related,
+    };
+  }, [
+    profile,
+    staged,
+    allProducts,
+    allCreators,
+    firstName,
+    fullName,
+    region,
+    craft,
+    pullQuote,
+    storyText,
+    processSteps,
+  ]);
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
         eyebrow="Your story"
         title="The page buyers meet you on."
-        description="Edit how your work is introduced. Every change appears immediately on your public profile."
+        description="Edit how your work is introduced, then switch to Preview to see exactly what buyers will see."
         refreshKeys={[]}
       />
 
+      {/* ── Edit / Preview toggle ── */}
+      <div className="inline-flex items-center gap-1 rounded-full border border-border bg-cream/60 p-1">
+        <button
+          type="button"
+          onClick={() => setMode("edit")}
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 font-sans text-[12px] font-medium uppercase tracking-[0.18em] transition",
+            mode === "edit"
+              ? "bg-charcoal text-warm-white"
+              : "text-charcoal/65 hover:text-charcoal",
+          )}
+        >
+          <Pencil className="h-3.5 w-3.5" /> Edit
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("preview")}
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 font-sans text-[12px] font-medium uppercase tracking-[0.18em] transition",
+            mode === "preview"
+              ? "bg-charcoal text-warm-white"
+              : "text-charcoal/65 hover:text-charcoal",
+          )}
+        >
+          <Eye className="h-3.5 w-3.5" /> Preview
+        </button>
+      </div>
+
+      {mode === "preview" ? (
+        <div className="overflow-hidden rounded-2xl border border-border bg-warm-white">
+          <div className="border-b border-border/60 bg-cream/40 px-4 py-2 font-sans text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
+            Live preview · unsaved changes included
+          </div>
+          <CreatorSocialFeed creator={livePreview} isPreview />
+        </div>
+      ) : (
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
         {/* ── Main form ── */}
         <form onSubmit={handleSave} className="space-y-5">

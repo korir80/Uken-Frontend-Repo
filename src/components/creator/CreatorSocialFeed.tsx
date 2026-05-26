@@ -28,23 +28,44 @@ export function CreatorSocialFeed({ creator, isPreview }: CreatorSocialFeedProps
   const cover = safeImg(creator.coverImage);
   const avatar = safeImg(creator.avatar);
 
+  // Build a single gallery (cover + workshop + product images) for the lightbox.
+  const gallery: { src: string; caption?: string }[] = [
+    ...(cover ? [{ src: cover, caption: `${creator.fullName} — cover` }] : []),
+    ...creator.processSteps.map((s) => ({ src: safeImg(s.image) || "", caption: s.caption })),
+    ...creator.products.map((p) => ({ src: safeImg(p.image) || "", caption: p.name })),
+  ].filter((g) => g.src);
+
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const openLightbox = (src: string) => {
+    const idx = gallery.findIndex((g) => g.src === src);
+    setLightboxIndex(idx >= 0 ? idx : 0);
+  };
+
   return (
     <div className="bg-warm-white">
       {/* ── Cover banner — native aspect, max-height bounded ─────────── */}
       <div className="relative w-full overflow-hidden bg-sand-soft">
         {cover ? (
-          <img
-            src={cover}
-            alt=""
-            loading="eager"
-            decoding="async"
-            onError={hideBrokenImage}
-            className="mx-auto block max-h-[48vh] w-full max-w-5xl object-cover"
-          />
+          <button
+            type="button"
+            onClick={() => openLightbox(cover)}
+            className="block w-full cursor-zoom-in"
+            aria-label="Open cover image"
+          >
+            <img
+              src={cover}
+              alt=""
+              loading="eager"
+              decoding="async"
+              onError={hideBrokenImage}
+              className="mx-auto block max-h-[38vh] w-full max-w-5xl object-cover"
+            />
+          </button>
         ) : (
           <div className="h-40 w-full bg-gradient-to-br from-cream via-sand-soft to-terracotta/20 sm:h-56" />
         )}
       </div>
+
 
       {/* ── Profile column ─────────────────────────────────────────── */}
       <div className="mx-auto max-w-xl px-4 sm:px-6">

@@ -279,15 +279,20 @@ function CreatorProfile() {
           </div>
         </form>
 
-        {/* ── Aside: portrait + cover (save immediately on upload) ── */}
+        {/* ── Aside: avatar + cover (save immediately on upload) ── */}
         <aside className="space-y-4">
-          {/* Portrait — displayed in CreatorStory section */}
-          <p className="section-label">Your portrait</p>
+          {/* Avatar — round profile photo */}
+          <p className="section-label">Profile photo (avatar)</p>
           <p className="font-sans text-[11px] text-charcoal/50 -mt-2">
-            Shown beside your story on your public profile.
+            Square crop, your face or hands. Shown as a round avatar on your
+            public profile and next to every post.
           </p>
-          <div className="relative overflow-hidden rounded-2xl">
-            <LazyImage src={profile.portraitImage} alt={profile.fullName} className="h-72 w-full object-cover" />
+          <div className="relative mx-auto h-40 w-40 overflow-hidden rounded-full border border-border bg-cream">
+            <LazyImage
+              src={profile.portraitImage}
+              alt={profile.fullName}
+              className="h-full w-full object-cover"
+            />
             {uploadingKind === "portrait" && (
               <div className="absolute inset-0 grid place-items-center bg-charcoal/40 text-warm-white">
                 <Loader2 className="h-6 w-6 animate-spin" />
@@ -307,16 +312,21 @@ function CreatorProfile() {
             onClick={() => portraitInputRef.current?.click()}
             className="w-full rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream disabled:opacity-60"
           >
-            {uploadingKind === "portrait" ? "Uploading…" : "Replace portrait"}
+            {uploadingKind === "portrait" ? "Uploading…" : "Replace avatar"}
           </button>
 
-          {/* Header/cover — displayed in CreatorHeader section */}
-          <p className="section-label mt-6">Profile cover image</p>
+          {/* Cover banner — wide */}
+          <p className="section-label mt-6">Cover banner</p>
           <p className="font-sans text-[11px] text-charcoal/50 -mt-2">
-            The large image at the very top of your public profile.
+            Wide image (3:1) — your workshop, hands at work, or finished
+            pieces. Shown as the banner at the top of your profile.
           </p>
-          <div className="relative overflow-hidden rounded-2xl">
-            <LazyImage src={profile.headerImage} alt="Cover" className="h-40 w-full object-cover" />
+          <div className="relative aspect-[3/1] w-full overflow-hidden rounded-xl bg-cream">
+            <LazyImage
+              src={profile.headerImage}
+              alt="Cover"
+              className="h-full w-full object-cover"
+            />
             {uploadingKind === "header" && (
               <div className="absolute inset-0 grid place-items-center bg-charcoal/40 text-warm-white">
                 <Loader2 className="h-6 w-6 animate-spin" />
@@ -336,7 +346,7 @@ function CreatorProfile() {
             onClick={() => headerInputRef.current?.click()}
             className="w-full rounded-full border border-border bg-warm-white px-4 py-2 font-sans text-[12px] text-charcoal hover:bg-cream disabled:opacity-60"
           >
-            {uploadingKind === "header" ? "Uploading…" : "Replace cover image"}
+            {uploadingKind === "header" ? "Uploading…" : "Replace cover banner"}
           </button>
 
           {/* Guide so the maker knows exactly where each image appears */}
@@ -346,16 +356,13 @@ function CreatorProfile() {
             </p>
             <ul className="space-y-2 font-sans text-[12px] text-charcoal/70 leading-relaxed">
               <li>
-                <span className="text-terracotta font-medium">Portrait</span> — your face or hands. Beside your written
-                story.
+                <span className="text-terracotta font-medium">Avatar</span> — round photo of you. Top of profile + every post.
               </li>
               <li>
-                <span className="text-terracotta font-medium">Cover</span> — your workshop or a hero shot. The big image
-                at the top.
+                <span className="text-terracotta font-medium">Cover</span> — wide banner image at the very top.
               </li>
               <li>
-                <span className="text-terracotta font-medium">Gallery</span> — up to 12 images. The workshop gallery
-                grid and the process walkthrough below your story.
+                <span className="text-terracotta font-medium">Gallery</span> — up to 12 process photos shown in the "In the workshop" post.
               </li>
             </ul>
           </div>

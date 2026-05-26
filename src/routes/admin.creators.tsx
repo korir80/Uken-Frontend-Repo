@@ -23,27 +23,10 @@ function isSuspended(c: AdminCreatorRow): boolean {
 
 
 async function fetchAdminCreators(): Promise<AdminCreatorRow[]> {
-  // The backend's public /creators endpoint hides suspended makers. Try the
-  // admin-scoped variants first (which include suspended/deleted rows); fall
-  // back through query-param hints; finally use the public list (active-only).
-  const candidates = [
-    "/admin/creators?status=all",
-    "/admin/creators?includeSuspended=true",
-    "/admin/creators",
-    "/creators?status=all",
-    "/creators?includeSuspended=true",
-    "/creators",
-  ];
-  for (const path of candidates) {
-    try {
-      const r = await api.get<any>(path);
-      const arr = r?.content ?? r;
-      if (Array.isArray(arr)) return arr as AdminCreatorRow[];
-    } catch {
-      /* try next */
-    }
-  }
-  return [];
+  // Backed by the admin endpoint which includes both active and suspended makers.
+  const r = await api.get<any>("/admin/creators");
+  const arr = r?.content ?? r?.data ?? r;
+  return Array.isArray(arr) ? (arr as AdminCreatorRow[]) : [];
 }
 
 function AdminCreators() {

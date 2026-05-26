@@ -55,15 +55,19 @@ function CreatorProfile() {
   // DPA 2019: explicit consent per save so the maker actively re-affirms
   // their rights to publish photos & text on every change.
   const [consent, setConsent] = useState(false);
+  const [mode, setMode] = useState<"edit" | "preview">("edit");
 
   const portraitInputRef = useRef<HTMLInputElement>(null);
   const headerInputRef = useRef<HTMLInputElement>(null);
   const [uploadingKind, setUploadingKind] = useState<"portrait" | "header" | null>(null);
-  // Staged file + preview blob so the maker confirms before the upload runs.
   const [staged, setStaged] = useState<
     | { kind: "portrait" | "header"; file: File; preview: string }
     | null
   >(null);
+
+  // Pull catalogue + makers so preview can mirror the public page exactly.
+  const { data: allProducts = [] } = useAllProducts();
+  const { data: allCreators = [] } = useCreators();
 
   // Hydrate all fields whenever profile data arrives or is updated by a save.
   // Because useUpdateCreatorProfile does qc.setQueryData(queryKeys.myProfile(), data)

@@ -378,31 +378,25 @@ function Step3({
           Show us your <em className="italic text-terracotta">work</em>.
         </h1>
         <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-ink-muted md:text-[16px]">
-          Two short uploads: a portrait of you (used as your profile photo)
-          and a handful of finished pieces. Phone photos are perfectly fine —
-          we'll come and shoot proper ones together once you're in.
+          Photo uploads are paused for now. Once your application is approved,
+          we'll arrange to visit your workshop and take professional portraits
+          and photographs of your work together.
         </p>
       </header>
 
-      {/* Slot 1 — single portrait of the maker. Becomes their public avatar. */}
-      <PhotoUploader
-        label="A portrait of you (1 photo)"
-        helper="One clear photo of you — face, hands at work, or both. This becomes your profile picture on UKEN."
-        value={data.portrait}
-        onChange={(next) => update("portrait", next)}
-        max={1}
-        folder="applications/portrait"
-      />
-
-      {/* Slot 2 — finished work / pieces in progress. */}
-      <PhotoUploader
-        label="Your work (2–5 photos)"
-        helper="Finished pieces, work in progress, or your workshop. At least two, up to five. These help us understand the craft you make."
-        value={data.workSamples}
-        onChange={(next) => update("workSamples", next)}
-        max={5}
-        folder="applications/work-samples"
-      />
+      <div className="rounded-xl border border-dashed border-border bg-cream/50 px-6 py-10 text-center opacity-60">
+        <span className="inline-grid h-14 w-14 place-items-center rounded-full bg-terracotta-soft/30 text-terracotta/70">
+          <ImageOff className="h-6 w-6" />
+        </span>
+        <p className="mt-5 font-sans text-[13px] font-medium uppercase tracking-[0.18em] text-charcoal/60">
+          Photos temporarily disabled
+        </p>
+        <p className="mx-auto mt-2 max-w-sm text-[13px] leading-relaxed text-ink-muted/70">
+          If your application is successful, we'll come to your workshop and
+          shoot professional portraits and work images together. No need to upload
+          anything now.
+        </p>
+      </div>
 
 
 

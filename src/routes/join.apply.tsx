@@ -384,18 +384,32 @@ function Step3({
           Show us your <em className="italic text-terracotta">work</em>.
         </h1>
         <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-ink-muted md:text-[16px]">
-          A photo of you working, and a few of finished pieces. Phone photos
-          are perfectly fine — we'll come and shoot proper ones together once
-          you're in.
+          Two short uploads: a portrait of you (used as your profile photo)
+          and a handful of finished pieces. Phone photos are perfectly fine —
+          we'll come and shoot proper ones together once you're in.
         </p>
       </header>
 
+      {/* Slot 1 — single portrait of the maker. Becomes their public avatar. */}
       <PhotoUploader
-        label="Workshop & work photographs"
-        helper="Up to five images. At least one of you at work, the rest your favourite finished pieces. Previews appear instantly — they'll upload in the background."
-        value={data.photos}
-        onChange={(next) => update("photos", next)}
+        label="A portrait of you (1 photo)"
+        helper="One clear photo of you — face, hands at work, or both. This becomes your profile picture on UKEN."
+        value={data.portrait}
+        onChange={(next) => update("portrait", next)}
+        max={1}
+        folder="applications/portrait"
       />
+
+      {/* Slot 2 — finished work / pieces in progress. */}
+      <PhotoUploader
+        label="Your work (2–5 photos)"
+        helper="Finished pieces, work in progress, or your workshop. At least two, up to five. These help us understand the craft you make."
+        value={data.workSamples}
+        onChange={(next) => update("workSamples", next)}
+        max={5}
+        folder="applications/work-samples"
+      />
+
 
 
       <ConsentCheckbox

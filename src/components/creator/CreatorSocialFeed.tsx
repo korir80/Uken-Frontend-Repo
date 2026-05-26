@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { MapPin, Heart, MessageCircle, Share2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { MapPin, Heart, MessageCircle, Share2, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { CreatorProfile } from "./creator-profile-data";
 import { safeImg, hideBrokenImage } from "@/lib/safeImage";
 

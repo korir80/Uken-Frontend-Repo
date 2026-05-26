@@ -37,9 +37,9 @@ export function CloudinaryImagePicker({
   aspect?: "square" | "wide";
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [busyCount, setBusyCount] = useState(0);
+  const [pending, setPending] = useState<{ preview: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const slotsLeft = max - value.length;
+  const slotsLeft = max - value.length - pending.length;
 
   const aspectCls = aspect === "wide" ? "aspect-[4/3]" : "aspect-square";
 
@@ -50,7 +50,6 @@ export function CloudinaryImagePicker({
     const list = Array.from(files).slice(0, slotsLeft);
     if (list.length === 0) return;
 
-    // Validate all up front so we don't half-upload a bad batch.
     try {
       list.forEach((f) => validateUploadFile(f));
     } catch (e) {
@@ -60,7 +59,11 @@ export function CloudinaryImagePicker({
       return;
     }
 
-    setBusyCount((c) => c + list.length);
+    // Show local previews immediately so the user sees the picked image
+    // before the network upload finishes.
+    const slots = list.map((f) => ({ preview: URL.createObjectURL(f) }));
+    setPending((p) => [...p, ...slots]);
+
     try {
       const urls = await Promise.all(
         list.map((f) => cloudinaryService.upload(f, folder)),
@@ -71,7 +74,8 @@ export function CloudinaryImagePicker({
       setError(msg);
       toast.error(msg);
     } finally {
-      setBusyCount((c) => Math.max(0, c - list.length));
+      slots.forEach((s) => URL.revokeObjectURL(s.preview));
+      setPending((p) => p.filter((s) => !slots.includes(s)));
       if (inputRef.current) inputRef.current.value = "";
     }
   }
@@ -82,6 +86,7 @@ export function CloudinaryImagePicker({
     if (removed?.startsWith("blob:")) URL.revokeObjectURL(removed);
     onChange(next);
   }
+
 
   return (
     <div className={cn("space-y-3", className)}>

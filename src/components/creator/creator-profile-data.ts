@@ -37,7 +37,13 @@ export interface CreatorProfile {
   fullName: string;
   region: string;
   craft: string;
+  /** Wide banner image (3:1). Maps to API headerImage. */
+  coverImage: string;
+  /** Square face/avatar (1:1). Maps to API portraitImage. */
+  avatar: string;
+  /** @deprecated use coverImage */
   headerImage: string;
+  /** @deprecated use avatar */
   portraitImage: string;
   storyParagraphs: string[];
   pullQuote: string;
@@ -53,14 +59,18 @@ export const creatorProfiles: Record<string, CreatorProfile> = {};
 /** Fetch a creator profile from the backend. Throws if not found. */
 export async function getCreatorProfile(id: string): Promise<CreatorProfile> {
   const detail = await creatorService.getCreatorById(id);
+  const cover = detail.headerImage ?? detail.image;
+  const avatar = detail.portraitImage ?? detail.image;
   return {
     id: detail.id,
     firstName: detail.firstName,
     fullName: detail.fullName,
     region: detail.region,
     craft: detail.craft,
-    headerImage: detail.headerImage ?? detail.image,
-    portraitImage: detail.portraitImage ?? detail.image,
+    coverImage: cover,
+    avatar,
+    headerImage: cover,
+    portraitImage: avatar,
     storyParagraphs: detail.storyParagraphs ?? [],
     pullQuote: detail.pullQuote ?? "",
     processSteps: detail.processSteps ?? [],

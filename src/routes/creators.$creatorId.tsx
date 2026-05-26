@@ -1,13 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ExploreNav } from "@/components/explore/ExploreNav";
 import { Footer } from "@/components/home/Footer";
-import { CreatorHeader } from "@/components/creator/CreatorHeader";
-import { CreatorStory } from "@/components/creator/CreatorStory";
-import { CreatorProcess } from "@/components/creator/CreatorProcess";
-import { CreatorGallery } from "@/components/creator/CreatorGallery";
-import { CreatorMeaning } from "@/components/creator/CreatorMeaning";
-import { CreatorProducts } from "@/components/creator/CreatorProducts";
-import { RelatedCreators } from "@/components/creator/RelatedCreators";
+import { CreatorSocialFeed } from "@/components/creator/CreatorSocialFeed";
 import {
   getCreatorProfile,
   type CreatorProfile,
@@ -64,12 +58,12 @@ export const Route = createFileRoute("/creators/$creatorId")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:url", content: url },
-        { property: "og:image", content: c.headerImage },
+        { property: "og:image", content: c.avatar },
         { property: "og:type", content: "profile" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
-        { name: "twitter:image", content: c.headerImage },
+        { name: "twitter:image", content: c.avatar },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -84,9 +78,8 @@ export const Route = createFileRoute("/creators/$creatorId")({
             address: {
               "@type": "PostalAddress",
               addressRegion: c.region,
-              addressCountry: "KE",
             },
-            image: c.headerImage,
+            image: c.avatar,
             url,
           }),
         },
@@ -156,17 +149,9 @@ function CreatorProfilePage() {
   return (
     <div className="min-h-screen bg-warm-white text-charcoal">
       <ExploreNav />
-
       <main>
-        <CreatorHeader creator={creator} />
-        <CreatorStory creator={creator} />
-        <CreatorGallery creator={creator} />
-        <CreatorProcess creator={creator} />
-        <CreatorMeaning creator={creator} />
-        <CreatorProducts creator={creator} />
-        <RelatedCreators creator={creator} />
+        <CreatorSocialFeed creator={creator} />
       </main>
-
       <Footer />
     </div>
   );

@@ -33,6 +33,7 @@ export interface ProductDto {
   dimensions: string;
   care: string;
   status: "ACTIVE" | "OUT_OF_STOCK" | "SUSPENDED_BY_CREATOR" | "SUSPENDED_BY_ADMIN";
+  isUkenaOwned?: boolean;
   creator: {
     id: string;
     firstName: string;

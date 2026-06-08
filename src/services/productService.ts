@@ -13,6 +13,7 @@ export interface ProductSummaryDto {
   creatorId: string;
   creatorName: string;
   craft: string;
+  isUkenaOwned?: boolean;
 }
 
 export interface ProductDto {

@@ -60,6 +60,7 @@ import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminDeliveryZonesRouteImport } from './routes/admin.delivery-zones'
 import { Route as AdminCurationRouteImport } from './routes/admin.curation'
 import { Route as AdminCreatorsRouteImport } from './routes/admin.creators'
+import { Route as AdminCatalogueRouteImport } from './routes/admin.catalogue'
 import { Route as AdminBuyersRouteImport } from './routes/admin.buyers'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as AccountSavedRouteImport } from './routes/account.saved'
@@ -324,6 +325,11 @@ const AdminCreatorsRoute = AdminCreatorsRouteImport.update({
   path: '/creators',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCatalogueRoute = AdminCatalogueRouteImport.update({
+  id: '/catalogue',
+  path: '/catalogue',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBuyersRoute = AdminBuyersRouteImport.update({
   id: '/buyers',
   path: '/buyers',
@@ -398,6 +404,7 @@ export interface FileRoutesByFullPath {
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
+  '/admin/catalogue': typeof AdminCatalogueRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/curation': typeof AdminCurationRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
@@ -456,6 +463,7 @@ export interface FileRoutesByTo {
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
+  '/admin/catalogue': typeof AdminCatalogueRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/curation': typeof AdminCurationRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
@@ -518,6 +526,7 @@ export interface FileRoutesById {
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
+  '/admin/catalogue': typeof AdminCatalogueRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/curation': typeof AdminCurationRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
@@ -581,6 +590,7 @@ export interface FileRouteTypes {
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
+    | '/admin/catalogue'
     | '/admin/creators'
     | '/admin/curation'
     | '/admin/delivery-zones'
@@ -639,6 +649,7 @@ export interface FileRouteTypes {
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
+    | '/admin/catalogue'
     | '/admin/creators'
     | '/admin/curation'
     | '/admin/delivery-zones'
@@ -700,6 +711,7 @@ export interface FileRouteTypes {
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
+    | '/admin/catalogue'
     | '/admin/creators'
     | '/admin/curation'
     | '/admin/delivery-zones'
@@ -1121,6 +1133,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCreatorsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/catalogue': {
+      id: '/admin/catalogue'
+      path: '/catalogue'
+      fullPath: '/admin/catalogue'
+      preLoaderRoute: typeof AdminCatalogueRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/buyers': {
       id: '/admin/buyers'
       path: '/buyers'
@@ -1216,6 +1235,7 @@ const AccountRouteWithChildren =
 interface AdminRouteChildren {
   AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminBuyersRoute: typeof AdminBuyersRoute
+  AdminCatalogueRoute: typeof AdminCatalogueRoute
   AdminCreatorsRoute: typeof AdminCreatorsRoute
   AdminCurationRoute: typeof AdminCurationRoute
   AdminDeliveryZonesRoute: typeof AdminDeliveryZonesRoute
@@ -1231,6 +1251,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminApplicationsRoute: AdminApplicationsRoute,
   AdminBuyersRoute: AdminBuyersRoute,
+  AdminCatalogueRoute: AdminCatalogueRoute,
   AdminCreatorsRoute: AdminCreatorsRoute,
   AdminCurationRoute: AdminCurationRoute,
   AdminDeliveryZonesRoute: AdminDeliveryZonesRoute,

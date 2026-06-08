@@ -150,14 +150,18 @@ export function ShopProductCard({ product, index, onQuickView }: ShopProductCard
         {creatorName && (
           <p className="mt-1.5 text-[13px] text-charcoal/75 md:mt-2">
             by{" "}
-            <Link
-              to="/creators/$creatorId"
-              params={{ creatorId }}
-              className="font-medium text-charcoal underline-offset-4 transition-colors hover:text-clay hover:underline"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {creatorName}
-            </Link>
+            {isUken ? (
+              <span className="font-medium text-[oklch(0.42_0.09_75)]">Uken ✦</span>
+            ) : (
+              <Link
+                to="/creators/$creatorId"
+                params={{ creatorId }}
+                className="font-medium text-charcoal underline-offset-4 transition-colors hover:text-clay hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {creatorName}
+              </Link>
+            )}
           </p>
         )}
 

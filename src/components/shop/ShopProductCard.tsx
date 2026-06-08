@@ -16,6 +16,7 @@ interface ShopProductCardProps {
     craft?: string;
     dimensions?: string;
     materials?: string[];
+    isUkenaOwned?: boolean;
     creator?: {
       id: string;
       fullName: string;
@@ -36,6 +37,10 @@ export function ShopProductCard({ product, index, onQuickView }: ShopProductCard
   const craft = product.creator?.craft ?? product.craft ?? "";
   const dimensions = (product as any).dimensions ?? "";
   const materials: string[] = (product as any).materials ?? [];
+  const isUken =
+    product.isUkenaOwned === true ||
+    creatorId === "ukena" ||
+    creatorName.trim().toLowerCase() === "uken";
 
   // Safe gallery — works with both old Product shape and new ProductDto
   const gallery = product.gallery ?? [];
@@ -79,7 +84,13 @@ export function ShopProductCard({ product, index, onQuickView }: ShopProductCard
           {String(index + 1).padStart(2, "0")}
         </span>
 
-        {craft && (
+        {isUken && (
+          <span className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-1 rounded-full border border-[oklch(0.78_0.12_75)]/40 bg-gold-soft/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[oklch(0.38_0.09_70)] shadow-sm backdrop-blur md:left-4 md:top-4">
+            <span aria-hidden>✦</span> By Uken
+          </span>
+        )}
+
+        {craft && !isUken && (
           <span className="pointer-events-none absolute right-3 top-3 hidden rounded-full bg-warm-white/95 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-clay backdrop-blur md:right-4 md:top-4 md:inline-block">
             {craft}
           </span>
@@ -139,14 +150,18 @@ export function ShopProductCard({ product, index, onQuickView }: ShopProductCard
         {creatorName && (
           <p className="mt-1.5 text-[13px] text-charcoal/75 md:mt-2">
             by{" "}
-            <Link
-              to="/creators/$creatorId"
-              params={{ creatorId }}
-              className="font-medium text-charcoal underline-offset-4 transition-colors hover:text-clay hover:underline"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {creatorName}
-            </Link>
+            {isUken ? (
+              <span className="font-medium text-[oklch(0.42_0.09_75)]">Uken ✦</span>
+            ) : (
+              <Link
+                to="/creators/$creatorId"
+                params={{ creatorId }}
+                className="font-medium text-charcoal underline-offset-4 transition-colors hover:text-clay hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {creatorName}
+              </Link>
+            )}
           </p>
         )}
 

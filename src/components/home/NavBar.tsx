@@ -15,6 +15,7 @@ import {
 
 type NavTo =
   | "/shop"
+  | "/catalogue"
   | "/explore"
   | "/about"
   | "/story"
@@ -29,6 +30,7 @@ type NavItem =
 
 const navItems: NavItem[] = [
   { kind: "link", label: "Shop", to: "/shop" },
+  { kind: "link", label: "Collection", to: "/catalogue" },
   {
     kind: "group",
     label: "About",

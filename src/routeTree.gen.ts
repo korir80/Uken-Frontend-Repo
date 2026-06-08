@@ -27,6 +27,7 @@ import { Route as CreatorRouteImport } from './routes/creator'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as CatalogueRouteImport } from './routes/catalogue'
 import { Route as BagRouteImport } from './routes/bag'
 import { Route as ArtisansRouteImport } from './routes/artisans'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -52,12 +53,14 @@ import { Route as CheckoutDeliveryRouteImport } from './routes/checkout.delivery
 import { Route as CheckoutConfirmationRouteImport } from './routes/checkout.confirmation'
 import { Route as AdminStaffRouteImport } from './routes/admin.staff'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
+import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminPayoutsRouteImport } from './routes/admin.payouts'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminDeliveryZonesRouteImport } from './routes/admin.delivery-zones'
 import { Route as AdminCurationRouteImport } from './routes/admin.curation'
 import { Route as AdminCreatorsRouteImport } from './routes/admin.creators'
+import { Route as AdminCatalogueRouteImport } from './routes/admin.catalogue'
 import { Route as AdminBuyersRouteImport } from './routes/admin.buyers'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as AccountSavedRouteImport } from './routes/account.saved'
@@ -155,6 +158,11 @@ const CollectionsRoute = CollectionsRouteImport.update({
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogueRoute = CatalogueRouteImport.update({
+  id: '/catalogue',
+  path: '/catalogue',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BagRoute = BagRouteImport.update({
@@ -282,6 +290,11 @@ const AdminReviewsRoute = AdminReviewsRouteImport.update({
   path: '/reviews',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminRevenueRoute = AdminRevenueRouteImport.update({
+  id: '/revenue',
+  path: '/revenue',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProductsRoute = AdminProductsRouteImport.update({
   id: '/products',
   path: '/products',
@@ -310,6 +323,11 @@ const AdminCurationRoute = AdminCurationRouteImport.update({
 const AdminCreatorsRoute = AdminCreatorsRouteImport.update({
   id: '/creators',
   path: '/creators',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCatalogueRoute = AdminCatalogueRouteImport.update({
+  id: '/catalogue',
+  path: '/catalogue',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBuyersRoute = AdminBuyersRouteImport.update({
@@ -360,6 +378,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/artisans': typeof ArtisansRoute
   '/bag': typeof BagRoute
+  '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
@@ -385,12 +404,14 @@ export interface FileRoutesByFullPath {
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
+  '/admin/catalogue': typeof AdminCatalogueRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/curation': typeof AdminCurationRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
@@ -417,6 +438,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/artisans': typeof ArtisansRoute
   '/bag': typeof BagRoute
+  '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
@@ -441,12 +463,14 @@ export interface FileRoutesByTo {
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
+  '/admin/catalogue': typeof AdminCatalogueRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/curation': typeof AdminCurationRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
@@ -476,6 +500,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/artisans': typeof ArtisansRoute
   '/bag': typeof BagRoute
+  '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
@@ -501,12 +526,14 @@ export interface FileRoutesById {
   '/account/saved': typeof AccountSavedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/buyers': typeof AdminBuyersRoute
+  '/admin/catalogue': typeof AdminCatalogueRoute
   '/admin/creators': typeof AdminCreatorsRoute
   '/admin/curation': typeof AdminCurationRoute
   '/admin/delivery-zones': typeof AdminDeliveryZonesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/staff': typeof AdminStaffRoute
   '/checkout/confirmation': typeof CheckoutConfirmationRoute
@@ -537,6 +564,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/artisans'
     | '/bag'
+    | '/catalogue'
     | '/checkout'
     | '/collections'
     | '/contact'
@@ -562,12 +590,14 @@ export interface FileRouteTypes {
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
+    | '/admin/catalogue'
     | '/admin/creators'
     | '/admin/curation'
     | '/admin/delivery-zones'
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
+    | '/admin/revenue'
     | '/admin/reviews'
     | '/admin/staff'
     | '/checkout/confirmation'
@@ -594,6 +624,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/artisans'
     | '/bag'
+    | '/catalogue'
     | '/checkout'
     | '/collections'
     | '/contact'
@@ -618,12 +649,14 @@ export interface FileRouteTypes {
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
+    | '/admin/catalogue'
     | '/admin/creators'
     | '/admin/curation'
     | '/admin/delivery-zones'
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
+    | '/admin/revenue'
     | '/admin/reviews'
     | '/admin/staff'
     | '/checkout/confirmation'
@@ -652,6 +685,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/artisans'
     | '/bag'
+    | '/catalogue'
     | '/checkout'
     | '/collections'
     | '/contact'
@@ -677,12 +711,14 @@ export interface FileRouteTypes {
     | '/account/saved'
     | '/admin/applications'
     | '/admin/buyers'
+    | '/admin/catalogue'
     | '/admin/creators'
     | '/admin/curation'
     | '/admin/delivery-zones'
     | '/admin/orders'
     | '/admin/payouts'
     | '/admin/products'
+    | '/admin/revenue'
     | '/admin/reviews'
     | '/admin/staff'
     | '/checkout/confirmation'
@@ -712,6 +748,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   ArtisansRoute: typeof ArtisansRoute
   BagRoute: typeof BagRoute
+  CatalogueRoute: typeof CatalogueRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
   CollectionsRoute: typeof CollectionsRoute
   ContactRoute: typeof ContactRoute
@@ -863,6 +900,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalogue': {
+      id: '/catalogue'
+      path: '/catalogue'
+      fullPath: '/catalogue'
+      preLoaderRoute: typeof CatalogueRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bag': {
@@ -1040,6 +1084,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReviewsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/revenue': {
+      id: '/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AdminRevenueRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/products': {
       id: '/admin/products'
       path: '/products'
@@ -1080,6 +1131,13 @@ declare module '@tanstack/react-router' {
       path: '/creators'
       fullPath: '/admin/creators'
       preLoaderRoute: typeof AdminCreatorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/catalogue': {
+      id: '/admin/catalogue'
+      path: '/catalogue'
+      fullPath: '/admin/catalogue'
+      preLoaderRoute: typeof AdminCatalogueRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/buyers': {
@@ -1177,12 +1235,14 @@ const AccountRouteWithChildren =
 interface AdminRouteChildren {
   AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminBuyersRoute: typeof AdminBuyersRoute
+  AdminCatalogueRoute: typeof AdminCatalogueRoute
   AdminCreatorsRoute: typeof AdminCreatorsRoute
   AdminCurationRoute: typeof AdminCurationRoute
   AdminDeliveryZonesRoute: typeof AdminDeliveryZonesRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPayoutsRoute: typeof AdminPayoutsRoute
   AdminProductsRoute: typeof AdminProductsRoute
+  AdminRevenueRoute: typeof AdminRevenueRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminStaffRoute: typeof AdminStaffRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -1191,12 +1251,14 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminApplicationsRoute: AdminApplicationsRoute,
   AdminBuyersRoute: AdminBuyersRoute,
+  AdminCatalogueRoute: AdminCatalogueRoute,
   AdminCreatorsRoute: AdminCreatorsRoute,
   AdminCurationRoute: AdminCurationRoute,
   AdminDeliveryZonesRoute: AdminDeliveryZonesRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPayoutsRoute: AdminPayoutsRoute,
   AdminProductsRoute: AdminProductsRoute,
+  AdminRevenueRoute: AdminRevenueRoute,
   AdminReviewsRoute: AdminReviewsRoute,
   AdminStaffRoute: AdminStaffRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -1250,6 +1312,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   ArtisansRoute: ArtisansRoute,
   BagRoute: BagRoute,
+  CatalogueRoute: CatalogueRoute,
   CheckoutRoute: CheckoutRouteWithChildren,
   CollectionsRoute: CollectionsRoute,
   ContactRoute: ContactRoute,
@@ -1277,12 +1340,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

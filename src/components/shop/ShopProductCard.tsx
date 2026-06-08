@@ -16,6 +16,7 @@ interface ShopProductCardProps {
     craft?: string;
     dimensions?: string;
     materials?: string[];
+    isUkenaOwned?: boolean;
     creator?: {
       id: string;
       fullName: string;
@@ -36,6 +37,10 @@ export function ShopProductCard({ product, index, onQuickView }: ShopProductCard
   const craft = product.creator?.craft ?? product.craft ?? "";
   const dimensions = (product as any).dimensions ?? "";
   const materials: string[] = (product as any).materials ?? [];
+  const isUken =
+    product.isUkenaOwned === true ||
+    creatorId === "ukena" ||
+    creatorName.trim().toLowerCase() === "uken";
 
   // Safe gallery — works with both old Product shape and new ProductDto
   const gallery = product.gallery ?? [];

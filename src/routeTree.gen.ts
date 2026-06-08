@@ -27,6 +27,7 @@ import { Route as CreatorRouteImport } from './routes/creator'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as CatalogueRouteImport } from './routes/catalogue'
 import { Route as BagRouteImport } from './routes/bag'
 import { Route as ArtisansRouteImport } from './routes/artisans'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -155,6 +156,11 @@ const CollectionsRoute = CollectionsRouteImport.update({
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogueRoute = CatalogueRouteImport.update({
+  id: '/catalogue',
+  path: '/catalogue',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BagRoute = BagRouteImport.update({
@@ -360,6 +366,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/artisans': typeof ArtisansRoute
   '/bag': typeof BagRoute
+  '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
@@ -417,6 +424,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/artisans': typeof ArtisansRoute
   '/bag': typeof BagRoute
+  '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
@@ -476,6 +484,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/artisans': typeof ArtisansRoute
   '/bag': typeof BagRoute
+  '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRouteWithChildren
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
@@ -537,6 +546,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/artisans'
     | '/bag'
+    | '/catalogue'
     | '/checkout'
     | '/collections'
     | '/contact'
@@ -594,6 +604,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/artisans'
     | '/bag'
+    | '/catalogue'
     | '/checkout'
     | '/collections'
     | '/contact'
@@ -652,6 +663,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/artisans'
     | '/bag'
+    | '/catalogue'
     | '/checkout'
     | '/collections'
     | '/contact'
@@ -712,6 +724,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   ArtisansRoute: typeof ArtisansRoute
   BagRoute: typeof BagRoute
+  CatalogueRoute: typeof CatalogueRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
   CollectionsRoute: typeof CollectionsRoute
   ContactRoute: typeof ContactRoute
@@ -863,6 +876,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalogue': {
+      id: '/catalogue'
+      path: '/catalogue'
+      fullPath: '/catalogue'
+      preLoaderRoute: typeof CatalogueRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bag': {
@@ -1250,6 +1270,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   ArtisansRoute: ArtisansRoute,
   BagRoute: BagRoute,
+  CatalogueRoute: CatalogueRoute,
   CheckoutRoute: CheckoutRouteWithChildren,
   CollectionsRoute: CollectionsRoute,
   ContactRoute: ContactRoute,

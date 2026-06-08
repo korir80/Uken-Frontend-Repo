@@ -85,7 +85,7 @@ function CataloguePage() {
                 value={search.sort}
                 onChange={(e) =>
                   navigate({
-                    search: (p) => ({ ...p, sort: e.target.value as typeof search.sort }),
+                    search: (p: typeof search) => ({ ...p, sort: e.target.value as typeof search.sort }),
                   })
                 }
                 className="rounded-full border border-border bg-warm-white px-3 py-1.5 text-[12px] focus:outline-none focus:ring-2 focus:ring-clay/40"

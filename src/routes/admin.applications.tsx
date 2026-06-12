@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { ApplicationStatus } from "@/services";
+import { ApiError } from "@/services/api";
 import {
   PageHeader,
   StatusPill,

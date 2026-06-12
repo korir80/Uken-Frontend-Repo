@@ -364,7 +364,13 @@ export function useUpdateApplicationStatus() {
   >({
     mutationFn: ({ id, status, notes }) =>
       applicationService.updateStatus(id, { status, notes }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.applications() }),
+    onSuccess: (data) => {
+      // Optimistically update the list so the new badge shows immediately
+      qc.setQueryData<ArtisanApplication[]>(queryKeys.applications(), (prev) =>
+        prev ? prev.map((a) => (a.id === data.id ? data : a)) : prev,
+      );
+      qc.invalidateQueries({ queryKey: queryKeys.applications() });
+    },
   });
 }
 

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { ApplicationStatus } from "@/services";
+import { ApiError } from "@/services/api";
 import {
   PageHeader,
   StatusPill,
@@ -55,8 +56,19 @@ function AdminApplications() {
     updateStatus.mutate(
       { id, status },
       {
-        onSuccess: () => toast.success(`Marked ${status.replace(/_/g, " ").toLowerCase()}.`),
-        onError: (e) => toast.error(e.message),
+        onSuccess: () =>
+          toast.success(`Marked ${status.replace(/_/g, " ").toLowerCase()}.`),
+        onError: (e) => {
+          if (e instanceof ApiError && e.status === 409) {
+            toast.error(
+              `This application is already marked as ${status
+                .replace(/_/g, " ")
+                .toLowerCase()}`,
+            );
+            return;
+          }
+          toast.error(e.message);
+        },
       },
     );
   }
@@ -194,36 +206,47 @@ function AdminApplications() {
                 </p>
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-2 border-t border-border/40 pt-5">
-                <button
-                  disabled={updateStatus.isPending}
-                  onClick={() => setStatus(active.id, "APPROVED")}
-                  className="rounded-full bg-clay px-5 py-2 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
-                >
-                  Approve
-                </button>
-                <button
-                  disabled={updateStatus.isPending}
-                  onClick={() => setStatus(active.id, "CHANGES_REQUESTED")}
-                  className="rounded-full border border-border bg-warm-white px-5 py-2 font-sans text-[13px] text-charcoal hover:bg-cream disabled:opacity-60"
-                >
-                  Request changes
-                </button>
-                <button
-                  disabled={updateStatus.isPending}
-                  onClick={() => setStatus(active.id, "UNDER_REVIEW")}
-                  className="rounded-full border border-border bg-warm-white px-5 py-2 font-sans text-[13px] text-charcoal hover:bg-cream disabled:opacity-60"
-                >
-                  Mark under review
-                </button>
-                <button
-                  disabled={updateStatus.isPending}
-                  onClick={() => setStatus(active.id, "REJECTED")}
-                  className="rounded-full px-5 py-2 font-sans text-[13px] text-destructive hover:underline disabled:opacity-60"
-                >
-                  Reject
-                </button>
-              </div>
+              {active.status === "APPROVED" ? (
+                <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 font-sans text-[13px] text-emerald-900">
+                  This maker has been approved and their account has been created.
+                  A welcome email with login credentials has been sent to {active.email}.
+                </div>
+              ) : active.status === "REJECTED" ? (
+                <div className="mt-6 rounded-xl border border-border bg-cream/60 p-4 font-sans text-[13px] text-charcoal/70">
+                  This application has been rejected. No further actions are available.
+                </div>
+              ) : (
+                <div className="mt-6 flex flex-wrap gap-2 border-t border-border/40 pt-5">
+                  <button
+                    disabled={updateStatus.isPending}
+                    onClick={() => setStatus(active.id, "APPROVED")}
+                    className="rounded-full bg-clay px-5 py-2 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    disabled={updateStatus.isPending}
+                    onClick={() => setStatus(active.id, "CHANGES_REQUESTED")}
+                    className="rounded-full border border-border bg-warm-white px-5 py-2 font-sans text-[13px] text-charcoal hover:bg-cream disabled:opacity-60"
+                  >
+                    Request changes
+                  </button>
+                  <button
+                    disabled={updateStatus.isPending}
+                    onClick={() => setStatus(active.id, "UNDER_REVIEW")}
+                    className="rounded-full border border-border bg-warm-white px-5 py-2 font-sans text-[13px] text-charcoal hover:bg-cream disabled:opacity-60"
+                  >
+                    Mark under review
+                  </button>
+                  <button
+                    disabled={updateStatus.isPending}
+                    onClick={() => setStatus(active.id, "REJECTED")}
+                    className="rounded-full px-5 py-2 font-sans text-[13px] text-destructive hover:underline disabled:opacity-60"
+                  >
+                    Reject
+                  </button>
+                </div>
+              )}
             </article>
           )}
         </div>

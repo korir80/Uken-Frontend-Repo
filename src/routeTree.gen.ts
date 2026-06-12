@@ -22,6 +22,7 @@ import { Route as SavedRouteImport } from './routes/saved'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PressRouteImport } from './routes/press'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CreatorRouteImport } from './routes/creator'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -133,6 +134,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const PressRoute = PressRouteImport.update({
   id: '/press',
   path: '/press',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -384,6 +390,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
@@ -443,6 +450,7 @@ export interface FileRoutesByTo {
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/explore': typeof ExploreRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
@@ -506,6 +514,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/creator': typeof CreatorRouteWithChildren
   '/explore': typeof ExploreRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/press': typeof PressRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
@@ -570,6 +579,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/creator'
     | '/explore'
+    | '/forgot-password'
     | '/press'
     | '/privacy'
     | '/refunds'
@@ -629,6 +639,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/contact'
     | '/explore'
+    | '/forgot-password'
     | '/press'
     | '/privacy'
     | '/refunds'
@@ -691,6 +702,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/creator'
     | '/explore'
+    | '/forgot-password'
     | '/press'
     | '/privacy'
     | '/refunds'
@@ -754,6 +766,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CreatorRoute: typeof CreatorRouteWithChildren
   ExploreRoute: typeof ExploreRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   PressRoute: typeof PressRoute
   PrivacyRoute: typeof PrivacyRoute
   RefundsRoute: typeof RefundsRoute
@@ -865,6 +878,13 @@ declare module '@tanstack/react-router' {
       path: '/press'
       fullPath: '/press'
       preLoaderRoute: typeof PressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore': {
@@ -1318,6 +1338,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CreatorRoute: CreatorRouteWithChildren,
   ExploreRoute: ExploreRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   PressRoute: PressRoute,
   PrivacyRoute: PrivacyRoute,
   RefundsRoute: RefundsRoute,

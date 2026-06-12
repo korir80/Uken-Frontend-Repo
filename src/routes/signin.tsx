@@ -131,6 +131,15 @@ function SignInPage() {
           </button>
         </form>
 
+        <p className="mt-4 text-center font-sans text-[13px]">
+          <Link
+            to="/forgot-password"
+            className="text-charcoal/70 underline-offset-4 hover:text-clay hover:underline"
+          >
+            Forgot your password?
+          </Link>
+        </p>
+
         <p className="mt-6 text-center font-sans text-[13px] text-charcoal/70">
           New to UKEN?{" "}
           <Link

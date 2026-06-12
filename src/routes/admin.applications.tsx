@@ -56,8 +56,19 @@ function AdminApplications() {
     updateStatus.mutate(
       { id, status },
       {
-        onSuccess: () => toast.success(`Marked ${status.replace(/_/g, " ").toLowerCase()}.`),
-        onError: (e) => toast.error(e.message),
+        onSuccess: () =>
+          toast.success(`Marked ${status.replace(/_/g, " ").toLowerCase()}.`),
+        onError: (e) => {
+          if (e instanceof ApiError && e.status === 409) {
+            toast.error(
+              `This application is already marked as ${status
+                .replace(/_/g, " ")
+                .toLowerCase()}`,
+            );
+            return;
+          }
+          toast.error(e.message);
+        },
       },
     );
   }

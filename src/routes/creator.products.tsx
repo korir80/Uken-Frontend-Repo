@@ -11,6 +11,8 @@ import { formatGBP } from "@/lib/cart";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicker";
 import { ConsentCheckbox } from "@/components/ukena";
+import { MissingImagesBanner } from "@/components/creator/MissingImagesBanner";
+import { useMyCreatorProfile } from "@/lib/queries";
 
 export const Route = createFileRoute("/creator/products")({
   component: CreatorProducts,
@@ -77,6 +79,7 @@ function CreatorProducts() {
     enabled: !!user,
   });
   const products: ProductSummaryDto[] = Array.isArray(rawProducts) ? rawProducts : [];
+  const { data: profile } = useMyCreatorProfile(creatorId);
 
   const create = useCreateMyProduct(creatorId);
   const update = useUpdateMyProduct(creatorId);
@@ -139,6 +142,8 @@ function CreatorProducts() {
         }
         refreshKeys={[]}
       />
+
+      <MissingImagesBanner profileImage={profile?.image} products={products} />
 
       {isLoading ? (
         <p className="font-sans text-[13px] text-charcoal/60">Loading your pieces…</p>

@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { productService } from "@/services/productService";
 import { PageHeader, StatCard, EmptyState } from "@/components/dashboard/DashboardShell";
 import { formatGBP } from "@/lib/cart";
+import { MissingImagesBanner } from "@/components/creator/MissingImagesBanner";
 
 export const Route = createFileRoute("/creator/")({
   component: CreatorOverview,
@@ -54,6 +55,8 @@ function CreatorOverview() {
         description="Your studio at a glance — what needs your attention today, and what's already in motion."
         refreshKeys={[]}
       />
+
+      <MissingImagesBanner profileImage={profile?.image} products={products} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Pieces live" value={String(products.length)} hint="In the shop" />

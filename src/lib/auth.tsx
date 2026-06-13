@@ -81,13 +81,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Wire 401 → sign-out + redirect.
+  // Wire 401 → sign-out. On protected routes also redirect to /signin
+  // (preserving where they came from). On public routes we just clear the
+  // session silently with a toast so browsing the site isn't disrupted.
   useEffect(() => {
+    const PROTECTED_PREFIXES = ["/admin", "/creator", "/account", "/checkout"];
     registerUnauthorizedHandler(() => {
       clearToken();
       setUser(null);
-      toast.error("Session expired");
-      navigateRef.current({ to: "/signin" });
+      const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
+      const isProtected = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
+      if (isProtected) {
+        toast.error("Session expired — please sign in again.");
+        navigateRef.current({ to: "/signin", search: { redirect: pathname } as never });
+      } else {
+        toast.message("You've been signed out.");
+      }
     });
   }, []);
 

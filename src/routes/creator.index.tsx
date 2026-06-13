@@ -14,7 +14,7 @@ function CreatorOverview() {
   const { user } = useAuth();
   const creatorId = user?.creatorId ?? null;
 
-  const { data: profile } = useCreator(creatorId);
+  const { data: profile } = useCreator(creatorId ?? "");
   const { data: rawProducts } = useQuery({
     queryKey: ["products", "creator", "me"],
     queryFn: () => productService.getMyProducts(),
@@ -32,6 +32,19 @@ function CreatorOverview() {
         sum + o.items.filter((i) => i.creator.id === creatorId).reduce((s, i) => s + i.pricePence * i.quantity, 0),
       0,
     );
+
+  if (!creatorId) {
+    return (
+      <div className="space-y-10">
+        <PageHeader
+          eyebrow="Welcome"
+          title="Setting up your studio…"
+          description="Your creator profile is being linked. Please refresh in a moment."
+          refreshKeys={[]}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-10">

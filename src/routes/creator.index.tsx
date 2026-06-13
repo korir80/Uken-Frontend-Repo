@@ -12,7 +12,8 @@ export const Route = createFileRoute("/creator/")({
 
 function CreatorOverview() {
   const { user } = useAuth();
-  const creatorId = user?.creatorId ?? "wanjiru";
+  const creatorId = user?.creatorId ?? null;
+
   const { data: profile } = useCreator(creatorId);
   const { data: rawProducts } = useQuery({
     queryKey: ["products", "creator", "me"],
@@ -22,18 +23,13 @@ function CreatorOverview() {
   const products = Array.isArray(rawProducts) ? rawProducts : [];
   const { data: orders = [] } = useCreatorOrders();
 
-  const myOrders = orders.filter((o) =>
-    o.items.some((i) => i.creator.id === creatorId),
-  );
+  const myOrders = creatorId ? orders.filter((o) => o.items.some((i) => i.creator.id === creatorId)) : [];
   const pending = myOrders.filter((o) => o.status === "PENDING" || o.status === "PREPARING");
   const monthRevenuePence = myOrders
     .filter((o) => o.status !== "CANCELLED")
     .reduce(
       (sum, o) =>
-        sum +
-        o.items
-          .filter((i) => i.creator.id === creatorId)
-          .reduce((s, i) => s + i.pricePence * i.quantity, 0),
+        sum + o.items.filter((i) => i.creator.id === creatorId).reduce((s, i) => s + i.pricePence * i.quantity, 0),
       0,
     );
 
@@ -50,11 +46,7 @@ function CreatorOverview() {
         <StatCard label="Pieces live" value={String(products.length)} hint="In the shop" />
         <StatCard label="Orders awaiting" value={String(pending.length)} hint="Pending or preparing" />
         <StatCard label="Total orders" value={String(myOrders.length)} hint="All time" />
-        <StatCard
-          label="Estimated revenue"
-          value={formatGBP(monthRevenuePence)}
-          hint="Across all your orders"
-        />
+        <StatCard label="Estimated revenue" value={formatGBP(monthRevenuePence)} hint="Across all your orders" />
       </div>
 
       <section>

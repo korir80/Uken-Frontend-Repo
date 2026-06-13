@@ -50,8 +50,8 @@ const artisanSteps: Step[] = [
   },
   {
     n: "III",
-    title: "Earn fairly",
-    copy: "You set the price of your craft. Transparent margins, paid in full, on time, every time.",
+    title: "Earn 60% of every sale",
+    copy: "Transparent split: 60% goes directly to you, 40% covers shipping, customs, payments and the platform. Paid via M-Pesa, monthly above €100.",
     Icon: LeafIcon,
   },
 ];

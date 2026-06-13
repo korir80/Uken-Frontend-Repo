@@ -226,6 +226,8 @@ export function useCreateMyProduct(creatorId?: string) {
     mutationFn: (payload) => productService.createMyProduct(payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.products() });
+      qc.invalidateQueries({ queryKey: ["creator-my-products"] });
+      qc.invalidateQueries({ queryKey: ["products", "creator", "me"] });
       if (creatorId)
         qc.invalidateQueries({ queryKey: queryKeys.productsByCreator(creatorId) });
     },
@@ -239,6 +241,8 @@ export function useUpdateMyProduct(creatorId?: string) {
     onSuccess: (data) => {
       qc.setQueryData(queryKeys.product(data.id), data);
       qc.invalidateQueries({ queryKey: queryKeys.products() });
+      qc.invalidateQueries({ queryKey: ["creator-my-products"] });
+      qc.invalidateQueries({ queryKey: ["products", "creator", "me"] });
       if (creatorId)
         qc.invalidateQueries({ queryKey: queryKeys.productsByCreator(creatorId) });
     },
@@ -251,6 +255,8 @@ export function useDeleteMyProduct(creatorId?: string) {
     mutationFn: (id) => productService.deleteMyProduct(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.products() });
+      qc.invalidateQueries({ queryKey: ["creator-my-products"] });
+      qc.invalidateQueries({ queryKey: ["products", "creator", "me"] });
       if (creatorId)
         qc.invalidateQueries({ queryKey: queryKeys.productsByCreator(creatorId) });
     },

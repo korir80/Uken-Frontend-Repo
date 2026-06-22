@@ -118,16 +118,14 @@ export function CreatorHeader({ creator }: CreatorHeaderProps) {
 
             <figure className="relative overflow-hidden rounded-2xl border border-border/70 bg-cream p-2 shadow-[var(--shadow-card)]">
               <div className="relative overflow-hidden rounded-xl bg-sand-soft">
-                <img
-                  src={img}
+                <LazyImage
+                  src={primary}
+                  fallbackSrcs={fallbacks}
                   alt={`${creator.fullName}, ${creator.craft.toLowerCase()} from ${creator.region}`}
-                  width={960}
-                  height={1200}
-                  loading="eager"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                  className="aspect-[4/5] w-full object-cover"
+                  eager
+                  ratio="4/5"
+                  wrapperClassName="w-full"
+                  className="h-full w-full object-cover"
                 />
                 {/* gentle inner vignette for warmth */}
                 <div

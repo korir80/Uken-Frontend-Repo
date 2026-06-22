@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import type { CreatorProfile } from "./creator-profile-data";
-import { safeImg } from "@/lib/safeImage";
+import { LazyImage } from "@/components/ui/lazy-image";
 
 interface CreatorHeaderProps {
   creator: CreatorProfile;
@@ -10,19 +10,19 @@ interface CreatorHeaderProps {
 /**
  * SECTION 1 — Editorial header.
  *
- * Replaces the previous full-bleed hero (which stretched the subject across
- * the entire viewport regardless of aspect ratio) with a magazine-style
- * split: a calm cream stage on the left carrying the large serif name and
- * meta, and a contained portrait card on the right with a soft frame, a
- * subtle stacked accent tile behind it, and a quiet caption strip below.
- *
- * The image is rendered at a tasteful 4:5 portrait crop with object-cover
- * so any backend photo (landscape, portrait, square) lands cleanly. On
- * mobile the image stacks above the text and stays a contained card —
- * never a full-bleed background.
+ * The portrait progressively falls back through every related image the
+ * creator has — header, avatar, process steps, then product hero shots —
+ * before ever surfacing the illustrated placeholder.
  */
 export function CreatorHeader({ creator }: CreatorHeaderProps) {
-  const img = safeImg(creator.headerImage);
+  const primary = creator.headerImage || creator.coverImage;
+  const fallbacks: string[] = [
+    creator.coverImage,
+    creator.avatar,
+    creator.portraitImage,
+    ...(creator.processSteps?.map((s) => s.image) ?? []),
+    ...(creator.products?.map((p) => p.image) ?? []),
+  ].filter(Boolean) as string[];
 
   return (
     <section className="relative bg-warm-white pt-24 pb-10 md:pt-28 md:pb-16 lg:pt-32 lg:pb-20">

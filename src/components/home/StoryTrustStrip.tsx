@@ -28,15 +28,15 @@ export function StoryTrustStrip() {
         </div>
 
         {stories.length > 0 && (
-          <div className="mt-7 grid gap-5 md:grid-cols-3">
+          <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {stories.map((c) => (
               <article key={c.id} className="group h-full">
                 <Link
                   to="/creators/$creatorId"
                   params={{ creatorId: c.id }}
-                  className="block h-full rounded-2xl border border-border/60 bg-warm-white/85 p-3 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
+                  className="block h-full rounded-xl border border-border/60 bg-warm-white/85 p-2.5 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
                 >
-                  <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sand-soft">
+                  <div className="aspect-[16/10] overflow-hidden rounded-lg bg-sand-soft">
                     <LazyImage
                       src={c.image}
                       alt={`${c.fullName} — ${c.craft} from ${c.region}`}
@@ -45,16 +45,16 @@ export function StoryTrustStrip() {
                     />
                   </div>
                   <div className="px-1 pb-1 pt-3">
-                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-terracotta">
+                    <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-terracotta">
                       {c.firstName} · {c.region}
                     </p>
-                    <h3 className="mt-1.5 font-display text-[22px] leading-tight text-charcoal">
+                    <h3 className="mt-1 font-display text-[18px] leading-tight text-charcoal">
                       {c.craft}
                     </h3>
-                    <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">{c.hook}</p>
-                    <span className="mt-3 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.16em] text-clay">
+                    <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-muted line-clamp-2">{c.hook}</p>
+                    <span className="mt-2.5 inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.16em] text-clay">
                       See the story
-                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                      <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
                     </span>
                   </div>
                 </Link>

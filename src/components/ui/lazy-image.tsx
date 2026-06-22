@@ -98,6 +98,7 @@ export function LazyImage({
   const wrapRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(eager);
   const [loaded, setLoaded] = useState(false);
+  const [errored, setErrored] = useState(false);
 
   useEffect(() => {
     if (eager || inView) return;
@@ -137,6 +138,8 @@ export function LazyImage({
     [isUsableSrc, src, displayWidth],
   );
 
+  const showFallback = !isUsableSrc || errored;
+
   return (
     <div
       ref={wrapRef}
@@ -146,19 +149,40 @@ export function LazyImage({
       )}
       style={ratio ? { aspectRatio: ratio } : undefined}
     >
-      {/* Shimmer placeholder — fades out once image is loaded */}
-      <div
-        aria-hidden
-        className={cn(
-          "absolute inset-0 transition-opacity duration-500",
-          loaded ? "opacity-0" : "opacity-100",
-        )}
-      >
-        <div className="absolute inset-0 bg-[linear-gradient(110deg,oklch(0.95_0.012_78)_8%,oklch(0.88_0.025_70)_18%,oklch(0.95_0.012_78)_33%)] bg-[length:200%_100%] animate-[ukena-shimmer_1.6s_ease-in-out_infinite]" />
-      </div>
+      {!showFallback && (
+        <div
+          aria-hidden
+          className={cn(
+            "absolute inset-0 transition-opacity duration-500",
+            loaded ? "opacity-0" : "opacity-100",
+          )}
+        >
+          <div className="absolute inset-0 bg-[linear-gradient(110deg,oklch(0.95_0.012_78)_8%,oklch(0.88_0.025_70)_18%,oklch(0.95_0.012_78)_33%)] bg-[length:200%_100%] animate-[ukena-shimmer_1.6s_ease-in-out_infinite]" />
+        </div>
+      )}
 
-      
-      {inView && isUsableSrc && (
+      {showFallback && (
+        <div
+          aria-label={alt}
+          role="img"
+          className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(135deg,oklch(0.93_0.02_75),oklch(0.86_0.04_60))]"
+        >
+          <svg
+            viewBox="0 0 64 64"
+            className="h-10 w-10 text-clay/70"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden
+          >
+            <rect x="8" y="12" width="48" height="40" rx="4" />
+            <circle cx="22" cy="26" r="4" />
+            <path d="M8 44l14-14 12 12 8-8 14 14" />
+          </svg>
+        </div>
+      )}
+
+      {inView && isUsableSrc && !errored && (
         <img
           src={cloud.src}
           srcSet={cloud.srcSet}
@@ -167,9 +191,8 @@ export function LazyImage({
           loading={loading ?? (eager ? "eager" : "lazy")}
           decoding="async"
           onLoad={() => setLoaded(true)}
-          onError={(e) => {
-            // Hide broken images instead of showing the browser's broken-image icon.
-            e.currentTarget.style.visibility = "hidden";
+          onError={() => {
+            setErrored(true);
             setLoaded(true);
           }}
           className={cn(

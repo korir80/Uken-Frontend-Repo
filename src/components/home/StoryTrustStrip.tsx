@@ -55,6 +55,7 @@ export function StoryTrustStrip() {
                   <div className="aspect-[16/10] overflow-hidden rounded-lg bg-sand-soft">
                     <LazyImage
                       src={c.image}
+                      fallbackSrcs={fallbackByCreator.get(c.id)}
                       alt={`${c.fullName} — ${c.craft} from ${c.region}`}
                       wrapperClassName="h-full w-full"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"

@@ -16,6 +16,13 @@ interface LazyImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"
    * If omitted we emit a responsive srcset across common card/hero widths.
    */
   displayWidth?: number;
+  /**
+   * Ordered list of alternate image URLs to try when `src` is missing or
+   * fails to load. Only after every candidate fails does the illustrated
+   * fallback panel render. Use to surface related imagery (story steps,
+   * product photos, portraits) before giving up.
+   */
+  fallbackSrcs?: (string | null | undefined)[];
 }
 
 const CLOUDINARY_HOST = "res.cloudinary.com";

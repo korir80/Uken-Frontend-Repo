@@ -240,7 +240,7 @@ function ProductPage() {
                     <LazyImage
                       src={active.src}
                       fallbackSrcs={[
-                        ...gallery.filter((g) => g.src !== active.src).map((g) => g.src),
+                        ...gallery.filter((g: { src: string }) => g.src !== active.src).map((g: { src: string }) => g.src),
                         product.heroImage,
                         product.creator?.portrait,
                       ]}

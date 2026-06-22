@@ -1,27 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { useMemo } from "react";
-import { LazyImage } from "@/components/ui/lazy-image";
-import { useCreators, useAllProducts } from "@/lib/queries";
+import { useCreators } from "@/lib/queries";
+import { CreatorImageCarousel } from "./CreatorImageCarousel";
 
 export function StoryTrustStrip() {
   const { data: creators = [] } = useCreators();
-  const { data: products = [] } = useAllProducts();
   const stories = creators.slice(0, 3);
-
-  // Map creatorId → ordered list of product hero/gallery images so the card
-  // can fall back to real product photos before the illustrated placeholder.
-  const fallbackByCreator = useMemo(() => {
-    const map = new Map<string, string[]>();
-    for (const p of products as Array<{ creatorId?: string; heroImage?: string; gallery?: { src: string }[] }>) {
-      if (!p.creatorId) continue;
-      const list = map.get(p.creatorId) ?? [];
-      if (p.heroImage) list.push(p.heroImage);
-      if (Array.isArray(p.gallery)) for (const g of p.gallery) if (g?.src) list.push(g.src);
-      map.set(p.creatorId, list);
-    }
-    return map;
-  }, [products]);
 
   return (
     <section className="bg-cream py-12 md:py-14">
@@ -53,12 +37,11 @@ export function StoryTrustStrip() {
                   className="block h-full rounded-xl border border-border/60 bg-warm-white/85 p-2.5 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-0.5 hover:shadow-soft"
                 >
                   <div className="aspect-[16/10] overflow-hidden rounded-lg bg-sand-soft">
-                    <LazyImage
-                      src={c.image}
-                      fallbackSrcs={fallbackByCreator.get(c.id)}
+                    <CreatorImageCarousel
+                      creatorId={c.id}
+                      summaryImage={c.image}
                       alt={`${c.fullName} — ${c.craft} from ${c.region}`}
-                      wrapperClassName="h-full w-full"
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                   <div className="px-1 pb-1 pt-3">

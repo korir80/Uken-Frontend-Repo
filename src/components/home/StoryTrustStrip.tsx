@@ -1,27 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { useMemo } from "react";
-import { LazyImage } from "@/components/ui/lazy-image";
-import { useCreators, useAllProducts } from "@/lib/queries";
+import { useCreators } from "@/lib/queries";
+import { CreatorImageCarousel } from "./CreatorImageCarousel";
 
 export function StoryTrustStrip() {
   const { data: creators = [] } = useCreators();
-  const { data: products = [] } = useAllProducts();
   const stories = creators.slice(0, 3);
-
-  // Map creatorId → ordered list of product hero/gallery images so the card
-  // can fall back to real product photos before the illustrated placeholder.
-  const fallbackByCreator = useMemo(() => {
-    const map = new Map<string, string[]>();
-    for (const p of products as Array<{ creatorId?: string; heroImage?: string; gallery?: { src: string }[] }>) {
-      if (!p.creatorId) continue;
-      const list = map.get(p.creatorId) ?? [];
-      if (p.heroImage) list.push(p.heroImage);
-      if (Array.isArray(p.gallery)) for (const g of p.gallery) if (g?.src) list.push(g.src);
-      map.set(p.creatorId, list);
-    }
-    return map;
-  }, [products]);
 
   return (
     <section className="bg-cream py-12 md:py-14">

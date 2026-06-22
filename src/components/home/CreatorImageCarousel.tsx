@@ -40,8 +40,8 @@ export function CreatorImageCarousel({
       summaryImage,
       detail?.headerImage,
       detail?.portraitImage,
-      detail?.coverImage as string | undefined,
-      detail?.avatar as string | undefined,
+      (detail as { coverImage?: string } | undefined)?.coverImage,
+      (detail as { avatar?: string } | undefined)?.avatar,
       detail?.image,
       ...((detail?.processSteps ?? []).map((s) => s.image)),
       ...((detail as { products?: { image?: string }[] } | undefined)?.products?.map(

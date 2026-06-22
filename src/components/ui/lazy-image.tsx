@@ -16,6 +16,13 @@ interface LazyImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"
    * If omitted we emit a responsive srcset across common card/hero widths.
    */
   displayWidth?: number;
+  /**
+   * Ordered list of alternate image URLs to try when `src` is missing or
+   * fails to load. Only after every candidate fails does the illustrated
+   * fallback panel render. Use to surface related imagery (story steps,
+   * product photos, portraits) before giving up.
+   */
+  fallbackSrcs?: (string | null | undefined)[];
 }
 
 const CLOUDINARY_HOST = "res.cloudinary.com";
@@ -83,6 +90,18 @@ function buildCloudinarySources(
  * a responsive srcset so we never ship a 2400px master to a 240px card.
  * Non-Cloudinary URLs are passed through untouched.
  */
+function isUsableUrl(url: unknown): url is string {
+  if (!url || typeof url !== "string") return false;
+  const s = url.trim();
+  if (!s) return false;
+  if (s.startsWith("blob:")) return false;
+  if (s.includes("cloudinary.com/demo")) return false;
+  if (s.includes("/demo/")) return false;
+  if (s.includes("sample")) return false;
+  if (s.includes("placeholder")) return false;
+  return true;
+}
+
 export function LazyImage({
   src,
   alt,
@@ -93,12 +112,34 @@ export function LazyImage({
   loading,
   displayWidth,
   sizes,
+  fallbackSrcs,
   ...rest
 }: LazyImageProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(eager);
   const [loaded, setLoaded] = useState(false);
-  const [errored, setErrored] = useState(false);
+
+  // Build the ordered candidate list once per src/fallback change: the
+  // primary src first, then any fallbacks, de-duplicated and filtered to
+  // usable URLs. The illustrated placeholder only renders if ALL fail.
+  const candidates = useMemo(() => {
+    const all = [src, ...(fallbackSrcs ?? [])];
+    const out: string[] = [];
+    const seen = new Set<string>();
+    for (const u of all) {
+      if (!isUsableUrl(u)) continue;
+      if (seen.has(u)) continue;
+      seen.add(u);
+      out.push(u);
+    }
+    return out;
+  }, [src, fallbackSrcs]);
+
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    setIdx(0);
+    setLoaded(false);
+  }, [candidates]);
 
   useEffect(() => {
     if (eager || inView) return;
@@ -123,30 +164,20 @@ export function LazyImage({
     return () => io.disconnect();
   }, [eager, inView]);
 
-  const isUsableSrc =
-    !!src &&
-    typeof src === "string" &&
-    src.trim() !== "" &&
-    !src.startsWith("blob:") &&
-    !src.includes("cloudinary.com/demo") &&
-    !src.includes("/demo/") &&
-    !src.includes("sample") &&
-    !src.includes("placeholder");
+  const activeSrc = candidates[idx];
+  const exhausted = candidates.length === 0 || idx >= candidates.length;
 
   const cloud = useMemo(
-    () => (isUsableSrc ? buildCloudinarySources(src as string, displayWidth) : { src: "" }),
-    [isUsableSrc, src, displayWidth],
+    () => (activeSrc ? buildCloudinarySources(activeSrc, displayWidth) : { src: "" }),
+    [activeSrc, displayWidth],
   );
 
-  const showFallback = !isUsableSrc || errored;
+  const showFallback = exhausted;
 
   return (
     <div
       ref={wrapRef}
-      className={cn(
-        "relative overflow-hidden bg-cream",
-        wrapperClassName,
-      )}
+      className={cn("relative overflow-hidden bg-cream", wrapperClassName)}
       style={ratio ? { aspectRatio: ratio } : undefined}
     >
       {!showFallback && (
@@ -182,8 +213,9 @@ export function LazyImage({
         </div>
       )}
 
-      {inView && isUsableSrc && !errored && (
+      {inView && activeSrc && !showFallback && (
         <img
+          key={activeSrc}
           src={cloud.src}
           srcSet={cloud.srcSet}
           sizes={sizes ?? (cloud.srcSet ? "(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw" : undefined)}
@@ -192,8 +224,8 @@ export function LazyImage({
           decoding="async"
           onLoad={() => setLoaded(true)}
           onError={() => {
-            setErrored(true);
-            setLoaded(true);
+            setLoaded(false);
+            setIdx((i) => i + 1);
           }}
           className={cn(
             "h-full w-full object-cover transition-[opacity,transform] duration-700 ease-out",

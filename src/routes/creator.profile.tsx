@@ -52,8 +52,6 @@ function CreatorProfile() {
   // Single source of truth for workshop gallery — both URL and caption live
   // here so captions are never dropped when images are added or removed.
   const [processSteps, setProcessSteps] = useState<ProcessStepDraft[]>([]);
-  // DPA 2019: explicit consent per save so the maker actively re-affirms
-  // their rights to publish photos & text on every change.
   const [consent, setConsent] = useState(false);
   const [mode, setMode] = useState<"edit" | "preview">("edit");
 

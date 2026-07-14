@@ -441,7 +441,7 @@ function CreatorProfile() {
             <div className="flex gap-2">
               <button
                 type="button"
-                disabled={uploadingKind !== null || !consent}
+                disabled={uploadingKind !== null}
                 onClick={confirmStaged}
                 className="flex-1 rounded-full bg-clay px-4 py-2 font-sans text-[12px] text-warm-white hover:bg-clay-deep disabled:opacity-60"
               >
@@ -503,7 +503,7 @@ function CreatorProfile() {
             <div className="flex gap-2">
               <button
                 type="button"
-                disabled={uploadingKind !== null || !consent}
+                disabled={uploadingKind !== null}
                 onClick={confirmStaged}
                 className="flex-1 rounded-full bg-clay px-4 py-2 font-sans text-[12px] text-warm-white hover:bg-clay-deep disabled:opacity-60"
               >

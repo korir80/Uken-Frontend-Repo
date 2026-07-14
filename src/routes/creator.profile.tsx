@@ -12,7 +12,7 @@ import {
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicker";
-import { ConsentCheckbox } from "@/components/ukena";
+
 import { cloudinaryService, validateUploadFile } from "@/services/cloudinaryService";
 import { CreatorSocialFeed } from "@/components/creator/CreatorSocialFeed";
 import type { CreatorProfile as CreatorProfileShape } from "@/components/creator/creator-profile-data";

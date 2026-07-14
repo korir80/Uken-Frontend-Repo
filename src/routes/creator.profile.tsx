@@ -126,20 +126,27 @@ function CreatorProfile() {
 
   async function confirmStaged() {
     if (!staged) return;
-    if (!consent) {
-      toast.error("Please tick the consent box before uploading a new image.");
-      return;
-    }
     const { kind, file, preview } = staged;
     setUploadingKind(kind);
+    const t = toast.loading(
+      kind === "portrait" ? "Uploading avatar…" : "Uploading cover banner…",
+    );
     try {
       const url = await cloudinaryService.upload(file, "ukena/creators");
-      await update.mutateAsync(kind === "portrait" ? { portraitImage: url } : { headerImage: url });
-      toast.success(kind === "portrait" ? "Avatar updated." : "Cover banner updated.");
+      await update.mutateAsync(
+        kind === "portrait" ? { portraitImage: url } : { headerImage: url },
+      );
+      toast.success(
+        kind === "portrait"
+          ? "Avatar updated — visible on your public page."
+          : "Cover banner updated — visible on your public page.",
+        { id: t },
+      );
       URL.revokeObjectURL(preview);
       setStaged(null);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Upload failed.");
+      const msg = err instanceof Error ? err.message : "Upload failed.";
+      toast.error(`Upload failed: ${msg}`, { id: t });
     } finally {
       setUploadingKind(null);
     }
@@ -148,10 +155,7 @@ function CreatorProfile() {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!consent) {
-      toast.error("Please tick the consent box before saving your changes.");
-      return;
-    }
+    const t = toast.loading("Saving your story…");
     update.mutate(
       {
         firstName,
@@ -163,20 +167,17 @@ function CreatorProfile() {
           .split(/\n{2,}/)
           .map((p) => p.trim())
           .filter(Boolean),
-        // Send full processSteps (image + caption). The backend persists these
-        // to the process_steps TEXT column and returns them in every
-        // GET /creators/me response, making them visible in CreatorGallery
-        // and CreatorProcess on the public profile page.
         processSteps: processSteps.filter((s) => !!s.image),
       },
       {
         onSuccess: () => {
           setSaved(true);
-          setConsent(false);
+          toast.success("Story saved — your public page is updated.", { id: t });
           setTimeout(() => setSaved(false), 1800);
         },
         onError: (err) => {
-          toast.error(err instanceof Error ? err.message : "Save failed.");
+          const msg = err instanceof Error ? err.message : "Save failed.";
+          toast.error(`Save failed: ${msg}`, { id: t });
         },
       },
     );

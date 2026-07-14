@@ -73,9 +73,6 @@ export async function getCreatorProfile(id: string): Promise<CreatorProfile> {
     creatorService.getCreators().catch(() => [] as CreatorSummary[]),
   ]);
 
-  const cover = detail.headerImage ?? detail.image;
-  const avatar = detail.portraitImage ?? detail.image;
-
   const ownProducts: CreatorProduct[] = products
     .filter((p) => p.creatorId === detail.id)
     .slice(0, 8)
@@ -86,6 +83,16 @@ export async function getCreatorProfile(id: string): Promise<CreatorProfile> {
       image: p.heroImage,
       description: p.craft,
     }));
+
+  // Cascade so the public page never renders a blank hero. Product photos
+  // are the last-resort visual identity when the maker hasn't uploaded a
+  // cover or portrait yet — better than a plain gradient or an initial.
+  const firstProductImage = ownProducts[0]?.image;
+  const firstProcessImage = detail.processSteps?.[0]?.image;
+  const cover =
+    detail.headerImage || detail.image || firstProductImage || firstProcessImage || "";
+  const avatar =
+    detail.portraitImage || detail.image || firstProductImage || firstProcessImage || "";
 
   const sameCraft = allCreators.filter(
     (c) => c.id !== detail.id && c.craft === detail.craft,

@@ -12,7 +12,7 @@ import {
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { CloudinaryImagePicker } from "@/components/uploads/CloudinaryImagePicker";
-import { ConsentCheckbox } from "@/components/ukena";
+
 import { cloudinaryService, validateUploadFile } from "@/services/cloudinaryService";
 import { CreatorSocialFeed } from "@/components/creator/CreatorSocialFeed";
 import type { CreatorProfile as CreatorProfileShape } from "@/components/creator/creator-profile-data";
@@ -52,9 +52,7 @@ function CreatorProfile() {
   // Single source of truth for workshop gallery — both URL and caption live
   // here so captions are never dropped when images are added or removed.
   const [processSteps, setProcessSteps] = useState<ProcessStepDraft[]>([]);
-  // DPA 2019: explicit consent per save so the maker actively re-affirms
-  // their rights to publish photos & text on every change.
-  const [consent, setConsent] = useState(false);
+  
   const [mode, setMode] = useState<"edit" | "preview">("edit");
 
   const portraitInputRef = useRef<HTMLInputElement>(null);
@@ -126,20 +124,27 @@ function CreatorProfile() {
 
   async function confirmStaged() {
     if (!staged) return;
-    if (!consent) {
-      toast.error("Please tick the consent box before uploading a new image.");
-      return;
-    }
     const { kind, file, preview } = staged;
     setUploadingKind(kind);
+    const t = toast.loading(
+      kind === "portrait" ? "Uploading avatar…" : "Uploading cover banner…",
+    );
     try {
       const url = await cloudinaryService.upload(file, "ukena/creators");
-      await update.mutateAsync(kind === "portrait" ? { portraitImage: url } : { headerImage: url });
-      toast.success(kind === "portrait" ? "Avatar updated." : "Cover banner updated.");
+      await update.mutateAsync(
+        kind === "portrait" ? { portraitImage: url } : { headerImage: url },
+      );
+      toast.success(
+        kind === "portrait"
+          ? "Avatar updated — visible on your public page."
+          : "Cover banner updated — visible on your public page.",
+        { id: t },
+      );
       URL.revokeObjectURL(preview);
       setStaged(null);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Upload failed.");
+      const msg = err instanceof Error ? err.message : "Upload failed.";
+      toast.error(`Upload failed: ${msg}`, { id: t });
     } finally {
       setUploadingKind(null);
     }
@@ -148,10 +153,7 @@ function CreatorProfile() {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!consent) {
-      toast.error("Please tick the consent box before saving your changes.");
-      return;
-    }
+    const t = toast.loading("Saving your story…");
     update.mutate(
       {
         firstName,
@@ -163,20 +165,17 @@ function CreatorProfile() {
           .split(/\n{2,}/)
           .map((p) => p.trim())
           .filter(Boolean),
-        // Send full processSteps (image + caption). The backend persists these
-        // to the process_steps TEXT column and returns them in every
-        // GET /creators/me response, making them visible in CreatorGallery
-        // and CreatorProcess on the public profile page.
         processSteps: processSteps.filter((s) => !!s.image),
       },
       {
         onSuccess: () => {
           setSaved(true);
-          setConsent(false);
+          toast.success("Story saved — your public page is updated.", { id: t });
           setTimeout(() => setSaved(false), 1800);
         },
         onError: (err) => {
-          toast.error(err instanceof Error ? err.message : "Save failed.");
+          const msg = err instanceof Error ? err.message : "Save failed.";
+          toast.error(`Save failed: ${msg}`, { id: t });
         },
       },
     );
@@ -380,24 +379,10 @@ function CreatorProfile() {
             )}
           </div>
 
-          <ConsentCheckbox
-            id="profile-consent"
-            checked={consent}
-            onChange={setConsent}
-            label={
-              <>
-                I confirm I own (or have permission to share) the photos and
-                words above, and I'm happy for UKEN to publish them on my
-                public maker page. Handled under our Privacy Notice and the
-                Kenya Data Protection Act (2019).
-              </>
-            }
-          />
-
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <button
               type="submit"
-              disabled={update.isPending || !consent}
+              disabled={update.isPending}
               className="rounded-full bg-clay px-6 py-2.5 font-sans text-[13px] font-medium text-warm-white hover:bg-clay-deep disabled:opacity-60"
             >
               {saved ? "Saved ✓" : update.isPending ? "Saving…" : "Save changes"}
@@ -411,6 +396,11 @@ function CreatorProfile() {
               Preview public page →
             </a>
           </div>
+          <p className="font-sans text-[11px] leading-relaxed text-charcoal/50">
+            By saving, you confirm you own (or have permission to share) the
+            photos and words above. Handled under our Privacy Notice and the
+            Kenya Data Protection Act (2019).
+          </p>
         </form>
 
         {/* ── Aside: avatar + cover (save immediately on upload) ── */}
@@ -451,7 +441,7 @@ function CreatorProfile() {
             <div className="flex gap-2">
               <button
                 type="button"
-                disabled={uploadingKind !== null || !consent}
+                disabled={uploadingKind !== null}
                 onClick={confirmStaged}
                 className="flex-1 rounded-full bg-clay px-4 py-2 font-sans text-[12px] text-warm-white hover:bg-clay-deep disabled:opacity-60"
               >
@@ -513,7 +503,7 @@ function CreatorProfile() {
             <div className="flex gap-2">
               <button
                 type="button"
-                disabled={uploadingKind !== null || !consent}
+                disabled={uploadingKind !== null}
                 onClick={confirmStaged}
                 className="flex-1 rounded-full bg-clay px-4 py-2 font-sans text-[12px] text-warm-white hover:bg-clay-deep disabled:opacity-60"
               >

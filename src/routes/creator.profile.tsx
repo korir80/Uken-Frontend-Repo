@@ -52,7 +52,7 @@ function CreatorProfile() {
   // Single source of truth for workshop gallery — both URL and caption live
   // here so captions are never dropped when images are added or removed.
   const [processSteps, setProcessSteps] = useState<ProcessStepDraft[]>([]);
-  const [consent, setConsent] = useState(false);
+  const [saved2, _setSaved2] = useState(false); void saved2; void _setSaved2;
   const [mode, setMode] = useState<"edit" | "preview">("edit");
 
   const portraitInputRef = useRef<HTMLInputElement>(null);
